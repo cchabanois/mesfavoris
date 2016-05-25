@@ -1,0 +1,107 @@
+package mesfavoris.url;
+
+import static mesfavoris.url.UrlBookmarkProperties.PROP_FAVICON;
+import static mesfavoris.url.UrlBookmarkProperties.PROP_URL;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Base64;
+import java.util.Map;
+import java.util.Optional;
+
+import org.chabanois.mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
+import org.chabanois.mesfavoris.model.Bookmark;
+import org.eclipse.swt.SWTException;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
+import org.jsoup.Connection.Response;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
+public class UrlBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {
+
+	public UrlBookmarkPropertiesProvider() {
+
+	}
+
+	@Override
+	public void addBookmarkProperties(Map<String, String> bookmarkProperties, Object selected) {
+		if (!(selected instanceof URL)) {
+			return;
+		}
+		URL url = (URL) selected;
+		putIfAbsent(bookmarkProperties, PROP_URL, url.toString());
+
+		parse(url).ifPresent(document -> {
+			getTitle(document).ifPresent(title -> putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME, title));
+			getFavIconAsBase64(url, document)
+					.ifPresent(favIcon -> putIfAbsent(bookmarkProperties, PROP_FAVICON, favIcon));
+		});
+		putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME, url.toString());
+	}
+
+	private Optional<Document> parse(URL url) {
+		try {
+			Response response = Jsoup.connect(url.toString()).followRedirects(false).timeout(2000).maxBodySize(8192).execute();
+			if (response.statusCode() != 200) {
+				return Optional.empty();
+			}
+			return Optional
+					.of(response.parse());
+		} catch (IOException e) {
+			return Optional.empty();
+		}
+	}
+
+	private Optional<String> getFavIconAsBase64(URL url, Document document) {
+		String favIconUrl;
+		try {
+			favIconUrl = getFavIconUrl(document)
+					.orElse(new URL(url.getProtocol(), url.getHost(), url.getPort(), "favicon.ico").toString());
+		} catch (MalformedURLException e) {
+			return Optional.empty();
+		}
+		return getFavIconAsBase64(favIconUrl);
+	}
+
+	private Optional<String> getFavIconAsBase64(String favIconUrl) {
+		Response resultImageResponse;
+		try {
+			resultImageResponse = Jsoup.connect(favIconUrl).ignoreContentType(true).execute();
+		} catch (IOException e) {
+			return Optional.empty();
+		}
+		byte[] bytes = resultImageResponse.bodyAsBytes();
+		Image image = null;
+		try {
+			image = new Image(Display.getCurrent(), new ByteArrayInputStream(bytes));
+			return Optional.of(Base64.getEncoder().encodeToString(bytes));
+		} catch (SWTException e) {
+			return Optional.empty();
+		} finally {
+			if (image != null) {
+				image.dispose();
+			}
+		}
+	}
+
+	private Optional<String> getFavIconUrl(Document document) {
+		Element head = document.head();
+		if (head == null) {
+			return Optional.empty();
+		}
+		Element link = head.select("link[href~=.*\\.(ico|png|gif)]").first();
+		if (link == null) {
+			return Optional.empty();
+		}
+		return Optional.ofNullable(link.attr("abs:href"));
+	}
+
+	private Optional<String> getTitle(Document document) {
+		return Optional.ofNullable(document.title());
+	}
+
+}

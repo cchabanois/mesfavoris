@@ -1,0 +1,50 @@
+package mesfavoris.url;
+
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.chabanois.mesfavoris.model.Bookmark;
+import org.junit.Test;
+
+import com.google.common.io.ByteStreams;
+
+import mesfavoris.url.UrlBookmarkProperties;
+import mesfavoris.url.UrlBookmarkPropertiesProvider;
+
+public class UrlBookmarkPropertiesProviderTest {
+	private final UrlBookmarkPropertiesProvider provider = new UrlBookmarkPropertiesProvider();
+
+	@Test
+	public void testUrlBookmarkPropertiesProvider() throws Exception {
+		assertTitleAndFavIcon("Test In Progress Plugin - Jenkins - Jenkins Wiki", "jenkins-favicon.ico",
+				"https://wiki.jenkins-ci.org/display/JENKINS/Test+In+Progress+Plugin");
+	}
+
+	@Test
+	public void testUrlIsUsedAsTitleWhenAuthenticationIsNeeded() throws IOException {
+		String url = "https://docs.google.com/a/salesforce.com/file/d/0B97G1IRAgxIEanhJTmkyS0NFem8/edit";
+		assertTitleAndFavIcon(url, null, url);
+	}
+
+	private void assertTitleAndFavIcon(String expectedTitle, String expectedIcon, String url) throws IOException {
+		Map<String, String> bookmarkProperties = new HashMap<>();
+		provider.addBookmarkProperties(bookmarkProperties, new URL(url));
+		assertEquals(expectedTitle, bookmarkProperties.get(Bookmark.PROPERTY_NAME));
+		assertEquals(expectedIcon == null ? null : getImageAsBase64(expectedIcon),
+				bookmarkProperties.get(UrlBookmarkProperties.PROP_FAVICON));
+	}
+
+	private String getImageAsBase64(String resourceName) throws IOException {
+		try (InputStream is = getClass().getResourceAsStream(resourceName)) {
+			return Base64.getEncoder().encodeToString(ByteStreams.toByteArray(is));
+		}
+	}
+
+}

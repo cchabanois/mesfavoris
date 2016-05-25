@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="mesfavoris.bookmarkType">
+      <propertiesProvider
+            class="mesfavoris.git.GitProjectPropertiesProvider"
+            priority="100">
+      </propertiesProvider>
+      <importTeamProject
+            class="mesfavoris.git.ImportGitProject"
+            icon="icons/import_obj.gif">
+      </importTeamProject>
+   </extension>
+
+</plugin>

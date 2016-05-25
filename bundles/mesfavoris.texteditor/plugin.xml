@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="mesfavoris.bookmarkType">
+      <gotoBookmark
+            class="mesfavoris.texteditor.GotoExternalFileBookmark"
+            priority="100">
+      </gotoBookmark>
+      <gotoBookmark
+            class="mesfavoris.texteditor.GotoWorkspaceFileBookmark"
+            priority="100">
+      </gotoBookmark>
+      <markerAttributesProvider
+            class="mesfavoris.texteditor.TextEditorBookmarkMarkerAttributesProvider"
+            priority="100">
+      </markerAttributesProvider>
+      <propertiesProvider
+            class="mesfavoris.texteditor.TextEditorBookmarkPropertiesProvider"
+            priority="100">
+      </propertiesProvider>
+      <labelProvider
+            class="mesfavoris.texteditor.TextEditorBookmarkLabelProvider"
+            priority="10">
+      </labelProvider>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.chabanois.mesfavoris.bookmarksPreferencePage"
+            class="mesfavoris.texteditor.internal.preferences.PathPlaceholdersPreferencePage"
+            id="org.chabanois.mesfavoris.texteditor.placeholdersPage"
+            name="Placeholders">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.chabanois.mesfavoris.views.BookmarksView?after=additions">
+         <command
+               commandId="org.chabanois.mesfavoris.texteditor.commands.ViewPlaceholders"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="mesfavoris.texteditor.internal.handlers.ViewPlaceholdersHandler"
+            id="org.chabanois.mesfavoris.texteditor.commands.ViewPlaceholders"
+            name="View Placeholders...">
+      </command>
+   </extension>
+
+</plugin>

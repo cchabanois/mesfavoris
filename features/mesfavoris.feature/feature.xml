@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="mesfavoris.feature"
+      label="Feature"
+      version="1.0.0.qualifier">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.jdt.ui" version="3.9.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core" version="3.9.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.8.101" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.editors" version="3.8.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface.text" version="3.8.101" match="greaterOrEqual"/>
+      <import plugin="com.google.gson" version="2.3.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.ui.ide" version="3.10.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.4.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.core.expressions"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="com.google.guava" version="18.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.e4.core.services"/>
+      <import plugin="org.eclipse.osgi.services" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="mesfavoris" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.9.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.10.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jgit" version="3.4.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jgit.archive" version="3.4.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.egit.core" version="3.4.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.team.core" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface" version="3.10.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core" version="3.10.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.ui" version="3.10.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface.text" version="3.9.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.9.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.106.0" match="greaterOrEqual"/>
+      <import plugin="com.perforce.team.core" version="2013.1.723553" match="greaterOrEqual"/>
+      <import plugin="com.perforce.team.ui" version="2013.1.723553" match="greaterOrEqual"/>
+      <import plugin="org.jsoup" version="1.7.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.swt" version="3.103.1" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="com.google.guava"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gson"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="mesfavoris"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="mesfavoris.gdrive"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="mesfavoris.git"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="mesfavoris.java"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="mesfavoris.perforce"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="mesfavoris.texteditor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="mesfavoris.url"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

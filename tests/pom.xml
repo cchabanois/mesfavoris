@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>mesfavoris</groupId>
+	<artifactId>mesfavoris.test-bundles</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>mesfavoris</groupId>
+		<artifactId>mesfavoris.root</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<modules>
+		<module>mesfavoris.tests</module>
+		<module>mesfavoris.gdrive.tests</module>
+		<module>mesfavoris.texteditor.tests</module>
+		<module>mesfavoris.url.tests</module>
+	</modules>
+
+	<profiles>
+		<profile>
+			<id>macosx-jvm-flags</id>
+			<activation>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<ui.test.vmargs>-XstartOnFirstThread</ui.test.vmargs>
+			</properties>
+		</profile>
+	</profiles>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<useUIHarness>true</useUIHarness>
+					<argLine>${ui.test.vmargs}</argLine>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+
