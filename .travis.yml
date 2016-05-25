@@ -10,12 +10,19 @@ cache:
 
 env: DISPLAY=:99.0
 
-install: true
-
 addons:
   apt:
     packages:
     - metacity
+
+before_install:
+# maven version is 3.2.5 by default on travis. Polyglot projects need Maven 3.3.1
+ - wget https://archive.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.zip
+ - unzip -qq apache-maven-3.3.9-bin.zip
+ - export M2_HOME=$PWD/apache-maven-3.3.9
+ - export PATH=$M2_HOME/bin:$PATH
+
+install: true
 
 before_script:
  - sh -e /etc/init.d/xvfb start
