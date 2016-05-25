@@ -1,0 +1,2 @@
+# mesfavoris
+Bookmarks eclipse plugin
