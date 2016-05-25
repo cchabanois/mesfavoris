@@ -4,8 +4,7 @@ Bundle-Name: Mesfavoris
 Bundle-SymbolicName: mesfavoris;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .,
- libs/javimmutable-collections-1.8.jar,
- libs/scala-stm_2.11-0.7.jar
+ libs/javimmutable-collections-1.8.jar
 Bundle-Activator: org.chabanois.mesfavoris.BookmarksPlugin
 Export-Package: org.chabanois.mesfavoris,
  org.chabanois.mesfavoris.bookmarktype,
