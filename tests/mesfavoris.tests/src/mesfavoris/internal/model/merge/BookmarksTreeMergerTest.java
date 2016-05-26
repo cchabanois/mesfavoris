@@ -8,22 +8,22 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
-import org.chabanois.mesfavoris.internal.model.merge.BookmarksTreeMerger;
-import org.chabanois.mesfavoris.model.Bookmark;
-import org.chabanois.mesfavoris.model.BookmarkFolder;
-import org.chabanois.mesfavoris.model.BookmarkId;
-import org.chabanois.mesfavoris.model.BookmarksTree;
-import org.chabanois.mesfavoris.model.modification.BookmarkDeletedModification;
-import org.chabanois.mesfavoris.model.modification.BookmarkPropertiesModification;
-import org.chabanois.mesfavoris.model.modification.BookmarksAddedModification;
-import org.chabanois.mesfavoris.model.modification.BookmarksModification;
-import org.chabanois.mesfavoris.model.modification.BookmarksMovedModification;
-import org.chabanois.mesfavoris.model.modification.BookmarksTreeModifier;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
+import mesfavoris.internal.model.merge.BookmarksTreeMerger;
+import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarkFolder;
+import mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarksTree;
+import mesfavoris.model.modification.BookmarkDeletedModification;
+import mesfavoris.model.modification.BookmarkPropertiesModification;
+import mesfavoris.model.modification.BookmarksAddedModification;
+import mesfavoris.model.modification.BookmarksModification;
+import mesfavoris.model.modification.BookmarksMovedModification;
+import mesfavoris.model.modification.BookmarksTreeModifier;
 import mesfavoris.testutils.BookmarksTreeBuilder;
 import mesfavoris.testutils.IDGenerator;
 import mesfavoris.testutils.IncrementalIDGenerator;

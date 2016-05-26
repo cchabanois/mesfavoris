@@ -5,7 +5,6 @@ import static mesfavoris.java.JavaBookmarkProperties.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.chabanois.mesfavoris.model.Bookmark;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IField;
@@ -24,6 +23,7 @@ import org.eclipse.jdt.core.search.TypeDeclarationMatch;
 import org.eclipse.jface.text.BadLocationException;
 
 import mesfavoris.java.editor.JavaEditorUtils;
+import mesfavoris.model.Bookmark;
 
 public class JavaBookmarkLocationProvider {
 

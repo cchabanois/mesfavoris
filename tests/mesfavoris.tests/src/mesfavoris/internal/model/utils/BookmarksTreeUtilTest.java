@@ -8,16 +8,16 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.chabanois.mesfavoris.internal.model.utils.BookmarksTreeUtils;
-import org.chabanois.mesfavoris.model.Bookmark;
-import org.chabanois.mesfavoris.model.BookmarkFolder;
-import org.chabanois.mesfavoris.model.BookmarkId;
-import org.chabanois.mesfavoris.model.BookmarksTree;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
+import mesfavoris.internal.model.utils.BookmarksTreeUtils;
+import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarkFolder;
+import mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarksTree;
 import mesfavoris.testutils.BookmarksTreeBuilder;
 import mesfavoris.testutils.IncrementalIDGenerator;
 

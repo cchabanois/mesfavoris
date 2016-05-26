@@ -6,7 +6,7 @@
       <storage
             class="mesfavoris.gdrive.GDriveRemoteBookmarksStore"
             icon="icons/gdrive.png"
-            id="org.chabanois.mesfavoris.remoteStorage.gdrive"
+            id="mesfavoris.remoteStorage.gdrive"
             label="GDrive"
             overlayIcon="icons/gdrive_overlay.png">
       </storage>
@@ -15,9 +15,9 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
-            locationURI="popup:org.chabanois.mesfavoris.views.BookmarksView.gdrive?after=additions">
+            locationURI="popup:mesfavoris.views.BookmarksView.gdrive?after=additions">
          <command
-               commandId="org.chabanois.mesfavoris.gdrive.commands.ImportBookmarks"
+               commandId="mesfavoris.gdrive.commands.ImportBookmarks"
                icon="icons/gdrive.png"
                label="Import bookmarks"
                style="push">
@@ -28,7 +28,7 @@
          point="org.eclipse.ui.commands">
       <command
             description="Import bookmarks from a Gdrive file"
-            id="org.chabanois.mesfavoris.gdrive.commands.ImportBookmarks"
+            id="mesfavoris.gdrive.commands.ImportBookmarks"
             name="Import bookmarks">
       </command>
    </extension>
@@ -36,7 +36,7 @@
          point="org.eclipse.ui.handlers">
       <handler
             class="mesfavoris.gdrive.handlers.ImportBookmarksFromGdriveHandler"
-            commandId="org.chabanois.mesfavoris.gdrive.commands.ImportBookmarks">
+            commandId="mesfavoris.gdrive.commands.ImportBookmarks">
          <activeWhen>
             <with
                   variable="selection">
@@ -48,11 +48,11 @@
                      <iterate
                            operator="and">
                         <reference
-                              definitionId="org.chabanois.mesfavoris.definitions.bookmarkFolder">
+                              definitionId="mesfavoris.definitions.bookmarkFolder">
                         </reference>
                         <not>
                            <test
-                                 property="org.chabanois.mesfavoris.isUnderRemoteBookmarkFolder"
+                                 property="mesfavoris.isUnderRemoteBookmarkFolder"
                                  value="true">
                            </test>
                         </not>

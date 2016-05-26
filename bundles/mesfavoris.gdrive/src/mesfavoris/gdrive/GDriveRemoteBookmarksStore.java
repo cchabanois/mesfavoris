@@ -5,18 +5,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Set;
 
-import org.chabanois.mesfavoris.model.Bookmark;
-import org.chabanois.mesfavoris.model.BookmarkFolder;
-import org.chabanois.mesfavoris.model.BookmarkId;
-import org.chabanois.mesfavoris.model.BookmarksTree;
-import org.chabanois.mesfavoris.persistence.IBookmarksTreeDeserializer;
-import org.chabanois.mesfavoris.persistence.IBookmarksTreeSerializer;
-import org.chabanois.mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
-import org.chabanois.mesfavoris.persistence.json.BookmarksTreeJsonSerializer;
-import org.chabanois.mesfavoris.remote.AbstractRemoteBookmarksStore;
-import org.chabanois.mesfavoris.remote.ConflictException;
-import org.chabanois.mesfavoris.remote.IConnectionListener;
-import org.chabanois.mesfavoris.remote.RemoteBookmarksTree;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.e4.core.services.events.IEventBroker;
@@ -35,6 +23,18 @@ import mesfavoris.gdrive.operations.DownloadHeadRevisionOperation;
 import mesfavoris.gdrive.operations.TrashFileOperation;
 import mesfavoris.gdrive.operations.UpdateFileOperation;
 import mesfavoris.gdrive.operations.DownloadHeadRevisionOperation.Contents;
+import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarkFolder;
+import mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarksTree;
+import mesfavoris.persistence.IBookmarksTreeDeserializer;
+import mesfavoris.persistence.IBookmarksTreeSerializer;
+import mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
+import mesfavoris.persistence.json.BookmarksTreeJsonSerializer;
+import mesfavoris.remote.AbstractRemoteBookmarksStore;
+import mesfavoris.remote.ConflictException;
+import mesfavoris.remote.IConnectionListener;
+import mesfavoris.remote.RemoteBookmarksTree;
 
 public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 	private final GDriveConnectionManager gDriveConnectionManager;

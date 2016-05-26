@@ -7,13 +7,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.chabanois.mesfavoris.BookmarksException;
-import org.chabanois.mesfavoris.internal.operations.CopyBookmarkOperation;
-import org.chabanois.mesfavoris.internal.operations.PasteBookmarkOperation;
-import org.chabanois.mesfavoris.model.BookmarkDatabase;
-import org.chabanois.mesfavoris.model.BookmarkId;
-import org.chabanois.mesfavoris.model.BookmarksTree;
-import org.chabanois.mesfavoris.validation.IBookmarkModificationValidator;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -23,8 +16,15 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
+import mesfavoris.BookmarksException;
+import mesfavoris.internal.operations.CopyBookmarkOperation;
+import mesfavoris.internal.operations.PasteBookmarkOperation;
+import mesfavoris.model.BookmarkDatabase;
+import mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarksTree;
 import mesfavoris.testutils.BookmarksTreeBuilder;
 import mesfavoris.testutils.IncrementalIDGenerator;
+import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class PasteBookmarkOperationTest {
 	private BookmarkDatabase bookmarkDatabase;

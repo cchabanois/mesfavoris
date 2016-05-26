@@ -11,8 +11,6 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
 
-import org.chabanois.mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
-import org.chabanois.mesfavoris.model.Bookmark;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -20,6 +18,9 @@ import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+
+import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
+import mesfavoris.model.Bookmark;
 
 public class UrlBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {
 

@@ -5,14 +5,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.Map;
 
-import org.chabanois.mesfavoris.model.Bookmark;
-import org.chabanois.mesfavoris.model.BookmarkId;
 import org.eclipse.core.runtime.Path;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarkId;
 import mesfavoris.texteditor.TextEditorBookmarkProperties;
 import mesfavoris.texteditor.internal.placeholders.usage.CollapsableBookmarksProvider;
 import mesfavoris.texteditor.placeholders.PathPlaceholder;

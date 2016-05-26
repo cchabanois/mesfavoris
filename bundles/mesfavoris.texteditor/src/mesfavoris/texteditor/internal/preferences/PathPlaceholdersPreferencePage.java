@@ -2,10 +2,6 @@ package mesfavoris.texteditor.internal.preferences;
 
 import static mesfavoris.texteditor.Constants.PLACEHOLDER_HOME_NAME;
 
-import org.chabanois.mesfavoris.BookmarksPlugin;
-import org.chabanois.mesfavoris.model.BookmarkDatabase;
-import org.chabanois.mesfavoris.remote.RemoteBookmarksStoreManager;
-import org.chabanois.mesfavoris.validation.BookmarkModificationValidator;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
@@ -26,10 +22,14 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+import mesfavoris.BookmarksPlugin;
+import mesfavoris.model.BookmarkDatabase;
+import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.texteditor.Activator;
 import mesfavoris.texteditor.internal.placeholders.usage.PathPlaceholderUsageDialog;
 import mesfavoris.texteditor.placeholders.PathPlaceholder;
 import mesfavoris.texteditor.placeholders.PathPlaceholdersStore;
+import mesfavoris.validation.BookmarkModificationValidator;
 
 public class PathPlaceholdersPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 	private TableViewer placeholdersTableViewer;

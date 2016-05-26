@@ -3,8 +3,6 @@ package mesfavoris.texteditor;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FILE_PATH;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_NUMBER;
 
-import org.chabanois.mesfavoris.bookmarktype.IGotoBookmark;
-import org.chabanois.mesfavoris.model.Bookmark;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -18,6 +16,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import mesfavoris.bookmarktype.IGotoBookmark;
+import mesfavoris.model.Bookmark;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 
 public class GotoExternalFileBookmark implements IGotoBookmark {

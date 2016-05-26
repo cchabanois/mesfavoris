@@ -1,6 +1,6 @@
 package mesfavoris.texteditor;
 
-import org.chabanois.mesfavoris.model.Bookmark;
+import mesfavoris.model.Bookmark;
 
 public class TextEditorBookmarkProperties {
 	public static final String PROP_FILE_PATH = "filePath";

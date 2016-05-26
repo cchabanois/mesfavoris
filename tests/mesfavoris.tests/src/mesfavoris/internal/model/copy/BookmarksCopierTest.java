@@ -4,16 +4,16 @@ import static mesfavoris.testutils.BookmarksTreeTestUtil.getBookmark;
 import static mesfavoris.testutils.BookmarksTreeTestUtil.getBookmarkFolder;
 import static org.junit.Assert.assertEquals;
 
-import org.chabanois.mesfavoris.internal.model.copy.BookmarksCopier;
-import org.chabanois.mesfavoris.model.BookmarkFolder;
-import org.chabanois.mesfavoris.model.BookmarkId;
-import org.chabanois.mesfavoris.model.BookmarksTree;
-import org.chabanois.mesfavoris.model.modification.BookmarksTreeModifier;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
+import mesfavoris.internal.model.copy.BookmarksCopier;
+import mesfavoris.model.BookmarkFolder;
+import mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarksTree;
+import mesfavoris.model.modification.BookmarksTreeModifier;
 import mesfavoris.testutils.BookmarksTreeBuilder;
 import mesfavoris.testutils.IncrementalIDGenerator;
 

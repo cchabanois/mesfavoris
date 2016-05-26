@@ -3,10 +3,6 @@ package mesfavoris.gdrive.handlers;
 import java.io.IOException;
 import java.util.List;
 
-import org.chabanois.mesfavoris.BookmarksException;
-import org.chabanois.mesfavoris.BookmarksPlugin;
-import org.chabanois.mesfavoris.model.BookmarkFolder;
-import org.chabanois.mesfavoris.service.IBookmarksService;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -22,11 +18,15 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 
+import mesfavoris.BookmarksException;
+import mesfavoris.BookmarksPlugin;
 import mesfavoris.gdrive.Activator;
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
 import mesfavoris.gdrive.mappings.BookmarkMappingsStore;
 import mesfavoris.gdrive.operations.GetBookmarkFilesOperation;
 import mesfavoris.gdrive.operations.ImportBookmarkFileOperation;
+import mesfavoris.model.BookmarkFolder;
+import mesfavoris.service.IBookmarksService;
 
 public class ImportBookmarksFromGdriveHandler extends AbstractHandler {
 	private final GDriveConnectionManager gDriveConnectionManager;

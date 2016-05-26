@@ -2,8 +2,6 @@ package mesfavoris.texteditor;
 
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FILE_PATH;
 
-import org.chabanois.mesfavoris.bookmarktype.AbstractBookmarkLabelProvider;
-import org.chabanois.mesfavoris.model.Bookmark;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
@@ -13,6 +11,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.PlatformUI;
 
+import mesfavoris.bookmarktype.AbstractBookmarkLabelProvider;
+import mesfavoris.model.Bookmark;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 
 public class TextEditorBookmarkLabelProvider extends AbstractBookmarkLabelProvider {

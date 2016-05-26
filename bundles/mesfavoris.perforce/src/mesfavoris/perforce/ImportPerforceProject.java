@@ -5,13 +5,14 @@ import static mesfavoris.perforce.PerforceProjectProperties.PROP_PORT;
 
 import java.text.MessageFormat;
 
-import org.chabanois.mesfavoris.BookmarksException;
-import org.chabanois.mesfavoris.bookmarktype.AbstractImportTeamProject;
-import org.chabanois.mesfavoris.model.Bookmark;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.core.TeamException;
 
 import com.perforce.team.ui.PerforceProjectSetSerializer;
+
+import mesfavoris.BookmarksException;
+import mesfavoris.bookmarktype.AbstractImportTeamProject;
+import mesfavoris.model.Bookmark;
 
 public class ImportPerforceProject extends AbstractImportTeamProject {
 

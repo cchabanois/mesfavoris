@@ -27,9 +27,9 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.chabanois.mesfavoris.bookmarksPreferencePage"
+            category="mesfavoris.bookmarksPreferencePage"
             class="mesfavoris.texteditor.internal.preferences.PathPlaceholdersPreferencePage"
-            id="org.chabanois.mesfavoris.texteditor.placeholdersPage"
+            id="mesfavoris.texteditor.placeholdersPage"
             name="Placeholders">
       </page>
    </extension>
@@ -37,9 +37,9 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
-            locationURI="menu:org.chabanois.mesfavoris.views.BookmarksView?after=additions">
+            locationURI="menu:mesfavoris.views.BookmarksView?after=additions">
          <command
-               commandId="org.chabanois.mesfavoris.texteditor.commands.ViewPlaceholders"
+               commandId="mesfavoris.texteditor.commands.ViewPlaceholders"
                style="push">
          </command>
       </menuContribution>
@@ -48,7 +48,7 @@
          point="org.eclipse.ui.commands">
       <command
             defaultHandler="mesfavoris.texteditor.internal.handlers.ViewPlaceholdersHandler"
-            id="org.chabanois.mesfavoris.texteditor.commands.ViewPlaceholders"
+            id="mesfavoris.texteditor.commands.ViewPlaceholders"
             name="View Placeholders...">
       </command>
    </extension>

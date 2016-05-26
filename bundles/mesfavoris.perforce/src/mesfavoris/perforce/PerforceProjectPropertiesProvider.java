@@ -5,7 +5,6 @@ import static mesfavoris.perforce.PerforceProjectProperties.PROP_PORT;
 
 import java.util.Map;
 
-import org.chabanois.mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 
@@ -13,6 +12,8 @@ import com.perforce.team.core.p4java.IP4Connection;
 import com.perforce.team.core.p4java.IP4Folder;
 import com.perforce.team.core.p4java.IP4Resource;
 import com.perforce.team.ui.P4ConnectionManager;
+
+import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
 
 public class PerforceProjectPropertiesProvider extends AbstractBookmarkPropertiesProvider {
 

@@ -16,8 +16,6 @@ import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_TYPE;
 
 import java.util.Map;
 
-import org.chabanois.mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
-import org.chabanois.mesfavoris.model.Bookmark;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMember;
@@ -25,7 +23,9 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 
+import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
 import mesfavoris.java.editor.JavaEditorUtils;
+import mesfavoris.model.Bookmark;
 
 public class JavaTypeMemberBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {
 

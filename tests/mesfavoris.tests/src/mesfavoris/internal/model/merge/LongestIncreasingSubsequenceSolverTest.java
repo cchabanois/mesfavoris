@@ -4,8 +4,10 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import org.chabanois.mesfavoris.internal.model.merge.LongestIncreasingSubsequenceSolver;
 import org.junit.Test;
+
+import mesfavoris.internal.model.merge.LongestIncreasingSubsequenceSolver;
+
 import static org.junit.Assert.*;
 
 public class LongestIncreasingSubsequenceSolverTest {

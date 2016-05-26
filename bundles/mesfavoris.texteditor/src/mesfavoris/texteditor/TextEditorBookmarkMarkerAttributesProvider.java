@@ -3,11 +3,11 @@ package mesfavoris.texteditor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.chabanois.mesfavoris.bookmarktype.BookmarkMarkerDescriptor;
-import org.chabanois.mesfavoris.bookmarktype.IBookmarkMarkerAttributesProvider;
-import org.chabanois.mesfavoris.model.Bookmark;
 import org.eclipse.core.resources.IMarker;
 
+import mesfavoris.bookmarktype.BookmarkMarkerDescriptor;
+import mesfavoris.bookmarktype.IBookmarkMarkerAttributesProvider;
+import mesfavoris.model.Bookmark;
 import mesfavoris.texteditor.TextEditorBookmarkLocationProvider.TextEditorBookmarkLocation;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 

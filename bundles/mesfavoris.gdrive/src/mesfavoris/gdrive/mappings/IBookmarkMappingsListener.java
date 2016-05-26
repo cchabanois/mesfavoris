@@ -1,6 +1,6 @@
 package mesfavoris.gdrive.mappings;
 
-import org.chabanois.mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarkId;
 
 public interface IBookmarkMappingsListener {
 

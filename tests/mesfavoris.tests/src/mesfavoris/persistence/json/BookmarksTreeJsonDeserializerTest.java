@@ -6,15 +6,15 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import org.chabanois.mesfavoris.model.BookmarkId;
-import org.chabanois.mesfavoris.model.BookmarksTree;
-import org.chabanois.mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
-import org.chabanois.mesfavoris.persistence.json.BookmarksTreeJsonSerializer;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarksTree;
+import mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
+import mesfavoris.persistence.json.BookmarksTreeJsonSerializer;
 import mesfavoris.testutils.BookmarksTreeBuilder;
 import mesfavoris.testutils.IncrementalIDGenerator;
 

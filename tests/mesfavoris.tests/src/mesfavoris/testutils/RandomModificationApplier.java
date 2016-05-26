@@ -6,13 +6,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import org.chabanois.mesfavoris.model.Bookmark;
-import org.chabanois.mesfavoris.model.BookmarkFolder;
-import org.chabanois.mesfavoris.model.BookmarkId;
-import org.chabanois.mesfavoris.model.BookmarksTree;
-import org.chabanois.mesfavoris.model.modification.BookmarksTreeModifier;
-
 import com.google.common.collect.Lists;
+
+import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarkFolder;
+import mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarksTree;
+import mesfavoris.model.modification.BookmarksTreeModifier;
 
 public class RandomModificationApplier {
 	private final Random random = new Random();

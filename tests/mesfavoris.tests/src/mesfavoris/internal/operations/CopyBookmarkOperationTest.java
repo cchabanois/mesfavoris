@@ -4,10 +4,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 
-import org.chabanois.mesfavoris.internal.operations.CopyBookmarkOperation;
-import org.chabanois.mesfavoris.model.BookmarkId;
-import org.chabanois.mesfavoris.model.BookmarksTree;
-import org.chabanois.mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -20,6 +16,10 @@ import static org.junit.Assert.*;
 
 import com.google.common.collect.Lists;
 
+import mesfavoris.internal.operations.CopyBookmarkOperation;
+import mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarksTree;
+import mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
 import mesfavoris.testutils.BookmarksTreeBuilder;
 import mesfavoris.testutils.IncrementalIDGenerator;
 

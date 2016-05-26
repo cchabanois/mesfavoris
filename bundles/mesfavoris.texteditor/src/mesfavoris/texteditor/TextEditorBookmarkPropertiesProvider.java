@@ -10,7 +10,6 @@ import java.io.File;
 import java.net.URI;
 import java.util.Map;
 
-import org.chabanois.mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
@@ -23,6 +22,7 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 
 public class TextEditorBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {

@@ -2,13 +2,13 @@ package mesfavoris.testutils;
 
 import java.util.Map;
 
-import org.chabanois.mesfavoris.model.Bookmark;
-import org.chabanois.mesfavoris.model.BookmarkFolder;
-import org.chabanois.mesfavoris.model.BookmarkId;
-import org.chabanois.mesfavoris.model.BookmarksTree;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarkFolder;
+import mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarksTree;
 
 public class BookmarksTreeBuilder {
 	private final int levels;

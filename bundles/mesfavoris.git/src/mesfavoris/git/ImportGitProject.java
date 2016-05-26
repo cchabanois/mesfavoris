@@ -4,12 +4,13 @@ import static mesfavoris.git.GitProjectProperties.PROP_BRANCH;
 import static mesfavoris.git.GitProjectProperties.PROP_PROJECT_PATH;
 import static mesfavoris.git.GitProjectProperties.PROP_URL;
 
-import org.chabanois.mesfavoris.BookmarksException;
-import org.chabanois.mesfavoris.bookmarktype.AbstractImportTeamProject;
-import org.chabanois.mesfavoris.model.Bookmark;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.egit.core.GitProjectSetCapability;
 import org.eclipse.team.core.TeamException;
+
+import mesfavoris.BookmarksException;
+import mesfavoris.bookmarktype.AbstractImportTeamProject;
+import mesfavoris.model.Bookmark;
 
 public class ImportGitProject extends AbstractImportTeamProject {
 

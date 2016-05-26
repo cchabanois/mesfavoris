@@ -8,16 +8,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.chabanois.mesfavoris.model.BookmarkId;
-import org.chabanois.mesfavoris.model.BookmarksTree;
-import org.chabanois.mesfavoris.remote.AbstractRemoteBookmarksStore;
-import org.chabanois.mesfavoris.remote.ConflictException;
-import org.chabanois.mesfavoris.remote.IRemoteBookmarksStoreDescriptor;
-import org.chabanois.mesfavoris.remote.RemoteBookmarksTree;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.PlatformUI;
+
+import mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarksTree;
+import mesfavoris.remote.AbstractRemoteBookmarksStore;
+import mesfavoris.remote.ConflictException;
+import mesfavoris.remote.IRemoteBookmarksStoreDescriptor;
+import mesfavoris.remote.RemoteBookmarksTree;
 
 public class InMemoryRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 	private AtomicReference<State> state = new AtomicReference<>(State.disconnected);

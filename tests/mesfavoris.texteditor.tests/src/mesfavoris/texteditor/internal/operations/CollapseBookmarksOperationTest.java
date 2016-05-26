@@ -8,13 +8,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
-import org.chabanois.mesfavoris.BookmarksException;
-import org.chabanois.mesfavoris.model.Bookmark;
-import org.chabanois.mesfavoris.model.BookmarkDatabase;
-import org.chabanois.mesfavoris.model.BookmarkFolder;
-import org.chabanois.mesfavoris.model.BookmarkId;
-import org.chabanois.mesfavoris.model.BookmarksTree;
-import org.chabanois.mesfavoris.validation.IBookmarkModificationValidator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.junit.Before;
@@ -23,9 +16,16 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import mesfavoris.BookmarksException;
+import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarkDatabase;
+import mesfavoris.model.BookmarkFolder;
+import mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarksTree;
 import mesfavoris.texteditor.internal.operations.CollapseBookmarksOperation;
 import mesfavoris.texteditor.placeholders.PathPlaceholder;
 import mesfavoris.texteditor.placeholders.PathPlaceholdersMap;
+import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class CollapseBookmarksOperationTest {
 	private final PathPlaceholdersMap pathPlaceholders = new PathPlaceholdersMap();

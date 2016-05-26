@@ -5,9 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Provider;
 
-import org.chabanois.mesfavoris.model.Bookmark;
-import org.chabanois.mesfavoris.model.BookmarksTree;
-
+import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarksTree;
 import mesfavoris.texteditor.TextEditorBookmarkProperties;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 

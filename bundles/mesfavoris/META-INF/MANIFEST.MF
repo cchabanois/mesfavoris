@@ -5,19 +5,19 @@ Bundle-SymbolicName: mesfavoris;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .,
  libs/javimmutable-collections-1.8.jar
-Bundle-Activator: org.chabanois.mesfavoris.BookmarksPlugin
-Export-Package: org.chabanois.mesfavoris,
- org.chabanois.mesfavoris.bookmarktype,
- org.chabanois.mesfavoris.model,
- org.chabanois.mesfavoris.model.modification,
- org.chabanois.mesfavoris.persistence,
- org.chabanois.mesfavoris.persistence.json,
- org.chabanois.mesfavoris.remote,
- org.chabanois.mesfavoris.service,
- org.chabanois.mesfavoris.utils,
- org.chabanois.mesfavoris.validation,
- org.chabanois.mesfavoris.viewers,
- org.chabanois.mesfavoris.workspace
+Bundle-Activator: mesfavoris.BookmarksPlugin
+Export-Package: mesfavoris,
+ mesfavoris.bookmarktype,
+ mesfavoris.model,
+ mesfavoris.model.modification,
+ mesfavoris.persistence,
+ mesfavoris.persistence.json,
+ mesfavoris.remote,
+ mesfavoris.service,
+ mesfavoris.utils,
+ mesfavoris.validation,
+ mesfavoris.viewers,
+ mesfavoris.workspace
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jdt.ui;bundle-version="3.9.2",

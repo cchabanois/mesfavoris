@@ -5,13 +5,14 @@ import static mesfavoris.url.UrlBookmarkProperties.PROP_URL;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.chabanois.mesfavoris.bookmarktype.IGotoBookmark;
-import org.chabanois.mesfavoris.model.Bookmark;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
+
+import mesfavoris.bookmarktype.IGotoBookmark;
+import mesfavoris.model.Bookmark;
 
 public class GotoUrlBookmark implements IGotoBookmark {
 

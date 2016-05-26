@@ -14,8 +14,6 @@ import static mesfavoris.javascript.JavascriptBookmarkProperties.PROP_LINE_NUMBE
 
 import java.util.Map;
 
-import org.chabanois.mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
-import org.chabanois.mesfavoris.model.Bookmark;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -27,6 +25,9 @@ import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.ui.JavaScriptUI;
+
+import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
+import mesfavoris.model.Bookmark;
 
 public class JavascriptEditorBookmarkPropertiesProvider extends
 		AbstractBookmarkPropertiesProvider {

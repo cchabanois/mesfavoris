@@ -3,19 +3,19 @@ package mesfavoris.gdrive.operations;
 import java.io.IOException;
 import java.io.StringReader;
 
-import org.chabanois.mesfavoris.BookmarksException;
-import org.chabanois.mesfavoris.model.BookmarkId;
-import org.chabanois.mesfavoris.model.BookmarksTree;
-import org.chabanois.mesfavoris.persistence.IBookmarksTreeDeserializer;
-import org.chabanois.mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
-import org.chabanois.mesfavoris.service.IBookmarksService;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 
 import com.google.api.services.drive.Drive;
 
+import mesfavoris.BookmarksException;
 import mesfavoris.gdrive.mappings.BookmarkMappingsStore;
 import mesfavoris.gdrive.operations.DownloadHeadRevisionOperation.Contents;
+import mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarksTree;
+import mesfavoris.persistence.IBookmarksTreeDeserializer;
+import mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
+import mesfavoris.service.IBookmarksService;
 
 public class ImportBookmarkFileOperation extends AbstractGDriveOperation {
 	private final BookmarkMappingsStore bookmarkMappingsStore;

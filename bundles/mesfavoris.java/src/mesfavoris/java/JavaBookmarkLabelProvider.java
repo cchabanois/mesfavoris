@@ -9,14 +9,15 @@ import static mesfavoris.java.JavaBookmarkProperties.KIND_METHOD;
 import static mesfavoris.java.JavaBookmarkProperties.KIND_TYPE;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_KIND;
 
-import org.chabanois.mesfavoris.bookmarktype.AbstractBookmarkLabelProvider;
-import org.chabanois.mesfavoris.model.Bookmark;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.jdt.internal.ui.viewsupport.JavaElementImageProvider;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
+
+import mesfavoris.bookmarktype.AbstractBookmarkLabelProvider;
+import mesfavoris.model.Bookmark;
 
 public class JavaBookmarkLabelProvider extends AbstractBookmarkLabelProvider {
 

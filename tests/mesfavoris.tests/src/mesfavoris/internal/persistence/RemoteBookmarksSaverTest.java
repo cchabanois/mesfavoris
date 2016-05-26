@@ -7,13 +7,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.chabanois.mesfavoris.internal.persistence.RemoteBookmarksSaver;
-import org.chabanois.mesfavoris.model.Bookmark;
-import org.chabanois.mesfavoris.model.BookmarkFolder;
-import org.chabanois.mesfavoris.model.BookmarkId;
-import org.chabanois.mesfavoris.model.BookmarksTree;
-import org.chabanois.mesfavoris.model.modification.BookmarksTreeModifier;
-import org.chabanois.mesfavoris.remote.RemoteBookmarksStoreManager;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.junit.Before;
@@ -22,6 +15,12 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 
 import mesfavoris.internal.remote.InMemoryRemoteBookmarksStore;
+import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarkFolder;
+import mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarksTree;
+import mesfavoris.model.modification.BookmarksTreeModifier;
+import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.testutils.BookmarksTreeBuilder;
 import mesfavoris.testutils.IncrementalIDGenerator;
 import mesfavoris.testutils.RandomModificationApplier;

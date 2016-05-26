@@ -1,8 +1,8 @@
 package mesfavoris.testutils;
 
-import org.chabanois.mesfavoris.model.Bookmark;
-import org.chabanois.mesfavoris.model.BookmarkFolder;
-import org.chabanois.mesfavoris.model.BookmarksTree;
+import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarkFolder;
+import mesfavoris.model.BookmarksTree;
 
 public class BookmarksTreeTestUtil {
 

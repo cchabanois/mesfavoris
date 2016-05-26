@@ -8,17 +8,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.chabanois.mesfavoris.BookmarksException;
-import org.chabanois.mesfavoris.BookmarksPlugin;
-import org.chabanois.mesfavoris.model.Bookmark;
-import org.chabanois.mesfavoris.model.BookmarkDatabase;
-import org.chabanois.mesfavoris.model.BookmarkId;
-import org.chabanois.mesfavoris.remote.RemoteBookmarksStoreManager;
-import org.chabanois.mesfavoris.validation.IBookmarkModificationValidator;
-import org.chabanois.mesfavoris.viewers.BookmarksLabelProvider;
-import org.chabanois.mesfavoris.viewers.IBookmarkDecorationProvider;
-import org.chabanois.mesfavoris.viewers.UnderDisconnectedRemoteBookmarkFolderPredicate;
-import org.chabanois.mesfavoris.viewers.UnderRemoteBookmarkFolderDecorationProvider;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -39,12 +28,23 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 
+import mesfavoris.BookmarksException;
+import mesfavoris.BookmarksPlugin;
+import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarkDatabase;
+import mesfavoris.model.BookmarkId;
+import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.texteditor.StatusHelper;
 import mesfavoris.texteditor.TextEditorBookmarkProperties;
 import mesfavoris.texteditor.internal.operations.CollapseBookmarksOperation;
 import mesfavoris.texteditor.internal.operations.ExpandBookmarksOperation;
 import mesfavoris.texteditor.placeholders.IPathPlaceholders;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
+import mesfavoris.validation.IBookmarkModificationValidator;
+import mesfavoris.viewers.BookmarksLabelProvider;
+import mesfavoris.viewers.IBookmarkDecorationProvider;
+import mesfavoris.viewers.UnderDisconnectedRemoteBookmarkFolderPredicate;
+import mesfavoris.viewers.UnderRemoteBookmarkFolderDecorationProvider;
 
 public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 	private final BookmarkDatabase bookmarkDatabase;

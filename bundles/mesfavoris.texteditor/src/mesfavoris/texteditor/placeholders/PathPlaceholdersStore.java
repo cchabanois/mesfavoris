@@ -11,8 +11,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.chabanois.mesfavoris.BookmarksPlugin;
-import org.chabanois.mesfavoris.StatusHelper;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -21,6 +19,9 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+
+import mesfavoris.BookmarksPlugin;
+import mesfavoris.StatusHelper;
 
 public class PathPlaceholdersStore implements IPathPlaceholders {
 	private final Map<String, PathPlaceholder> mappings = new ConcurrentHashMap<>();

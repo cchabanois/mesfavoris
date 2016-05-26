@@ -1,7 +1,5 @@
 package mesfavoris.java;
 
-import org.chabanois.mesfavoris.bookmarktype.IGotoBookmark;
-import org.chabanois.mesfavoris.model.Bookmark;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavaUI;
@@ -11,8 +9,10 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.java.JavaBookmarkLocationProvider.JavaEditorBookmarkLocation;
 import mesfavoris.java.editor.JavaEditorUtils;
+import mesfavoris.model.Bookmark;
 
 public class GotoInsideJavaElementBookmark implements IGotoBookmark {
 	private final JavaBookmarkLocationProvider locationProvider;

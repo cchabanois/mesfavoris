@@ -1,8 +1,9 @@
 package mesfavoris.url;
 
-import org.chabanois.mesfavoris.utils.PluginStatusManager;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.statushandlers.StatusManager;
+
+import mesfavoris.utils.PluginStatusManager;
 
 /**
  * Helper that uses StatusManager to handle statuses.

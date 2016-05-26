@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
-import org.chabanois.mesfavoris.remote.IConnectionListener;
-import org.chabanois.mesfavoris.remote.IRemoteBookmarksStore.State;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.After;
 import org.junit.Before;
@@ -17,6 +15,8 @@ import org.junit.rules.TemporaryFolder;
 
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
 import mesfavoris.gdrive.test.HtmlUnitAuthorizationCodeInstalledApp;
+import mesfavoris.remote.IConnectionListener;
+import mesfavoris.remote.IRemoteBookmarksStore.State;
 
 import static org.mockito.Mockito.*;
 

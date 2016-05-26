@@ -1,7 +1,5 @@
 package mesfavoris.texteditor;
 
-import org.chabanois.mesfavoris.bookmarktype.IGotoBookmark;
-import org.chabanois.mesfavoris.model.Bookmark;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.ui.IEditorPart;
@@ -11,6 +9,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import mesfavoris.bookmarktype.IGotoBookmark;
+import mesfavoris.model.Bookmark;
 import mesfavoris.texteditor.TextEditorBookmarkLocationProvider.TextEditorBookmarkLocation;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 

@@ -8,14 +8,14 @@
          point="org.eclipse.ui.views">
       <category
             name="Mes Favoris"
-            id="org.chabanois.mesfavoris">
+            id="mesfavoris">
       </category>
       <view
             name="Mes Favoris"
             icon="icons/mesfavoris-16.png"
-            category="org.chabanois.mesfavoris"
-            class="org.chabanois.mesfavoris.internal.views.BookmarksView"
-            id="org.chabanois.mesfavoris.views.BookmarksView">
+            category="mesfavoris"
+            class="mesfavoris.internal.views.BookmarksView"
+            id="mesfavoris.views.BookmarksView">
       </view>
    </extension>
    <extension
@@ -26,18 +26,18 @@
                ratio="0.5"
                relative="org.eclipse.ui.views.ProblemView"
                relationship="right"
-               id="org.chabanois.mesfavoris.views.BookmarksView">
+               id="mesfavoris.views.BookmarksView">
          </view>
       </perspectiveExtension>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
       <viewerContribution
-            id="org.chabanois.mesfavoris.ruler.context.actions"
+            id="mesfavoris.ruler.context.actions"
             targetID="#TextRulerContext">
          <action
-               class="org.chabanois.mesfavoris.internal.actions.BookmarkRulerAction"
-               id="org.chabanois.mesfavoris.BookmarkRulerAction"
+               class="mesfavoris.internal.actions.BookmarkRulerAction"
+               id="mesfavoris.BookmarkRulerAction"
                label="Add favori"
                menubarPath="additions">
          </action>
@@ -46,30 +46,30 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="org.chabanois.mesfavoris.internal.handlers.AddTextEditorBookmarkHandler"
+            defaultHandler="mesfavoris.internal.handlers.AddTextEditorBookmarkHandler"
             description="Add a Favori"
-            id="org.chabanois.mesfavoris.command.addFavori"
+            id="mesfavoris.command.addFavori"
             name="Add Favori">
       </command>
       <command
-            id="org.chabanois.mesfavoris.commands.newFolder"
+            id="mesfavoris.commands.newFolder"
             name="New folder">
       </command>
       <command
-            defaultHandler="org.chabanois.mesfavoris.internal.handlers.SetAsDefaultBookmarkFolder"
-            id="org.chabanois.mesfavoris.commands.setAsDefaultBookmarkFolder"
+            defaultHandler="mesfavoris.internal.handlers.SetAsDefaultBookmarkFolder"
+            id="mesfavoris.commands.setAsDefaultBookmarkFolder"
             name="Set as default bookmark folder">
       </command>
       <command
-            defaultHandler="org.chabanois.mesfavoris.internal.handlers.RenameBookmarkHandler"
-            id="org.chabanois.mesfavoris.commands.renameBookmark"
+            defaultHandler="mesfavoris.internal.handlers.RenameBookmarkHandler"
+            id="mesfavoris.commands.renameBookmark"
             name="Rename bookmark">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
       <key
-            commandId="org.chabanois.mesfavoris.command.addFavori"
+            commandId="mesfavoris.command.addFavori"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+@">
@@ -78,7 +78,7 @@
    <extension
          point="org.eclipse.core.expressions.definitions">
       <definition
-            id="org.chabanois.mesfavoris.definitions.bookmarkFolder">
+            id="mesfavoris.definitions.bookmarkFolder">
          <with
                variable="selection">
             <count
@@ -86,7 +86,7 @@
             </count>
             <iterate>
                <instanceof
-                     value="org.chabanois.mesfavoris.model.BookmarkFolder">
+                     value="mesfavoris.model.BookmarkFolder">
                </instanceof>
             </iterate>
          </with>
@@ -96,14 +96,14 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
-            locationURI="popup:org.chabanois.mesfavoris.views.BookmarksView?after=additions">
+            locationURI="popup:mesfavoris.views.BookmarksView?after=additions">
          <menu
                label="New">
             <visibleWhen
                   checkEnabled="false">
                <or>
                   <reference
-                        definitionId="org.chabanois.mesfavoris.definitions.bookmarkFolder">
+                        definitionId="mesfavoris.definitions.bookmarkFolder">
                   </reference>
                   <with
                         variable="selection">
@@ -114,13 +114,13 @@
                </or>
             </visibleWhen>
             <command
-                  commandId="org.chabanois.mesfavoris.commands.newFolder"
+                  commandId="mesfavoris.commands.newFolder"
                   label="New folder"
                   style="push">
             </command>
          </menu>
          <command
-               commandId="org.chabanois.mesfavoris.commands.renameBookmark"
+               commandId="mesfavoris.commands.renameBookmark"
                label="Rename Bookmark"
                style="push">
             <visibleWhen
@@ -131,18 +131,18 @@
             </visibleWhen>
          </command>
          <command
-               commandId="org.chabanois.mesfavoris.commands.setAsDefaultBookmarkFolder"
+               commandId="mesfavoris.commands.setAsDefaultBookmarkFolder"
                label="Set As Default Bookmark Folder"
                style="push">
             <visibleWhen
                   checkEnabled="false">
                <reference
-                     definitionId="org.chabanois.mesfavoris.definitions.bookmarkFolder">
+                     definitionId="mesfavoris.definitions.bookmarkFolder">
                </reference>
             </visibleWhen>
          </command>
          <separator
-               name="org.chabanois.mesfavoris.separator.clipboard"
+               name="mesfavoris.separator.clipboard"
                visible="true">
          </separator>
          <command
@@ -166,42 +166,42 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="org.chabanois.mesfavoris.internal.handlers.DeleteBookmarkHandler"
+            class="mesfavoris.internal.handlers.DeleteBookmarkHandler"
             commandId="org.eclipse.ui.edit.delete">
          <activeWhen>
          <with
                variable="selection">
             <iterate>
                <instanceof
-                     value="org.chabanois.mesfavoris.model.Bookmark">
+                     value="mesfavoris.model.Bookmark">
                </instanceof>
             </iterate>
          </with>
           </activeWhen>
       </handler>
       <handler
-            class="org.chabanois.mesfavoris.internal.handlers.CopyBookmarkHandler"
+            class="mesfavoris.internal.handlers.CopyBookmarkHandler"
             commandId="org.eclipse.ui.edit.copy">
          <activeWhen>
             <with
                   variable="selection">
                <iterate>
                   <instanceof
-                        value="org.chabanois.mesfavoris.model.Bookmark">
+                        value="mesfavoris.model.Bookmark">
                   </instanceof>
                </iterate>
             </with>
          </activeWhen>
       </handler>
       <handler
-            class="org.chabanois.mesfavoris.internal.handlers.PasteBookmarkHandler"
+            class="mesfavoris.internal.handlers.PasteBookmarkHandler"
             commandId="org.eclipse.ui.edit.paste">
          <activeWhen>
             <with
                   variable="selection">
                <iterate>
                   <instanceof
-                        value="org.chabanois.mesfavoris.model.BookmarkFolder">
+                        value="mesfavoris.model.BookmarkFolder">
                   </instanceof>
                </iterate>
                <count
@@ -211,22 +211,22 @@
          </activeWhen>
       </handler>
       <handler
-            class="org.chabanois.mesfavoris.internal.handlers.CutBookmarkHandler"
+            class="mesfavoris.internal.handlers.CutBookmarkHandler"
             commandId="org.eclipse.ui.edit.cut">
          <activeWhen>
             <with
                   variable="selection">
                <iterate>
                   <instanceof
-                        value="org.chabanois.mesfavoris.model.Bookmark">
+                        value="mesfavoris.model.Bookmark">
                   </instanceof>
                </iterate>
             </with>
          </activeWhen>
       </handler>
       <handler
-            class="org.chabanois.mesfavoris.internal.handlers.NewBookmarkFolderHandler"
-            commandId="org.chabanois.mesfavoris.commands.newFolder">
+            class="mesfavoris.internal.handlers.NewBookmarkFolderHandler"
+            commandId="mesfavoris.commands.newFolder">
          <activeWhen>
             <with
                   variable="selection">
@@ -237,7 +237,7 @@
                      </count>
                      <iterate>
                         <test
-                              property="org.chabanois.mesfavoris.canBeModified"
+                              property="mesfavoris.canBeModified"
                               value="true">
                         </test>
                      </iterate>
@@ -253,25 +253,25 @@
    <extension
          point="mesfavoris.bookmarkType">
       <gotoBookmark
-            class="org.chabanois.mesfavoris.internal.markers.GotoBookmarkMarker"
+            class="mesfavoris.internal.markers.GotoBookmarkMarker"
             priority="0">
       </gotoBookmark>
    </extension>
    <extension
          point="org.eclipse.core.expressions.propertyTesters">
       <propertyTester
-            class="org.chabanois.mesfavoris.internal.propertytester.BookmarksPropertyTester"
-            id="org.chabanois.mesfavoris.propertyTesters.bookmark"
-            namespace="org.chabanois.mesfavoris"
+            class="mesfavoris.internal.propertytester.BookmarksPropertyTester"
+            id="mesfavoris.propertyTesters.bookmark"
+            namespace="mesfavoris"
             properties="canBeModified,isUnderRemoteBookmarkFolder"
-            type="org.chabanois.mesfavoris.model.Bookmark">
+            type="mesfavoris.model.Bookmark">
       </propertyTester>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="org.chabanois.mesfavoris.internal.preferences.BookmarksPreferencePage"
-            id="org.chabanois.mesfavoris.bookmarksPreferencePage"
+            class="mesfavoris.internal.preferences.BookmarksPreferencePage"
+            id="mesfavoris.bookmarksPreferencePage"
             name="Mes favoris">
       </page>
    </extension>

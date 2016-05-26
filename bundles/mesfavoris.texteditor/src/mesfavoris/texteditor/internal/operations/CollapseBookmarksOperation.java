@@ -4,16 +4,16 @@ import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FILE_PATH;
 
 import java.util.List;
 
-import org.chabanois.mesfavoris.BookmarksException;
-import org.chabanois.mesfavoris.model.Bookmark;
-import org.chabanois.mesfavoris.model.BookmarkDatabase;
-import org.chabanois.mesfavoris.model.BookmarkId;
-import org.chabanois.mesfavoris.model.modification.IBookmarksTreeModifier;
-import org.chabanois.mesfavoris.validation.IBookmarkModificationValidator;
 import org.eclipse.core.runtime.IPath;
 
+import mesfavoris.BookmarksException;
+import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarkDatabase;
+import mesfavoris.model.BookmarkId;
+import mesfavoris.model.modification.IBookmarksTreeModifier;
 import mesfavoris.texteditor.placeholders.IPathPlaceholders;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
+import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class CollapseBookmarksOperation {
 	private final PathPlaceholderResolver pathPlaceholderResolver;

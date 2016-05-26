@@ -4,12 +4,13 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.chabanois.mesfavoris.internal.model.merge.MinimumMovesSolver;
-import org.chabanois.mesfavoris.internal.model.merge.MinimumMovesSolver.Move;
 import org.junit.Test;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+
+import mesfavoris.internal.model.merge.MinimumMovesSolver;
+import mesfavoris.internal.model.merge.MinimumMovesSolver.Move;
 
 public class MinimumMovesSolverTest {
 

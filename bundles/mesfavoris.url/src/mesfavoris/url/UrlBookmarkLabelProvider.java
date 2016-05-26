@@ -6,14 +6,15 @@ import static mesfavoris.url.UrlBookmarkProperties.PROP_URL;
 import java.io.ByteArrayInputStream;
 import java.util.Base64;
 
-import org.chabanois.mesfavoris.bookmarktype.AbstractBookmarkLabelProvider;
-import org.chabanois.mesfavoris.model.Bookmark;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+
+import mesfavoris.bookmarktype.AbstractBookmarkLabelProvider;
+import mesfavoris.model.Bookmark;
 
 public class UrlBookmarkLabelProvider extends AbstractBookmarkLabelProvider {
 

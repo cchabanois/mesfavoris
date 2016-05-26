@@ -3,13 +3,14 @@ package mesfavoris.internal.model;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import org.chabanois.mesfavoris.internal.model.BookmarksMap;
-import org.chabanois.mesfavoris.model.Bookmark;
-import org.chabanois.mesfavoris.model.BookmarkId;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
+
+import mesfavoris.internal.model.BookmarksMap;
+import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarkId;
 
 public class BookmarksMapTest {
 	private BookmarksMap bookmarksMap;

@@ -2,10 +2,10 @@ package mesfavoris.gdrive;
 
 import java.io.File;
 
-import org.chabanois.mesfavoris.BookmarksPlugin;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import mesfavoris.BookmarksPlugin;
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
 import mesfavoris.gdrive.mappings.BookmarkMappingsStore;
 

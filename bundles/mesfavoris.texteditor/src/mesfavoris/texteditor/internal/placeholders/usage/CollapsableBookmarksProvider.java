@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.chabanois.mesfavoris.model.Bookmark;
 import org.eclipse.core.runtime.IPath;
 
+import mesfavoris.model.Bookmark;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 
 /**

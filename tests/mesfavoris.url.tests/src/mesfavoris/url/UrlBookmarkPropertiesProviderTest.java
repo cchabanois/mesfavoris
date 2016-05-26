@@ -10,11 +10,11 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.chabanois.mesfavoris.model.Bookmark;
 import org.junit.Test;
 
 import com.google.common.io.ByteStreams;
 
+import mesfavoris.model.Bookmark;
 import mesfavoris.url.UrlBookmarkProperties;
 import mesfavoris.url.UrlBookmarkPropertiesProvider;
 

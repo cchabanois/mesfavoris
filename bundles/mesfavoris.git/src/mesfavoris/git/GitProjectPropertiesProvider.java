@@ -5,7 +5,6 @@ import static mesfavoris.git.GitProjectProperties.*;
 import java.io.IOException;
 import java.util.Map;
 
-import org.chabanois.mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.egit.core.internal.CoreText;
@@ -13,6 +12,8 @@ import org.eclipse.egit.core.project.RepositoryMapping;
 import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.osgi.util.NLS;
+
+import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
 
 public class GitProjectPropertiesProvider extends AbstractBookmarkPropertiesProvider {
 

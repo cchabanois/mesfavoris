@@ -10,15 +10,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.chabanois.mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
-import org.chabanois.mesfavoris.internal.views.dnd.BookmarksViewerDropListener;
-import org.chabanois.mesfavoris.model.BookmarkDatabase;
-import org.chabanois.mesfavoris.model.BookmarkFolder;
-import org.chabanois.mesfavoris.model.BookmarkId;
-import org.chabanois.mesfavoris.model.BookmarksTree;
-import org.chabanois.mesfavoris.model.modification.BookmarksModification;
-import org.chabanois.mesfavoris.model.modification.BookmarksMovedModification;
-import org.chabanois.mesfavoris.validation.IBookmarkModificationValidator;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -31,9 +22,18 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
+import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
+import mesfavoris.internal.views.dnd.BookmarksViewerDropListener;
+import mesfavoris.model.BookmarkDatabase;
+import mesfavoris.model.BookmarkFolder;
+import mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarksTree;
+import mesfavoris.model.modification.BookmarksModification;
+import mesfavoris.model.modification.BookmarksMovedModification;
 import mesfavoris.testutils.BookmarksListener;
 import mesfavoris.testutils.BookmarksTreeBuilder;
 import mesfavoris.testutils.IncrementalIDGenerator;
+import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class BookmarksViewerDropListenerTest {
 	private BookmarkDatabase bookmarkDatabase;

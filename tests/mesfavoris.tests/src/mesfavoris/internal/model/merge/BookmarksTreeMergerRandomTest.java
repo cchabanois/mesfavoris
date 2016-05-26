@@ -5,12 +5,12 @@ import static org.junit.Assert.assertEquals;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.chabanois.mesfavoris.internal.model.merge.BookmarksTreeMerger;
-import org.chabanois.mesfavoris.model.BookmarksTree;
-import org.chabanois.mesfavoris.model.modification.BookmarksTreeModifier;
 import org.junit.Before;
 import org.junit.Test;
 
+import mesfavoris.internal.model.merge.BookmarksTreeMerger;
+import mesfavoris.model.BookmarksTree;
+import mesfavoris.model.modification.BookmarksTreeModifier;
 import mesfavoris.testutils.BookmarksTreeBuilder;
 import mesfavoris.testutils.IDGenerator;
 import mesfavoris.testutils.IncrementalIDGenerator;

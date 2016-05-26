@@ -3,10 +3,11 @@ package mesfavoris.internal.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.chabanois.mesfavoris.internal.model.BookmarksParentsMap;
-import org.chabanois.mesfavoris.model.BookmarkId;
 import org.junit.Before;
 import org.junit.Test;
+
+import mesfavoris.internal.model.BookmarksParentsMap;
+import mesfavoris.model.BookmarkId;
 
 public class BookmarksParentsMapTest {
 	private BookmarksParentsMap bookmarksParentsMap;

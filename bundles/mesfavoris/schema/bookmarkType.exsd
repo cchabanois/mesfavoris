@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.chabanois.mesfavoris" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="mesfavoris" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.chabanois.mesfavoris" id="bookmarkType" name="Defines a bookmark type"/>
+         <meta.schema plugin="mesfavoris" id="bookmarkType" name="Defines a bookmark type"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -59,7 +59,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.chabanois.mesfavoris.bookmarktype.IBookmarkPropertiesProvider"/>
+                  <meta.attribute kind="java" basedOn=":mesfavoris.bookmarktype.IBookmarkPropertiesProvider"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -81,7 +81,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.chabanois.mesfavoris.bookmarktype.IGotoBookmark"/>
+                  <meta.attribute kind="java" basedOn=":mesfavoris.bookmarktype.IGotoBookmark"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -103,7 +103,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.chabanois.mesfavoris.bookmarktype.IBookmarkMarkerAttributesProvider"/>
+                  <meta.attribute kind="java" basedOn=":mesfavoris.bookmarktype.IBookmarkMarkerAttributesProvider"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -125,7 +125,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.chabanois.mesfavoris.bookmarktype.IBookmarkLabelProvider"/>
+                  <meta.attribute kind="java" basedOn=":mesfavoris.bookmarktype.IBookmarkLabelProvider"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -147,7 +147,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.chabanois.mesfavoris.bookmarktype.IImportTeamProject"/>
+                  <meta.attribute kind="java" basedOn=":mesfavoris.bookmarktype.IImportTeamProject"/>
                </appinfo>
             </annotation>
          </attribute>

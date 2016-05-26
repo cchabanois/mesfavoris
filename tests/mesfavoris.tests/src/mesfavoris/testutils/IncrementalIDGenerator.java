@@ -2,7 +2,7 @@ package mesfavoris.testutils;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.chabanois.mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarkId;
 
 public class IncrementalIDGenerator implements IDGenerator {
 	private final AtomicInteger nextId = new AtomicInteger(0);

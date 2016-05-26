@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.chabanois.mesfavoris" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="mesfavoris" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.chabanois.mesfavoris" id="remoteStorage" name="Remote Bookmarks Storage"/>
+         <meta.schema plugin="mesfavoris" id="remoteStorage" name="Remote Bookmarks Storage"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -79,7 +79,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="org.chabanois.mesfavoris.remote.AbstractRemoteBookmarksStore:org.chabanois.mesfavoris.remote.IRemoteBookmarksStorage"/>
+                  <meta.attribute kind="java" basedOn="mesfavoris.remote.AbstractRemoteBookmarksStore:mesfavoris.remote.IRemoteBookmarksStorage"/>
                </appinfo>
             </annotation>
          </attribute>

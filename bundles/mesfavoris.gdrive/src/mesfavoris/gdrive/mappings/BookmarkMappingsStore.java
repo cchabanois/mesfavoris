@@ -11,10 +11,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import org.chabanois.mesfavoris.model.BookmarkId;
-import org.chabanois.mesfavoris.model.IBookmarksListener;
-import org.chabanois.mesfavoris.model.modification.BookmarkDeletedModification;
-import org.chabanois.mesfavoris.model.modification.BookmarksModification;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.IStatus;
@@ -28,6 +24,10 @@ import com.google.gson.stream.JsonWriter;
 
 import mesfavoris.gdrive.Activator;
 import mesfavoris.gdrive.StatusHelper;
+import mesfavoris.model.BookmarkId;
+import mesfavoris.model.IBookmarksListener;
+import mesfavoris.model.modification.BookmarkDeletedModification;
+import mesfavoris.model.modification.BookmarksModification;
 
 /**
  * Store mappings between bookmark folders and remote files that are storing

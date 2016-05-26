@@ -4,14 +4,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.chabanois.mesfavoris.internal.model.BookmarksChildrenMap;
-import org.chabanois.mesfavoris.model.Bookmark;
-import org.chabanois.mesfavoris.model.BookmarkFolder;
-import org.chabanois.mesfavoris.model.BookmarkId;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
+
+import mesfavoris.internal.model.BookmarksChildrenMap;
+import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarkFolder;
+import mesfavoris.model.BookmarkId;
 
 public class BookmarksChildrenMapTest {
 	private BookmarksChildrenMap bookmarksChildrenMap;
