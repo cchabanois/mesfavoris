@@ -23,13 +23,4 @@
 <repository location="https://raw.githubusercontent.com/cchabanois/mesfavoris/master/releng/repository"/>
 </location>
 </locations>
-<environment>
-<os>macosx</os>
-<ws>cocoa</ws>
-<arch>x86_64</arch>
-<nl>en_US</nl>
-</environment>
-<launcherArgs>
-<vmArgs>-Dosgi.requiredJavaVersion=1.7 -XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -XX:MaxPermSize=256m -Xms40m -Xmx512m -Xdock:icon=../Resources/Eclipse.icns -XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgs>
-</launcherArgs>
 </target>
