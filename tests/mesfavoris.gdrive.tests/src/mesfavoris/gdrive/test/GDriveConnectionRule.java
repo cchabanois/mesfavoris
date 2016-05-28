@@ -27,7 +27,7 @@ public class GDriveConnectionRule extends ExternalResource {
 		java.io.File dataStoreDir = temporaryFolder.newFolder();
 		String applicationFolderName = "gdriveConnectionManagerTest" + new Random().nextInt(1000);
 		gDriveConnectionManager = new GDriveConnectionManager(dataStoreDir,
-				new HtmlUnitAuthorizationCodeInstalledApp.Provider("mesfavoris.test", "7XYRAS1Upm"),
+				new HtmlUnitAuthorizationCodeInstalledApp.Provider("mesfavoris.test", "7XYRAS1Upm1"),
 				applicationFolderName);
 		gDriveConnectionManager.init();
 		if (connect) {
