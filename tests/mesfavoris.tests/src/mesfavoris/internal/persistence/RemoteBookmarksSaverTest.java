@@ -58,20 +58,6 @@ public class RemoteBookmarksSaverTest {
 	}
 
 	@Test
-	public void testCannotApplyRemovalOnRemoteBookmarkFolder() throws Exception {
-		// Given
-		BookmarksTreeModifier bookmarksTreeModifier = new BookmarksTreeModifier(originalBookmarksTree);
-		BookmarkId remoteBookmarkFolderId = getBookmarkFolder(bookmarksTreeModifier.getCurrentTree(), 0).getId();
-		bookmarksTreeModifier.deleteBookmark(remoteBookmarkFolderId, true);
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Operation invalid on root folder");
-
-		// When
-		saver.applyModificationsToRemoteBookmarksStores(bookmarksTreeModifier.getModifications(),
-				new NullProgressMonitor());
-	}
-
-	@Test
 	public void testApplyRandomModifications() throws Exception {
 		// Given
 		BookmarksTreeModifier bookmarksTreeModifier = new BookmarksTreeModifier(originalBookmarksTree);
