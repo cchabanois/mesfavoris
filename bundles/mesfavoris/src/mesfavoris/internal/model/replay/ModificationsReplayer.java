@@ -124,7 +124,7 @@ public class ModificationsReplayer {
 			}
 			bookmarksTreeModifier.deleteBookmark(modification.getBookmarkId(), modification.isRecursive());
 			return true;
-		} catch (IllegalStateException e) {
+		} catch (IllegalStateException|IllegalArgumentException e) {
 			return false;
 		}
 	}

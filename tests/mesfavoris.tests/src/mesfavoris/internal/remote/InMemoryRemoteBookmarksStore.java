@@ -2,11 +2,13 @@ package mesfavoris.internal.remote;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.e4.core.services.events.IEventBroker;
@@ -15,24 +17,27 @@ import org.eclipse.ui.PlatformUI;
 
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
+import mesfavoris.model.IBookmarksListener;
+import mesfavoris.model.modification.BookmarkDeletedModification;
+import mesfavoris.model.modification.BookmarksModification;
 import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.ConflictException;
 import mesfavoris.remote.IRemoteBookmarksStoreDescriptor;
 import mesfavoris.remote.RemoteBookmarksTree;
 
-public class InMemoryRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
+public class InMemoryRemoteBookmarksStore extends AbstractRemoteBookmarksStore implements IBookmarksListener {
 	private AtomicReference<State> state = new AtomicReference<>(State.disconnected);
 	private ConcurrentMap<BookmarkId, InMemoryRemoteBookmarksTree> inMemoryRemoteBookmarksTrees = new ConcurrentHashMap<>();
 
 	public InMemoryRemoteBookmarksStore() {
 		this((IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class));
-	}	
-	
+	}
+
 	public InMemoryRemoteBookmarksStore(IEventBroker eventBroker) {
 		super(eventBroker);
 		init(new InMemoryRemoteBookmarksStoreDescriptor());
-	}	
-	
+	}
+
 	@Override
 	public void connect(IProgressMonitor monitor) throws IOException {
 		state.set(State.connected);
@@ -99,6 +104,21 @@ public class InMemoryRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 		return new RemoteBookmarksTree(this, subTree, etag);
 	}
 
+	@Override
+	public void bookmarksModified(List<BookmarksModification> modifications) {
+		for (BookmarkId bookmarkFolderId : getDeletedMappedBookmarkFolders(modifications)) {
+			inMemoryRemoteBookmarksTrees.remove(bookmarkFolderId);
+		}
+	}
+
+	private List<BookmarkId> getDeletedMappedBookmarkFolders(List<BookmarksModification> events) {
+		return events.stream().filter(p -> p instanceof BookmarkDeletedModification)
+				.map(p -> (BookmarkDeletedModification) p)
+				.filter(p -> inMemoryRemoteBookmarksTrees.containsKey(p.getBookmarkId())).map(p -> p.getBookmarkId())
+				.collect(Collectors.toList());
+
+	}
+
 	private static class InMemoryRemoteBookmarksTree {
 		private final BookmarksTree bookmarksTree;
 		private final String etag;
@@ -131,7 +151,7 @@ public class InMemoryRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 		public String getLabel() {
 			return "In Memory";
 		}
-		
+
 	}
-	
+
 }

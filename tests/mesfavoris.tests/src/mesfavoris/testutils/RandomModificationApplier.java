@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Predicate;
 
 import com.google.common.collect.Lists;
 
@@ -17,11 +18,18 @@ import mesfavoris.model.modification.BookmarksTreeModifier;
 public class RandomModificationApplier {
 	private final Random random = new Random();
 	private final IDGenerator idGenerator;
-	
+	private final Predicate<Bookmark> bookmarkFilter;
+
 	public RandomModificationApplier(IDGenerator idGenerator) {
 		this.idGenerator = idGenerator;
+		bookmarkFilter = bookmark -> true;
 	}
-	
+
+	public RandomModificationApplier(IDGenerator idGenerator, Predicate<Bookmark> bookmarkFilter) {
+		this.idGenerator = idGenerator;
+		this.bookmarkFilter = bookmarkFilter;
+	}
+
 	public BookmarksTree applyRandomModification(BookmarksTree bookmarksTree, PrintWriter printWriter) {
 		BookmarksTreeModifier bookmarksTreeModifier = new BookmarksTreeModifier(bookmarksTree);
 		applyRandomModification(bookmarksTreeModifier, printWriter);
@@ -37,8 +45,8 @@ public class RandomModificationApplier {
 			} catch (IllegalArgumentException e) {
 			}
 		} while (true);
-	}	
-	
+	}
+
 	private IRandomModification getRandomModification() {
 		List<IRandomModification> possibleModifications = new ArrayList<>();
 		for (int i = 0; i < 4; i++) {
@@ -59,7 +67,9 @@ public class RandomModificationApplier {
 		List<BookmarkId> nonFolderBookmarks = Lists.newArrayList();
 		for (Bookmark bookmark : bookmarksTree) {
 			if (!(bookmark instanceof BookmarkFolder)) {
-				nonFolderBookmarks.add(bookmark.getId());
+				if (bookmarkFilter.test(bookmark)) {
+					nonFolderBookmarks.add(bookmark.getId());
+				}
 			}
 		}
 		int index = random.nextInt(nonFolderBookmarks.size());
@@ -72,7 +82,9 @@ public class RandomModificationApplier {
 			if (!canBeRootFolder && bookmarksTree.getRootFolder().equals(bookmark)) {
 				// root folder not accepted
 			} else {
-				allBookmarks.add(bookmark.getId());
+				if (bookmarkFilter.test(bookmark)) {
+					allBookmarks.add(bookmark.getId());
+				}
 			}
 		}
 		int index = random.nextInt(allBookmarks.size());
@@ -89,7 +101,9 @@ public class RandomModificationApplier {
 				} else if (!canBeEmpty && bookmarksTree.getChildren(bookmark.getId()).isEmpty()) {
 					// cannot be empty
 				} else {
-					folderBookmarks.add(bookmark.getId());
+					if (bookmarkFilter.test(bookmark)) {
+						folderBookmarks.add(bookmark.getId());
+					}
 				}
 			}
 		}
@@ -168,7 +182,7 @@ public class RandomModificationApplier {
 
 	private IRandomModification getRandomAddFolderBookmarkAfterModification() {
 		return (bookmarksTreeModifier, printWriter) -> {
-			BookmarksTree bookmarksTree = bookmarksTreeModifier.getCurrentTree();				
+			BookmarksTree bookmarksTree = bookmarksTreeModifier.getCurrentTree();
 			BookmarkFolder parent = randomFolderBookmark(bookmarksTree, true, true);
 			Bookmark existingBookmark = randomChild(bookmarksTree, parent.getId());
 			BookmarkId id = idGenerator.newId();
@@ -181,7 +195,7 @@ public class RandomModificationApplier {
 
 	private IRandomModification getRandomAddFolderBookmarkBeforeModification() {
 		return (bookmarksTreeModifier, printWriter) -> {
-			BookmarksTree bookmarksTree = bookmarksTreeModifier.getCurrentTree();			
+			BookmarksTree bookmarksTree = bookmarksTreeModifier.getCurrentTree();
 			BookmarkFolder parent = randomFolderBookmark(bookmarksTree, true, true);
 			Bookmark existingBookmark = randomChild(bookmarksTree, parent.getId());
 			BookmarkId id = idGenerator.newId();

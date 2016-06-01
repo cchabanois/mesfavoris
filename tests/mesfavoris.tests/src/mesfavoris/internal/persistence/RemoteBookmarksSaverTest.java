@@ -1,16 +1,20 @@
 package mesfavoris.internal.persistence;
 
+import static mesfavoris.testutils.BookmarksTreeTestUtil.getBookmarkFolder;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.function.Predicate;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.google.common.collect.Lists;
 
@@ -32,11 +36,14 @@ public class RemoteBookmarksSaverTest {
 	private BookmarksTree originalBookmarksTree;
 	private IncrementalIDGenerator incrementalIDGenerator = new IncrementalIDGenerator();
 
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
+
 	@Before
 	public void setUp() throws IOException {
 		IEventBroker eventBroker = mock(IEventBroker.class);
 		this.remoteBookmarksStore = new InMemoryRemoteBookmarksStore(eventBroker);
-		remoteBookmarksStoreManager = new RemoteBookmarksStoreManager(()->Lists.newArrayList(remoteBookmarksStore));
+		remoteBookmarksStoreManager = new RemoteBookmarksStoreManager(() -> Lists.newArrayList(remoteBookmarksStore));
 		saver = new RemoteBookmarksSaver(remoteBookmarksStoreManager);
 		originalBookmarksTree = new BookmarksTreeBuilder(incrementalIDGenerator, 5, 3, 2).build();
 		addAllTopLevelBookmarkFoldersToRemoteBookmarksStore();
@@ -48,6 +55,20 @@ public class RemoteBookmarksSaverTest {
 				remoteBookmarksStore.add(originalBookmarksTree, bookmark.getId(), new NullProgressMonitor());
 			}
 		}
+	}
+
+	@Test
+	public void testCannotApplyRemovalOnRemoteBookmarkFolder() throws Exception {
+		// Given
+		BookmarksTreeModifier bookmarksTreeModifier = new BookmarksTreeModifier(originalBookmarksTree);
+		BookmarkId remoteBookmarkFolderId = getBookmarkFolder(bookmarksTreeModifier.getCurrentTree(), 0).getId();
+		bookmarksTreeModifier.deleteBookmark(remoteBookmarkFolderId, true);
+		thrown.expect(IllegalArgumentException.class);
+		thrown.expectMessage("Operation invalid on root folder");
+
+		// When
+		saver.applyModificationsToRemoteBookmarksStores(bookmarksTreeModifier.getModifications(),
+				new NullProgressMonitor());
 	}
 
 	@Test
@@ -78,7 +99,11 @@ public class RemoteBookmarksSaverTest {
 	}
 
 	private void randomModification(BookmarksTreeModifier bookmarksTreeModifier) {
-		RandomModificationApplier randomModificationApplier = new RandomModificationApplier(incrementalIDGenerator);
+		Predicate<Bookmark> onlyUnderRemoteBookmarkFolder = bookmark -> remoteBookmarksStoreManager.getRemoteBookmarkFolder(bookmark.getId()) == null
+				&& remoteBookmarksStoreManager.getRemoteBookmarkFolderContaining(
+						bookmarksTreeModifier.getCurrentTree(), bookmark.getId()) != null;
+		RandomModificationApplier randomModificationApplier = new RandomModificationApplier(incrementalIDGenerator,
+				onlyUnderRemoteBookmarkFolder);
 		randomModificationApplier.applyRandomModification(bookmarksTreeModifier, new PrintWriter(new StringWriter()));
 
 	}
