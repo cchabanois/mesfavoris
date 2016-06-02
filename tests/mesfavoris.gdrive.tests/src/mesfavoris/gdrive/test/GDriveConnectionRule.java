@@ -9,6 +9,7 @@ import org.junit.rules.TemporaryFolder;
 
 import com.google.api.services.drive.Drive;
 
+import mesfavoris.gdrive.Constants;
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
 
 public class GDriveConnectionRule extends ExternalResource {
@@ -27,7 +28,7 @@ public class GDriveConnectionRule extends ExternalResource {
 		java.io.File dataStoreDir = temporaryFolder.newFolder();
 		String applicationFolderName = "gdriveConnectionManagerTest" + new Random().nextInt(1000);
 		gDriveConnectionManager = new GDriveConnectionManager(dataStoreDir,
-				new HtmlUnitAuthorizationCodeInstalledApp.Provider("mesfavoris.test", "7XYRAS1Upm1"),
+				new HtmlUnitAuthorizationCodeInstalledApp.Provider(Constants.TEST_USERNAME, Constants.TEST_PASSWORD),
 				applicationFolderName);
 		gDriveConnectionManager.init();
 		if (connect) {

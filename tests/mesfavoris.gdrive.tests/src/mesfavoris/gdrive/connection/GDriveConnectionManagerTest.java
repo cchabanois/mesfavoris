@@ -13,6 +13,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import mesfavoris.gdrive.Constants;
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
 import mesfavoris.gdrive.test.HtmlUnitAuthorizationCodeInstalledApp;
 import mesfavoris.remote.IConnectionListener;
@@ -33,7 +34,7 @@ public class GDriveConnectionManagerTest {
 		File dataStoreDir = temporaryFolder.newFolder();
 		String applicationFolderName = "gdriveConnectionManagerTest" + new Random().nextInt(1000);
 		gDriveConnectionManager = new GDriveConnectionManager(dataStoreDir,
-				new HtmlUnitAuthorizationCodeInstalledApp.Provider("mesfavoris.test", "7XYRAS1Upm"),
+				new HtmlUnitAuthorizationCodeInstalledApp.Provider(Constants.TEST_USERNAME, Constants.TEST_PASSWORD),
 				applicationFolderName);
 		gDriveConnectionManager.init();
 		gDriveConnectionManager.addConnectionListener(connectionListener);
