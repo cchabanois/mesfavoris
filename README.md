@@ -2,3 +2,6 @@
 
 # mesfavoris
 Bookmarks eclipse plugin
+
+## License
+Licensed under the [EPL License](http://www.eclipse.org/legal/epl-v10.html).
