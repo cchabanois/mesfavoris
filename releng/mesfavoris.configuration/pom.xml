@@ -21,10 +21,6 @@
 			<url>${eclipse-repo.url}</url>
 			<layout>p2</layout>
 		</repository>
-		<!-- <repository> <id>swtbot</id> <url>${swtbot-repo.url}</url> <layout>p2</layout> 
-			</repository> <repository> <id>perforce</id> <url>${perforce-repo.url}</url> 
-			<layout>p2</layout> </repository> <repository> <id>third-party</id> <url>${project.baseUri}../../releng/repository</url> 
-			<layout>p2</layout> </repository> -->
 	</repositories>
 
 	<build>
@@ -76,6 +72,24 @@
 					</environments>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<executions>
+					<execution>
+					    <!-- I needed to add phase and goal otherwise unqualifiedVersion was not available in mesfavoris.bintray module -->
+						<phase>validate</phase>
+						<goals>
+							<goal>build-qualifier</goal>
+						</goals>
+						<configuration>
+							<format>'v'yyyyMMdd'-'HHmm</format>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
+
 	</build>
 </project>

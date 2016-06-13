@@ -17,6 +17,7 @@
     <modules>
         <module>mesfavoris.target</module>
         <module>mesfavoris.update-site</module>
+        <module>mesfavoris.bintray</module>
     </modules>
 </project>
 

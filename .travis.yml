@@ -30,4 +30,4 @@ before_script:
 
 script:
  - export
- - mvn clean verify
+ - mvn clean verify -P release-mesfavoris

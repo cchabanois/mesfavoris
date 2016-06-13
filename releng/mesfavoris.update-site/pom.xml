@@ -2,16 +2,29 @@
 <project
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>mesfavoris</groupId>
-    <artifactId>mesfavoris.update-site</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <packaging>eclipse-repository</packaging>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>mesfavoris</groupId>
+	<artifactId>mesfavoris.update-site</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>eclipse-repository</packaging>
 
-    <parent>
-        <groupId>mesfavoris</groupId>
-        <artifactId>mesfavoris.releng</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-    </parent>
+	<parent>
+		<groupId>mesfavoris</groupId>
+		<artifactId>mesfavoris.releng</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<build>
+		<plugins>
+			<!-- make sure that zipped p2 repositories have the fully qualified version -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-repository-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<finalName>${project.artifactId}-${qualifiedVersion}</finalName>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
 
