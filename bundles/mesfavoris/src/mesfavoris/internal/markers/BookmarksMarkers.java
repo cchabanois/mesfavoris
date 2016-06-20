@@ -40,7 +40,7 @@ import mesfavoris.model.modification.BookmarksModification;
 
 public class BookmarksMarkers {
 	public static final String BOOKMARK_ID = "bookmarkId";
-	public static final String MARKER_TYPE = "org.eclipse.core.resources.bookmark";
+	public static final String MARKER_TYPE = "mesfavoris.bookmark";
 	private final BookmarkDatabase bookmarkDatabase;
 	private final BookmarksListener bookmarksListener = new BookmarksListener();
 	private final IBookmarkMarkerAttributesProvider bookmarkMarkerAttributesProvider;

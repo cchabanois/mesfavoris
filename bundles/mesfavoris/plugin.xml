@@ -12,7 +12,7 @@
       </category>
       <view
             name="Mes Favoris"
-            icon="icons/mesfavoris-16.png"
+            icon="icons/bookmarks-16.png"
             category="mesfavoris"
             class="mesfavoris.internal.views.BookmarksView"
             id="mesfavoris.views.BookmarksView">
@@ -274,6 +274,59 @@
             id="mesfavoris.bookmarksPreferencePage"
             name="Mes favoris">
       </page>
+   </extension>
+   <extension
+         id="bookmark"
+         name="Favori"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.marker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+      <attribute
+            name="message">
+      </attribute>
+      <attribute
+            name="location">
+      </attribute>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerType="mesfavoris.bookmark"
+            name="mesfavoris.texteditor.bookmark">
+      </type>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors.markerAnnotationSpecification">
+      <specification
+            annotationType="mesfavoris.texteditor.bookmark"
+            colorPreferenceKey="bookmarkIndicationColor"
+            colorPreferenceValue="34,164,99"
+            contributesToHeader="false"
+            highlightPreferenceKey="bookmarkIndicationHighlighting"
+            highlightPreferenceValue="false"
+            icon="icons/bookmark-16.png"
+            isGoToNextNavigationTarget="false"
+            isGoToNextNavigationTargetKey="isBookmarkGoToNextNavigationTarget"
+            isGoToPreviousNavigationTarget="false"
+            isGoToPreviousNavigationTargetKey="isBookmarkGoToPreviousNavigationTarget"
+            label="Favoris"
+            overviewRulerPreferenceKey="bookmarkIndicationInOverviewRuler"
+            overviewRulerPreferenceValue="true"
+            presentationLayer="1"
+            showInNextPrevDropdownToolbarAction="true"
+            showInNextPrevDropdownToolbarActionKey="showBookmarkInNextPrevDropdownToolbarAction"
+            symbolicIcon="bookmark"
+            textPreferenceKey="bookmarkIndication"
+            textPreferenceValue="false"
+            textStylePreferenceKey="bookmarkTextStyle"
+            textStylePreferenceValue="SQUIGGLES"
+            verticalRulerPreferenceKey="bookmarkIndicationInVerticalRuler"
+            verticalRulerPreferenceValue="true">
+      </specification>
    </extension>
 
 </plugin>
