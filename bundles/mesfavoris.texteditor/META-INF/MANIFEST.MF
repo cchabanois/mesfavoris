@@ -14,6 +14,7 @@ Require-Bundle: mesfavoris;bundle-version="1.0.0",
  org.eclipse.core.resources;bundle-version="3.9.1",
  com.google.gson;bundle-version="2.3.1",
  com.google.guava;bundle-version="18.0.0",
- org.eclipse.jface
+ org.eclipse.jface,
+ mesfavoris.commons;bundle-version="1.0.0"
 Bundle-Activator: mesfavoris.texteditor.Activator
 Bundle-ActivationPolicy: lazy

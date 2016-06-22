@@ -3,7 +3,7 @@ package mesfavoris.gdrive;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.statushandlers.StatusManager;
 
-import mesfavoris.utils.PluginStatusManager;
+import mesfavoris.commons.ui.statushandlers.PluginStatusManager;
 
 /**
  * Helper that uses StatusManager to handle statuses.
