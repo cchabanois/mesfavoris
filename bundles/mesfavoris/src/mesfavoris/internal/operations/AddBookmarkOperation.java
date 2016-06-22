@@ -25,11 +25,13 @@ public class AddBookmarkOperation {
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 	}
 
-	public void addBookmark(Object selected) throws BookmarksException {
+	public BookmarkId addBookmark(Object selected) throws BookmarksException {
 		Map<String, String> bookmarkProperties = new HashMap<String, String>();
 		bookmarkPropertiesProvider.addBookmarkProperties(bookmarkProperties, selected);
-		Bookmark bookmark = new Bookmark(new BookmarkId(), bookmarkProperties);
+		BookmarkId bookmarkId = new BookmarkId();
+		Bookmark bookmark = new Bookmark(bookmarkId, bookmarkProperties);
 		addBookmark(bookmark);
+		return bookmarkId;
 	}
 
 	public void addBookmark(final Bookmark bookmark) throws BookmarksException {
