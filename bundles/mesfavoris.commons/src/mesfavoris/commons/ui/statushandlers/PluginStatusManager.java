@@ -1,4 +1,4 @@
-package mesfavoris.utils;
+package mesfavoris.commons.ui.statushandlers;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -13,11 +13,10 @@ import org.eclipse.ui.statushandlers.StatusManager;
  * StatusManager for a given plugin. It uses {@link StatusManager} but add
  * methods to handle statuses only once
  * 
- * @author cedric
+ * @author cchabanois
  * 
  */
 public class PluginStatusManager {
-	private static int DEFAULT_TTL = 500;
 	private Set<StatusAtTime> statuses = new HashSet<StatusAtTime>();
 	private String pluginId;
 
@@ -181,8 +180,6 @@ public class PluginStatusManager {
 
 	/**
 	 * keep the status and style handled by the status manager at a given time
-	 * 
-	 * @author cedric
 	 * 
 	 */
 	private class StatusAtTime {

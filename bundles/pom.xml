@@ -21,6 +21,7 @@
 		<module>mesfavoris.perforce</module>
 		<module>mesfavoris.texteditor</module>
 		<module>mesfavoris.url</module>
+		<module>mesfavoris.commons</module>
 	</modules>
 </project>
 

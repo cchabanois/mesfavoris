@@ -3,15 +3,12 @@ package mesfavoris;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.statushandlers.StatusManager;
 
-import mesfavoris.utils.PluginStatusManager;
+import mesfavoris.commons.ui.statushandlers.PluginStatusManager;
 
 /**
  * Helper that uses StatusManager to handle statuses.
  * 
- * We will probably have to complete it with methods from
- * {@link org.eclipse.ui.internal.ide.StatusUtil}
- * 
- * @author cedric
+ * @author cchabanois
  * 
  */
 public class StatusHelper {

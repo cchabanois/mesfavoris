@@ -1,4 +1,4 @@
-package mesfavoris.utils;
+package mesfavoris.commons.core;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
