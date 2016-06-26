@@ -1,5 +1,6 @@
 package mesfavoris.internal.views;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.e4.core.services.events.IEventBroker;
@@ -18,9 +19,13 @@ import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ModifyEvent;
@@ -34,7 +39,12 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchCommandConstants;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
@@ -52,6 +62,7 @@ import mesfavoris.internal.actions.AddToRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.ConnectToRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.RemoveFromRemoteBookmarksStoreAction;
 import mesfavoris.internal.jobs.ImportTeamProjectFromBookmarkJob;
+import mesfavoris.internal.operations.GetLinkedBookmarksOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.remote.IRemoteBookmarksStore;
@@ -63,6 +74,7 @@ import mesfavoris.workspace.DefaultBookmarkFolderManager;
 public class BookmarksView extends ViewPart {
 	public static final String ID = "mesfavoris.views.BookmarksView";
 
+	private final BookmarkDatabase bookmarkDatabase;
 	private final IEventBroker eventBroker;
 	private Text searchText;
 	private BookmarksTreeViewer bookmarksTreeViewer;
@@ -73,6 +85,7 @@ public class BookmarksView extends ViewPart {
 	private ToolBarManager commentsToolBarManager;
 
 	public BookmarksView() {
+		this.bookmarkDatabase = BookmarksPlugin.getBookmarkDatabase();
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
 	}
 
@@ -91,6 +104,7 @@ public class BookmarksView extends ViewPart {
 		hookContextMenu();
 		contributeToActionBars();
 		getSite().setSelectionProvider(bookmarksTreeViewer);
+		getSite().getWorkbenchWindow().getPartService().addPartListener(partListener);
 	}
 
 	private void createCommentsSection(Composite parent) {
@@ -107,7 +121,7 @@ public class BookmarksView extends ViewPart {
 		IBookmarkModificationValidator bookmarkModificationValidator = new BookmarkModificationValidator(
 				BookmarksPlugin.getRemoteBookmarksStoreManager());
 		bookmarkCommentViewer = new BookmarkCommentViewer(commentsComposite,
-				SWT.MULTI | SWT.V_SCROLL | SWT.WRAP | toolkit.getBorderStyle(), BookmarksPlugin.getBookmarkDatabase(),
+				SWT.MULTI | SWT.V_SCROLL | SWT.WRAP | toolkit.getBorderStyle(), bookmarkDatabase,
 				bookmarkModificationValidator);
 		bookmarkCommentViewer.getControl().setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(bookmarkCommentViewer.getControl());
@@ -179,6 +193,7 @@ public class BookmarksView extends ViewPart {
 
 	@Override
 	public void dispose() {
+		getSite().getWorkbenchWindow().getPartService().removePartListener(partListener);
 		toolkit.dispose();
 		super.dispose();
 	}
@@ -188,7 +203,6 @@ public class BookmarksView extends ViewPart {
 		// parent.setLayout(gridLayout);
 		// searchText = new Text(parent, SWT.ICON_SEARCH);
 		// searchText.setLayoutData(new GridData(style));
-		BookmarkDatabase bookmarkDatabase = BookmarksPlugin.getBookmarkDatabase();
 		DefaultBookmarkFolderManager defaultBookmarkFolderManager = BookmarksPlugin.getDefaultBookmarkFolderManager();
 		RemoteBookmarksStoreManager remoteBookmarksStoreManager = BookmarksPlugin.getRemoteBookmarksStoreManager();
 		IBookmarkPropertiesProvider bookmarkPropertiesProvider = BookmarksPlugin.getBookmarkPropertiesProvider();
@@ -260,6 +274,7 @@ public class BookmarksView extends ViewPart {
 		ControlContribution controlContribution = createSearchTextControlContribution();
 		manager.add(controlContribution);
 		manager.add(refreshAction);
+		manager.add(toggleLinkAction);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 		addConnectToRemoteBookmarksStoreActions(manager);
@@ -325,6 +340,10 @@ public class BookmarksView extends ViewPart {
 		refreshAction.setToolTipText("Refresh bookmarks");
 		refreshAction.setImageDescriptor(
 				BookmarksPlugin.imageDescriptorFromPlugin(BookmarksPlugin.PLUGIN_ID, "icons/refresh.gif"));
+
+		toggleLinkAction = new ToggleLinkAction();
+		toggleLinkAction.setActionDefinitionId(IWorkbenchCommandConstants.NAVIGATE_TOGGLE_LINK_WITH_EDITOR);
+		toggleLinkAction.updateLinkImage(false);
 	}
 
 	public void setFocus() {
@@ -338,5 +357,148 @@ public class BookmarksView extends ViewPart {
 			}
 		});
 	}
+
+	private ToggleLinkAction toggleLinkAction;
+
+	private boolean linking = true;
+
+	private IWorkbenchPart lastSelectionProviderPart;
+
+	private void setLinkingEnabled(boolean enabled) {
+		linking = enabled;
+
+		if (linking && lastSelectionProviderPart != null) {
+			selectBookmarkFromLinkedPart(lastSelectionProviderPart);
+		}
+	}
+
+	/**
+	 * Start to listen for selection changes.
+	 */
+	private void startListeningForSelectionChanges() {
+		getSite().getPage().addPostSelectionListener(selectionListener);
+	}
+
+	/**
+	 * Stop to listen for selection changes.
+	 */
+	private void stopListeningForSelectionChanges() {
+		getSite().getPage().removePostSelectionListener(selectionListener);
+	}
+
+	private class ToggleLinkAction extends Action {
+		private static final String SYNCED_GIF = "synced.gif";
+		private static final String SYNC_BROKEN_GIF = "sync_broken.gif";
+
+		private String fIconName;
+
+		public ToggleLinkAction() {
+			super("Link with Selection", SWT.TOGGLE);
+			setToolTipText("Link with Selection");
+			setChecked(linking);
+		}
+
+		@Override
+		public void run() {
+			setLinkingEnabled(!linking);
+			updateLinkImage(false);
+		}
+
+		private void updateLinkImage(boolean isBroken) {
+			String iconName = isBroken ? SYNC_BROKEN_GIF : SYNCED_GIF;
+			if (!iconName.equals(fIconName)) {
+				ImageDescriptor id = BookmarksPlugin.getImageDescriptor("icons/dlcl16/" + iconName);
+				if (id != null)
+					this.setDisabledImageDescriptor(id);
+
+				ImageDescriptor descriptor = BookmarksPlugin.getImageDescriptor("icons/elcl16/" + iconName);
+				this.setHoverImageDescriptor(descriptor);
+				this.setImageDescriptor(descriptor);
+
+				setToolTipText(isBroken ? "Link with Selection (showing last valid input)" : "Link with Selection");
+				fIconName = iconName;
+			}
+		}
+
+	}
+
+	private ISelectionListener selectionListener = new ISelectionListener() {
+
+		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+			if (part.equals(this))
+				return;
+
+			lastSelectionProviderPart = part;
+
+			if (linking) {
+				selectBookmarkFromLinkedPart(part);
+			}
+		}
+	};
+
+	/**
+	 * Select the bookmark corresponding to the selection in given
+	 * {@link IWorkbenchPart}
+	 * 
+	 * @param part
+	 */
+	private void selectBookmarkFromLinkedPart(IWorkbenchPart part) {
+		ISelectionProvider provider = part.getSite().getSelectionProvider();
+		if (provider == null) {
+			toggleLinkAction.updateLinkImage(true);
+			return;
+		}
+
+		ISelection selection = provider.getSelection();
+		if (selection == null) {
+			toggleLinkAction.updateLinkImage(true);
+			return;
+		}
+		GetLinkedBookmarksOperation getLinkedBookmarksOperation = new GetLinkedBookmarksOperation(bookmarkDatabase);
+		List<Bookmark> bookmarks = getLinkedBookmarksOperation.getLinkedBookmarks(part, selection);
+		if (bookmarks.isEmpty()) {
+			toggleLinkAction.updateLinkImage(true);
+			return;
+		}
+		toggleLinkAction.updateLinkImage(false);
+		bookmarksTreeViewer.setSelection(new StructuredSelection(bookmarks.get(0)), true);
+	}
+
+	private IPartListener2 partListener = new IPartListener2() {
+		public void partVisible(IWorkbenchPartReference ref) {
+			if (ref.getId().equals(getSite().getId())) {
+				IWorkbenchPart activePart = ref.getPage().getActivePart();
+				if (activePart != null)
+					selectionListener.selectionChanged(activePart, ref.getPage().getSelection());
+				startListeningForSelectionChanges();
+			}
+		}
+
+		public void partHidden(IWorkbenchPartReference ref) {
+			if (ref.getId().equals(getSite().getId()))
+				stopListeningForSelectionChanges();
+		}
+
+		public void partInputChanged(IWorkbenchPartReference ref) {
+			if (!ref.getId().equals(getSite().getId())) {
+				selectBookmarkFromLinkedPart(ref.getPart(false));
+			}
+		}
+
+		public void partActivated(IWorkbenchPartReference ref) {
+		}
+
+		public void partBroughtToTop(IWorkbenchPartReference ref) {
+		}
+
+		public void partClosed(IWorkbenchPartReference ref) {
+		}
+
+		public void partDeactivated(IWorkbenchPartReference ref) {
+		}
+
+		public void partOpened(IWorkbenchPartReference ref) {
+		}
+	};
 
 }

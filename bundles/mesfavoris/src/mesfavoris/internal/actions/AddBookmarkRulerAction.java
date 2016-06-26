@@ -5,7 +5,7 @@ import org.eclipse.jface.text.source.IVerticalRulerInfo;
 import org.eclipse.ui.texteditor.AbstractRulerActionDelegate;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-public class BookmarkRulerAction extends AbstractRulerActionDelegate {
+public class AddBookmarkRulerAction extends AbstractRulerActionDelegate {
 
 	@Override
 	protected IAction createAction(ITextEditor editor,

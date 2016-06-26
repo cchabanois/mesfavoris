@@ -2,11 +2,6 @@ package mesfavoris.internal.views;
 
 import java.util.function.Predicate;
 
-import org.eclipse.core.commands.Command;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.NotEnabledException;
-import org.eclipse.core.commands.NotHandledException;
-import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
@@ -22,7 +17,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.osgi.service.event.EventHandler;
 
@@ -39,11 +33,11 @@ import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.validation.BookmarkModificationValidator;
 import mesfavoris.viewers.BookmarksLabelProvider;
+import mesfavoris.viewers.BookmarksLabelProvider.DefaultBookmarkCommentProvider;
 import mesfavoris.viewers.DefaultBookmarkFolderPredicate;
 import mesfavoris.viewers.IBookmarkDecorationProvider;
 import mesfavoris.viewers.RemoteBookmarkFolderDecorationProvider;
 import mesfavoris.viewers.UnderDisconnectedRemoteBookmarkFolderPredicate;
-import mesfavoris.viewers.BookmarksLabelProvider.DefaultBookmarkCommentProvider;
 import mesfavoris.workspace.DefaultBookmarkFolderManager;
 import mesfavoris.workspace.IDefaultBookmarkFolderListener;
 
