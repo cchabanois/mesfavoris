@@ -129,6 +129,14 @@ public class BookmarksMarkers {
 		}
 	}
 
+	public void refreshMarker(BookmarkId bookmarkId) {
+		bookmarkRemoved(bookmarkId);
+		Bookmark bookmark = bookmarkDatabase.getBookmarksTree().getBookmark(bookmarkId);
+		if (bookmark != null) {
+			bookmarkAdded(bookmark);
+		}
+	}
+
 	private void diff(List<Bookmark> oldValue, List<Bookmark> newValue, Set<Bookmark> added, Set<Bookmark> removed) {
 		added.addAll(newValue);
 		added.removeAll(oldValue);
