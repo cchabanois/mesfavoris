@@ -16,6 +16,8 @@ import java.util.Map;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IFunction;
@@ -29,37 +31,32 @@ import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
 import mesfavoris.model.Bookmark;
 
-public class JavascriptEditorBookmarkPropertiesProvider extends
-		AbstractBookmarkPropertiesProvider {
+public class JavascriptEditorBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {
 
 	@Override
-	public void addBookmarkProperties(Map<String, String> bookmarkProperties,
-			Object selected) {
-		if (!(selected instanceof ITextEditor)) {
+	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part,
+			ISelection selection) {
+		if (!(part instanceof ITextEditor) || !(selection instanceof ITextSelection)) {
 			return;
 		}
-		ITextEditor editor = (ITextEditor) selected;
-		IJavaScriptElement editorJavaElement = JavaScriptUI
-				.getEditorInputJavaElement(editor.getEditorInput());
+		ITextEditor editor = (ITextEditor) part;
+		ITextSelection textSelection = (ITextSelection) selection;
+		IJavaScriptElement editorJavaElement = JavaScriptUI.getEditorInputJavaElement(editor.getEditorInput());
 		if (editorJavaElement == null) {
 			return;
 		}
-		ITextSelection textSelection = (ITextSelection) editor
-				.getSelectionProvider().getSelection();
-		IJavaScriptElement containingJavaElement = getContainingJavaElement(
-				editorJavaElement, textSelection);
+		IJavaScriptElement containingJavaElement = getContainingJavaElement(editorJavaElement, textSelection);
 
 		if (!(containingJavaElement instanceof IMember)) {
 			return;
 		}
 		IMember member = (IMember) containingJavaElement;
 		addMemberBookmarkProperties(bookmarkProperties, member);
-		addLineNumberInsideMemberProperty(bookmarkProperties, member,
-				textSelection);
+		addLineNumberInsideMemberProperty(bookmarkProperties, member, textSelection);
 	}
 
-	private IJavaScriptElement getContainingJavaElement(
-			IJavaScriptElement editorJavaElement, ITextSelection textSelection) {
+	private IJavaScriptElement getContainingJavaElement(IJavaScriptElement editorJavaElement,
+			ITextSelection textSelection) {
 		if (!(editorJavaElement instanceof ITypeRoot)) {
 			return null;
 		}
@@ -75,55 +72,46 @@ public class JavascriptEditorBookmarkPropertiesProvider extends
 
 	}
 
-	private void addLineNumberInsideMemberProperty(
-			Map<String, String> bookmarkProperties, IMember member,
+	private void addLineNumberInsideMemberProperty(Map<String, String> bookmarkProperties, IMember member,
 			ITextSelection textSelection) {
 		try {
 			int methodLineNumber = JavascriptEditorUtils.getLineNumber(member);
 			int lineNumber = textSelection.getStartLine();
 			int lineNumberInsideMethod = lineNumber - methodLineNumber;
-			putIfAbsent(bookmarkProperties, PROP_LINE_NUMBER_INSIDE_ELEMENT,
-					Integer.toString(lineNumberInsideMethod));
+			putIfAbsent(bookmarkProperties, PROP_LINE_NUMBER_INSIDE_ELEMENT, Integer.toString(lineNumberInsideMethod));
 		} catch (JavaScriptModelException e) {
 			return;
 		} catch (BadLocationException e) {
 			return;
 		}
 
-	}	
-	
-	private void addMemberBookmarkProperties(
-			Map<String, String> bookmarkProperties, IMember member) {
-		putIfAbsent(bookmarkProperties, PROP_JAVASCRIPT_ELEMENT_NAME,
-				member.getElementName());
+	}
+
+	private void addMemberBookmarkProperties(Map<String, String> bookmarkProperties, IMember member) {
+		putIfAbsent(bookmarkProperties, PROP_JAVASCRIPT_ELEMENT_NAME, member.getElementName());
 		if (member.getDeclaringType() != null) {
-			putIfAbsent(bookmarkProperties, PROP_JAVASCRIPT_DECLARING_TYPE, member
-					.getDeclaringType().getFullyQualifiedName());
+			putIfAbsent(bookmarkProperties, PROP_JAVASCRIPT_DECLARING_TYPE,
+					member.getDeclaringType().getFullyQualifiedName());
 		}
 		putIfAbsent(bookmarkProperties, PROP_JAVASCRIPT_ELEMENT_KIND, getKind(member));
 		if (member instanceof IFunction) {
 			putIfAbsent(bookmarkProperties, PROP_JAVASCRIPT_METHOD_SIGNATURE,
 					JavascriptEditorUtils.getMethodSimpleSignature((IFunction) member));
 			putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME,
-					bookmarkProperties.get(PROP_JAVASCRIPT_DECLARING_TYPE) + '.'
-							+ member.getElementName() + "()");
+					bookmarkProperties.get(PROP_JAVASCRIPT_DECLARING_TYPE) + '.' + member.getElementName() + "()");
 		}
 		if (member instanceof IType) {
 			IType type = (IType) member;
-			putIfAbsent(bookmarkProperties, PROP_JAVASCRIPT_TYPE,
-					type.getFullyQualifiedName());
-			putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME,
-					type.getFullyQualifiedName());
+			putIfAbsent(bookmarkProperties, PROP_JAVASCRIPT_TYPE, type.getFullyQualifiedName());
+			putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME, type.getFullyQualifiedName());
 		}
 		if (member instanceof IField) {
 			putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME,
-					bookmarkProperties.get(PROP_JAVASCRIPT_DECLARING_TYPE) + '.'
-							+ member.getElementName());
+					bookmarkProperties.get(PROP_JAVASCRIPT_DECLARING_TYPE) + '.' + member.getElementName());
 		}
-		putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME,
-				member.getElementName());
-	}	
-	
+		putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME, member.getElementName());
+	}
+
 	private String getKind(IMember member) {
 		switch (member.getElementType()) {
 		case IJavaScriptElement.METHOD:
@@ -145,6 +133,6 @@ public class JavascriptEditorBookmarkPropertiesProvider extends
 		default:
 			return null;
 		}
-	}		
-	
+	}
+
 }

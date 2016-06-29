@@ -1,26 +1,28 @@
 package mesfavoris.git;
 
-import static mesfavoris.git.GitProjectProperties.*;
+import static mesfavoris.git.GitProjectProperties.PROP_BRANCH;
+import static mesfavoris.git.GitProjectProperties.PROP_PROJECT_PATH;
+import static mesfavoris.git.GitProjectProperties.PROP_URL;
 
 import java.io.IOException;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.egit.core.internal.CoreText;
 import org.eclipse.egit.core.project.RepositoryMapping;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.StoredConfig;
-import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.IWorkbenchPart;
 
 import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
 
 public class GitProjectPropertiesProvider extends AbstractBookmarkPropertiesProvider {
 
 	@Override
-	public void addBookmarkProperties(Map<String, String> bookmarkProperties,
-			Object selected) {
-		IProject project = getProject(bookmarkProperties, selected);
+	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part,
+			ISelection selection) {
+		IProject project = getProject(bookmarkProperties);
 		if (project == null) {
 			return;
 		}
@@ -39,7 +41,7 @@ public class GitProjectPropertiesProvider extends AbstractBookmarkPropertiesProv
 		putIfAbsent(bookmarkProperties, PROP_PROJECT_PATH, projectPath);
 	}
 
-	private IProject getProject(Map<String, String> bookmarkProperties, Object selected) {
+	private IProject getProject(Map<String, String> bookmarkProperties) {
 		String projectName = bookmarkProperties.get("projectName");
 		if (projectName == null) {
 			return null;
@@ -49,8 +51,8 @@ public class GitProjectPropertiesProvider extends AbstractBookmarkPropertiesProv
 			return null;
 		}
 		return project;
-	} 
-	
+	}
+
 	private String getBranch(RepositoryMapping mapping) {
 		try {
 			return mapping.getRepository().getBranch();
@@ -58,16 +60,15 @@ public class GitProjectPropertiesProvider extends AbstractBookmarkPropertiesProv
 			return null;
 		}
 	}
-	
+
 	private String getUrl(RepositoryMapping mapping, String branch) {
 		StoredConfig config = mapping.getRepository().getConfig();
-		String remote = config.getString(ConfigConstants.CONFIG_BRANCH_SECTION,
-				branch, ConfigConstants.CONFIG_KEY_REMOTE);
-		String url = config.getString(ConfigConstants.CONFIG_REMOTE_SECTION,
-				remote, ConfigConstants.CONFIG_KEY_URL);
+		String remote = config.getString(ConfigConstants.CONFIG_BRANCH_SECTION, branch,
+				ConfigConstants.CONFIG_KEY_REMOTE);
+		String url = config.getString(ConfigConstants.CONFIG_REMOTE_SECTION, remote, ConfigConstants.CONFIG_KEY_URL);
 		return url;
 	}
-	
+
 	private String getProjectPath(RepositoryMapping mapping, IProject project) {
 		String projectPath = mapping.getRepoRelativePath(project);
 		if (projectPath.equals(""))

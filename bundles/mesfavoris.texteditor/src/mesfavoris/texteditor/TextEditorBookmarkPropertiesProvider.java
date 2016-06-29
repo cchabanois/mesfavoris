@@ -17,7 +17,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -36,10 +38,11 @@ public class TextEditorBookmarkPropertiesProvider extends AbstractBookmarkProper
 		this.pathPlaceholderResolver = pathPlaceholders;
 	}
 
-	public void addBookmarkProperties(Map<String, String> bookmarkProperties, Object selected) {
-		if (selected instanceof ITextEditor) {
-			ITextEditor textEditor = (ITextEditor) selected;
-			ITextSelection textSelection = (ITextSelection) textEditor.getSelectionProvider().getSelection();
+	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part,
+			ISelection selection) {
+		if (part instanceof ITextEditor && selection instanceof ITextSelection) {
+			ITextEditor textEditor = (ITextEditor) part;
+			ITextSelection textSelection = (ITextSelection) selection;
 			addBookmarkProperties(bookmarkProperties, textEditor, textSelection);
 		}
 	}
@@ -52,9 +55,9 @@ public class TextEditorBookmarkPropertiesProvider extends AbstractBookmarkProper
 		IPath filePath = getFilePath(textEditor);
 		if (filePath != null) {
 			addFilePath(properties, filePath);
-			putIfAbsent(properties, PROPERTY_NAME, ()-> {
+			putIfAbsent(properties, PROPERTY_NAME, () -> {
 				if (lineNumber > 0) {
-					return filePath.lastSegment()+":"+lineNumber;
+					return filePath.lastSegment() + ":" + lineNumber;
 				} else {
 					return filePath.lastSegment();
 				}

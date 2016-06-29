@@ -11,9 +11,11 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
 
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbenchPart;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,7 +31,9 @@ public class UrlBookmarkPropertiesProvider extends AbstractBookmarkPropertiesPro
 	}
 
 	@Override
-	public void addBookmarkProperties(Map<String, String> bookmarkProperties, Object selected) {
+	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part,
+			ISelection selection) {
+		Object selected = getFirstElement(selection);
 		if (!(selected instanceof URL)) {
 			return;
 		}

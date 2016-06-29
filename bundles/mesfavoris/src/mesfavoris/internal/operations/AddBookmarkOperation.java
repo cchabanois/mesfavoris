@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IWorkbenchPart;
+
 import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.model.Bookmark;
@@ -25,9 +28,10 @@ public class AddBookmarkOperation {
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 	}
 
-	public BookmarkId addBookmark(Object selected) throws BookmarksException {
+	public BookmarkId addBookmark(IWorkbenchPart part,
+			ISelection selection) throws BookmarksException {
 		Map<String, String> bookmarkProperties = new HashMap<String, String>();
-		bookmarkPropertiesProvider.addBookmarkProperties(bookmarkProperties, selected);
+		bookmarkPropertiesProvider.addBookmarkProperties(bookmarkProperties, part, selection);
 		BookmarkId bookmarkId = new BookmarkId();
 		Bookmark bookmark = new Bookmark(bookmarkId, bookmarkProperties);
 		addBookmark(bookmark);

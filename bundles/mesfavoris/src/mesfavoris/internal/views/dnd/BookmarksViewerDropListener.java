@@ -189,7 +189,7 @@ public class BookmarksViewerDropListener extends ViewerDropAdapter {
 
 	private Bookmark createBookmark(Object object) {
 		Map<String, String> bookmarkProperties = new HashMap<String, String>();
-		bookmarkPropertiesProvider.addBookmarkProperties(bookmarkProperties, object);
+		bookmarkPropertiesProvider.addBookmarkProperties(bookmarkProperties, null, new StructuredSelection(object));
 		Bookmark bookmark = new Bookmark(new BookmarkId(), bookmarkProperties);
 		return bookmark;
 	}

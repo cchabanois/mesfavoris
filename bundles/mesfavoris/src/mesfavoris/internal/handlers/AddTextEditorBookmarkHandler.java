@@ -23,7 +23,7 @@ public class AddTextEditorBookmarkHandler extends AbstractHandler {
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
 	private final BookmarkDatabase bookmarkDatabase;
 	private final ShowInBookmarksViewOperation showInBookmarksViewOperation;
-	
+
 	public AddTextEditorBookmarkHandler() {
 		this.bookmarkDatabase = BookmarksPlugin.getBookmarkDatabase();
 		this.bookmarkPropertiesProvider = BookmarksPlugin.getBookmarkPropertiesProvider();
@@ -39,7 +39,7 @@ public class AddTextEditorBookmarkHandler extends AbstractHandler {
 				bookmarkPropertiesProvider, defaultBookmarkFolderManager);
 		BookmarkId bookmarkId;
 		try {
-			bookmarkId = addBookmarkOperation.addBookmark(textEditor);
+			bookmarkId = addBookmarkOperation.addBookmark(textEditor, textEditor.getSelectionProvider().getSelection());
 		} catch (BookmarksException e) {
 			throw new ExecutionException("Could not add bookmark", e);
 		}

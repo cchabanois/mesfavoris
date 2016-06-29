@@ -3,6 +3,9 @@ package mesfavoris.bookmarktype;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+
 
 public abstract class AbstractBookmarkPropertiesProvider implements IBookmarkPropertiesProvider {
 
@@ -15,6 +18,14 @@ public abstract class AbstractBookmarkPropertiesProvider implements IBookmarkPro
 			return;
 		}
 		bookmarkProperties.put(name, valueProvider.get());
+	}
+	
+	protected Object getFirstElement(ISelection selection) {
+		if (!(selection instanceof IStructuredSelection)) {
+			return null;
+		}
+		IStructuredSelection structuredSelection = (IStructuredSelection)selection;
+		return structuredSelection.getFirstElement();
 	}
 	
 }

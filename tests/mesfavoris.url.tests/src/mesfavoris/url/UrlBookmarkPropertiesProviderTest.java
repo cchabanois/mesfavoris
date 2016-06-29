@@ -4,19 +4,17 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.junit.Test;
 
 import com.google.common.io.ByteStreams;
 
 import mesfavoris.model.Bookmark;
-import mesfavoris.url.UrlBookmarkProperties;
-import mesfavoris.url.UrlBookmarkPropertiesProvider;
 
 public class UrlBookmarkPropertiesProviderTest {
 	private final UrlBookmarkPropertiesProvider provider = new UrlBookmarkPropertiesProvider();
@@ -35,7 +33,7 @@ public class UrlBookmarkPropertiesProviderTest {
 
 	private void assertTitleAndFavIcon(String expectedTitle, String expectedIcon, String url) throws IOException {
 		Map<String, String> bookmarkProperties = new HashMap<>();
-		provider.addBookmarkProperties(bookmarkProperties, new URL(url));
+		provider.addBookmarkProperties(bookmarkProperties, null, new StructuredSelection(new URL(url)));
 		assertEquals(expectedTitle, bookmarkProperties.get(Bookmark.PROPERTY_NAME));
 		assertEquals(expectedIcon == null ? null : getImageAsBase64(expectedIcon),
 				bookmarkProperties.get(UrlBookmarkProperties.PROP_FAVICON));

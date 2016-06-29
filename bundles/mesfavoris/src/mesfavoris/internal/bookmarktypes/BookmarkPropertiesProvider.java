@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IWorkbenchPart;
+
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 
 public class BookmarkPropertiesProvider implements IBookmarkPropertiesProvider {
@@ -14,8 +17,9 @@ public class BookmarkPropertiesProvider implements IBookmarkPropertiesProvider {
 	}
 
 	@Override
-	public void addBookmarkProperties(Map<String, String> bookmarkProperties, Object selected) {
-		providers.forEach(p -> p.addBookmarkProperties(bookmarkProperties, selected));
+	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part,
+			ISelection selection) {
+		providers.forEach(p -> p.addBookmarkProperties(bookmarkProperties, part, selection));
 	}
 
 }
