@@ -3,8 +3,11 @@ package mesfavoris.internal.handlers;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -18,13 +21,13 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.workspace.DefaultBookmarkFolderManager;
 
-public class AddTextEditorBookmarkHandler extends AbstractHandler {
+public class AddBookmarkHandler extends AbstractHandler {
 	private final DefaultBookmarkFolderManager defaultBookmarkFolderManager;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
 	private final BookmarkDatabase bookmarkDatabase;
 	private final ShowInBookmarksViewOperation showInBookmarksViewOperation;
 
-	public AddTextEditorBookmarkHandler() {
+	public AddBookmarkHandler() {
 		this.bookmarkDatabase = BookmarksPlugin.getBookmarkDatabase();
 		this.bookmarkPropertiesProvider = BookmarksPlugin.getBookmarkPropertiesProvider();
 		this.defaultBookmarkFolderManager = BookmarksPlugin.getDefaultBookmarkFolderManager();
@@ -33,27 +36,34 @@ public class AddTextEditorBookmarkHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IWorkbenchPage page = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage();
-		ITextEditor textEditor = getActiveEditor(page);
+		IWorkbenchPart part = HandlerUtil.getActivePart(event);
+		if (part == null) {
+			return null;
+		}
+		ISelection selection;
+		if (part instanceof IEditorPart) {
+			ITextEditor textEditor = AdapterUtils.getAdapter(part, ITextEditor.class);
+			if (textEditor == null) {
+				return null;
+			}
+			selection = textEditor.getSelectionProvider().getSelection();
+			part = textEditor;
+		} else if (part instanceof IViewPart) {
+			selection = HandlerUtil.getCurrentSelection(event);
+		} else {
+			return null;
+		}
 		AddBookmarkOperation addBookmarkOperation = new AddBookmarkOperation(bookmarkDatabase,
 				bookmarkPropertiesProvider, defaultBookmarkFolderManager);
 		BookmarkId bookmarkId;
 		try {
-			bookmarkId = addBookmarkOperation.addBookmark(textEditor, textEditor.getSelectionProvider().getSelection());
+			bookmarkId = addBookmarkOperation.addBookmark(part, selection);
 		} catch (BookmarksException e) {
 			throw new ExecutionException("Could not add bookmark", e);
 		}
-		displayBookmarkInBookmarksView(page, bookmarkId);
-		return null;
-	}
-
-	private ITextEditor getActiveEditor(IWorkbenchPage page) {
+		IWorkbenchPage page = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage();
 		if (page != null) {
-			IEditorPart editor = page.getActiveEditor();
-			ITextEditor textEditor = AdapterUtils.getAdapter(editor, ITextEditor.class);
-			if (textEditor != null) {
-				return textEditor;
-			}
+			displayBookmarkInBookmarksView(page, bookmarkId);
 		}
 		return null;
 	}

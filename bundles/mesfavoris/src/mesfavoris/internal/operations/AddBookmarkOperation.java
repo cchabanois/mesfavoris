@@ -32,6 +32,9 @@ public class AddBookmarkOperation {
 			ISelection selection) throws BookmarksException {
 		Map<String, String> bookmarkProperties = new HashMap<String, String>();
 		bookmarkPropertiesProvider.addBookmarkProperties(bookmarkProperties, part, selection);
+		if (bookmarkProperties.isEmpty()) {
+			throw new BookmarksException("Could not create bookmark from current selection");
+		}
 		BookmarkId bookmarkId = new BookmarkId();
 		Bookmark bookmark = new Bookmark(bookmarkId, bookmarkProperties);
 		addBookmark(bookmark);

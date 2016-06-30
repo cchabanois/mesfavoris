@@ -46,7 +46,7 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="mesfavoris.internal.handlers.AddTextEditorBookmarkHandler"
+            defaultHandler="mesfavoris.internal.handlers.AddBookmarkHandler"
             description="Add a Favori"
             id="mesfavoris.command.addFavori"
             name="Add Favori">
