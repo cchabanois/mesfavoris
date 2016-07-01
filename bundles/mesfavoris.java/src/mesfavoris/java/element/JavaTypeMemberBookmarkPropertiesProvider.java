@@ -21,6 +21,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.ITypeRoot;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
@@ -35,6 +36,9 @@ public class JavaTypeMemberBookmarkPropertiesProvider extends AbstractBookmarkPr
 	public void addBookmarkProperties(Map<String, String> bookmarkProperties,IWorkbenchPart part,
 			ISelection selection) {
 		Object selected = getFirstElement(selection);
+		if (selected instanceof ITypeRoot) {
+			selected = ((ITypeRoot)selected).findPrimaryType();
+		}
 		if (!(selected instanceof IMember)) {
 			return;
 		}

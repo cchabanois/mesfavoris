@@ -28,7 +28,7 @@ public class TextEditorBookmarkMarkerAttributesProvider implements IBookmarkMark
 	@Override
 	public BookmarkMarkerDescriptor getMarkerDescriptor(Bookmark bookmark) {
 		TextEditorBookmarkLocation location = textEditorBookmarkLocationProvider.findLocation(bookmark);
-		if (location == null || location.getWorkspaceFile() == null) {
+		if (location == null || location.getWorkspaceFile() == null || location.getLineNumber() == null) {
 			return null;
 		}
 		Map attributes = new HashMap();

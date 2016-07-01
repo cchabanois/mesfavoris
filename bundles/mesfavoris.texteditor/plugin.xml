@@ -23,6 +23,10 @@
             class="mesfavoris.texteditor.TextEditorBookmarkLabelProvider"
             priority="10">
       </labelProvider>
+      <propertiesProvider
+            class="mesfavoris.texteditor.FileBookmarkPropertiesProvider"
+            priority="10">
+      </propertiesProvider>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
