@@ -57,7 +57,7 @@ public class TextEditorBookmarkPropertiesProvider extends AbstractBookmarkProper
 			addFilePath(properties, filePath);
 			putIfAbsent(properties, PROPERTY_NAME, () -> {
 				if (lineNumber > 0) {
-					return filePath.lastSegment() + ":" + lineNumber;
+					return filePath.lastSegment() + ":" + (lineNumber+1);
 				} else {
 					return filePath.lastSegment();
 				}

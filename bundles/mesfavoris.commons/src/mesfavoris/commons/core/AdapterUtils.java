@@ -13,6 +13,9 @@ public class AdapterUtils {
 
 	public static <T> T getAdapter(Object element, Class<T> adapterType,
 			boolean load) {
+		if (element == null) {
+			return null;
+		}
 		if (adapterType.isInstance(element))
 			return adapterType.cast(element);
 		if (element instanceof IAdaptable) {
