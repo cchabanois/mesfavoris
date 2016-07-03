@@ -7,4 +7,7 @@ Fragment-Host: mesfavoris;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit;bundle-version="4.11.0",
  org.mockito.mockito-all;bundle-version="1.9.5",
- mesfavoris.texteditor;bundle-version="1.0.0"
+ mesfavoris.texteditor;bundle-version="1.0.0",
+ org.eclipse.swtbot.junit4_x;bundle-version="2.3.0",
+ org.eclipse.swtbot.eclipse.finder;bundle-version="2.3.0",
+ mesfavoris.tests.commons;bundle-version="1.0.0"

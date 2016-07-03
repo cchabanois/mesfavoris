@@ -18,6 +18,7 @@
 		<module>mesfavoris.gdrive.tests</module>
 		<module>mesfavoris.texteditor.tests</module>
 		<module>mesfavoris.url.tests</module>
+		<module>mesfavoris.tests.commons</module>
 	</modules>
 
 	<profiles>
@@ -42,6 +43,7 @@
 				<version>${tycho-version}</version>
 				<configuration>
 					<useUIHarness>true</useUIHarness>
+	<!--				<debugPort>5005</debugPort>-->
 					<argLine>${ui.test.vmargs}</argLine>
 				</configuration>
 			</plugin>

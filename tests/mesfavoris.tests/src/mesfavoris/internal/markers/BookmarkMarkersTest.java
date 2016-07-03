@@ -1,8 +1,16 @@
 package mesfavoris.internal.markers;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static mesfavoris.tests.commons.waits.Waiter.*;
+
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Platform;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +25,7 @@ import mesfavoris.commons.ui.wizards.datatransfer.BundleProjectImportOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
-import static org.junit.Assert.*;
+import mesfavoris.tests.commons.waits.Waiter;
 
 public class BookmarkMarkersTest {
 	public static final String PROP_LINE_NUMBER = "lineNumber";
@@ -58,9 +66,29 @@ public class BookmarkMarkersTest {
 
 		// When
 		deleteBookmark(bookmark.getId());
-		
+
 		// Then
 		assertNull(bookmarksMarkers.findMarker(bookmark.getId()));
+	}
+
+	@Test
+	public void testInvalidMarkersDeletedWhenProjectOpened() throws Exception {
+		// Given
+		importProjectFromTemplate("testInvalidMarkersDeletedWhenProjectOpened", "bookmarkMarkersTest");
+		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(PROP_WORKSPACE_PATH,
+				"/testInvalidMarkersDeletedWhenProjectOpened/file.txt", PROP_LINE_NUMBER, "0"));
+		addBookmark(bookmark);
+		assertNotNull(bookmarksMarkers.findMarker(bookmark.getId()));
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IProject project = workspace.getRoot().getProject("testInvalidMarkersDeletedWhenProjectOpened");
+		project.close(null);
+		deleteBookmark(bookmark.getId());
+
+		// When
+		project.open(null);
+
+		// Then
+		waitUntil("Bookmark marker should be deleted", () -> bookmarksMarkers.findMarker(bookmark.getId()) == null);
 	}
 
 	private void addBookmark(Bookmark bookmark) throws BookmarksException {
