@@ -1,9 +1,9 @@
 package mesfavoris.internal.markers;
 
+import static mesfavoris.tests.commons.waits.Waiter.waitUntil;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static mesfavoris.tests.commons.waits.Waiter.*;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -24,19 +24,21 @@ import mesfavoris.BookmarksPlugin;
 import mesfavoris.commons.ui.wizards.datatransfer.BundleProjectImportOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
+import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
-import mesfavoris.tests.commons.waits.Waiter;
 
 public class BookmarkMarkersTest {
 	public static final String PROP_LINE_NUMBER = "lineNumber";
 	public static final String PROP_WORKSPACE_PATH = "workspacePath";
 	private BookmarksMarkers bookmarksMarkers;
 	private BookmarkDatabase bookmarkDatabase;
+	private BookmarkId rootFolderId;
 
 	@Before
 	public void setUp() {
 		bookmarksMarkers = BookmarksPlugin.getBookmarksMarkers();
 		bookmarkDatabase = BookmarksPlugin.getBookmarkDatabase();
+		rootFolderId = bookmarkDatabase.getBookmarksTree().getRootFolder().getId();
 	}
 
 	@Test
@@ -47,7 +49,7 @@ public class BookmarkMarkersTest {
 				"/testMarkerAddedWhenBookmarkAdded/file.txt", PROP_LINE_NUMBER, "0"));
 
 		// When
-		addBookmark(bookmark);
+		addBookmark(rootFolderId, bookmark);
 		IMarker marker = bookmarksMarkers.findMarker(bookmark.getId());
 
 		// Then
@@ -61,11 +63,29 @@ public class BookmarkMarkersTest {
 		importProjectFromTemplate("testMarkerDeletedWhenBookmarkDeleted", "bookmarkMarkersTest");
 		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(PROP_WORKSPACE_PATH,
 				"/testMarkerDeletedWhenBookmarkDeleted/file.txt", PROP_LINE_NUMBER, "0"));
-		addBookmark(bookmark);
+		addBookmark(rootFolderId, bookmark);
 		assertNotNull(bookmarksMarkers.findMarker(bookmark.getId()));
 
 		// When
 		deleteBookmark(bookmark.getId());
+
+		// Then
+		assertNull(bookmarksMarkers.findMarker(bookmark.getId()));
+	}
+
+	@Test
+	public void testMarkerDeletedWhenBookmarkParentDeletedRecursively() throws Exception {
+		// Given
+		importProjectFromTemplate("testMarkerDeletedWhenBookmarkParentDeletedRecursively", "bookmarkMarkersTest");
+		BookmarkFolder bookmarkFolder = new BookmarkFolder(new BookmarkId(), "folder");
+		addBookmark(rootFolderId, bookmarkFolder);
+		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(PROP_WORKSPACE_PATH,
+				"/testMarkerDeletedWhenBookmarkDeleted/file.txt", PROP_LINE_NUMBER, "0"));
+		addBookmark(bookmarkFolder.getId(), bookmark);
+		assertNotNull(bookmarksMarkers.findMarker(bookmark.getId()));
+
+		// When
+		deleteBookmarkRecursively(bookmarkFolder.getId());
 
 		// Then
 		assertNull(bookmarksMarkers.findMarker(bookmark.getId()));
@@ -77,7 +97,7 @@ public class BookmarkMarkersTest {
 		importProjectFromTemplate("testInvalidMarkersDeletedWhenProjectOpened", "bookmarkMarkersTest");
 		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(PROP_WORKSPACE_PATH,
 				"/testInvalidMarkersDeletedWhenProjectOpened/file.txt", PROP_LINE_NUMBER, "0"));
-		addBookmark(bookmark);
+		addBookmark(rootFolderId, bookmark);
 		assertNotNull(bookmarksMarkers.findMarker(bookmark.getId()));
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject project = workspace.getRoot().getProject("testInvalidMarkersDeletedWhenProjectOpened");
@@ -91,15 +111,20 @@ public class BookmarkMarkersTest {
 		waitUntil("Bookmark marker should be deleted", () -> bookmarksMarkers.findMarker(bookmark.getId()) == null);
 	}
 
-	private void addBookmark(Bookmark bookmark) throws BookmarksException {
-		bookmarkDatabase.modify(bookmarksTreeModifier -> bookmarksTreeModifier.addBookmarks(
-				bookmarksTreeModifier.getCurrentTree().getRootFolder().getId(), Lists.newArrayList(bookmark)));
+	private void addBookmark(BookmarkId parentId, Bookmark bookmark) throws BookmarksException {
+		bookmarkDatabase.modify(
+				bookmarksTreeModifier -> bookmarksTreeModifier.addBookmarks(parentId, Lists.newArrayList(bookmark)));
 	}
-
+	
 	private void deleteBookmark(BookmarkId bookmarkId) throws BookmarksException {
 		bookmarkDatabase.modify(bookmarksTreeModifier -> bookmarksTreeModifier.deleteBookmark(bookmarkId, false));
 	}
 
+	private void deleteBookmarkRecursively(BookmarkId bookmarkId) throws BookmarksException {
+		bookmarkDatabase.modify(bookmarksTreeModifier -> bookmarksTreeModifier.deleteBookmark(bookmarkId, true));
+	}
+	
+	
 	private void importProjectFromTemplate(String projectName, String templateName)
 			throws InvocationTargetException, InterruptedException {
 		Bundle bundle = Platform.getBundle("mesfavoris.tests");

@@ -1,5 +1,6 @@
 package mesfavoris.model.modification;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -16,7 +17,7 @@ public class BookmarksAddedModification extends BookmarksModification {
 			List<Bookmark> bookmarks) {
 		super(sourceTree, targetTree);
 		this.parentId = parentId;
-		this.bookmarks = Lists.newArrayList(bookmarks);
+		this.bookmarks = Collections.unmodifiableList(Lists.newArrayList(bookmarks));
 	}
 
 	public List<Bookmark> getBookmarks() {

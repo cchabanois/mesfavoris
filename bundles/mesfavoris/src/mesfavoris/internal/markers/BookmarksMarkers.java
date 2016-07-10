@@ -2,7 +2,6 @@ package mesfavoris.internal.markers;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -64,6 +63,8 @@ public class BookmarksMarkers {
 
 	private void handleBookmarkModifiedEvent(BookmarksModification event) {
 		if (event instanceof BookmarkDeletedModification) {
+			BookmarkDeletedModification bookmarkDeletedModification = (BookmarkDeletedModification) event;
+			bookmarkDeletedModification.getDeletedBookmarks().forEach(b -> bookmarkRemoved(b.getId()));
 			bookmarkRemoved(((BookmarkDeletedModification) event).getBookmarkId());
 		} else if (event instanceof BookmarksAddedModification) {
 			BookmarksAddedModification bookmarksAddedModification = (BookmarksAddedModification) event;
@@ -135,13 +136,6 @@ public class BookmarksMarkers {
 		if (bookmark != null) {
 			bookmarkAdded(bookmark);
 		}
-	}
-
-	private void diff(List<Bookmark> oldValue, List<Bookmark> newValue, Set<Bookmark> added, Set<Bookmark> removed) {
-		added.addAll(newValue);
-		added.removeAll(oldValue);
-		removed.addAll(oldValue);
-		removed.removeAll(newValue);
 	}
 
 	private IMarker createMarker(final IResource resource, final Map<String, ? extends Object> attributes)

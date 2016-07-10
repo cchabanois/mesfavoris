@@ -1,5 +1,8 @@
 package mesfavoris.model.modification;
 
+import mesfavoris.internal.model.merge.BookmarksTreeIterable;
+import mesfavoris.internal.model.merge.BookmarksTreeIterable.Algorithm;
+import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 
@@ -29,6 +32,11 @@ public class BookmarkDeletedModification extends
 		return recursive;
 	}
 
+	public Iterable<Bookmark> getDeletedBookmarks() {
+		return new BookmarksTreeIterable(getSourceTree(),
+				bookmarkId, Algorithm.POST_ORDER);
+	}
+	
 	@Override
 	public String toString() {
 		return "BookmarkDeletedModification [bookmarkParentId=" + bookmarkParentId + ", bookmarkId=" + bookmarkId
