@@ -8,7 +8,9 @@ import org.eclipse.core.runtime.IAdapterManager;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.Preferences;
@@ -29,6 +31,7 @@ import mesfavoris.internal.persistence.LocalBookmarksSaver;
 import mesfavoris.internal.persistence.RemoteBookmarksSaver;
 import mesfavoris.internal.remote.RemoteBookmarksStoreLoader;
 import mesfavoris.internal.service.BookmarksService;
+import mesfavoris.internal.visited.VisitedBookmarksDatabase;
 import mesfavoris.internal.workspace.BookmarksWorkspaceFactory;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
@@ -60,7 +63,8 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 	private static ImportTeamProjectProvider importTeamProjectProvider;
 	private static RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private static IBookmarksService bookmarksService;
-
+	private static VisitedBookmarksDatabase mostVisitedBookmarks;
+	
 	private final BookmarkAdapterFactory bookmarkAdapterFactory = new BookmarkAdapterFactory();
 
 	/**
@@ -94,6 +98,10 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		defaultBookmarkFolderManager = new DefaultBookmarkFolderManager(bookmarkDatabase, preferences);
 		bookmarksService = new BookmarksService(bookmarkDatabase,
 				new BookmarkModificationValidator(remoteBookmarksStoreManager));
+		File mostVisitedBookmarksFile = new File(getStateLocation().toFile(), "mostVisitedBookmarks.json");
+		IEventBroker eventBroker = (IEventBroker) getWorkbench().getService(IEventBroker.class);
+		mostVisitedBookmarks = new VisitedBookmarksDatabase(eventBroker, bookmarkDatabase, mostVisitedBookmarksFile);
+		mostVisitedBookmarks.init();
 	}
 
 	private BookmarkDatabase loadBookmarkDatabase(File bookmarksFile) {
@@ -119,7 +127,8 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		adapterManager.unregisterAdapters(bookmarkAdapterFactory);
 
 		bookmarksMarkers.close();
-
+		mostVisitedBookmarks.close();
+		
 		plugin = null;
 		bookmarkDatabase = null;
 		bookmarksSaver = null;
@@ -128,6 +137,8 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		bookmarkPropertiesProvider = null;
 		gotoBookmark = null;
 		importTeamProjectProvider = null;
+		bookmarksMarkers = null;
+		mostVisitedBookmarks = null;
 		super.stop(context);
 	}
 
@@ -180,6 +191,10 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		return remoteBookmarksStoreManager;
 	}
 
+	public static VisitedBookmarksDatabase getMostVisitedBookmarks() {
+		return mostVisitedBookmarks;
+	}
+	
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in
 	 * relative path

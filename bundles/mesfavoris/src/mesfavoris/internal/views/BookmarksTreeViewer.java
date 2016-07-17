@@ -1,5 +1,6 @@
 package mesfavoris.internal.views;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 import org.eclipse.e4.core.services.events.IEventBroker;
@@ -23,8 +24,11 @@ import org.osgi.service.event.EventHandler;
 import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IGotoBookmark;
+import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.internal.views.dnd.BookmarksViewerDragListener;
 import mesfavoris.internal.views.dnd.BookmarksViewerDropListener;
+import mesfavoris.internal.views.virtual.ExtendedBookmarksTreeContentProvider;
+import mesfavoris.internal.views.virtual.VirtualBookmarkFolder;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
@@ -56,7 +60,8 @@ public class BookmarksTreeViewer extends TreeViewer {
 	public BookmarksTreeViewer(Composite parent, BookmarkDatabase bookmarkDatabase,
 			DefaultBookmarkFolderManager defaultBookmarkFolderManager,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
-			IBookmarkPropertiesProvider bookmarkPropertiesProvider, IGotoBookmark gotoBookmark) {
+			IBookmarkPropertiesProvider bookmarkPropertiesProvider, IGotoBookmark gotoBookmark,
+			List<VirtualBookmarkFolder> virtualBookmarkFolders) {
 		super(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
 		this.bookmarkDatabase = bookmarkDatabase;
@@ -64,7 +69,7 @@ public class BookmarksTreeViewer extends TreeViewer {
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 		this.gotoBookmark = gotoBookmark;
-		setContentProvider(new BookmarksTreeContentProvider(bookmarkDatabase));
+		setContentProvider(new ExtendedBookmarksTreeContentProvider(bookmarkDatabase, virtualBookmarkFolders));
 		BookmarksLabelProvider bookmarksLabelProvider = getBookmarksLabelProvider();
 		bookmarksLabelProvider.addListener(event -> refresh());
 		setLabelProvider(getBookmarksLabelProvider());
@@ -102,14 +107,15 @@ public class BookmarksTreeViewer extends TreeViewer {
 	private void hookDoubleClickAction() {
 		addDoubleClickListener(event -> {
 			ISelection selection = getSelection();
-			Bookmark bookmark = (Bookmark) ((IStructuredSelection) selection).getFirstElement();
+			Object firstElement = ((IStructuredSelection) selection).getFirstElement();
+			Bookmark bookmark = AdapterUtils.getAdapter(firstElement, Bookmark.class);
 			if (bookmark instanceof BookmarkFolder) {
 				IHandlerService handlerService = (IHandlerService) PlatformUI.getWorkbench()
 						.getService(IHandlerService.class);
 				try {
 					handlerService.executeCommand(SET_AS_DEFAULT_COMMAND_ID, null);
 				} catch (Exception e) {
-					// 
+					//
 				}
 			} else {
 				IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();

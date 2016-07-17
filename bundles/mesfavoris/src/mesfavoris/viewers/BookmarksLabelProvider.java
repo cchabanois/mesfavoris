@@ -20,6 +20,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
+import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.internal.views.StylerProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkFolder;
@@ -53,7 +54,7 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider {
 
 	@Override
 	public void update(ViewerCell cell) {
-		Bookmark element = (Bookmark) cell.getElement();
+		Bookmark element = (Bookmark) AdapterUtils.getAdapter(cell.getElement(), Bookmark.class);
 		StyledString styledText = getStyledText(element);
 		cell.setText(styledText.toString());
 		cell.setStyleRanges(styledText.getStyleRanges());

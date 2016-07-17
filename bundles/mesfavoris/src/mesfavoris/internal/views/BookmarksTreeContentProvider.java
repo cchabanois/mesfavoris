@@ -8,7 +8,7 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 
 public class BookmarksTreeContentProvider implements ITreeContentProvider {
-	private BookmarkDatabase bookmarkDatabase;
+	protected BookmarkDatabase bookmarkDatabase;
 
 	public BookmarksTreeContentProvider(BookmarkDatabase bookmarkDatabase) {
 		this.bookmarkDatabase = bookmarkDatabase;

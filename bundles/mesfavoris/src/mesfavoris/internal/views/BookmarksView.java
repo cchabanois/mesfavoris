@@ -54,15 +54,19 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
+import com.google.common.collect.Lists;
+
 import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.bookmarktype.IImportTeamProject;
+import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.internal.actions.AddToRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.ConnectToRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.RemoveFromRemoteBookmarksStoreAction;
 import mesfavoris.internal.jobs.ImportTeamProjectFromBookmarkJob;
 import mesfavoris.internal.operations.GetLinkedBookmarksOperation;
+import mesfavoris.internal.visited.MostVisitedBookmarksVirtualFolder;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.remote.IRemoteBookmarksStore;
@@ -135,7 +139,7 @@ public class BookmarksView extends ViewPart {
 		IStructuredSelection selection = (IStructuredSelection) bookmarksTreeViewer.getSelection();
 		if (selection.size() == 0)
 			return null;
-		return (Bookmark) selection.getFirstElement();
+		return AdapterUtils.getAdapter(selection.getFirstElement(), Bookmark.class);
 	}
 
 	private void createCommentsSectionToolbar(Section commentsSection) {
@@ -206,9 +210,14 @@ public class BookmarksView extends ViewPart {
 		DefaultBookmarkFolderManager defaultBookmarkFolderManager = BookmarksPlugin.getDefaultBookmarkFolderManager();
 		RemoteBookmarksStoreManager remoteBookmarksStoreManager = BookmarksPlugin.getRemoteBookmarksStoreManager();
 		IBookmarkPropertiesProvider bookmarkPropertiesProvider = BookmarksPlugin.getBookmarkPropertiesProvider();
+		MostVisitedBookmarksVirtualFolder mostVisitedBookmarksVirtualFolder = new MostVisitedBookmarksVirtualFolder(
+				eventBroker,
+				bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(),
+				bookmarkDatabase.getBookmarksTree().getRootFolder().getId(), 10);
 		IGotoBookmark gotoBookmark = BookmarksPlugin.getGotoBookmark();
 		bookmarksTreeViewer = new BookmarksTreeViewer(parent, bookmarkDatabase, defaultBookmarkFolderManager,
-				remoteBookmarksStoreManager, bookmarkPropertiesProvider, gotoBookmark);
+				remoteBookmarksStoreManager, bookmarkPropertiesProvider, gotoBookmark,
+				Lists.newArrayList(mostVisitedBookmarksVirtualFolder));
 		drillDownAdapter = new DrillDownAdapter(bookmarksTreeViewer);
 		bookmarksTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
