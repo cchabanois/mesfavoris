@@ -63,6 +63,9 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 	
 	private HtmlPage allowAccess(WebClient webClient, HtmlPage allowAccessPage) throws IOException {
 		HtmlButton allowAccessButton = (HtmlButton) allowAccessPage.getElementById("submit_approve_access");
+		if (allowAccessButton == null) {
+			throw new RuntimeException("Cannot find allow access button in html page :\n"+allowAccessPage.asXml());
+		}
 		webClient.waitForBackgroundJavaScriptStartingBefore(WAIT_DELAY_MS);
 		HtmlPage tokenPage = allowAccessButton.click();
 		return tokenPage;
