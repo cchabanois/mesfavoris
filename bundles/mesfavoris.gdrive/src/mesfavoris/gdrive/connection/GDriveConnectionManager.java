@@ -45,7 +45,7 @@ public class GDriveConnectionManager {
 
 	private final ListenerList connectionListenerList = new ListenerList();
 	private HttpTransport httpTransport;
-
+	private final String applicationName;
 	private final File dataStoreDir;
 	private final IAuthorizationCodeInstalledAppProvider authorizationCodeInstalledAppProvider;
 	private final String applicationFolderName;
@@ -54,14 +54,16 @@ public class GDriveConnectionManager {
 	private Drive drive;
 	private String applicationFolderId;
 
-	public GDriveConnectionManager(File dataStoreDir, String applicationFolderName) {
-		this(dataStoreDir, new AuthorizationCodeEclipseApp.Provider(), applicationFolderName);
+	public GDriveConnectionManager(File dataStoreDir, String applicationName, String applicationFolderName) {
+		this(dataStoreDir, new AuthorizationCodeEclipseApp.Provider(), applicationName, applicationFolderName);
 	}
 
 	public GDriveConnectionManager(File dataStoreDir,
-			IAuthorizationCodeInstalledAppProvider authorizationCodeInstalledAppProvider, String applicationFolderName) {
+			IAuthorizationCodeInstalledAppProvider authorizationCodeInstalledAppProvider, String applicationName,
+			String applicationFolderName) {
 		this.dataStoreDir = dataStoreDir;
 		this.authorizationCodeInstalledAppProvider = authorizationCodeInstalledAppProvider;
+		this.applicationName = applicationName;
 		this.applicationFolderName = applicationFolderName;
 	}
 
@@ -77,14 +79,15 @@ public class GDriveConnectionManager {
 	public String getApplicationFolderName() {
 		return applicationFolderName;
 	}
-	
+
 	public void connect(IProgressMonitor monitor) throws IOException {
 		if (!state.compareAndSet(State.disconnected, State.connecting)) {
 			return;
 		}
 		try {
 			Credential credential = authorize(monitor);
-			Drive drive = new Drive.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(null).build();
+			Drive drive = new Drive.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(applicationName)
+					.build();
 			String bookmarkDirId = getApplicationFolderId(drive);
 			synchronized (this) {
 				this.drive = drive;
@@ -174,7 +177,8 @@ public class GDriveConnectionManager {
 		try {
 			monitor.beginTask("Authorizes the application to access user's protected data on GDrive", 100);
 			// load client secrets
-			//  In this context, the client secret is obviously not treated as a secret.
+			// In this context, the client secret is obviously not treated as a
+			// secret.
 			GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
 					new InputStreamReader(GDriveConnectionManager.class.getResourceAsStream("client_secrets.json")));
 			// set up authorization code flow

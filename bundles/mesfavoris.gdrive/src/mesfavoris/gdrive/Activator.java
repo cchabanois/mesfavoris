@@ -32,7 +32,7 @@ public class Activator extends AbstractUIPlugin {
 		plugin = this;
 		File dataStoreDir = new File(getStateLocation().toFile(), "gdrive-datastore");
 		dataStoreDir.mkdir();
-		gDriveConnectionManager = new GDriveConnectionManager(dataStoreDir, "eclipse-bookmarks");
+		gDriveConnectionManager = new GDriveConnectionManager(dataStoreDir, "mes favoris", "eclipse-bookmarks");
 		gDriveConnectionManager.init();
 		File storeFile = new File(getStateLocation().toFile(), "bookmarksStore.json");
 		bookmarkMappingsStore = new BookmarkMappingsStore(storeFile);

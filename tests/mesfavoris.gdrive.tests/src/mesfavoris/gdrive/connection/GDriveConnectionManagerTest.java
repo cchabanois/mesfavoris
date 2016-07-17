@@ -35,7 +35,7 @@ public class GDriveConnectionManagerTest {
 		String applicationFolderName = "gdriveConnectionManagerTest" + new Random().nextInt(1000);
 		gDriveConnectionManager = new GDriveConnectionManager(dataStoreDir,
 				new HtmlUnitAuthorizationCodeInstalledApp.Provider(Constants.TEST_USERNAME, Constants.TEST_PASSWORD),
-				applicationFolderName);
+				"mes favoris", applicationFolderName);
 		gDriveConnectionManager.init();
 		gDriveConnectionManager.addConnectionListener(connectionListener);
 	}
