@@ -31,3 +31,11 @@ before_script:
 script:
  - export
  - mvn clean verify -P release-mesfavoris
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/ef692f2d5da17132be34
+    on_success: change
+    on_failure: always
+    on_start: never
