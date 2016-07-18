@@ -66,6 +66,7 @@ import mesfavoris.internal.actions.ConnectToRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.RemoveFromRemoteBookmarksStoreAction;
 import mesfavoris.internal.jobs.ImportTeamProjectFromBookmarkJob;
 import mesfavoris.internal.operations.GetLinkedBookmarksOperation;
+import mesfavoris.internal.visited.LatestVisitedBookmarksVirtualFolder;
 import mesfavoris.internal.visited.MostVisitedBookmarksVirtualFolder;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
@@ -214,10 +215,14 @@ public class BookmarksView extends ViewPart {
 				eventBroker,
 				bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(),
 				bookmarkDatabase.getBookmarksTree().getRootFolder().getId(), 10);
+		LatestVisitedBookmarksVirtualFolder latestVisitedBookmarksVirtualFolder = new LatestVisitedBookmarksVirtualFolder(
+				eventBroker,
+				bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(),
+				bookmarkDatabase.getBookmarksTree().getRootFolder().getId(), 10);
 		IGotoBookmark gotoBookmark = BookmarksPlugin.getGotoBookmark();
 		bookmarksTreeViewer = new BookmarksTreeViewer(parent, bookmarkDatabase, defaultBookmarkFolderManager,
 				remoteBookmarksStoreManager, bookmarkPropertiesProvider, gotoBookmark,
-				Lists.newArrayList(mostVisitedBookmarksVirtualFolder));
+				Lists.newArrayList(mostVisitedBookmarksVirtualFolder, latestVisitedBookmarksVirtualFolder));
 		drillDownAdapter = new DrillDownAdapter(bookmarksTreeViewer);
 		bookmarksTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 

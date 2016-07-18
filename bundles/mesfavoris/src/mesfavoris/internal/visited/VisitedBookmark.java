@@ -1,5 +1,7 @@
 package mesfavoris.internal.visited;
 
+import java.time.Instant;
+
 import mesfavoris.model.BookmarkId;
 
 /**
@@ -11,10 +13,12 @@ import mesfavoris.model.BookmarkId;
 public class VisitedBookmark {
 	private final BookmarkId bookmarkId;
 	private final int visitCount;
+	private final Instant latestVisit;
 
-	public VisitedBookmark(BookmarkId bookmarkId, int visitCount) {
+	public VisitedBookmark(BookmarkId bookmarkId, int visitCount, Instant latestVisit) {
 		this.bookmarkId = bookmarkId;
 		this.visitCount = visitCount;
+		this.latestVisit = latestVisit;
 	}
 
 	public BookmarkId getBookmarkId() {
@@ -25,12 +29,15 @@ public class VisitedBookmark {
 		return visitCount;
 	}
 
+	public Instant getLatestVisit() {
+		return latestVisit;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((bookmarkId == null) ? 0 : bookmarkId.hashCode());
-		result = prime * result + visitCount;
 		return result;
 	}
 
@@ -47,8 +54,6 @@ public class VisitedBookmark {
 			if (other.bookmarkId != null)
 				return false;
 		} else if (!bookmarkId.equals(other.bookmarkId))
-			return false;
-		if (visitCount != other.visitCount)
 			return false;
 		return true;
 	}

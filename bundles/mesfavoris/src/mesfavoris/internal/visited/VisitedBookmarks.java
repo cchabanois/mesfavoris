@@ -12,38 +12,50 @@ import org.javimmutable.collections.util.JImmutables;
 import mesfavoris.model.BookmarkId;
 
 /**
- * Immutable Map of <BookmarkId, VisitedBookmark> but with getSet returning an ordered
- * set of {@link VisitedBookmark}
+ * Immutable Map of <BookmarkId, VisitedBookmark> but with getSet returning an
+ * ordered set of {@link VisitedBookmark}
  */
 public class VisitedBookmarks {
-	private final JImmutableSet<VisitedBookmark> set;
+	private final JImmutableSet<VisitedBookmark> byVisitCountSet;
+	private final JImmutableSet<VisitedBookmark> byLatestVisitSet;
 	private final JImmutableMap<BookmarkId, VisitedBookmark> map;
 
 	public VisitedBookmarks() {
-		set = JImmutables.sortedSet(new Comparator<VisitedBookmark>() {
-
-			@Override
-			public int compare(VisitedBookmark b1, VisitedBookmark b2) {
-				int result = b2.getVisitCount() - b1.getVisitCount();
-				if (result == 0) {
-					return b2.getBookmarkId().toString().compareTo(b1.getBookmarkId().toString());
-				} else {
-					return result;
-				}
+		Comparator<VisitedBookmark> comparator = (b1, b2) -> {
+			int result = b2.getVisitCount() - b1.getVisitCount();
+			if (result == 0) {
+				return b2.getBookmarkId().toString().compareTo(b1.getBookmarkId().toString());
+			} else {
+				return result;
 			}
-			
-		});
+		};
+		byVisitCountSet = JImmutables.sortedSet(comparator);
+		comparator = (b1, b2) -> {
+			int result = b2.getLatestVisit().compareTo(b1.getLatestVisit());
+			if (result == 0) {
+				return b2.getBookmarkId().toString().compareTo(b1.getBookmarkId().toString());
+			} else {
+				return result;
+			}
+		};
+		byLatestVisitSet = JImmutables.sortedSet(comparator);
 		map = JImmutables.map();
 	}
 
 	public List<BookmarkId> getMostVisitedBookmarks(int count) {
-		return getSet().stream().map(visitedBookmark -> visitedBookmark.getBookmarkId())
-				.limit(count).collect(Collectors.toList());
+		return byVisitCountSet.getSet().stream().map(visitedBookmark -> visitedBookmark.getBookmarkId()).limit(count)
+				.collect(Collectors.toList());
+	}
+
+	public List<BookmarkId> getLatestVisitedBookmarks(int count) {
+		return byLatestVisitSet.getSet().stream().map(visitedBookmark -> visitedBookmark.getBookmarkId()).limit(count)
+				.collect(Collectors.toList());
 	}
 	
-	private VisitedBookmarks(JImmutableSet<VisitedBookmark> set,
-			JImmutableMap<BookmarkId, VisitedBookmark> map) {
-		this.set = set;
+	private VisitedBookmarks(JImmutableSet<VisitedBookmark> byVisitCountSet,
+			JImmutableSet<VisitedBookmark> byLatestVisitSet, JImmutableMap<BookmarkId, VisitedBookmark> map) {
+		this.byVisitCountSet = byVisitCountSet;
+		this.byLatestVisitSet = byLatestVisitSet;
 		this.map = map;
 	}
 
@@ -51,44 +63,50 @@ public class VisitedBookmarks {
 		return map.get(bookmarkId);
 	}
 
-	Set<VisitedBookmark> getSet() {
-		return set.getSet();
+	public Set<VisitedBookmark> getSet() {
+		return byVisitCountSet.getSet();
 	}
 
 	public int size() {
-		return set.size();
+		return byVisitCountSet.size();
 	}
 
 	VisitedBookmarks add(VisitedBookmark visitedBookmark) {
 		JImmutableMap<BookmarkId, VisitedBookmark> newMap = map;
-		JImmutableSet<VisitedBookmark> newSet = set;
+		JImmutableSet<VisitedBookmark> newByVisitCountSet = byVisitCountSet;
+		JImmutableSet<VisitedBookmark> newByLatestVisitSet = byLatestVisitSet;
 		VisitedBookmark oldValue = newMap.get(visitedBookmark.getBookmarkId());
 		newMap = newMap.assign(visitedBookmark.getBookmarkId(), visitedBookmark);
 		if (oldValue != null) {
-			newSet = newSet.delete(oldValue);
+			newByVisitCountSet = newByVisitCountSet.delete(oldValue);
+			newByLatestVisitSet = newByLatestVisitSet.delete(oldValue);
 		}
-		newSet = newSet.insert(visitedBookmark);
-		return newVisitedBookmarks(newSet, newMap);
+		newByVisitCountSet = newByVisitCountSet.insert(visitedBookmark);
+		newByLatestVisitSet = newByLatestVisitSet.insert(visitedBookmark);
+		return newVisitedBookmarks(newByVisitCountSet, newByLatestVisitSet, newMap);
 	}
 
-	private VisitedBookmarks newVisitedBookmarks(JImmutableSet<VisitedBookmark> newSet, JImmutableMap<BookmarkId, VisitedBookmark> newMap) {
-		if (newMap == map && newSet == set) {
+	private VisitedBookmarks newVisitedBookmarks(JImmutableSet<VisitedBookmark> newByVisitCountSet,
+			JImmutableSet<VisitedBookmark> newByLatestVisitSet, JImmutableMap<BookmarkId, VisitedBookmark> newMap) {
+		if (newMap == map && newByVisitCountSet == byVisitCountSet && newByLatestVisitSet == byLatestVisitSet) {
 			return this;
 		} else {
-			return new VisitedBookmarks(newSet, newMap);
+			return new VisitedBookmarks(newByVisitCountSet, newByLatestVisitSet, newMap);
 		}
 	}
-	
+
 	VisitedBookmarks delete(BookmarkId bookmarkId) {
 		VisitedBookmark visitedBookmark = get(bookmarkId);
 		if (visitedBookmark == null) {
 			return this;
 		}
 		JImmutableMap<BookmarkId, VisitedBookmark> newMap = map;
-		JImmutableSet<VisitedBookmark> newSet = set;
+		JImmutableSet<VisitedBookmark> newByVisitCountSet = byVisitCountSet;
+		JImmutableSet<VisitedBookmark> newByLatestVisitSet = byLatestVisitSet;
 		newMap = newMap.delete(bookmarkId);
-		newSet = newSet.delete(visitedBookmark);
-		return newVisitedBookmarks(newSet, newMap);
+		newByVisitCountSet = newByVisitCountSet.delete(visitedBookmark);
+		newByLatestVisitSet = newByLatestVisitSet.delete(visitedBookmark);
+		return newVisitedBookmarks(newByVisitCountSet, newByLatestVisitSet, newMap);
 	}
 
 }

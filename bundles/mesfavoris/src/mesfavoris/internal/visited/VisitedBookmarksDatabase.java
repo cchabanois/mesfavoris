@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -38,6 +39,9 @@ import mesfavoris.topics.BookmarksEvents;
  *
  */
 public class VisitedBookmarksDatabase {
+	private static final String NAME_LATEST_VISIT = "latestVisit";
+	private static final String NAME_VISIT_COUNT = "visitCount";
+	private static final String NAME_BOOKMARK_ID = "bookmarkId";
 	private final AtomicReference<VisitedBookmarks> visitedBookmarksMapReference = new AtomicReference<VisitedBookmarks>(
 			new VisitedBookmarks());
 	private final IBookmarksListener bookmarksListener;
@@ -46,7 +50,7 @@ public class VisitedBookmarksDatabase {
 	private final SaveJob saveJob = new SaveJob();
 	private final IEventBroker eventBroker;
 	private final EventHandler bookmarkVisitedHandler = event -> bookmarkVisited(
-			(BookmarkId) event.getProperty("bookmarkId"));
+			(BookmarkId) event.getProperty(NAME_BOOKMARK_ID));
 
 	public VisitedBookmarksDatabase(IEventBroker eventBroker, BookmarkDatabase bookmarkDatabase,
 			File mostVisitedBookmarksFile) {
@@ -67,7 +71,7 @@ public class VisitedBookmarksDatabase {
 	public void init() {
 		try {
 			load();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			StatusHelper.logError("Could not load most visited bookmarks", e);
 		}
 		bookmarkDatabase.addListener(bookmarksListener);
@@ -76,8 +80,8 @@ public class VisitedBookmarksDatabase {
 
 	public void close() throws InterruptedException {
 		bookmarkDatabase.removeListener(bookmarksListener);
-		eventBroker.unsubscribe(bookmarkVisitedHandler);		
-		do { 
+		eventBroker.unsubscribe(bookmarkVisitedHandler);
+		do {
 			saveJob.join();
 		} while (saveJob.getState() != Job.NONE);
 	}
@@ -96,9 +100,9 @@ public class VisitedBookmarksDatabase {
 			visitedBookmarksMap = visitedBookmarksMapReference.get();
 			VisitedBookmark visitedBookmark = visitedBookmarksMap.get(bookmarkId);
 			if (visitedBookmark == null) {
-				visitedBookmark = new VisitedBookmark(bookmarkId, 1);
+				visitedBookmark = new VisitedBookmark(bookmarkId, 1, Instant.now());
 			} else {
-				visitedBookmark = new VisitedBookmark(bookmarkId, visitedBookmark.getVisitCount() + 1);
+				visitedBookmark = new VisitedBookmark(bookmarkId, visitedBookmark.getVisitCount() + 1, Instant.now());
 			}
 			newVisitedBookmarksMap = visitedBookmarksMap.add(visitedBookmark);
 			if (visitedBookmarksMap == newVisitedBookmarksMap) {
@@ -143,16 +147,31 @@ public class VisitedBookmarksDatabase {
 		VisitedBookmarks visitedBookmarks = new VisitedBookmarks();
 		JsonReader jsonReader = new JsonReader(new FileReader(mostVisitedBookmarksFile));
 		try {
-			jsonReader.beginObject();
+			jsonReader.beginArray();
 			while (jsonReader.hasNext()) {
-				BookmarkId bookmarkId = new BookmarkId(jsonReader.nextName());
-				int count = Integer.parseInt(jsonReader.nextString());
+				jsonReader.beginObject();
+				BookmarkId bookmarkId = null;
+				int count = 1;
+				Instant latestVisit = Instant.now();
+				while (jsonReader.hasNext()) {
+					String name = jsonReader.nextName();
+					if (NAME_BOOKMARK_ID.equals(name)) {
+						bookmarkId = new BookmarkId(jsonReader.nextString());
+					}
+					if (NAME_VISIT_COUNT.equals(name)) {
+						count = jsonReader.nextInt();
+					}
+					if (NAME_LATEST_VISIT.equals(name)) {
+						latestVisit = Instant.parse(jsonReader.nextString());
+					}
+				}
+				jsonReader.endObject();
 				if (bookmarksTree.getBookmark(bookmarkId) != null) {
-					VisitedBookmark visitedBookmark = new VisitedBookmark(bookmarkId, count);
+					VisitedBookmark visitedBookmark = new VisitedBookmark(bookmarkId, count, latestVisit);
 					visitedBookmarks = visitedBookmarks.add(visitedBookmark);
 				}
 			}
-			jsonReader.endObject();
+			jsonReader.endArray();
 			visitedBookmarksMapReference.set(visitedBookmarks);
 		} finally {
 			jsonReader.close();
@@ -165,13 +184,16 @@ public class VisitedBookmarksDatabase {
 		JsonWriter jsonWriter = new JsonWriter(new FileWriter(mostVisitedBookmarksFile));
 		jsonWriter.setIndent("  ");
 		try {
-			jsonWriter.beginObject();
+			jsonWriter.beginArray();
 			for (VisitedBookmark visitedBookmark : visitedBookmarks.getSet()) {
-				jsonWriter.name(visitedBookmark.getBookmarkId().toString());
-				jsonWriter.value(visitedBookmark.getVisitCount());
+				jsonWriter.beginObject();
+				jsonWriter.name(NAME_BOOKMARK_ID).value(visitedBookmark.getBookmarkId().toString());
+				jsonWriter.name(NAME_VISIT_COUNT).value(visitedBookmark.getVisitCount());
+				jsonWriter.name(NAME_LATEST_VISIT).value(visitedBookmark.getLatestVisit().toString());
+				jsonWriter.endObject();
 				monitor.worked(1);
 			}
-			jsonWriter.endObject();
+			jsonWriter.endArray();
 
 		} finally {
 			jsonWriter.close();

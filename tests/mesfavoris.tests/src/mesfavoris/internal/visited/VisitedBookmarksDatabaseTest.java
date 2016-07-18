@@ -22,7 +22,7 @@ import mesfavoris.testutils.BookmarksTreeBuilder;
 import mesfavoris.testutils.IncrementalIDGenerator;
 import mesfavoris.topics.BookmarksEvents;
 
-public class MostVisitedBookmarksTest {
+public class VisitedBookmarksDatabaseTest {
 	private VisitedBookmarksDatabase visitedBookmarksDatabase;
 	private BookmarkDatabase bookmarkDatabase;
 	private File file;
@@ -53,6 +53,7 @@ public class MostVisitedBookmarksTest {
 
 		// When
 		bookmarkVisited(bookmarkId);
+		bookmarkVisited(bookmarkId);
 
 		// Then
 		assertThat(visitedBookmarksDatabase.getVisitedBookmarks().getMostVisitedBookmarks(5)).containsExactly(bookmarkId);
@@ -78,6 +79,31 @@ public class MostVisitedBookmarksTest {
 				bookmarkId2, bookmarkId3);
 	}
 
+	@Test
+	public void testGetLatestVisitedBookmarks() throws Exception {
+		// Given
+		BookmarkId bookmarkId1 = getBookmark(bookmarkDatabase.getBookmarksTree(), 0, 0, 1).getId();
+		BookmarkId bookmarkId2 = getBookmark(bookmarkDatabase.getBookmarksTree(), 0, 0, 2).getId();
+		BookmarkId bookmarkId3 = getBookmark(bookmarkDatabase.getBookmarksTree(), 0, 0, 3).getId();
+
+		// When
+		bookmarkVisited(bookmarkId1);
+		Thread.sleep(50);
+		bookmarkVisited(bookmarkId1);
+		Thread.sleep(50);
+		bookmarkVisited(bookmarkId3);
+		Thread.sleep(50);
+		bookmarkVisited(bookmarkId1);
+		Thread.sleep(50);
+		bookmarkVisited(bookmarkId2);
+		Thread.sleep(50);
+		bookmarkVisited(bookmarkId2);
+
+		// Then
+		assertThat(visitedBookmarksDatabase.getVisitedBookmarks().getLatestVisitedBookmarks(5)).containsExactly(bookmarkId2,
+				bookmarkId1, bookmarkId3);
+	}	
+	
 	@Test
 	public void testBookmarkDeleted() throws Exception {
 		// Given
