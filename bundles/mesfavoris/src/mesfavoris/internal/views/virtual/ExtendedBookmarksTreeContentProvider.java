@@ -9,6 +9,7 @@ import org.eclipse.jface.viewers.Viewer;
 import com.google.common.collect.Lists;
 
 import mesfavoris.internal.views.BookmarksTreeContentProvider;
+import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarksTree;
@@ -92,7 +93,7 @@ public class ExtendedBookmarksTreeContentProvider extends BookmarksTreeContentPr
 
 	@Override
 	public Object getParent(Object child) {
-		if (child instanceof BookmarkFolder) {
+		if (child instanceof Bookmark) {
 			return super.getParent(child);
 		}
 		if (child instanceof VirtualBookmarkFolder) {
