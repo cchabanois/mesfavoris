@@ -9,6 +9,7 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
+import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -19,13 +20,18 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
 import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.internal.views.StylerProvider;
+import mesfavoris.internal.views.virtual.BookmarkLink;
+import mesfavoris.internal.views.virtual.VirtualBookmarkFolder;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkFolder;
 
 public class BookmarksLabelProvider extends StyledCellLabelProvider {
+	private static final String ICON_VIRTUAL_BOOKMARK_FOLDER = "icons/ovr16/virt_ovr.png";
+	private static final String ICON_BOOKMARK_LINK = "icons/ovr16/link_ovr.png";
 	private static final String ELLIPSES = " ... ";
 	private final IBookmarkLabelProvider bookmarkLabelProvider;
 	private final ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
@@ -54,15 +60,15 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider {
 
 	@Override
 	public void update(ViewerCell cell) {
-		Bookmark element = (Bookmark) AdapterUtils.getAdapter(cell.getElement(), Bookmark.class);
-		StyledString styledText = getStyledText(element);
+		StyledString styledText = getStyledText(cell.getElement());
 		cell.setText(styledText.toString());
 		cell.setStyleRanges(styledText.getStyleRanges());
-		cell.setImage(getImage(element));
+		cell.setImage(getImage(cell.getElement()));
 		super.update(cell);
 	}
 
-	private StyledString getStyledText(final Bookmark bookmark) {
+	private StyledString getStyledText(final Object element) {
+		Bookmark bookmark = (Bookmark) AdapterUtils.getAdapter(element, Bookmark.class);
 		String comment = bookmarkCommentProvider.apply(bookmark);
 		boolean hasComment = comment != null && comment.trim().length() > 0;
 		boolean isDisabled = disabledBookmarkPredicate.test(bookmark);
@@ -102,7 +108,8 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider {
 		commentColor.dispose();
 	}
 
-	private Image getImage(final Bookmark bookmark) {
+	private Image getImage(final Object element) {
+		Bookmark bookmark = (Bookmark) AdapterUtils.getAdapter(element, Bookmark.class);
 		Image image = null;
 		if (bookmark instanceof BookmarkFolder) {
 			String imageKey = ISharedImages.IMG_OBJ_FOLDER;
@@ -114,11 +121,25 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider {
 				image = PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
 			}
 		}
-		ImageDescriptor[] overlayImages = bookmarkDecorationProvider.apply(bookmark);
+		ImageDescriptor[] overlayImages = getOverlayImages(element);
 		DecorationOverlayIcon decorated = new DecorationOverlayIcon(image, overlayImages);
 		return (Image) this.resourceManager.get(decorated);
 	}
 
+	private ImageDescriptor[] getOverlayImages(final Object element) {
+		Bookmark bookmark = (Bookmark) AdapterUtils.getAdapter(element, Bookmark.class);
+		ImageDescriptor[] overlayImages = bookmarkDecorationProvider.apply(bookmark);
+		if (element instanceof BookmarkLink) {
+			ImageDescriptor imageDescriptor = BookmarksPlugin.getImageDescriptor(ICON_BOOKMARK_LINK);
+			overlayImages[IDecoration.BOTTOM_RIGHT] = imageDescriptor;
+		}
+		if (element instanceof VirtualBookmarkFolder) {
+			ImageDescriptor imageDescriptor = BookmarksPlugin.getImageDescriptor(ICON_VIRTUAL_BOOKMARK_FOLDER);
+			overlayImages[IDecoration.BOTTOM_RIGHT] = imageDescriptor;
+		}
+		return overlayImages;
+	}
+	
 	public static class DefaultBookmarkCommentProvider implements IBookmarkCommentProvider {
 
 		@Override
