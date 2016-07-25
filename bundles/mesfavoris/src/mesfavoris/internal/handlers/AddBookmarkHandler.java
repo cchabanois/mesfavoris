@@ -1,27 +1,20 @@
 package mesfavoris.internal.handlers;
 
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
-import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.internal.operations.AddBookmarkOperation;
 import mesfavoris.internal.operations.ShowInBookmarksViewOperation;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.workspace.DefaultBookmarkFolderManager;
 
-public class AddBookmarkHandler extends AbstractHandler {
+public class AddBookmarkHandler extends AbstractBookmarkCreationHandler {
 	private final DefaultBookmarkFolderManager defaultBookmarkFolderManager;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
 	private final BookmarkDatabase bookmarkDatabase;
@@ -36,28 +29,15 @@ public class AddBookmarkHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IWorkbenchPart part = HandlerUtil.getActivePart(event);
-		if (part == null) {
-			return null;
-		}
-		ISelection selection;
-		if (part instanceof IEditorPart) {
-			ITextEditor textEditor = AdapterUtils.getAdapter(part, ITextEditor.class);
-			if (textEditor == null) {
-				return null;
-			}
-			selection = textEditor.getSelectionProvider().getSelection();
-			part = textEditor;
-		} else if (part instanceof IViewPart) {
-			selection = HandlerUtil.getCurrentSelection(event);
-		} else {
+		BookmarkCreationOperationContext operationContext = getOperationContext(event);
+		if (operationContext == null) {
 			return null;
 		}
 		AddBookmarkOperation addBookmarkOperation = new AddBookmarkOperation(bookmarkDatabase,
 				bookmarkPropertiesProvider, defaultBookmarkFolderManager);
 		BookmarkId bookmarkId;
 		try {
-			bookmarkId = addBookmarkOperation.addBookmark(part, selection);
+			bookmarkId = addBookmarkOperation.addBookmark(operationContext.part, operationContext.selection);
 		} catch (BookmarksException e) {
 			throw new ExecutionException("Could not add bookmark", e);
 		}
@@ -74,5 +54,7 @@ public class AddBookmarkHandler extends AbstractHandler {
 		}
 		showInBookmarksViewOperation.showInBookmarksView(page, bookmarkId);
 	}
+
+
 
 }

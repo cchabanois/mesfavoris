@@ -70,13 +70,32 @@ public class BookmarksMarkers {
 			BookmarksAddedModification bookmarksAddedModification = (BookmarksAddedModification) event;
 			bookmarksAddedModification.getBookmarks().forEach(b -> bookmarkAdded(b));
 		} else if (event instanceof BookmarkPropertiesModification) {
-			bookmarkModified(null, null, null, null);
+			BookmarkPropertiesModification bookmarkPropertiesModification = (BookmarkPropertiesModification) event;
+			bookmarkModified(bookmarkPropertiesModification.getTargetTree()
+					.getBookmark(bookmarkPropertiesModification.getBookmarkId()));
 		}
 	}
 
-	private void bookmarkModified(Bookmark bookmark, String propertyName, Object oldValue, Object newValue) {
-		// TODO Auto-generated method stub
-
+	private void bookmarkModified(Bookmark bookmarkModified) {
+		IMarker marker = findMarker(bookmarkModified.getId());
+		BookmarkMarkerDescriptor descriptor = bookmarkMarkerAttributesProvider.getMarkerDescriptor(bookmarkModified);
+		try {
+			if (descriptor == null) {
+				if (marker != null) {
+					deleteMarker(marker);
+				}
+				return;
+			}
+			Map attributes = descriptor.getAttributes();
+			attributes.put(BOOKMARK_ID, bookmarkModified.getId().toString());
+			if (marker == null) {
+				createMarker(descriptor.getResource(), attributes);
+			} else {
+				updateMarker(marker, attributes);
+			}
+		} catch (CoreException e) {
+			StatusHelper.logWarn("Could not update marker for bookmark", e);
+		}
 	}
 
 	private void bookmarkAdded(Bookmark bookmarkAdded) {
@@ -141,14 +160,17 @@ public class BookmarksMarkers {
 	private IMarker createMarker(final IResource resource, final Map<String, ? extends Object> attributes)
 			throws CoreException {
 		final IMarker[] marker = new IMarker[1];
-		IWorkspaceRunnable wr = new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) throws CoreException {
-				marker[0] = resource.createMarker(MARKER_TYPE);
-				marker[0].setAttributes(attributes);
-			}
-		};
-		run(getMarkerRule(resource), wr);
+		run(getMarkerRule(resource), monitor -> {
+			marker[0] = resource.createMarker(MARKER_TYPE);
+			marker[0].setAttributes(attributes);
+		});
 		return marker[0];
+	}
+
+	private IMarker updateMarker(final IMarker marker, final Map<String, ? extends Object> attributes)
+			throws CoreException {
+		run(getMarkerRule(marker.getResource()), monitor -> marker.setAttributes(attributes));
+		return marker;
 	}
 
 	private void run(ISchedulingRule rule, IWorkspaceRunnable wr) throws CoreException {

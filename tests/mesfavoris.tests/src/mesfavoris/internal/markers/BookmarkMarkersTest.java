@@ -92,6 +92,24 @@ public class BookmarkMarkersTest {
 	}
 
 	@Test
+	public void testMarkerModifiedWhenBookmarkChanged() throws Exception {
+		// Given
+		importProjectFromTemplate("testMarkerAddedWhenBookmarkAdded", "bookmarkMarkersTest");
+		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(PROP_WORKSPACE_PATH,
+				"/testMarkerAddedWhenBookmarkAdded/file.txt", PROP_LINE_NUMBER, "0"));
+		addBookmark(rootFolderId, bookmark);
+		assertNotNull(bookmarksMarkers.findMarker(bookmark.getId()));
+		
+		// When
+		modifyBookmark(bookmark.getId(), PROP_LINE_NUMBER, "1");
+		IMarker marker = bookmarksMarkers.findMarker(bookmark.getId());
+
+		// Then
+		assertNotNull(marker);
+		assertEquals(2, marker.getAttribute(IMarker.LINE_NUMBER));
+	}
+
+	@Test
 	public void testInvalidMarkersDeletedWhenProjectOpened() throws Exception {
 		// Given
 		importProjectFromTemplate("testInvalidMarkersDeletedWhenProjectOpened", "bookmarkMarkersTest");
@@ -115,7 +133,7 @@ public class BookmarkMarkersTest {
 		bookmarkDatabase.modify(
 				bookmarksTreeModifier -> bookmarksTreeModifier.addBookmarks(parentId, Lists.newArrayList(bookmark)));
 	}
-	
+
 	private void deleteBookmark(BookmarkId bookmarkId) throws BookmarksException {
 		bookmarkDatabase.modify(bookmarksTreeModifier -> bookmarksTreeModifier.deleteBookmark(bookmarkId, false));
 	}
@@ -123,8 +141,13 @@ public class BookmarkMarkersTest {
 	private void deleteBookmarkRecursively(BookmarkId bookmarkId) throws BookmarksException {
 		bookmarkDatabase.modify(bookmarksTreeModifier -> bookmarksTreeModifier.deleteBookmark(bookmarkId, true));
 	}
-	
-	
+
+	private void modifyBookmark(BookmarkId bookmarkId, String propertyName, String propertyValue)
+			throws BookmarksException {
+		bookmarkDatabase.modify(bookmarksTreeModifier -> bookmarksTreeModifier.setPropertyValue(bookmarkId,
+				propertyName, propertyValue));
+	}
+
 	private void importProjectFromTemplate(String projectName, String templateName)
 			throws InvocationTargetException, InterruptedException {
 		Bundle bundle = Platform.getBundle("mesfavoris.tests");

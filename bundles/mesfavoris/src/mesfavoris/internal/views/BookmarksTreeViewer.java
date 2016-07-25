@@ -70,6 +70,7 @@ public class BookmarksTreeViewer extends TreeViewer {
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 		this.gotoBookmark = gotoBookmark;
 		setContentProvider(new ExtendedBookmarksTreeContentProvider(bookmarkDatabase, virtualBookmarkFolders));
+		setUseHashlookup(true);
 		BookmarksLabelProvider bookmarksLabelProvider = getBookmarksLabelProvider();
 		bookmarksLabelProvider.addListener(event -> refresh());
 		setLabelProvider(getBookmarksLabelProvider());

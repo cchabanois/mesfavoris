@@ -65,6 +65,12 @@
             id="mesfavoris.commands.renameBookmark"
             name="Rename bookmark">
       </command>
+      <command
+            defaultHandler="mesfavoris.internal.handlers.UpdateBookmarkHandler"
+            description="Update a Favori"
+            id="mesfavoris.command.updateFavori"
+            name="Update Favori">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -73,6 +79,12 @@
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+@">
+      </key>
+      <key
+            commandId="mesfavoris.command.updateFavori"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+@">
       </key>
    </extension>
    <extension
