@@ -1,5 +1,8 @@
 package mesfavoris.java;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,28 +13,26 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.JavaCore;
 
+import mesfavoris.bookmarktype.AbstractBookmarkMarkerPropertiesProvider;
 import mesfavoris.bookmarktype.BookmarkMarkerDescriptor;
-import mesfavoris.bookmarktype.IBookmarkMarkerAttributesProvider;
 import mesfavoris.java.JavaBookmarkLocationProvider.JavaEditorBookmarkLocation;
 import mesfavoris.model.Bookmark;
 
-public class JavaBookmarkMarkerAttributesProvider implements IBookmarkMarkerAttributesProvider {
+public class JavaBookmarkMarkerAttributesProvider extends AbstractBookmarkMarkerPropertiesProvider {
 
 	private final JavaBookmarkLocationProvider locationProvider;
 
 	public JavaBookmarkMarkerAttributesProvider() {
 		this(new JavaBookmarkLocationProvider());
 	}
-	
-	public JavaBookmarkMarkerAttributesProvider(
-			JavaBookmarkLocationProvider locationProvider) {
+
+	public JavaBookmarkMarkerAttributesProvider(JavaBookmarkLocationProvider locationProvider) {
 		this.locationProvider = locationProvider;
 	}
 
 	@Override
 	public BookmarkMarkerDescriptor getMarkerDescriptor(Bookmark bookmark) {
-		JavaEditorBookmarkLocation location = locationProvider
-				.findLocation(bookmark);
+		JavaEditorBookmarkLocation location = locationProvider.findLocation(bookmark);
 		if (location == null) {
 			return null;
 		}
@@ -40,11 +41,12 @@ public class JavaBookmarkMarkerAttributesProvider implements IBookmarkMarkerAttr
 		}
 		Map attributes = new HashMap();
 		JavaCore.addJavaElementMarkerAttributes(attributes, location.getMember());
-		attributes.put(IMarker.LINE_NUMBER, new Integer(location.getLineNumber()+1));
+		attributes.put(IMarker.LINE_NUMBER, new Integer(location.getLineNumber() + 1));
+		getMessage(bookmark).ifPresent(message->attributes.put(IMarker.MESSAGE, message));
 		IResource resource = getMarkerResource(location.getMember());
 		return new BookmarkMarkerDescriptor(resource, attributes);
 	}
-	
+
 	private IResource getMarkerResource(IMember member) {
 		ICompilationUnit cu = member.getCompilationUnit();
 		if (cu != null && cu.isWorkingCopy()) {

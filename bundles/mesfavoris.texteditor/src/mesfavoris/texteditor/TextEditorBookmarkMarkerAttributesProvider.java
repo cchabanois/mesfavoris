@@ -5,13 +5,13 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IMarker;
 
+import mesfavoris.bookmarktype.AbstractBookmarkMarkerPropertiesProvider;
 import mesfavoris.bookmarktype.BookmarkMarkerDescriptor;
-import mesfavoris.bookmarktype.IBookmarkMarkerAttributesProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.texteditor.TextEditorBookmarkLocationProvider.TextEditorBookmarkLocation;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 
-public class TextEditorBookmarkMarkerAttributesProvider implements IBookmarkMarkerAttributesProvider {
+public class TextEditorBookmarkMarkerAttributesProvider extends AbstractBookmarkMarkerPropertiesProvider {
 
 	private final TextEditorBookmarkLocationProvider textEditorBookmarkLocationProvider;
 
@@ -33,6 +33,7 @@ public class TextEditorBookmarkMarkerAttributesProvider implements IBookmarkMark
 		}
 		Map attributes = new HashMap();
 		attributes.put(IMarker.LINE_NUMBER, new Integer(location.getLineNumber() + 1));
+		getMessage(bookmark).ifPresent(message->attributes.put(IMarker.MESSAGE, message));
 		return new BookmarkMarkerDescriptor(location.getWorkspaceFile(), attributes);
 	}
 
