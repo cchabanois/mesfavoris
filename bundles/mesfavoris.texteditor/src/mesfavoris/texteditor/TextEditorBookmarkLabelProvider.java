@@ -16,24 +16,31 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 
 public class TextEditorBookmarkLabelProvider extends AbstractBookmarkLabelProvider {
-	private final PathPlaceholderResolver pathPlaceholderResolver;
 	private final IEditorRegistry editorRegistry;
 	private final ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
 	
 	public TextEditorBookmarkLabelProvider() {
 		editorRegistry = PlatformUI.getWorkbench().getEditorRegistry();
-		pathPlaceholderResolver = new PathPlaceholderResolver(Activator.getPathPlaceholdersStore());
 	}
 
 	@Override
 	public Image getImage(Object element) {
 		Bookmark bookmark = (Bookmark) element;
 		String pathValue = bookmark.getPropertyValue(PROP_FILE_PATH);
-		IPath path = pathPlaceholderResolver.expand(pathValue);
-		ImageDescriptor imageDescriptor = editorRegistry.getImageDescriptor(path.lastSegment());
+		// we do not need to use pathPlaceholderResolver because we are only interested by the fileName
+		String fileName = getFileName(pathValue);
+		ImageDescriptor imageDescriptor = editorRegistry.getImageDescriptor(fileName);
 		return resourceManager.createImage(imageDescriptor);
 	}
 
+	private String getFileName(String path) {
+		int index = path.lastIndexOf('/')+1;
+		if (index == -1) {
+			return null;
+		}
+		return path.substring(index);
+	}
+	
 	@Override
 	public void dispose() {
 		resourceManager.dispose();
