@@ -15,7 +15,7 @@ public abstract class AbstractBookmarkMarkerPropertiesProvider implements IBookm
 			return Optional.empty();
 		}
 		try (BufferedReader br = new BufferedReader(new StringReader(comment))) {
-			return Optional.of(br.readLine());
+			return Optional.ofNullable(br.readLine());
 		} catch (IOException e) {
 			return Optional.empty();
 		}
