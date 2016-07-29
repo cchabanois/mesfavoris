@@ -46,8 +46,9 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
+            categoryId="mesfavoris.category"
             defaultHandler="mesfavoris.internal.handlers.AddBookmarkHandler"
-            description="Add a Favori"
+            description="Add a Bookmark"
             id="mesfavoris.command.addFavori"
             name="Add Favori">
       </command>
@@ -66,11 +67,16 @@
             name="Rename bookmark">
       </command>
       <command
+            categoryId="mesfavoris.category"
             defaultHandler="mesfavoris.internal.handlers.UpdateBookmarkHandler"
-            description="Update a Favori"
+            description="Update a Bookmark"
             id="mesfavoris.command.updateFavori"
             name="Update Favori">
       </command>
+      <category
+            id="mesfavoris.category"
+            name="Mes Favoris">
+      </category>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
