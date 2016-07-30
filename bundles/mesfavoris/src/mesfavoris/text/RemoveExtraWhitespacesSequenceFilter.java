@@ -1,6 +1,4 @@
-package mesfavoris.text.matching;
-
-import mesfavoris.text.matching.FilteredCharSequence.ICharSequenceFilter;
+package mesfavoris.text;
 
 public class RemoveExtraWhitespacesSequenceFilter implements ICharSequenceFilter {
 

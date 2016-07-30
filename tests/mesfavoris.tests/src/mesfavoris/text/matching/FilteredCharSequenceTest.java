@@ -9,7 +9,8 @@ import org.junit.Test;
 
 import com.google.common.io.CharStreams;
 
-import mesfavoris.text.matching.FilteredCharSequence.ICharSequenceFilter;
+import mesfavoris.text.FilteredCharSequence;
+import mesfavoris.text.ICharSequenceFilter;
 
 public class FilteredCharSequenceTest {
 
@@ -24,6 +25,16 @@ public class FilteredCharSequenceTest {
 		return index;
 	};
 
+	private final ICharSequenceFilter noFilter = (charSequence, index) -> index;
+	
+	@Test
+	public void testNoFilter() {
+		assertEquals("this is a string", new FilteredCharSequence("this is a string", noFilter).toString());
+		assertEquals(" this is a string ", new FilteredCharSequence(" this is a string ", noFilter).toString());
+		assertEquals("    this    is  a string   ",
+				new FilteredCharSequence("    this    is  a string   ", noFilter).toString());	
+	}
+	
 	@Test
 	public void testFilteredCharSequenceContainsOnlyFilteredChars() {
 		assertEquals("thisisastring", new FilteredCharSequence("this is a string", removeWhiteCharsFilter).toString());

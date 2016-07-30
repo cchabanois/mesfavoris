@@ -10,8 +10,10 @@ import org.junit.Test;
 
 import com.google.common.io.CharStreams;
 
-public class BitapBigIntegerStringMatcherTest {
-	private BitapBigIntegerStringMatcher matcher;
+import mesfavoris.text.RemoveExtraWhitespacesSequenceFilter;
+
+public class FuzzyFilteredStringMatcherTest {
+	private FuzzyFilteredStringMatcher matcher;
 	private String text;
 
 	@Before
@@ -19,15 +21,14 @@ public class BitapBigIntegerStringMatcherTest {
 		text = CharStreams.toString(
 				new InputStreamReader(this.getClass().getResourceAsStream("AbstractDocument.java.txt"), "UTF-8"));
 
-		matcher = new BitapBigIntegerStringMatcher(new DistanceMatchScoreComputer(10000));
+		matcher = new FuzzyFilteredStringMatcher(new FuzzyStringMatcher(0.5f, new DistanceMatchScoreComputer(10000)),
+				new RemoveExtraWhitespacesSequenceFilter());
 	}
 
 	@Test
 	public void testFind() {
-		int match = matcher.find(text,
-				"RegisteredReplace(IDocumentListener docListener, IDocumentExtension.IReplace replace) {", 30,
+		int match = matcher.find(text, "    while (position != null  &&  position.offset == offset) {", 12790,
 				new NullProgressMonitor());
-		assertThat(text.substring(match))
-				.startsWith("RegisteredReplace(IDocumentListener owner, IDocumentExtension.IReplace replace) {");
+		assertThat(text.substring(match, match + 100).trim()).startsWith("while (p != null && p.offset == offset) {");
 	}
 }

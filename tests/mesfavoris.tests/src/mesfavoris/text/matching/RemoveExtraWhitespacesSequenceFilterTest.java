@@ -9,7 +9,9 @@ import org.junit.Test;
 
 import com.google.common.io.CharStreams;
 
-import mesfavoris.text.matching.FilteredCharSequence.ICharSequenceFilter;
+import mesfavoris.text.FilteredCharSequence;
+import mesfavoris.text.ICharSequenceFilter;
+import mesfavoris.text.RemoveExtraWhitespacesSequenceFilter;
 
 public class RemoveExtraWhitespacesSequenceFilterTest {
 

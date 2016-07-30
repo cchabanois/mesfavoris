@@ -1,4 +1,4 @@
-package mesfavoris.text.matching;
+package mesfavoris.text;
 
 public class CharSubSequence implements CharSequence {
 

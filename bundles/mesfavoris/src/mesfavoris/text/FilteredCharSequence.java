@@ -1,4 +1,4 @@
-package mesfavoris.text.matching;
+package mesfavoris.text;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -125,20 +125,6 @@ public class FilteredCharSequence implements CharSequence {
 		StringBuilder sb = new StringBuilder(length);
 		sb.append(this);
 		return sb.toString();
-	}
-
-	public static interface ICharSequenceFilter {
-
-		/**
-		 * return the next included char
-		 * 
-		 * @param index
-		 * @return index if charSequence.charAt(index) should be included, next
-		 *         included char index otherwise, charSequence.length if there
-		 *         is no char to include anymore
-		 */
-		int nextCharIndex(CharSequence charSequence, int index);
-
 	}
 
 }
