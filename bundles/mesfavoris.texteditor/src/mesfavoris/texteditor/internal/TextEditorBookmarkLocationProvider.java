@@ -1,4 +1,4 @@
-package mesfavoris.texteditor;
+package mesfavoris.texteditor.internal;
 
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FILE_PATH;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_NUMBER;

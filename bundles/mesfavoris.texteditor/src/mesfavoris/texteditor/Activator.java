@@ -1,6 +1,6 @@
 package mesfavoris.texteditor;
 
-import static mesfavoris.texteditor.Constants.PLACEHOLDER_HOME_NAME;
+import static mesfavoris.texteditor.internal.Constants.PLACEHOLDER_HOME_NAME;
 
 import java.io.File;
 

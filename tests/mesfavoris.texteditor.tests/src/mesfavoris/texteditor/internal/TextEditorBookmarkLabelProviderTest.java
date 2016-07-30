@@ -1,4 +1,4 @@
-package mesfavoris.texteditor;
+package mesfavoris.texteditor.internal;
 
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FILE_PATH;
 import static org.junit.Assert.assertNotNull;
@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableMap;
 
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
+import mesfavoris.texteditor.internal.TextEditorBookmarkLabelProvider;
 
 public class TextEditorBookmarkLabelProviderTest {
 	private TextEditorBookmarkLabelProvider labelProvider;

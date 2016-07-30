@@ -1,9 +1,10 @@
-package mesfavoris.texteditor;
+package mesfavoris.texteditor.internal;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.statushandlers.StatusManager;
 
 import mesfavoris.commons.ui.statushandlers.PluginStatusManager;
+import mesfavoris.texteditor.Activator;
 
 /**
  * Helper that uses StatusManager to handle statuses.

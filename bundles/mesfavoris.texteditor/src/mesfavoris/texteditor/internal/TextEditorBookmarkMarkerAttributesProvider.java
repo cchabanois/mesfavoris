@@ -1,4 +1,4 @@
-package mesfavoris.texteditor;
+package mesfavoris.texteditor.internal;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +8,8 @@ import org.eclipse.core.resources.IMarker;
 import mesfavoris.bookmarktype.AbstractBookmarkMarkerPropertiesProvider;
 import mesfavoris.bookmarktype.BookmarkMarkerDescriptor;
 import mesfavoris.model.Bookmark;
-import mesfavoris.texteditor.TextEditorBookmarkLocationProvider.TextEditorBookmarkLocation;
+import mesfavoris.texteditor.Activator;
+import mesfavoris.texteditor.internal.TextEditorBookmarkLocationProvider.TextEditorBookmarkLocation;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 
 public class TextEditorBookmarkMarkerAttributesProvider extends AbstractBookmarkMarkerPropertiesProvider {

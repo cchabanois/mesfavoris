@@ -1,4 +1,4 @@
-package mesfavoris.texteditor;
+package mesfavoris.texteditor.internal;
 
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROPERTY_NAME;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FILE_PATH;
@@ -17,6 +17,7 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
 import mesfavoris.commons.core.AdapterUtils;
+import mesfavoris.texteditor.Activator;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 
 public class FileBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {

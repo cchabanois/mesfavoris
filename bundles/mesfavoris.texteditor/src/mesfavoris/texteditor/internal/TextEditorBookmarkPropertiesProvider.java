@@ -1,7 +1,8 @@
-package mesfavoris.texteditor;
+package mesfavoris.texteditor.internal;
 
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROPERTY_NAME;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FILE_PATH;
+import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_CONTENT;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_NUMBER;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_PROJECT_NAME;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_WORKSPACE_PATH;
@@ -16,6 +17,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorInput;
@@ -25,6 +29,7 @@ import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
+import mesfavoris.texteditor.Activator;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 
 public class TextEditorBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {
@@ -51,6 +56,7 @@ public class TextEditorBookmarkPropertiesProvider extends AbstractBookmarkProper
 			ITextSelection textSelection) {
 		int lineNumber = textSelection.getStartLine();
 		addLineNumber(properties, lineNumber);
+		addLineContent(properties, textEditor, lineNumber);
 		addWorkspacePath(properties, textEditor);
 		IPath filePath = getFilePath(textEditor);
 		if (filePath != null) {
@@ -63,6 +69,14 @@ public class TextEditorBookmarkPropertiesProvider extends AbstractBookmarkProper
 				}
 			});
 		}
+	}
+
+	private void addLineContent(Map<String, String> properties, ITextEditor textEditor, int lineNumber) {
+		String content = getLineContent(textEditor, lineNumber);
+		if (content == null) {
+			return;
+		}
+		putIfAbsent(properties, PROP_LINE_CONTENT, content.trim());
 	}
 
 	private void addLineNumber(Map<String, String> properties, int lineNumber) {
@@ -106,4 +120,15 @@ public class TextEditorBookmarkPropertiesProvider extends AbstractBookmarkProper
 		}
 	}
 
+	private String getLineContent(ITextEditor textEditor, int lineNumber) {
+		try {
+			IDocument document = (IDocument) textEditor.getAdapter(IDocument.class);
+			IRegion region = document.getLineInformation(lineNumber);
+			return document.get(region.getOffset(), region.getLength());
+		} catch (BadLocationException e) {
+			return null;
+		}
+
+	}
+	
 }

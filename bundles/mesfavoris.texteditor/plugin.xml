@@ -4,27 +4,27 @@
    <extension
          point="mesfavoris.bookmarkType">
       <gotoBookmark
-            class="mesfavoris.texteditor.GotoExternalFileBookmark"
+            class="mesfavoris.texteditor.internal.GotoExternalFileBookmark"
             priority="100">
       </gotoBookmark>
       <gotoBookmark
-            class="mesfavoris.texteditor.GotoWorkspaceFileBookmark"
+            class="mesfavoris.texteditor.internal.GotoWorkspaceFileBookmark"
             priority="100">
       </gotoBookmark>
       <markerAttributesProvider
-            class="mesfavoris.texteditor.TextEditorBookmarkMarkerAttributesProvider"
+            class="mesfavoris.texteditor.internal.TextEditorBookmarkMarkerAttributesProvider"
             priority="100">
       </markerAttributesProvider>
       <propertiesProvider
-            class="mesfavoris.texteditor.TextEditorBookmarkPropertiesProvider"
+            class="mesfavoris.texteditor.internal.TextEditorBookmarkPropertiesProvider"
             priority="100">
       </propertiesProvider>
       <labelProvider
-            class="mesfavoris.texteditor.TextEditorBookmarkLabelProvider"
+            class="mesfavoris.texteditor.internal.TextEditorBookmarkLabelProvider"
             priority="10">
       </labelProvider>
       <propertiesProvider
-            class="mesfavoris.texteditor.FileBookmarkPropertiesProvider"
+            class="mesfavoris.texteditor.internal.FileBookmarkPropertiesProvider"
             priority="10">
       </propertiesProvider>
    </extension>

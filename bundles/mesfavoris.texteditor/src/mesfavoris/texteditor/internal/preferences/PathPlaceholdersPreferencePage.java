@@ -1,6 +1,6 @@
 package mesfavoris.texteditor.internal.preferences;
 
-import static mesfavoris.texteditor.Constants.PLACEHOLDER_HOME_NAME;
+import static mesfavoris.texteditor.internal.Constants.PLACEHOLDER_HOME_NAME;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.PreferencePage;

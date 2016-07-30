@@ -18,3 +18,5 @@ Require-Bundle: mesfavoris;bundle-version="1.0.0",
  mesfavoris.commons;bundle-version="1.0.0"
 Bundle-Activator: mesfavoris.texteditor.Activator
 Bundle-ActivationPolicy: lazy
+Export-Package: mesfavoris.texteditor,
+ mesfavoris.texteditor.placeholders

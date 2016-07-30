@@ -1,4 +1,4 @@
-package mesfavoris.texteditor;
+package mesfavoris.texteditor.internal;
 
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FILE_PATH;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_NUMBER;
@@ -18,6 +18,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.model.Bookmark;
+import mesfavoris.texteditor.Activator;
+import mesfavoris.texteditor.TextEditorUtils;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 
 public class GotoExternalFileBookmark implements IGotoBookmark {
