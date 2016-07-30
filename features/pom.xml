@@ -15,6 +15,7 @@
 
 	<modules>
 		<module>mesfavoris.feature</module>
+		<module>mesfavoris.perforce.feature</module>
 	</modules>
 
 </project>
