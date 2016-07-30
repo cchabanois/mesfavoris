@@ -45,10 +45,9 @@
       <import plugin="org.eclipse.jface.text" version="3.9.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.9.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.106.0" match="greaterOrEqual"/>
-      <import plugin="com.perforce.team.core" version="2013.1.723553" match="greaterOrEqual"/>
-      <import plugin="com.perforce.team.ui" version="2013.1.723553" match="greaterOrEqual"/>
       <import plugin="org.jsoup" version="1.7.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.swt" version="3.103.1" match="greaterOrEqual"/>
+      <import plugin="mesfavoris.commons" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
