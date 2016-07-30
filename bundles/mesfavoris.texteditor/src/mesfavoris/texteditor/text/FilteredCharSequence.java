@@ -1,4 +1,4 @@
-package mesfavoris.text;
+package mesfavoris.texteditor.text;
 
 import java.util.Map;
 import java.util.TreeMap;

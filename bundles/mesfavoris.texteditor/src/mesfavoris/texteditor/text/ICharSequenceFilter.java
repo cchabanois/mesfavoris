@@ -1,4 +1,4 @@
-package mesfavoris.text;
+package mesfavoris.texteditor.text;
 
 public interface ICharSequenceFilter {
 

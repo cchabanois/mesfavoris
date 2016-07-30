@@ -1,4 +1,4 @@
-package mesfavoris.text.matching;
+package mesfavoris.texteditor.text.matching;
 
 public interface IMatchScoreComputer {
 

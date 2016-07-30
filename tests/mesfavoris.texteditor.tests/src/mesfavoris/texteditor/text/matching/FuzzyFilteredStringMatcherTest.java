@@ -1,4 +1,4 @@
-package mesfavoris.text.matching;
+package mesfavoris.texteditor.text.matching;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,7 +10,10 @@ import org.junit.Test;
 
 import com.google.common.io.CharStreams;
 
-import mesfavoris.text.RemoveExtraWhitespacesSequenceFilter;
+import mesfavoris.texteditor.text.RemoveExtraWhitespacesSequenceFilter;
+import mesfavoris.texteditor.text.matching.DistanceMatchScoreComputer;
+import mesfavoris.texteditor.text.matching.FuzzyFilteredStringMatcher;
+import mesfavoris.texteditor.text.matching.FuzzyStringMatcher;
 
 public class FuzzyFilteredStringMatcherTest {
 	private FuzzyFilteredStringMatcher matcher;

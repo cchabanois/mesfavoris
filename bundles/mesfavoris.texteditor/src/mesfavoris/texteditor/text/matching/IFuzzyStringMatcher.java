@@ -1,4 +1,4 @@
-package mesfavoris.text.matching;
+package mesfavoris.texteditor.text.matching;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 

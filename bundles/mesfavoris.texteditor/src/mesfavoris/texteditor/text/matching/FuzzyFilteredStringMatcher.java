@@ -1,9 +1,9 @@
-package mesfavoris.text.matching;
+package mesfavoris.texteditor.text.matching;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import mesfavoris.text.FilteredCharSequence;
-import mesfavoris.text.ICharSequenceFilter;
+import mesfavoris.texteditor.text.FilteredCharSequence;
+import mesfavoris.texteditor.text.ICharSequenceFilter;
 
 /**
  * A fuzzy string matcher that filters the text (removing whitespaces for ex)

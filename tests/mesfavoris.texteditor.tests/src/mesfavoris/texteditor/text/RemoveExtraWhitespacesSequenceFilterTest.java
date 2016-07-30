@@ -1,4 +1,4 @@
-package mesfavoris.text.matching;
+package mesfavoris.texteditor.text;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -9,9 +9,9 @@ import org.junit.Test;
 
 import com.google.common.io.CharStreams;
 
-import mesfavoris.text.FilteredCharSequence;
-import mesfavoris.text.ICharSequenceFilter;
-import mesfavoris.text.RemoveExtraWhitespacesSequenceFilter;
+import mesfavoris.texteditor.text.FilteredCharSequence;
+import mesfavoris.texteditor.text.ICharSequenceFilter;
+import mesfavoris.texteditor.text.RemoveExtraWhitespacesSequenceFilter;
 
 public class RemoveExtraWhitespacesSequenceFilterTest {
 
@@ -41,19 +41,5 @@ public class RemoveExtraWhitespacesSequenceFilterTest {
 		// Then
 		assertEquals(expectedTarget, target.toString());
 	}
-	
-	@Test
-	public void testFilterDocument() throws Exception {
-		// Given
-		String source = CharStreams.toString(
-				new InputStreamReader(this.getClass().getResourceAsStream("AbstractDocument.java.txt"), "UTF-8"));
 		
-		// When
-		FilteredCharSequence target = new FilteredCharSequence(source, new RemoveExtraWhitespacesSequenceFilter());
-		
-		// Then
-//		System.out.println(target.toString());
-		assertTrue(target.length() < source.length());
-	}	
-	
 }

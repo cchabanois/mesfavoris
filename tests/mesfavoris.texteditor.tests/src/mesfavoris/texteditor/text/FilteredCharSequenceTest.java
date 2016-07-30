@@ -1,4 +1,4 @@
-package mesfavoris.text.matching;
+package mesfavoris.texteditor.text;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -9,8 +9,8 @@ import org.junit.Test;
 
 import com.google.common.io.CharStreams;
 
-import mesfavoris.text.FilteredCharSequence;
-import mesfavoris.text.ICharSequenceFilter;
+import mesfavoris.texteditor.text.FilteredCharSequence;
+import mesfavoris.texteditor.text.ICharSequenceFilter;
 
 public class FilteredCharSequenceTest {
 
@@ -86,19 +86,6 @@ public class FilteredCharSequenceTest {
 		for (int i = 0; i < target.length(); i++) {
 			assertEquals(target.charAt(i), source.charAt(target.getParentIndex(i)));
 		}
-	}
-
-	@Test
-	public void testFilterDocument() throws Exception {
-		// Given
-		String source = CharStreams.toString(
-				new InputStreamReader(this.getClass().getResourceAsStream("AbstractDocument.java.txt"), "UTF-8"));
-		
-		// When
-		FilteredCharSequence target = new FilteredCharSequence(source, removeWhiteCharsFilter);
-		
-		// Then
-		assertTrue(target.length() < source.length());
 	}
 	
 }

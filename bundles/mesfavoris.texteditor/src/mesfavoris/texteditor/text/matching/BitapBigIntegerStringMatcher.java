@@ -1,4 +1,4 @@
-package mesfavoris.text.matching;
+package mesfavoris.texteditor.text.matching;
 
 import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.ZERO;

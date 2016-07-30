@@ -1,4 +1,4 @@
-package mesfavoris.text;
+package mesfavoris.texteditor.text;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;

@@ -1,4 +1,4 @@
-package mesfavoris.text;
+package mesfavoris.texteditor.text;
 
 /**
  * Lower case view from a parent {@link CharSequence}

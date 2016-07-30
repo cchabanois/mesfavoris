@@ -1,4 +1,4 @@
-package mesfavoris.text.matching;
+package mesfavoris.texteditor.text.matching;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,8 +10,11 @@ import org.junit.Test;
 
 import com.google.common.io.CharStreams;
 
-public class BitapStringMatcherTest {
-	private BitapStringMatcher matcher;
+import mesfavoris.texteditor.text.matching.BitapBigIntegerStringMatcher;
+import mesfavoris.texteditor.text.matching.DistanceMatchScoreComputer;
+
+public class BitapBigIntegerStringMatcherTest {
+	private BitapBigIntegerStringMatcher matcher;
 	private String text;
 
 	@Before
@@ -19,14 +22,15 @@ public class BitapStringMatcherTest {
 		text = CharStreams.toString(
 				new InputStreamReader(this.getClass().getResourceAsStream("AbstractDocument.java.txt"), "UTF-8"));
 
-		matcher = new BitapStringMatcher(new DistanceMatchScoreComputer(10000));
+		matcher = new BitapBigIntegerStringMatcher(new DistanceMatchScoreComputer(10000));
 	}
 
 	@Test
 	public void testFind() {
-		int match = matcher.find(text, "RegisteredReplace(IDocumentListener docListener", 30, new NullProgressMonitor());
+		int match = matcher.find(text,
+				"RegisteredReplace(IDocumentListener docListener, IDocumentExtension.IReplace replace) {", 30,
+				new NullProgressMonitor());
 		assertThat(text.substring(match))
 				.startsWith("RegisteredReplace(IDocumentListener owner, IDocumentExtension.IReplace replace) {");
 	}
-
 }
