@@ -161,6 +161,7 @@ public class VisitedBookmarksDatabaseTest {
 		bookmarkVisited(bookmarkId2);
 
 		// When
+		Thread.sleep(2000); // should not be necessary but test fails on assertThat on travis too often
 		visitedBookmarksDatabase.close();
 		visitedBookmarksDatabase = new VisitedBookmarksDatabase(eventBroker, bookmarkDatabase, file);
 		visitedBookmarksDatabase.init();
