@@ -4,12 +4,12 @@
    <extension
          point="mesfavoris.bookmarkType">
       <gotoBookmark
-            class="mesfavoris.texteditor.internal.GotoExternalFileBookmark"
+            class="mesfavoris.texteditor.internal.GotoWorkspaceFileBookmark"
             priority="100">
       </gotoBookmark>
       <gotoBookmark
-            class="mesfavoris.texteditor.internal.GotoWorkspaceFileBookmark"
-            priority="100">
+            class="mesfavoris.texteditor.internal.GotoExternalFileBookmark"
+            priority="101">
       </gotoBookmark>
       <markerAttributesProvider
             class="mesfavoris.texteditor.internal.TextEditorBookmarkMarkerAttributesProvider"

@@ -25,7 +25,12 @@ public class FuzzyFilteredStringMatcher implements IFuzzyStringMatcher {
 	public int find(CharSequence text, String pattern, int expectedLocation, IProgressMonitor monitor) {
 		FilteredCharSequence filteredCharSequence = new FilteredCharSequence(text, filter);
 		String filteredPattern = new FilteredCharSequence(pattern, filter).toString();
-		int filteredExpectedLocation = filteredCharSequence.getIndex(expectedLocation);
+		int filteredExpectedLocation;
+		if (expectedLocation == -1) {
+			filteredExpectedLocation = -1;
+		} else {
+			filteredExpectedLocation = filteredCharSequence.getIndex(expectedLocation);
+		}
 		int filteredIndex = fuzzyStringMatcher.find(filteredCharSequence, filteredPattern, filteredExpectedLocation,
 				monitor);
 		return filteredCharSequence.getParentIndex(filteredIndex);

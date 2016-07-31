@@ -10,7 +10,7 @@ public interface IMatchScoreComputer {
 	 * @param matchLocation
 	 *            Location of match.
 	 * @param expectedLocation
-	 *            Expected location of match.
+	 *            Expected location of match, -1 if unknown.
 	 * @param pattern
 	 *            Pattern being sought.
 	 * @return Overall score for match (0.0 = good, 1.0 = bad).

@@ -1,5 +1,7 @@
 package mesfavoris.texteditor.text;
 
+import org.eclipse.jface.text.IRegion;
+
 public class CharSubSequence implements CharSequence {
 
 	private final int offset;
@@ -20,6 +22,12 @@ public class CharSubSequence implements CharSequence {
 		this.length = end - start;
 	}
 
+	public CharSubSequence(CharSequence parent, IRegion region) {
+		this.parent = parent;
+		this.offset = region.getOffset();
+		this.length = region.getLength();
+	}
+	
 	@Override
 	public int length() {
 		return length;

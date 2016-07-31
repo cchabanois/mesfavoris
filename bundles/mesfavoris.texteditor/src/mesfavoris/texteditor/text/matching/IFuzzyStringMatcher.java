@@ -13,7 +13,7 @@ public interface IFuzzyStringMatcher {
 	 * @param pattern
 	 *            The pattern to search for.
 	 * @param expectedLocation
-	 *            The location to search around.
+	 *            The location to search around, -1 if unknown.
 	 * @param monitor
 	 * @return Best match index or -1.
 	 */	

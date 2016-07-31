@@ -1,5 +1,12 @@
 package mesfavoris.texteditor.text.matching;
 
+/**
+ * An {@link IMatchScoreComputer} that considers both the error count and the
+ * distance to the expected location
+ * 
+ * @author cchabanois
+ *
+ */
 public class DistanceMatchScoreComputer implements IMatchScoreComputer {
 	private final int matchDistance;
 
@@ -18,6 +25,9 @@ public class DistanceMatchScoreComputer implements IMatchScoreComputer {
 	@Override
 	public double score(int errorsCount, int matchLocation, int expectedLocation, String pattern) {
 		float accuracy = (float) errorsCount / pattern.length();
+		if (expectedLocation == -1) {
+			return accuracy;
+		}
 		int proximity = Math.abs(expectedLocation - matchLocation);
 		if (matchDistance == 0) {
 			// Dodge divide by zero error.
