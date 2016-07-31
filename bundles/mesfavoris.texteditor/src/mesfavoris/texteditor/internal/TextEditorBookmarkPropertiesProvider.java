@@ -26,6 +26,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.ide.ResourceUtil;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
@@ -122,7 +123,8 @@ public class TextEditorBookmarkPropertiesProvider extends AbstractBookmarkProper
 
 	private String getLineContent(ITextEditor textEditor, int lineNumber) {
 		try {
-			IDocument document = (IDocument) textEditor.getAdapter(IDocument.class);
+			IDocumentProvider provider = textEditor.getDocumentProvider();
+			IDocument document = provider.getDocument(textEditor.getEditorInput());
 			IRegion region = document.getLineInformation(lineNumber);
 			return document.get(region.getOffset(), region.getLength());
 		} catch (BadLocationException e) {
