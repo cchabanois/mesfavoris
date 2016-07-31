@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.egit.core.project.RepositoryMapping;
 import org.eclipse.jface.viewers.ISelection;
@@ -26,7 +27,7 @@ public class GitProjectPropertiesProvider extends AbstractBookmarkPropertiesProv
 		if (project == null) {
 			return;
 		}
-		RepositoryMapping mapping = RepositoryMapping.getMapping(project);
+		RepositoryMapping mapping = RepositoryMapping.getMapping((IResource)project);
 		if (mapping == null) {
 			return;
 		}
