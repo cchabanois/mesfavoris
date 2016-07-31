@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -11,6 +13,7 @@ import org.eclipse.ui.PlatformUI;
 import com.google.common.collect.ImmutableMap;
 
 import mesfavoris.BookmarksPlugin;
+import mesfavoris.StatusHelper;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.internal.markers.BookmarksMarkers;
 import mesfavoris.model.Bookmark;
@@ -39,13 +42,28 @@ public class GotoBookmark implements IGotoBookmark {
 	@Override
 	public boolean gotoBookmark(IWorkbenchWindow window, Bookmark bookmark) {
 		for (IGotoBookmark gotoBookmark : gotoBookmarks) {
-			if (gotoBookmark.gotoBookmark(window, bookmark)) {
+			if (gotoBookmark(gotoBookmark, window, bookmark)) {
 				addMarkerIfMissing(bookmark);
 				postBookmarkVisited(bookmark.getId());
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private boolean gotoBookmark(IGotoBookmark gotoBookmark, IWorkbenchWindow window, Bookmark bookmark) {
+		final boolean[] result = new boolean[] { false };
+		SafeRunner.run(new ISafeRunnable() {
+
+			public void run() throws Exception {
+				result[0] = gotoBookmark.gotoBookmark(window, bookmark);
+			}
+
+			public void handleException(Throwable exception) {
+				StatusHelper.logError("Error during gotoBookmark", exception);
+			}
+		});
+		return result[0];
 	}
 
 	protected void postBookmarkVisited(BookmarkId bookmarkId) {
