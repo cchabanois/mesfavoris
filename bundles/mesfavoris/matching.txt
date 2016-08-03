@@ -1,0 +1,15 @@
+en entrée :
+1) le bookmark
+-> line number
+-> le texte de la ligne ou un certain nombre de caractères autour de la ligne
+
+2) le document (xml, texte ...)
+
+en sortie :
+-> line number correspondant au mieux au bookmark
+
+Levenshtein distance
+Longest common subsequence problem (utilisé par git)
+
+bitap
+FindReplaceDocumentAdapter

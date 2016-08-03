@@ -1,6 +1,12 @@
 package mesfavoris.java;
 
-import static mesfavoris.java.JavaBookmarkProperties.*;
+import static mesfavoris.java.JavaBookmarkProperties.KIND_FIELD;
+import static mesfavoris.java.JavaBookmarkProperties.KIND_METHOD;
+import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_DECLARING_TYPE;
+import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_KIND;
+import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_NAME;
+import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_TYPE;
+import static mesfavoris.java.JavaBookmarkProperties.PROP_LINE_NUMBER_INSIDE_ELEMENT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +16,9 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.ISourceRange;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.ITypeRoot;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.IJavaSearchScope;
@@ -21,10 +29,21 @@ import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.SearchRequestor;
 import org.eclipse.jdt.core.search.TypeDeclarationMatch;
 import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.Region;
 
 import mesfavoris.java.editor.JavaEditorUtils;
 import mesfavoris.model.Bookmark;
+import mesfavoris.texteditor.TextEditorBookmarkProperties;
+import mesfavoris.texteditor.text.matching.DocumentFuzzySearcher;
 
+/**
+ * Get the
+ * 
+ * @author cchabanois
+ *
+ */
 public class JavaBookmarkLocationProvider {
 
 	public JavaEditorBookmarkLocation findLocation(Bookmark bookmark) {
@@ -37,6 +56,29 @@ public class JavaBookmarkLocationProvider {
 	}
 
 	private Integer getLineNumber(IMember member, Bookmark bookmark) {
+		Integer estimatedLineNumber = getEstimatedLineNumber(member, bookmark);
+		String lineContent = bookmark.getPropertyValue(TextEditorBookmarkProperties.PROP_LINE_CONTENT);
+		if (lineContent == null) {
+			return estimatedLineNumber;
+		}
+		try {
+			ITypeRoot typeRoot = member.getTypeRoot();
+			Document document = new Document(typeRoot.getBuffer().getContents());
+			DocumentFuzzySearcher searcher = new DocumentFuzzySearcher(document);
+
+			int lineNumber = searcher.findLineNumber(getRegion(member.getSourceRange()),
+					estimatedLineNumber == null ? -1 : estimatedLineNumber, lineContent, new NullProgressMonitor());
+			return lineNumber == -1 ? null : lineNumber;
+		} catch (JavaModelException e) {
+			return estimatedLineNumber;
+		}
+	}
+
+	private IRegion getRegion(ISourceRange sourceRange) {
+		return new Region(sourceRange.getOffset(), sourceRange.getLength());
+	}
+
+	private Integer getEstimatedLineNumber(IMember member, Bookmark bookmark) {
 		try {
 			int lineNumber = JavaEditorUtils.getLineNumber(member);
 			Integer lineNumberInsideElement = getLineNumberInsideElement(bookmark);
@@ -49,7 +91,7 @@ public class JavaBookmarkLocationProvider {
 		} catch (BadLocationException e) {
 			return null;
 		}
-		
+
 	}
 
 	private Integer getLineNumberInsideElement(Bookmark bookmark) {
@@ -98,7 +140,7 @@ public class JavaBookmarkLocationProvider {
 			List<IMethod> candidates = getMethodsWithName(type, elementName);
 			return candidates.get(0);
 		}
-		if (JavaEditorUtils.isType(elementKind)) {
+		if (JavaEditorUtils.isType(elementKind) && elementName != null) {
 			IType memberType = type.getType(elementName);
 			return memberType.exists() ? memberType : null;
 		}
