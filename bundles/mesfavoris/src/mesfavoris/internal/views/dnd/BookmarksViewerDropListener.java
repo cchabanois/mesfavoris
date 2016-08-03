@@ -197,10 +197,10 @@ public class BookmarksViewerDropListener extends ViewerDropAdapter {
 	@Override
 	public boolean validateDrop(Object target, int operation, TransferData transferType) {
 		int location = getCurrentLocation();
-		Bookmark targetBookmark = (Bookmark) target;
-		if (targetBookmark == null) {
+		if (!(target instanceof Bookmark)) {
 			return false;
 		}
+		Bookmark targetBookmark = (Bookmark) target;
 		BookmarksTree bookmarksTree = bookmarkDatabase.getBookmarksTree();
 		switch (location) {
 		case LOCATION_BEFORE:
