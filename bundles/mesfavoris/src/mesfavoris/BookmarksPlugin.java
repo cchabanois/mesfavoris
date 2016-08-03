@@ -10,7 +10,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.Preferences;
@@ -31,6 +30,7 @@ import mesfavoris.internal.persistence.LocalBookmarksSaver;
 import mesfavoris.internal.persistence.RemoteBookmarksSaver;
 import mesfavoris.internal.remote.RemoteBookmarksStoreLoader;
 import mesfavoris.internal.service.BookmarksService;
+import mesfavoris.internal.views.virtual.BookmarkLink;
 import mesfavoris.internal.visited.VisitedBookmarksDatabase;
 import mesfavoris.internal.workspace.BookmarksWorkspaceFactory;
 import mesfavoris.model.Bookmark;
@@ -79,6 +79,8 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		plugin = this;
 		IAdapterManager adapterManager = Platform.getAdapterManager();
 		adapterManager.registerAdapters(bookmarkAdapterFactory, Bookmark.class);
+		adapterManager.registerAdapters(bookmarkAdapterFactory, BookmarkLink.class);
+		
 		File bookmarksFile = new File(getStateLocation().toFile(), "bookmarks.json");
 		bookmarkDatabase = loadBookmarkDatabase(bookmarksFile);
 		RemoteBookmarksStoreLoader remoteBookmarksStoreLoader = new RemoteBookmarksStoreLoader();
