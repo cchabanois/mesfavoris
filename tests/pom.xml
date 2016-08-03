@@ -15,6 +15,7 @@
 	
 	<properties>
 		<jacoco.reportPath>${project.basedir}/../target/coverage</jacoco.reportPath>
+		<ui.test.vmargs></ui.test.vmargs> <!-- default case -->
 	</properties>
 
 
