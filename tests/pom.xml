@@ -12,6 +12,11 @@
 		<artifactId>mesfavoris.root</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
+	
+	<properties>
+		<jacoco.reportPath>${project.basedir}/../target/coverage</jacoco.reportPath>
+	</properties>
+
 
 	<modules>
 		<module>mesfavoris.tests</module>
@@ -38,6 +43,31 @@
 
 	<build>
 		<plugins>
+		
+				<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.7.201606060606</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<!-- Where to put jacoco coverage report -->
+							<destFile>${jacoco.reportPath}</destFile>
+							<includes>
+								<include>mesfavoris.*</include>
+							</includes>
+							<excludes>
+								<exclude>**/*Test.class</exclude>
+							</excludes>
+							<append>true</append>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>	
+		
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
