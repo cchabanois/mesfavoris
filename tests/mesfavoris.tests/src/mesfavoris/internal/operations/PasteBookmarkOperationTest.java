@@ -7,18 +7,27 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.net.URL;
+import java.util.Map;
+
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.ui.IWorkbenchPart;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.google.common.collect.Lists;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.internal.operations.CopyBookmarkOperation;
-import mesfavoris.internal.operations.PasteBookmarkOperation;
+import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
+import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
@@ -30,18 +39,20 @@ public class PasteBookmarkOperationTest {
 	private BookmarkDatabase bookmarkDatabase;
 	private PasteBookmarkOperation pasteBookmarkOperation;
 	private IBookmarkModificationValidator bookmarkModificationValidator = mock(IBookmarkModificationValidator.class);
+	private IBookmarkPropertiesProvider bookmarkPropertiesProvider = new TestBookmarkPropertiesProvider();
 
 	@Before
 	public void setUp() {
 		BookmarksTree bookmarksTree = new BookmarksTreeBuilder(new IncrementalIDGenerator(), 5, 3, 2).build();
 		bookmarkDatabase = new BookmarkDatabase("main", bookmarksTree);
-		pasteBookmarkOperation = new PasteBookmarkOperation(bookmarkDatabase, bookmarkModificationValidator);
+		pasteBookmarkOperation = new PasteBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider,
+				bookmarkModificationValidator);
 		when(bookmarkModificationValidator.validateModification(any(BookmarksTree.class), any(BookmarkId.class)))
 				.thenReturn(Status.OK_STATUS);
 	}
 
 	@Test
-	public void testPaste() throws Exception {
+	public void testPasteBookmarks() throws Exception {
 		// Given
 		copyToClipboard(getBookmarkFolder(bookmarkDatabase.getBookmarksTree(), 1, 1, 1).getId(),
 				getBookmark(bookmarkDatabase.getBookmarksTree(), 2, 2, 2, 2).getId());
@@ -56,7 +67,7 @@ public class PasteBookmarkOperationTest {
 	}
 
 	@Test
-	public void testPasteWhenClipboardDoesNotContainBookmarksTree() throws BookmarksException {
+	public void testPasteInvalidString() throws BookmarksException {
 		// Given
 		copyToClipboard("Not a bookmark");
 		BookmarksTree previousTree = bookmarkDatabase.getBookmarksTree();
@@ -66,6 +77,19 @@ public class PasteBookmarkOperationTest {
 
 		// Then
 		assertEquals(previousTree, bookmarkDatabase.getBookmarksTree());
+	}
+
+	@Test
+	public void testPasteUrl() throws Exception {
+		// Given
+		copyToClipboard("http://www.google.com");
+		int numberOfBookmarksBefore = bookmarkDatabase.getBookmarksTree().size();
+		
+		// When
+		pasteBookmarkOperation.paste(getBookmarkFolder(bookmarkDatabase.getBookmarksTree(), 0, 0, 0).getId());
+
+		// Then
+		assertEquals(numberOfBookmarksBefore +1, bookmarkDatabase.getBookmarksTree().size());
 	}
 
 	private void copyToClipboard(BookmarkId... bookmarkIds) {
@@ -83,6 +107,25 @@ public class PasteBookmarkOperationTest {
 		} finally {
 			clipboard.dispose();
 		}
+	}
+
+	private static class TestBookmarkPropertiesProvider implements IBookmarkPropertiesProvider {
+
+		@Override
+		public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part,
+				ISelection selection) {
+			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+			Object firstElement = structuredSelection.getFirstElement();
+			if (firstElement == null) {
+				return;
+			}
+			if (!(firstElement instanceof URL)) {
+				return;
+			}
+			URL url = (URL) firstElement;
+			bookmarkProperties.put(Bookmark.PROPERTY_NAME, url.toString());
+		}
+
 	}
 
 }
