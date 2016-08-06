@@ -2,6 +2,7 @@ package mesfavoris.bookmarktype;
 
 import java.util.Map;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 
@@ -16,6 +17,6 @@ public interface IBookmarkPropertiesProvider {
 	 *            the selection to create the bookmark from
 	 */
 	public abstract void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part,
-			ISelection selection);
+			ISelection selection, IProgressMonitor monitor);
 
 }

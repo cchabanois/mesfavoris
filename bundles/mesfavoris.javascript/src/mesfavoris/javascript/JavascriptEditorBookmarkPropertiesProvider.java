@@ -14,6 +14,7 @@ import static mesfavoris.javascript.JavascriptBookmarkProperties.PROP_LINE_NUMBE
 
 import java.util.Map;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
@@ -35,7 +36,7 @@ public class JavascriptEditorBookmarkPropertiesProvider extends AbstractBookmark
 
 	@Override
 	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part,
-			ISelection selection) {
+			ISelection selection, IProgressMonitor monitor) {
 		if (!(part instanceof ITextEditor) || !(selection instanceof ITextSelection)) {
 			return;
 		}

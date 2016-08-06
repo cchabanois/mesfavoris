@@ -1,7 +1,9 @@
 package mesfavoris.internal.views.dnd;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -18,6 +22,8 @@ import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.dnd.URLTransfer;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.progress.IProgressService;
 
 import com.google.common.collect.Lists;
 
@@ -152,16 +158,31 @@ public class BookmarksViewerDropListener extends ViewerDropAdapter {
 			return false;
 		}
 	}
-
+	
 	private List<Bookmark> getBookmarks(IStructuredSelection selection) {
+		List<Bookmark> bookmarks = new ArrayList<>();
+		IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
+		try {
+			progressService.busyCursorWhile(monitor -> {
+				bookmarks.addAll(getBookmarks(selection, monitor));
+			});
+		} catch (InvocationTargetException|InterruptedException e) {
+			// ignore
+		}
+		return bookmarks;		
+	}
+	
+	private List<Bookmark> getBookmarks(IStructuredSelection selection, IProgressMonitor monitor) {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, selection.size());
 		List<Bookmark> bookmarks = Lists.newArrayList();
 		for (Iterator<Object> it = selection.iterator(); it.hasNext();) {
 			Object object = it.next();
 			if (object instanceof Bookmark) {
 				Bookmark bookmark = (Bookmark) object;
 				bookmarks.add(bookmark);
+				subMonitor.worked(1);
 			} else {
-				Bookmark bookmark = createBookmark(object);
+				Bookmark bookmark = createBookmark(object, subMonitor.newChild(1));
 				if (bookmark != null) {
 					bookmarks.add(bookmark);
 				}
@@ -187,9 +208,10 @@ public class BookmarksViewerDropListener extends ViewerDropAdapter {
 		return new StructuredSelection();
 	}
 
-	private Bookmark createBookmark(Object object) {
+	private Bookmark createBookmark(Object object, IProgressMonitor monitor) {
 		Map<String, String> bookmarkProperties = new HashMap<String, String>();
-		bookmarkPropertiesProvider.addBookmarkProperties(bookmarkProperties, null, new StructuredSelection(object));
+		bookmarkPropertiesProvider.addBookmarkProperties(bookmarkProperties, null, new StructuredSelection(object),
+				monitor);
 		Bookmark bookmark = new Bookmark(new BookmarkId(), bookmarkProperties);
 		return bookmark;
 	}

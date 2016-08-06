@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
 
 import mesfavoris.StatusHelper;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
-import mesfavoris.bookmarktype.IGotoBookmark;
-import mesfavoris.model.Bookmark;
 
 public class BookmarkPropertiesProvider implements IBookmarkPropertiesProvider {
 	private final List<IBookmarkPropertiesProvider> providers;
@@ -23,17 +23,18 @@ public class BookmarkPropertiesProvider implements IBookmarkPropertiesProvider {
 	}
 
 	@Override
-	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part,
-			ISelection selection) {
-		providers.forEach(p -> addBookmarkProperties(p, bookmarkProperties, part, selection));
+	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part, ISelection selection,
+			IProgressMonitor monitor) {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, "Getting bookmark properties", providers.size());
+		providers.forEach(p -> addBookmarkProperties(p, bookmarkProperties, part, selection, subMonitor.newChild(1)));
 	}
 
 	private void addBookmarkProperties(IBookmarkPropertiesProvider provider, Map<String, String> bookmarkProperties,
-			IWorkbenchPart part, ISelection selection) {
+			IWorkbenchPart part, ISelection selection, IProgressMonitor monitor) {
 		SafeRunner.run(new ISafeRunnable() {
 
 			public void run() throws Exception {
-				provider.addBookmarkProperties(bookmarkProperties, part, selection);
+				provider.addBookmarkProperties(bookmarkProperties, part, selection, monitor);
 			}
 
 			public void handleException(Throwable exception) {

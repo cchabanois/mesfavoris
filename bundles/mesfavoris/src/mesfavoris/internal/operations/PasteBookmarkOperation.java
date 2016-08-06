@@ -11,15 +11,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.URLTransfer;
+import org.eclipse.swt.widgets.Display;
 
 import com.google.common.collect.Lists;
 
@@ -47,22 +50,29 @@ public class PasteBookmarkOperation {
 		this.bookmarkModificationValidator = bookmarkModificationValidator;
 	}
 
-	public void paste(BookmarkId parentBookmarkId) throws BookmarksException {
-		String clipboardContents = getClipboardContents();
+	public void paste(Display display, BookmarkId parentBookmarkId, IProgressMonitor monitor)
+			throws BookmarksException {
+		String clipboardContents = getClipboardContentsFromUIThread(display);
 		BookmarksTree bookmarksTree = getBookmarksTree(clipboardContents);
 		if (bookmarksTree != null) {
-			paste(parentBookmarkId, bookmarksTree);
+			paste(parentBookmarkId, bookmarksTree, monitor);
 			return;
 		}
-		IStructuredSelection selection = getStructuredSelectionFromClipboard();
+		IStructuredSelection selection = getStructuredSelectionFromClipboardFromUIThread(display);
 		if (!selection.isEmpty()) {
-			paste(parentBookmarkId, selection);
+			paste(parentBookmarkId, selection, monitor);
 			return;
 		}
 	}
 
-	private String getClipboardContents() {
-		Clipboard clipboard = new Clipboard(null);
+	private String getClipboardContentsFromUIThread(Display display) {
+		String[] result = new String[1];
+		display.syncExec(() -> result[0] = getClipboardContents(display));
+		return result[0];
+	}
+
+	private String getClipboardContents(Display display) {
+		Clipboard clipboard = new Clipboard(display);
 		String textData;
 		try {
 			TextTransfer textTransfer = TextTransfer.getInstance();
@@ -73,8 +83,14 @@ public class PasteBookmarkOperation {
 		return textData;
 	}
 
-	private IStructuredSelection getStructuredSelectionFromClipboard() {
-		Clipboard clipboard = new Clipboard(null);
+	private IStructuredSelection getStructuredSelectionFromClipboardFromUIThread(Display display) {
+		IStructuredSelection[] result = new IStructuredSelection[1];
+		display.syncExec(() -> result[0] = getStructuredSelectionFromClipboard(display));
+		return result[0];
+	}
+
+	private IStructuredSelection getStructuredSelectionFromClipboard(Display display) {
+		Clipboard clipboard = new Clipboard(display);
 		try {
 			URL url = (URL) clipboard.getContents(URLTransfer.getInstance());
 			if (url != null) {
@@ -109,7 +125,9 @@ public class PasteBookmarkOperation {
 		}
 	}
 
-	private void paste(BookmarkId parentBookmarkId, BookmarksTree sourceBookmarksTree) throws BookmarksException {
+	private void paste(BookmarkId parentBookmarkId, BookmarksTree sourceBookmarksTree, IProgressMonitor monitor)
+			throws BookmarksException {
+		SubMonitor.convert(monitor, "Pasting bookmarks", 100);
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
 			IStatus status = bookmarkModificationValidator.validateModification(bookmarksTreeModifier.getCurrentTree(),
 					parentBookmarkId);
@@ -124,8 +142,9 @@ public class PasteBookmarkOperation {
 		});
 	}
 
-	private void paste(BookmarkId parentBookmarkId, IStructuredSelection selection) throws BookmarksException {
-		List<Bookmark> bookmarks = getBookmarks(selection);
+	private void paste(BookmarkId parentBookmarkId, IStructuredSelection selection, IProgressMonitor monitor)
+			throws BookmarksException {
+		List<Bookmark> bookmarks = getBookmarks(selection, monitor);
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
 			IStatus status = bookmarkModificationValidator.validateModification(bookmarksTreeModifier.getCurrentTree(),
 					parentBookmarkId);
@@ -136,15 +155,17 @@ public class PasteBookmarkOperation {
 		});
 	}
 
-	private List<Bookmark> getBookmarks(IStructuredSelection selection) {
+	private List<Bookmark> getBookmarks(IStructuredSelection selection, IProgressMonitor monitor) {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, "Getting bookmarks", selection.size());
 		List<Bookmark> bookmarks = Lists.newArrayList();
 		for (Iterator<Object> it = selection.iterator(); it.hasNext();) {
 			Object object = it.next();
 			if (object instanceof Bookmark) {
 				Bookmark bookmark = (Bookmark) object;
 				bookmarks.add(bookmark);
+				subMonitor.worked(1);
 			} else {
-				Bookmark bookmark = createBookmark(object);
+				Bookmark bookmark = createBookmark(object, subMonitor.newChild(1));
 				if (bookmark != null) {
 					bookmarks.add(bookmark);
 				}
@@ -153,9 +174,10 @@ public class PasteBookmarkOperation {
 		return bookmarks;
 	}
 
-	private Bookmark createBookmark(Object object) {
+	private Bookmark createBookmark(Object object, IProgressMonitor monitor) {
 		Map<String, String> bookmarkProperties = new HashMap<String, String>();
-		bookmarkPropertiesProvider.addBookmarkProperties(bookmarkProperties, null, new StructuredSelection(object));
+		bookmarkPropertiesProvider.addBookmarkProperties(bookmarkProperties, null, new StructuredSelection(object),
+				monitor);
 		Bookmark bookmark = new Bookmark(new BookmarkId(), bookmarkProperties);
 		return bookmark;
 	}

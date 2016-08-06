@@ -16,6 +16,7 @@ import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_TYPE;
 
 import java.util.Map;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMember;
@@ -34,7 +35,7 @@ public class JavaTypeMemberBookmarkPropertiesProvider extends AbstractBookmarkPr
 
 	@Override
 	public void addBookmarkProperties(Map<String, String> bookmarkProperties,IWorkbenchPart part,
-			ISelection selection) {
+			ISelection selection, IProgressMonitor monitor) {
 		Object selected = getFirstElement(selection);
 		if (selected instanceof ITypeRoot) {
 			selected = ((ITypeRoot)selected).findPrimaryType();

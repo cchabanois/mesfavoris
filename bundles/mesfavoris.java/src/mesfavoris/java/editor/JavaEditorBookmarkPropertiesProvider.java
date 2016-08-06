@@ -4,6 +4,7 @@ import static mesfavoris.java.JavaBookmarkProperties.PROP_LINE_NUMBER_INSIDE_ELE
 
 import java.util.Map;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.ITypeRoot;
@@ -21,13 +22,13 @@ import mesfavoris.java.element.JavaTypeMemberBookmarkPropertiesProvider;
 public class JavaEditorBookmarkPropertiesProvider extends JavaTypeMemberBookmarkPropertiesProvider {
 
 	@Override
-	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part,
-			ISelection selection) {
+	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part, ISelection selection,
+			IProgressMonitor monitor) {
 		if (!(part instanceof ITextEditor) || !(selection instanceof ITextSelection)) {
 			return;
 		}
 		ITextEditor editor = (ITextEditor) part;
-		ITextSelection textSelection = (ITextSelection)selection;
+		ITextSelection textSelection = (ITextSelection) selection;
 		IJavaElement editorJavaElement = JavaUI.getEditorInputJavaElement(editor.getEditorInput());
 		if (editorJavaElement == null) {
 			return;
@@ -38,7 +39,7 @@ public class JavaEditorBookmarkPropertiesProvider extends JavaTypeMemberBookmark
 			return;
 		}
 		IMember member = (IMember) containingJavaElement;
-		super.addBookmarkProperties(bookmarkProperties, part, new StructuredSelection(member));
+		super.addBookmarkProperties(bookmarkProperties, part, new StructuredSelection(member), monitor);
 		addLineNumberInsideMemberProperty(bookmarkProperties, member, textSelection);
 	}
 

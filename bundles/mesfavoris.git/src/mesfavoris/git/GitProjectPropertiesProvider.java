@@ -10,6 +10,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.egit.core.project.RepositoryMapping;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jgit.lib.ConfigConstants;
@@ -21,13 +22,13 @@ import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
 public class GitProjectPropertiesProvider extends AbstractBookmarkPropertiesProvider {
 
 	@Override
-	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part,
-			ISelection selection) {
+	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part, ISelection selection,
+			IProgressMonitor monitor) {
 		IProject project = getProject(bookmarkProperties);
 		if (project == null) {
 			return;
 		}
-		RepositoryMapping mapping = RepositoryMapping.getMapping((IResource)project);
+		RepositoryMapping mapping = RepositoryMapping.getMapping((IResource) project);
 		if (mapping == null) {
 			return;
 		}

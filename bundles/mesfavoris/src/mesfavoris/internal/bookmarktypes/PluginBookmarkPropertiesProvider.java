@@ -3,6 +3,7 @@ package mesfavoris.internal.bookmarktypes;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 
@@ -22,9 +23,9 @@ public class PluginBookmarkPropertiesProvider implements IBookmarkPropertiesProv
 	}
 
 	@Override
-	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part,
-			ISelection selection) {
-		getBookmarkPropertiesProvider().addBookmarkProperties(bookmarkProperties, part, selection);
+	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part, ISelection selection,
+			IProgressMonitor monitor) {
+		getBookmarkPropertiesProvider().addBookmarkProperties(bookmarkProperties, part, selection, monitor);
 	}
 
 }

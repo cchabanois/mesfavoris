@@ -11,6 +11,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
@@ -33,7 +34,7 @@ public class FileBookmarkPropertiesProvider extends AbstractBookmarkPropertiesPr
 	
 	@Override
 	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part,
-			ISelection selection) {
+			ISelection selection, IProgressMonitor monitor) {
 		Object selected = getFirstElement(selection);
 		IResource resource = AdapterUtils.getAdapter(selected, IResource.class);
 		if (!(resource instanceof IFile)) {

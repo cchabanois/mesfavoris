@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 
@@ -28,10 +29,10 @@ public class AddBookmarkOperation {
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 	}
 
-	public BookmarkId addBookmark(IWorkbenchPart part,
-			ISelection selection) throws BookmarksException {
+	public BookmarkId addBookmark(IWorkbenchPart part, ISelection selection, IProgressMonitor monitor)
+			throws BookmarksException {
 		Map<String, String> bookmarkProperties = new HashMap<String, String>();
-		bookmarkPropertiesProvider.addBookmarkProperties(bookmarkProperties, part, selection);
+		bookmarkPropertiesProvider.addBookmarkProperties(bookmarkProperties, part, selection, monitor);
 		if (bookmarkProperties.isEmpty()) {
 			throw new BookmarksException("Could not create bookmark from current selection");
 		}

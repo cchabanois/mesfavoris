@@ -11,6 +11,8 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
@@ -32,7 +34,8 @@ public class UrlBookmarkPropertiesProvider extends AbstractBookmarkPropertiesPro
 
 	@Override
 	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part,
-			ISelection selection) {
+			ISelection selection, IProgressMonitor monitor) {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
 		Object selected = getFirstElement(selection);
 		if (!(selected instanceof URL)) {
 			return;
@@ -40,15 +43,16 @@ public class UrlBookmarkPropertiesProvider extends AbstractBookmarkPropertiesPro
 		URL url = (URL) selected;
 		putIfAbsent(bookmarkProperties, PROP_URL, url.toString());
 
-		parse(url).ifPresent(document -> {
+		parse(url, subMonitor.newChild(50)).ifPresent(document -> {
 			getTitle(document).ifPresent(title -> putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME, title));
-			getFavIconAsBase64(url, document)
+			getFavIconAsBase64(url, document, subMonitor.newChild(50))
 					.ifPresent(favIcon -> putIfAbsent(bookmarkProperties, PROP_FAVICON, favIcon));
 		});
 		putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME, url.toString());
 	}
 
-	private Optional<Document> parse(URL url) {
+	private Optional<Document> parse(URL url, IProgressMonitor monitor) {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, "Getting html document", 100);
 		try {
 			Response response = Jsoup.connect(url.toString()).followRedirects(false).timeout(2000).maxBodySize(8192).execute();
 			if (response.statusCode() != 200) {
@@ -61,7 +65,8 @@ public class UrlBookmarkPropertiesProvider extends AbstractBookmarkPropertiesPro
 		}
 	}
 
-	private Optional<String> getFavIconAsBase64(URL url, Document document) {
+	private Optional<String> getFavIconAsBase64(URL url, Document document, IProgressMonitor monitor) {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, "Getting favIcon", 100);
 		String favIconUrl;
 		try {
 			favIconUrl = getFavIconUrl(document)

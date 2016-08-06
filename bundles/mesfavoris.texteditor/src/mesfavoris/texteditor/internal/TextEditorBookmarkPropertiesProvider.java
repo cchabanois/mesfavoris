@@ -16,6 +16,7 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -44,8 +45,8 @@ public class TextEditorBookmarkPropertiesProvider extends AbstractBookmarkProper
 		this.pathPlaceholderResolver = pathPlaceholders;
 	}
 
-	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part,
-			ISelection selection) {
+	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part, ISelection selection,
+			IProgressMonitor monitor) {
 		if (part instanceof ITextEditor && selection instanceof ITextSelection) {
 			ITextEditor textEditor = (ITextEditor) part;
 			ITextSelection textSelection = (ITextSelection) selection;
@@ -64,7 +65,7 @@ public class TextEditorBookmarkPropertiesProvider extends AbstractBookmarkProper
 			addFilePath(properties, filePath);
 			putIfAbsent(properties, PROPERTY_NAME, () -> {
 				if (lineNumber > 0) {
-					return filePath.lastSegment() + ":" + (lineNumber+1);
+					return filePath.lastSegment() + ":" + (lineNumber + 1);
 				} else {
 					return filePath.lastSegment();
 				}
@@ -132,5 +133,5 @@ public class TextEditorBookmarkPropertiesProvider extends AbstractBookmarkProper
 		}
 
 	}
-	
+
 }
