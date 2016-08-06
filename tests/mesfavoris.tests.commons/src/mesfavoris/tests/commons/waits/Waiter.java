@@ -5,13 +5,13 @@ import java.util.concurrent.TimeoutException;
 
 public class Waiter {
 
-	public static void waitUntil(String failureMessage, ICondition condition) throws TimeoutException {
-		waitUntil(failureMessage, condition, Duration.ofSeconds(5), Duration.ofMillis(200));
+	public static <R> R waitUntil(String failureMessage, ICondition<R> condition) throws TimeoutException {
+		return waitUntil(failureMessage, condition, Duration.ofSeconds(5), Duration.ofMillis(200));
 	}
 
-	public static void waitUntil(String failureMessage, ICondition condition, Duration timeout)
+	public static <R> R waitUntil(String failureMessage, ICondition<R> condition, Duration timeout)
 			throws TimeoutException {
-		waitUntil(failureMessage, condition, timeout, Duration.ofMillis(200));
+		return waitUntil(failureMessage, condition, timeout, Duration.ofMillis(200));
 	}
 
 	/**
@@ -21,20 +21,26 @@ public class Waiter {
 	 * @param condition
 	 * @param timeout
 	 * @param interval
+	 * @return The condition return value if it returned something different
+	 *         from null or false before the timeout expired.
 	 * @throws TimeoutException
 	 */
-	public static void waitUntil(String failureMessage, ICondition condition, Duration timeout, Duration interval)
+	public static <R> R waitUntil(String failureMessage, ICondition<R> condition, Duration timeout, Duration interval)
 			throws TimeoutException {
 		long timeStart = System.nanoTime();
 		long elapsedTime = 0;
 		Throwable cause = null;
 		while (true) {
 			try {
-				if (condition.test()) {
-					return;
-				} else {
-					cause = null;
+				R result = condition.test();
+				if (result != null && Boolean.class.equals(result.getClass())) {
+					if (Boolean.TRUE.equals(result)) {
+						return result;
+					}
+				} else if (result != null) {
+					return result;
 				}
+				cause = null;
 			} catch (Throwable e) {
 				cause = e;
 			}
@@ -60,9 +66,9 @@ public class Waiter {
 	}
 
 	@FunctionalInterface
-	public static interface ICondition {
+	public static interface ICondition<R> {
 
-		public boolean test() throws Exception;;
+		public R test() throws Exception;
 
 	}
 

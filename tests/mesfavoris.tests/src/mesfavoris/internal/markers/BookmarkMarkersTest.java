@@ -3,7 +3,6 @@ package mesfavoris.internal.markers;
 import static mesfavoris.tests.commons.waits.Waiter.waitUntil;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -50,7 +49,7 @@ public class BookmarkMarkersTest {
 
 		// When
 		addBookmark(rootFolderId, bookmark);
-		IMarker marker = bookmarksMarkers.findMarker(bookmark.getId());
+		IMarker marker = waitUntil("Cannot find marker", () -> bookmarksMarkers.findMarker(bookmark.getId()));
 
 		// Then
 		assertNotNull(marker);
@@ -64,13 +63,13 @@ public class BookmarkMarkersTest {
 		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(PROP_WORKSPACE_PATH,
 				"/testMarkerDeletedWhenBookmarkDeleted/file.txt", PROP_LINE_NUMBER, "0"));
 		addBookmark(rootFolderId, bookmark);
-		assertNotNull(bookmarksMarkers.findMarker(bookmark.getId()));
+		waitUntil("Cannot find marker", () -> bookmarksMarkers.findMarker(bookmark.getId()));
 
 		// When
 		deleteBookmark(bookmark.getId());
 
 		// Then
-		assertNull(bookmarksMarkers.findMarker(bookmark.getId()));
+		waitUntil("Marker not deleted", () -> bookmarksMarkers.findMarker(bookmark.getId()) == null);
 	}
 
 	@Test
@@ -82,13 +81,13 @@ public class BookmarkMarkersTest {
 		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(PROP_WORKSPACE_PATH,
 				"/testMarkerDeletedWhenBookmarkDeleted/file.txt", PROP_LINE_NUMBER, "0"));
 		addBookmark(bookmarkFolder.getId(), bookmark);
-		assertNotNull(bookmarksMarkers.findMarker(bookmark.getId()));
+		waitUntil("Cannot find marker", () -> bookmarksMarkers.findMarker(bookmark.getId()));
 
 		// When
 		deleteBookmarkRecursively(bookmarkFolder.getId());
 
 		// Then
-		assertNull(bookmarksMarkers.findMarker(bookmark.getId()));
+		waitUntil("Marker not deleted", () -> bookmarksMarkers.findMarker(bookmark.getId()) == null);
 	}
 
 	@Test
@@ -98,15 +97,14 @@ public class BookmarkMarkersTest {
 		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(PROP_WORKSPACE_PATH,
 				"/testMarkerAddedWhenBookmarkAdded/file.txt", PROP_LINE_NUMBER, "0"));
 		addBookmark(rootFolderId, bookmark);
-		assertNotNull(bookmarksMarkers.findMarker(bookmark.getId()));
-		
+		waitUntil("Cannot find marker", () -> bookmarksMarkers.findMarker(bookmark.getId()));
+
 		// When
 		modifyBookmark(bookmark.getId(), PROP_LINE_NUMBER, "1");
-		IMarker marker = bookmarksMarkers.findMarker(bookmark.getId());
 
 		// Then
-		assertNotNull(marker);
-		assertEquals(2, marker.getAttribute(IMarker.LINE_NUMBER));
+		waitUntil("Marker not modified",
+				() -> bookmarksMarkers.findMarker(bookmark.getId()).getAttribute(IMarker.LINE_NUMBER).equals(2));
 	}
 
 	@Test
@@ -116,7 +114,7 @@ public class BookmarkMarkersTest {
 		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(PROP_WORKSPACE_PATH,
 				"/testInvalidMarkersDeletedWhenProjectOpened/file.txt", PROP_LINE_NUMBER, "0"));
 		addBookmark(rootFolderId, bookmark);
-		assertNotNull(bookmarksMarkers.findMarker(bookmark.getId()));
+		waitUntil("Cannot find marker", () -> bookmarksMarkers.findMarker(bookmark.getId()));
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject project = workspace.getRoot().getProject("testInvalidMarkersDeletedWhenProjectOpened");
 		project.close(null);

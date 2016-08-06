@@ -27,37 +27,46 @@ import mesfavoris.BookmarksException;
 import mesfavoris.StatusHelper;
 import mesfavoris.bookmarktype.BookmarkMarkerDescriptor;
 import mesfavoris.bookmarktype.IBookmarkMarkerAttributesProvider;
+import mesfavoris.internal.jobs.BackgroundBookmarksModificationsHandler;
+import mesfavoris.internal.jobs.BackgroundBookmarksModificationsHandler.IBookmarksModificationsHandler;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
-import mesfavoris.model.IBookmarksListener;
 import mesfavoris.model.modification.BookmarkDeletedModification;
 import mesfavoris.model.modification.BookmarkPropertiesModification;
 import mesfavoris.model.modification.BookmarksAddedModification;
 import mesfavoris.model.modification.BookmarksModification;
 
+/**
+ * Manage bookmarks markers
+ * 
+ * @author cchabanois
+ *
+ */
 public class BookmarksMarkers {
 	public static final String BOOKMARK_ID = "bookmarkId";
 	public static final String MARKER_TYPE = "mesfavoris.bookmark";
 	private final BookmarkDatabase bookmarkDatabase;
-	private final BookmarksListener bookmarksListener = new BookmarksListener();
 	private final IBookmarkMarkerAttributesProvider bookmarkMarkerAttributesProvider;
 	private final ProjectOpenedChangeListener projectOpenedChangeListener = new ProjectOpenedChangeListener();
+	private final BackgroundBookmarksModificationsHandler backgroundBookmarksModificationsHandler;
 
 	public BookmarksMarkers(BookmarkDatabase bookmarkDatabase,
 			IBookmarkMarkerAttributesProvider bookmarkMarkerAttributesProvider) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.bookmarkMarkerAttributesProvider = bookmarkMarkerAttributesProvider;
+		this.backgroundBookmarksModificationsHandler = new BackgroundBookmarksModificationsHandler("Updating markers",
+				bookmarkDatabase, new BookmarksModificationsHandler(), 1000);
 	}
 
 	public void init() {
-		bookmarkDatabase.addListener(bookmarksListener);
+		backgroundBookmarksModificationsHandler.init();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(projectOpenedChangeListener);
 	}
 
 	public void close() {
-		bookmarkDatabase.removeListener(bookmarksListener);
+		backgroundBookmarksModificationsHandler.close();
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(projectOpenedChangeListener);
 	}
 
@@ -217,11 +226,16 @@ public class BookmarksMarkers {
 		return invalidMarkers;
 	}
 
-	private class BookmarksListener implements IBookmarksListener {
+	private class BookmarksModificationsHandler implements IBookmarksModificationsHandler {
 
 		@Override
-		public void bookmarksModified(List<BookmarksModification> events) {
-			events.forEach(event -> handleBookmarkModifiedEvent(event));
+		public void handle(List<BookmarksModification> modifications, IProgressMonitor monitor) {
+			monitor.beginTask("Updating markers", modifications.size());
+			for (BookmarksModification modification : modifications) {
+				handleBookmarkModifiedEvent(modification);
+				monitor.worked(1);
+			}
+			monitor.done();
 		}
 
 	}
