@@ -1,14 +1,12 @@
 package mesfavoris.java;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.JavaCore;
@@ -31,8 +29,8 @@ public class JavaBookmarkMarkerAttributesProvider extends AbstractBookmarkMarker
 	}
 
 	@Override
-	public BookmarkMarkerDescriptor getMarkerDescriptor(Bookmark bookmark) {
-		JavaEditorBookmarkLocation location = locationProvider.findLocation(bookmark);
+	public BookmarkMarkerDescriptor getMarkerDescriptor(Bookmark bookmark, IProgressMonitor monitor) {
+		JavaEditorBookmarkLocation location = locationProvider.findLocation(bookmark, monitor);
 		if (location == null) {
 			return null;
 		}

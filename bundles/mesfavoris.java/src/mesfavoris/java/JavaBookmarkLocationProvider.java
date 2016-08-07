@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
@@ -46,16 +48,17 @@ import mesfavoris.texteditor.text.matching.DocumentFuzzySearcher;
  */
 public class JavaBookmarkLocationProvider {
 
-	public JavaEditorBookmarkLocation findLocation(Bookmark bookmark) {
-		IMember member = getMember(bookmark);
+	public JavaEditorBookmarkLocation findLocation(Bookmark bookmark, IProgressMonitor monitor) {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
+		IMember member = getMember(bookmark, subMonitor.newChild(30));
 		if (member == null) {
 			return null;
 		}
-		Integer lineNumber = getLineNumber(member, bookmark);
+		Integer lineNumber = getLineNumber(member, bookmark, subMonitor.newChild(70));
 		return new JavaEditorBookmarkLocation(member, lineNumber);
 	}
 
-	private Integer getLineNumber(IMember member, Bookmark bookmark) {
+	private Integer getLineNumber(IMember member, Bookmark bookmark, IProgressMonitor monitor) {
 		Integer estimatedLineNumber = getEstimatedLineNumber(member, bookmark);
 		String lineContent = bookmark.getPropertyValue(TextEditorBookmarkProperties.PROP_LINE_CONTENT);
 		if (lineContent == null) {
@@ -67,7 +70,7 @@ public class JavaBookmarkLocationProvider {
 			DocumentFuzzySearcher searcher = new DocumentFuzzySearcher(document);
 
 			int lineNumber = searcher.findLineNumber(getRegion(member.getSourceRange()),
-					estimatedLineNumber == null ? -1 : estimatedLineNumber, lineContent, new NullProgressMonitor());
+					estimatedLineNumber == null ? -1 : estimatedLineNumber, lineContent, monitor);
 			return lineNumber == -1 ? null : lineNumber;
 		} catch (JavaModelException e) {
 			return estimatedLineNumber;
@@ -106,10 +109,10 @@ public class JavaBookmarkLocationProvider {
 		}
 	}
 
-	private IMember getMember(Bookmark javaBookmark) {
+	private IMember getMember(Bookmark javaBookmark, IProgressMonitor monitor) {
 		String type = javaBookmark.getPropertyValue(PROP_JAVA_TYPE);
 		if (type != null) {
-			List<IType> matchingTypes = searchType(type);
+			List<IType> matchingTypes = searchType(type, monitor);
 			if (matchingTypes.size() == 0) {
 				return null;
 			}
@@ -120,7 +123,7 @@ public class JavaBookmarkLocationProvider {
 		if (declaringType == null) {
 			return null;
 		}
-		List<IType> matchingTypes = searchType(declaringType);
+		List<IType> matchingTypes = searchType(declaringType, monitor);
 		if (matchingTypes.size() == 0) {
 			return null;
 		}
@@ -161,7 +164,7 @@ public class JavaBookmarkLocationProvider {
 		return methodsWithName;
 	}
 
-	private List<IType> searchType(String classFQN) {
+	private List<IType> searchType(String classFQN, IProgressMonitor monitor) {
 		classFQN = classFQN.replace('$', '.');
 		final List<IType> types = new ArrayList<IType>();
 
@@ -179,7 +182,7 @@ public class JavaBookmarkLocationProvider {
 		};
 		try {
 			engine.search(pattern, new SearchParticipant[] { SearchEngine.getDefaultSearchParticipant() }, scope,
-					requestor, new NullProgressMonitor());
+					requestor, monitor);
 		} catch (final CoreException e) {
 			return types;
 		}

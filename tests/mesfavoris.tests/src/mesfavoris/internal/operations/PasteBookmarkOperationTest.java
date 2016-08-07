@@ -10,12 +10,15 @@ import static org.mockito.Mockito.when;
 import java.net.URL;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPart;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +62,8 @@ public class PasteBookmarkOperationTest {
 		int numberOfBookmarksBefore = bookmarkDatabase.getBookmarksTree().size();
 
 		// When
-		pasteBookmarkOperation.paste(getBookmarkFolder(bookmarkDatabase.getBookmarksTree(), 0, 0, 0).getId());
+		pasteBookmarkOperation.paste(Display.getCurrent(),
+				getBookmarkFolder(bookmarkDatabase.getBookmarksTree(), 0, 0, 0).getId(), new NullProgressMonitor());
 
 		// Then
 		assertEquals(numberOfBookmarksBefore + 7, bookmarkDatabase.getBookmarksTree().size());
@@ -73,7 +77,8 @@ public class PasteBookmarkOperationTest {
 		BookmarksTree previousTree = bookmarkDatabase.getBookmarksTree();
 
 		// When
-		pasteBookmarkOperation.paste(getBookmarkFolder(bookmarkDatabase.getBookmarksTree(), 0, 0, 0).getId());
+		pasteBookmarkOperation.paste(Display.getCurrent(),
+				getBookmarkFolder(bookmarkDatabase.getBookmarksTree(), 0, 0, 0).getId(), new NullProgressMonitor());
 
 		// Then
 		assertEquals(previousTree, bookmarkDatabase.getBookmarksTree());
@@ -84,12 +89,13 @@ public class PasteBookmarkOperationTest {
 		// Given
 		copyToClipboard("http://www.google.com");
 		int numberOfBookmarksBefore = bookmarkDatabase.getBookmarksTree().size();
-		
+
 		// When
-		pasteBookmarkOperation.paste(getBookmarkFolder(bookmarkDatabase.getBookmarksTree(), 0, 0, 0).getId());
+		pasteBookmarkOperation.paste(Display.getCurrent(),
+				getBookmarkFolder(bookmarkDatabase.getBookmarksTree(), 0, 0, 0).getId(), new NullProgressMonitor());
 
 		// Then
-		assertEquals(numberOfBookmarksBefore +1, bookmarkDatabase.getBookmarksTree().size());
+		assertEquals(numberOfBookmarksBefore + 1, bookmarkDatabase.getBookmarksTree().size());
 	}
 
 	private void copyToClipboard(BookmarkId... bookmarkIds) {
@@ -113,7 +119,7 @@ public class PasteBookmarkOperationTest {
 
 		@Override
 		public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part,
-				ISelection selection) {
+				ISelection selection, IProgressMonitor monitor) {
 			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 			Object firstElement = structuredSelection.getFirstElement();
 			if (firstElement == null) {

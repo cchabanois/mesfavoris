@@ -1,5 +1,6 @@
 package mesfavoris.internal.markers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 
@@ -70,76 +72,82 @@ public class BookmarksMarkers {
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(projectOpenedChangeListener);
 	}
 
-	private void handleBookmarkModifiedEvent(BookmarksModification event) {
+	private void handleBookmarkModifiedEvent(BookmarksModification event, IProgressMonitor monitor) {
 		if (event instanceof BookmarkDeletedModification) {
 			BookmarkDeletedModification bookmarkDeletedModification = (BookmarkDeletedModification) event;
-			bookmarkDeletedModification.getDeletedBookmarks().forEach(b -> bookmarkRemoved(b.getId()));
-			bookmarkRemoved(((BookmarkDeletedModification) event).getBookmarkId());
+			List<Bookmark> deletedBookmarks = Lists.newArrayList(bookmarkDeletedModification.getDeletedBookmarks());
+			SubMonitor subMonitor = SubMonitor.convert(monitor, deletedBookmarks.size());
+			deletedBookmarks.forEach(b -> bookmarkRemoved(b.getId(), subMonitor.newChild(1)));
 		} else if (event instanceof BookmarksAddedModification) {
 			BookmarksAddedModification bookmarksAddedModification = (BookmarksAddedModification) event;
-			bookmarksAddedModification.getBookmarks().forEach(b -> bookmarkAdded(b));
+			SubMonitor subMonitor = SubMonitor.convert(monitor, bookmarksAddedModification.getBookmarks().size());
+			bookmarksAddedModification.getBookmarks().forEach(b -> bookmarkAdded(b, subMonitor.newChild(1)));
 		} else if (event instanceof BookmarkPropertiesModification) {
 			BookmarkPropertiesModification bookmarkPropertiesModification = (BookmarkPropertiesModification) event;
 			bookmarkModified(bookmarkPropertiesModification.getTargetTree()
-					.getBookmark(bookmarkPropertiesModification.getBookmarkId()));
+					.getBookmark(bookmarkPropertiesModification.getBookmarkId()), monitor);
 		}
 	}
 
-	private void bookmarkModified(Bookmark bookmarkModified) {
+	private void bookmarkModified(Bookmark bookmarkModified, IProgressMonitor monitor) {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
 		IMarker marker = findMarker(bookmarkModified.getId());
-		BookmarkMarkerDescriptor descriptor = bookmarkMarkerAttributesProvider.getMarkerDescriptor(bookmarkModified);
+		BookmarkMarkerDescriptor descriptor = bookmarkMarkerAttributesProvider.getMarkerDescriptor(bookmarkModified,
+				subMonitor.newChild(90));
 		try {
 			if (descriptor == null) {
 				if (marker != null) {
-					deleteMarker(marker);
+					deleteMarker(marker, subMonitor.newChild(5));
 				}
 				return;
 			}
 			Map attributes = descriptor.getAttributes();
 			attributes.put(BOOKMARK_ID, bookmarkModified.getId().toString());
 			if (marker == null) {
-				createMarker(descriptor.getResource(), attributes);
+				createMarker(descriptor.getResource(), attributes, subMonitor.newChild(5));
 			} else {
-				updateMarker(marker, attributes);
+				updateMarker(marker, attributes, subMonitor.newChild(5));
 			}
 		} catch (CoreException e) {
 			StatusHelper.logWarn("Could not update marker for bookmark", e);
 		}
 	}
 
-	private void bookmarkAdded(Bookmark bookmarkAdded) {
-		BookmarkMarkerDescriptor descriptor = bookmarkMarkerAttributesProvider.getMarkerDescriptor(bookmarkAdded);
+	private void bookmarkAdded(Bookmark bookmarkAdded, IProgressMonitor monitor) {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
+		BookmarkMarkerDescriptor descriptor = bookmarkMarkerAttributesProvider.getMarkerDescriptor(bookmarkAdded,
+				subMonitor.newChild(90));
 		if (descriptor == null) {
 			return;
 		}
 		Map attributes = descriptor.getAttributes();
 		attributes.put(BOOKMARK_ID, bookmarkAdded.getId().toString());
 		try {
-			createMarker(descriptor.getResource(), attributes);
+			createMarker(descriptor.getResource(), attributes, subMonitor.newChild(10));
 		} catch (CoreException e) {
 			StatusHelper.logWarn("Could not create marker for bookmark", e);
 		}
 	}
 
-	private void bookmarkRemoved(BookmarkId bookmarkId) {
+	private void bookmarkRemoved(BookmarkId bookmarkId, IProgressMonitor monitor) {
 		IMarker marker = findMarker(bookmarkId);
 		if (marker == null) {
 			return;
 		}
 		try {
-			deleteMarker(marker);
+			deleteMarker(marker, monitor);
 		} catch (CoreException e) {
 			StatusHelper.logWarn("Could not delete marker", e);
 		}
 	}
 
-	private void deleteMarker(final IMarker marker) throws CoreException {
+	private void deleteMarker(final IMarker marker, IProgressMonitor monitor) throws CoreException {
 		IWorkspaceRunnable wr = new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
 				marker.delete();
 			}
 		};
-		run(getMarkerRule(marker.getResource()), wr);
+		run(getMarkerRule(marker.getResource()), wr, monitor);
 	}
 
 	public IMarker findMarker(BookmarkId bookmarkId) {
@@ -158,32 +166,33 @@ public class BookmarksMarkers {
 		}
 	}
 
-	public void refreshMarker(BookmarkId bookmarkId) {
-		bookmarkRemoved(bookmarkId);
+	public void refreshMarker(BookmarkId bookmarkId, IProgressMonitor monitor) {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
+		bookmarkRemoved(bookmarkId, subMonitor.newChild(50));
 		Bookmark bookmark = bookmarkDatabase.getBookmarksTree().getBookmark(bookmarkId);
 		if (bookmark != null) {
-			bookmarkAdded(bookmark);
+			bookmarkAdded(bookmark, subMonitor.newChild(50));
 		}
 	}
 
-	private IMarker createMarker(final IResource resource, final Map<String, ? extends Object> attributes)
-			throws CoreException {
+	private IMarker createMarker(final IResource resource, final Map<String, ? extends Object> attributes,
+			IProgressMonitor monitor) throws CoreException {
 		final IMarker[] marker = new IMarker[1];
-		run(getMarkerRule(resource), monitor -> {
+		run(getMarkerRule(resource), subMonitor -> {
 			marker[0] = resource.createMarker(MARKER_TYPE);
 			marker[0].setAttributes(attributes);
-		});
+		}, monitor);
 		return marker[0];
 	}
 
-	private IMarker updateMarker(final IMarker marker, final Map<String, ? extends Object> attributes)
-			throws CoreException {
-		run(getMarkerRule(marker.getResource()), monitor -> marker.setAttributes(attributes));
+	private IMarker updateMarker(final IMarker marker, final Map<String, ? extends Object> attributes,
+			IProgressMonitor monitor) throws CoreException {
+		run(getMarkerRule(marker.getResource()), subMonitor -> marker.setAttributes(attributes), monitor);
 		return marker;
 	}
 
-	private void run(ISchedulingRule rule, IWorkspaceRunnable wr) throws CoreException {
-		ResourcesPlugin.getWorkspace().run(wr, rule, 0, null);
+	private void run(ISchedulingRule rule, IWorkspaceRunnable wr, IProgressMonitor monitor) throws CoreException {
+		ResourcesPlugin.getWorkspace().run(wr, rule, 0, monitor);
 
 	}
 
@@ -196,12 +205,13 @@ public class BookmarksMarkers {
 		return rule;
 	}
 
-	private void projectOpened(IProject project) {
+	private void projectOpened(IProject project, IProgressMonitor monitor) {
 		try {
 			IMarker[] markers = project.findMarkers(BookmarksMarkers.MARKER_TYPE, true, IResource.DEPTH_INFINITE);
 			List<IMarker> invalidMarkers = getInvalidMarkers(Lists.newArrayList(markers));
+			SubMonitor subMonitor = SubMonitor.convert(monitor, invalidMarkers.size());
 			for (IMarker marker : invalidMarkers) {
-				deleteMarker(marker);
+				deleteMarker(marker, subMonitor.newChild(1));
 			}
 			// TODO : update attributes for markers ?
 		} catch (CoreException e) {
@@ -230,12 +240,10 @@ public class BookmarksMarkers {
 
 		@Override
 		public void handle(List<BookmarksModification> modifications, IProgressMonitor monitor) {
-			monitor.beginTask("Updating markers", modifications.size());
+			SubMonitor subMonitor = SubMonitor.convert(monitor, "Updating markers", modifications.size());
 			for (BookmarksModification modification : modifications) {
-				handleBookmarkModifiedEvent(modification);
-				monitor.worked(1);
+				handleBookmarkModifiedEvent(modification, subMonitor.newChild(1));
 			}
-			monitor.done();
 		}
 
 	}
@@ -258,7 +266,7 @@ public class BookmarksMarkers {
 
 									@Override
 									protected IStatus run(IProgressMonitor monitor) {
-										projectOpened(project);
+										projectOpened(project, monitor);
 										return Status.OK_STATUS;
 									}
 								}.schedule();

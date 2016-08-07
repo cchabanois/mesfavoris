@@ -2,6 +2,8 @@ package mesfavoris.internal.bookmarktypes;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import mesfavoris.bookmarktype.BookmarkMarkerDescriptor;
 import mesfavoris.bookmarktype.IBookmarkMarkerAttributesProvider;
 import mesfavoris.model.Bookmark;
@@ -20,8 +22,8 @@ public class PluginBookmarkMarkerAttributesProvider implements IBookmarkMarkerAt
 	}
 	
 	@Override
-	public BookmarkMarkerDescriptor getMarkerDescriptor(Bookmark bookmark) {
-		return getBookmarkMarkerAttributesProvider().getMarkerDescriptor(bookmark);
+	public BookmarkMarkerDescriptor getMarkerDescriptor(Bookmark bookmark, IProgressMonitor monitor) {
+		return getBookmarkMarkerAttributesProvider().getMarkerDescriptor(bookmark, monitor);
 	}
 
 	

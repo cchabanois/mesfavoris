@@ -29,7 +29,7 @@ public class TextEditorBookmarkLocationProvider {
 		this.pathPlaceholderResolver = pathPlaceholderResolver;
 	}
 
-	public TextEditorBookmarkLocation findLocation(Bookmark bookmark) {
+	public TextEditorBookmarkLocation findLocation(Bookmark bookmark, IProgressMonitor monitor) {
 		IFile workspaceFile = getWorkspaceFile(bookmark);
 		String nonExpandedFilePath = bookmark.getPropertyValue(PROP_FILE_PATH);
 		IPath filePath = nonExpandedFilePath != null ? pathPlaceholderResolver.expand(nonExpandedFilePath) : null;
@@ -43,7 +43,7 @@ public class TextEditorBookmarkLocationProvider {
 		Integer lineNumber = getExpectedLineNumber(bookmark);
 		if (lineContent != null && filePath != null) {
 			lineNumber = getLineNumber(filePath, getExpectedLineNumber(bookmark), lineContent,
-					new NullProgressMonitor());
+					monitor);
 		}
 		return new TextEditorBookmarkLocation(workspaceFile, filePath, lineNumber);
 	}

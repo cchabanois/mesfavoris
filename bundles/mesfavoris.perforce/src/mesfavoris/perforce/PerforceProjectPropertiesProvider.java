@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 
@@ -21,7 +22,7 @@ public class PerforceProjectPropertiesProvider extends AbstractBookmarkPropertie
 
 	@Override
 	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part,
-			ISelection selection) {
+			ISelection selection, IProgressMonitor monitor) {
 		IProject project = getProject(bookmarkProperties);
 		if (project == null) {
 			return;

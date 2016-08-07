@@ -9,6 +9,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.junit.Test;
 
@@ -33,7 +34,8 @@ public class UrlBookmarkPropertiesProviderTest {
 
 	private void assertTitleAndFavIcon(String expectedTitle, String expectedIcon, String url) throws IOException {
 		Map<String, String> bookmarkProperties = new HashMap<>();
-		provider.addBookmarkProperties(bookmarkProperties, null, new StructuredSelection(new URL(url)));
+		provider.addBookmarkProperties(bookmarkProperties, null, new StructuredSelection(new URL(url)),
+				new NullProgressMonitor());
 		assertEquals(expectedTitle, bookmarkProperties.get(Bookmark.PROPERTY_NAME));
 		assertEquals(expectedIcon == null ? null : getImageAsBase64(expectedIcon),
 				bookmarkProperties.get(UrlBookmarkProperties.PROP_FAVICON));

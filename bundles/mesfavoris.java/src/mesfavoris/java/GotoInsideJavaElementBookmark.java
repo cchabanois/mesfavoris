@@ -1,5 +1,6 @@
 package mesfavoris.java;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavaUI;
@@ -16,18 +17,18 @@ import mesfavoris.model.Bookmark;
 
 public class GotoInsideJavaElementBookmark implements IGotoBookmark {
 	private final JavaBookmarkLocationProvider locationProvider;
-	
+
 	public GotoInsideJavaElementBookmark() {
 		this(new JavaBookmarkLocationProvider());
 	}
-	
+
 	public GotoInsideJavaElementBookmark(JavaBookmarkLocationProvider locationProvider) {
 		this.locationProvider = locationProvider;
 	}
-	
+
 	@Override
 	public boolean gotoBookmark(IWorkbenchWindow window, Bookmark bookmark) {
-		JavaEditorBookmarkLocation location = locationProvider.findLocation(bookmark);
+		JavaEditorBookmarkLocation location = locationProvider.findLocation(bookmark, new NullProgressMonitor());
 		if (location == null) {
 			return false;
 		}
@@ -55,7 +56,5 @@ public class GotoInsideJavaElementBookmark implements IGotoBookmark {
 			return null;
 		}
 	}
-
-
 
 }

@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -38,7 +39,8 @@ public class JavaBookmarkLocationProviderTest {
 				ImmutableMap.of(PROP_JAVA_TYPE, "org.apache.commons.cli.DefaultParser"));
 
 		// When
-		JavaEditorBookmarkLocation location = javaBookmarkLocationProvider.findLocation(bookmark);
+		JavaEditorBookmarkLocation location = javaBookmarkLocationProvider.findLocation(bookmark,
+				new NullProgressMonitor());
 
 		// Then
 		assertEquals("DefaultParser", location.getMember().getElementName());
@@ -53,7 +55,8 @@ public class JavaBookmarkLocationProviderTest {
 						PROP_JAVA_ELEMENT_KIND, KIND_METHOD, PROP_JAVA_ELEMENT_NAME, "parse"));
 
 		// When
-		JavaEditorBookmarkLocation location = javaBookmarkLocationProvider.findLocation(bookmark);
+		JavaEditorBookmarkLocation location = javaBookmarkLocationProvider.findLocation(bookmark,
+				new NullProgressMonitor());
 
 		// Then
 		// currently, we only condider the first "parse" method
@@ -70,7 +73,8 @@ public class JavaBookmarkLocationProviderTest {
 						PROP_LINE_NUMBER_INSIDE_ELEMENT, "7"));
 
 		// When
-		JavaEditorBookmarkLocation location = javaBookmarkLocationProvider.findLocation(bookmark);
+		JavaEditorBookmarkLocation location = javaBookmarkLocationProvider.findLocation(bookmark,
+				new NullProgressMonitor());
 
 		// Then
 		assertEquals("handleProperties", location.getMember().getElementName());
@@ -80,14 +84,14 @@ public class JavaBookmarkLocationProviderTest {
 	@Test
 	public void testInsideJavaElementFuzzyFindLocation() {
 		// Given
-		Bookmark bookmark = new Bookmark(new BookmarkId(),
-				ImmutableMap.of(PROP_JAVA_DECLARING_TYPE, "org.apache.commons.cli.DefaultParser",
-						PROP_JAVA_ELEMENT_KIND, KIND_METHOD, PROP_JAVA_ELEMENT_NAME, "handleProperties",
-						PROP_LINE_CONTENT,
-						"for (Enumeration<?> enumeration = properties.propertyNames(); enumeration.hasMoreElements();)"));
+		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(PROP_JAVA_DECLARING_TYPE,
+				"org.apache.commons.cli.DefaultParser", PROP_JAVA_ELEMENT_KIND, KIND_METHOD, PROP_JAVA_ELEMENT_NAME,
+				"handleProperties", PROP_LINE_CONTENT,
+				"for (Enumeration<?> enumeration = properties.propertyNames(); enumeration.hasMoreElements();)"));
 
 		// When
-		JavaEditorBookmarkLocation location = javaBookmarkLocationProvider.findLocation(bookmark);
+		JavaEditorBookmarkLocation location = javaBookmarkLocationProvider.findLocation(bookmark,
+				new NullProgressMonitor());
 
 		// Then
 		assertEquals("handleProperties", location.getMember().getElementName());

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -47,7 +48,7 @@ public class TextEditorBookmarkLocationProviderTest {
 				"for (Enumeration<?> enumeration = properties.propertyNames(); enumeration.hasMoreElements();)"));
 
 		// When
-		TextEditorBookmarkLocation location = locationProvider.findLocation(bookmark);
+		TextEditorBookmarkLocation location = locationProvider.findLocation(bookmark, new NullProgressMonitor());
 
 		// Then
 		assertEquals("/textEditorBookmarkLocationProviderTest/src/main/java/org/apache/commons/cli/DefaultParser.java",

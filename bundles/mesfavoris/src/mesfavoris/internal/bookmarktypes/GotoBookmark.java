@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -73,7 +74,7 @@ public class GotoBookmark implements IGotoBookmark {
 	private void addMarkerIfMissing(Bookmark bookmark) {
 		IMarker marker = bookmarksMarkers.findMarker(bookmark.getId());
 		if (marker == null) {
-			bookmarksMarkers.refreshMarker(bookmark.getId());
+			bookmarksMarkers.refreshMarker(bookmark.getId(), new NullProgressMonitor());
 		}
 	}
 
