@@ -167,11 +167,11 @@ public class BookmarksMarkers {
 	}
 
 	public void refreshMarker(BookmarkId bookmarkId, IProgressMonitor monitor) {
-		SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
-		bookmarkRemoved(bookmarkId, subMonitor.newChild(50));
 		Bookmark bookmark = bookmarkDatabase.getBookmarksTree().getBookmark(bookmarkId);
-		if (bookmark != null) {
-			bookmarkAdded(bookmark, subMonitor.newChild(50));
+		if (bookmark == null) {
+			bookmarkRemoved(bookmarkId, monitor);
+		} else {
+			bookmarkModified(bookmark, monitor);	
 		}
 	}
 

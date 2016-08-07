@@ -3,10 +3,12 @@ package mesfavoris.internal.bookmarktypes;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
-import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -44,7 +46,7 @@ public class GotoBookmark implements IGotoBookmark {
 	public boolean gotoBookmark(IWorkbenchWindow window, Bookmark bookmark) {
 		for (IGotoBookmark gotoBookmark : gotoBookmarks) {
 			if (gotoBookmark(gotoBookmark, window, bookmark)) {
-				addMarkerIfMissing(bookmark);
+				refreshMarker(bookmark);
 				postBookmarkVisited(bookmark.getId());
 				return true;
 			}
@@ -71,11 +73,15 @@ public class GotoBookmark implements IGotoBookmark {
 		eventBroker.post(BookmarksEvents.TOPIC_BOOKMARK_VISITED, ImmutableMap.of("bookmarkId", bookmarkId));
 	}
 
-	private void addMarkerIfMissing(Bookmark bookmark) {
-		IMarker marker = bookmarksMarkers.findMarker(bookmark.getId());
-		if (marker == null) {
-			bookmarksMarkers.refreshMarker(bookmark.getId(), new NullProgressMonitor());
-		}
+	private void refreshMarker(Bookmark bookmark) {
+		new Job("Refreshing marker") {
+			
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				bookmarksMarkers.refreshMarker(bookmark.getId(), monitor);
+				return Status.OK_STATUS;
+			}
+		}.schedule();
 	}
 
 }
