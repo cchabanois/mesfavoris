@@ -59,7 +59,7 @@ public class BookmarksMarkers {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.bookmarkMarkerAttributesProvider = bookmarkMarkerAttributesProvider;
 		this.backgroundBookmarksModificationsHandler = new BackgroundBookmarksModificationsHandler("Updating markers",
-				bookmarkDatabase, new BookmarksModificationsHandler(), 1000);
+				bookmarkDatabase, new BookmarksModificationsHandler(), 200);
 	}
 
 	public void init() {
