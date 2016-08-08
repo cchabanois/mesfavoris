@@ -33,6 +33,9 @@ public class FuzzyFilteredStringMatcher implements IFuzzyStringMatcher {
 		}
 		int filteredIndex = fuzzyStringMatcher.find(filteredCharSequence, filteredPattern, filteredExpectedLocation,
 				monitor);
+		if (filteredIndex == -1) {
+			return -1;
+		}
 		return filteredCharSequence.getParentIndex(filteredIndex);
 	}
 

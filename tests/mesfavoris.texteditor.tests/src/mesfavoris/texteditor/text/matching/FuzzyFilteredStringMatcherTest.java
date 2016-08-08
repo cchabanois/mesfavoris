@@ -1,6 +1,7 @@
 package mesfavoris.texteditor.text.matching;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import java.io.InputStreamReader;
 
@@ -30,8 +31,21 @@ public class FuzzyFilteredStringMatcherTest {
 
 	@Test
 	public void testFind() {
+		// When
 		int match = matcher.find(text, "    while (position != null  &&  position.offset == offset) {", 12790,
 				new NullProgressMonitor());
+		
+		// Then
 		assertThat(text.substring(match, match + 100).trim()).startsWith("while (p != null && p.offset == offset) {");
+	}
+	
+	@Test
+	public void testNotFound() {
+		// When
+		int match = matcher.find(text, "This won't be found", 12790,
+				new NullProgressMonitor());
+		
+		// Then
+		assertEquals(-1, match);
 	}
 }
