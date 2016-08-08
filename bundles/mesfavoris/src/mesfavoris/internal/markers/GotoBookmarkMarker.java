@@ -1,5 +1,6 @@
 package mesfavoris.internal.markers;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -21,6 +22,9 @@ public class GotoBookmarkMarker implements IGotoBookmark {
 	public boolean gotoBookmark(IWorkbenchWindow window, Bookmark bookmark) {
 		IMarker marker = bookmarksMarkers.findMarker(bookmark.getId());
 		if (marker == null) {
+			return false;
+		}
+		if (!(marker.getResource() instanceof IFile)) {
 			return false;
 		}
 		try {
