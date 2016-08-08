@@ -1,6 +1,5 @@
 package mesfavoris.internal.markers;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -72,24 +71,24 @@ public class BookmarksMarkers {
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(projectOpenedChangeListener);
 	}
 
-	private void handleBookmarkModifiedEvent(BookmarksModification event, IProgressMonitor monitor) {
+	private void handleBookmarksModificationEvent(BookmarksModification event, IProgressMonitor monitor) {
 		if (event instanceof BookmarkDeletedModification) {
 			BookmarkDeletedModification bookmarkDeletedModification = (BookmarkDeletedModification) event;
 			List<Bookmark> deletedBookmarks = Lists.newArrayList(bookmarkDeletedModification.getDeletedBookmarks());
 			SubMonitor subMonitor = SubMonitor.convert(monitor, deletedBookmarks.size());
-			deletedBookmarks.forEach(b -> bookmarkRemoved(b.getId(), subMonitor.newChild(1)));
+			deletedBookmarks.forEach(b -> deleteMarker(b.getId(), subMonitor.newChild(1)));
 		} else if (event instanceof BookmarksAddedModification) {
 			BookmarksAddedModification bookmarksAddedModification = (BookmarksAddedModification) event;
 			SubMonitor subMonitor = SubMonitor.convert(monitor, bookmarksAddedModification.getBookmarks().size());
-			bookmarksAddedModification.getBookmarks().forEach(b -> bookmarkAdded(b, subMonitor.newChild(1)));
+			bookmarksAddedModification.getBookmarks().forEach(b -> createMarker(b, subMonitor.newChild(1)));
 		} else if (event instanceof BookmarkPropertiesModification) {
 			BookmarkPropertiesModification bookmarkPropertiesModification = (BookmarkPropertiesModification) event;
-			bookmarkModified(bookmarkPropertiesModification.getTargetTree()
+			updateMarker(bookmarkPropertiesModification.getTargetTree()
 					.getBookmark(bookmarkPropertiesModification.getBookmarkId()), monitor);
 		}
 	}
-
-	private void bookmarkModified(Bookmark bookmarkModified, IProgressMonitor monitor) {
+	
+	private void updateMarker(Bookmark bookmarkModified, IProgressMonitor monitor) {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
 		IMarker marker = findMarker(bookmarkModified.getId());
 		BookmarkMarkerDescriptor descriptor = bookmarkMarkerAttributesProvider.getMarkerDescriptor(bookmarkModified,
@@ -113,7 +112,7 @@ public class BookmarksMarkers {
 		}
 	}
 
-	private void bookmarkAdded(Bookmark bookmarkAdded, IProgressMonitor monitor) {
+	private void createMarker(Bookmark bookmarkAdded, IProgressMonitor monitor) {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
 		BookmarkMarkerDescriptor descriptor = bookmarkMarkerAttributesProvider.getMarkerDescriptor(bookmarkAdded,
 				subMonitor.newChild(90));
@@ -129,7 +128,7 @@ public class BookmarksMarkers {
 		}
 	}
 
-	private void bookmarkRemoved(BookmarkId bookmarkId, IProgressMonitor monitor) {
+	private void deleteMarker(BookmarkId bookmarkId, IProgressMonitor monitor) {
 		IMarker marker = findMarker(bookmarkId);
 		if (marker == null) {
 			return;
@@ -169,9 +168,9 @@ public class BookmarksMarkers {
 	public void refreshMarker(BookmarkId bookmarkId, IProgressMonitor monitor) {
 		Bookmark bookmark = bookmarkDatabase.getBookmarksTree().getBookmark(bookmarkId);
 		if (bookmark == null) {
-			bookmarkRemoved(bookmarkId, monitor);
+			deleteMarker(bookmarkId, monitor);
 		} else {
-			bookmarkModified(bookmark, monitor);	
+			updateMarker(bookmark, monitor);	
 		}
 	}
 
@@ -242,7 +241,7 @@ public class BookmarksMarkers {
 		public void handle(List<BookmarksModification> modifications, IProgressMonitor monitor) {
 			SubMonitor subMonitor = SubMonitor.convert(monitor, "Updating markers", modifications.size());
 			for (BookmarksModification modification : modifications) {
-				handleBookmarkModifiedEvent(modification, subMonitor.newChild(1));
+				handleBookmarksModificationEvent(modification, subMonitor.newChild(1));
 			}
 		}
 
