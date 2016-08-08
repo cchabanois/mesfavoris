@@ -1,19 +1,42 @@
 package mesfavoris.model.modification;
 
+import java.util.Set;
+
+import mesfavoris.internal.model.compare.BookmarkComparer;
+import mesfavoris.internal.model.compare.BookmarkComparer.BookmarkDifferences;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 
 public class BookmarkPropertiesModification extends BookmarksModification {
 	private final BookmarkId bookmarkId;
-	
-	public BookmarkPropertiesModification(BookmarksTree sourceTree,
-			BookmarksTree targetTree, BookmarkId bookmarkId) {
+	private final Set<String> addedProperties;
+	private final Set<String> modifiedProperties;
+	private final Set<String> deletedProperties;
+
+	public BookmarkPropertiesModification(BookmarksTree sourceTree, BookmarksTree targetTree, BookmarkId bookmarkId) {
 		super(sourceTree, targetTree);
 		this.bookmarkId = bookmarkId;
+		BookmarkDifferences diff = new BookmarkComparer().compare(sourceTree.getBookmark(bookmarkId),
+				targetTree.getBookmark(bookmarkId));
+		this.addedProperties = diff.getAddedProperties();
+		this.modifiedProperties = diff.getModifiedProperties();
+		this.deletedProperties = diff.getDeletedProperties();
 	}
 
 	public BookmarkId getBookmarkId() {
 		return bookmarkId;
+	}
+
+	public Set<String> getAddedProperties() {
+		return addedProperties;
+	}
+
+	public Set<String> getModifiedProperties() {
+		return modifiedProperties;
+	}
+
+	public Set<String> getDeletedProperties() {
+		return deletedProperties;
 	}
 
 	@Override
@@ -45,5 +68,5 @@ public class BookmarkPropertiesModification extends BookmarksModification {
 			return false;
 		return true;
 	}
-	
+
 }
