@@ -11,7 +11,7 @@ import org.junit.Test;
 import mesfavoris.internal.model.merge.BookmarksTreeMerger;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.model.modification.BookmarksTreeModifier;
-import mesfavoris.testutils.BookmarksTreeBuilder;
+import mesfavoris.testutils.BookmarksTreeGenerator;
 import mesfavoris.testutils.IDGenerator;
 import mesfavoris.testutils.IncrementalIDGenerator;
 import mesfavoris.testutils.RandomModificationApplier;
@@ -23,7 +23,7 @@ public class BookmarksTreeMergerRandomTest {
 	
 	@Before
 	public void setUp() {
-		originalBookmarksTree = new BookmarksTreeBuilder(idGenerator, 5, 3, 2).build();
+		originalBookmarksTree = new BookmarksTreeGenerator(idGenerator, 5, 3, 2).build();
 		randomModificationApplier = new RandomModificationApplier(idGenerator);
 	}
 

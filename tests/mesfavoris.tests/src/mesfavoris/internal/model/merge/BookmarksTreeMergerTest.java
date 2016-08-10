@@ -24,7 +24,7 @@ import mesfavoris.model.modification.BookmarksAddedModification;
 import mesfavoris.model.modification.BookmarksModification;
 import mesfavoris.model.modification.BookmarksMovedModification;
 import mesfavoris.model.modification.BookmarksTreeModifier;
-import mesfavoris.testutils.BookmarksTreeBuilder;
+import mesfavoris.testutils.BookmarksTreeGenerator;
 import mesfavoris.testutils.IDGenerator;
 import mesfavoris.testutils.IncrementalIDGenerator;
 
@@ -35,7 +35,7 @@ public class BookmarksTreeMergerTest {
 
 	@Before
 	public void setUp() {
-		originalBookmarksTree = new BookmarksTreeBuilder(idGenerator, 5, 3, 2).build();
+		originalBookmarksTree = new BookmarksTreeGenerator(idGenerator, 5, 3, 2).build();
 		bookmarksTreeModifier = new BookmarksTreeModifier(originalBookmarksTree);
 	}
 

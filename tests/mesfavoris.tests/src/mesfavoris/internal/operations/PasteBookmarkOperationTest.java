@@ -22,9 +22,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPart;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import com.google.common.collect.Lists;
 
@@ -34,7 +31,7 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
-import mesfavoris.testutils.BookmarksTreeBuilder;
+import mesfavoris.testutils.BookmarksTreeGenerator;
 import mesfavoris.testutils.IncrementalIDGenerator;
 import mesfavoris.validation.IBookmarkModificationValidator;
 
@@ -46,7 +43,7 @@ public class PasteBookmarkOperationTest {
 
 	@Before
 	public void setUp() {
-		BookmarksTree bookmarksTree = new BookmarksTreeBuilder(new IncrementalIDGenerator(), 5, 3, 2).build();
+		BookmarksTree bookmarksTree = new BookmarksTreeGenerator(new IncrementalIDGenerator(), 5, 3, 2).build();
 		bookmarkDatabase = new BookmarkDatabase("main", bookmarksTree);
 		pasteBookmarkOperation = new PasteBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider,
 				bookmarkModificationValidator);

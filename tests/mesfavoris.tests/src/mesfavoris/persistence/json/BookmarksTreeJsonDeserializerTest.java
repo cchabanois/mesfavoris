@@ -15,7 +15,7 @@ import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
 import mesfavoris.persistence.json.BookmarksTreeJsonSerializer;
-import mesfavoris.testutils.BookmarksTreeBuilder;
+import mesfavoris.testutils.BookmarksTreeGenerator;
 import mesfavoris.testutils.IncrementalIDGenerator;
 
 public class BookmarksTreeJsonDeserializerTest {
@@ -27,7 +27,7 @@ public class BookmarksTreeJsonDeserializerTest {
 	@Test
 	public void testDeserializeBookmarksTree() throws IOException {
 		// Given
-		BookmarksTree bookmarksTree = new BookmarksTreeBuilder(new IncrementalIDGenerator(), 5, 3, 2).build();
+		BookmarksTree bookmarksTree = new BookmarksTreeGenerator(new IncrementalIDGenerator(), 5, 3, 2).build();
 		String serializedBookmarks = serialize(bookmarksTree, bookmarksTree.getRootFolder().getId());
 
 		// When
@@ -40,7 +40,7 @@ public class BookmarksTreeJsonDeserializerTest {
 	@Test
 	public void testCannotDeserializeBookmarksTreeWithNewerVersion() throws IOException {
 		// Given
-		BookmarksTree bookmarksTree = new BookmarksTreeBuilder(new IncrementalIDGenerator(), 5, 3, 2).build();
+		BookmarksTree bookmarksTree = new BookmarksTreeGenerator(new IncrementalIDGenerator(), 5, 3, 2).build();
 		String serializedBookmarks = serialize(bookmarksTree, bookmarksTree.getRootFolder().getId());
 
 		// When/Then

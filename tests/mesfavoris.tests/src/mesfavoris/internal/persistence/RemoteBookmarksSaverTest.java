@@ -1,6 +1,5 @@
 package mesfavoris.internal.persistence;
 
-import static mesfavoris.testutils.BookmarksTreeTestUtil.getBookmarkFolder;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
@@ -25,7 +24,7 @@ import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.model.modification.BookmarksTreeModifier;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
-import mesfavoris.testutils.BookmarksTreeBuilder;
+import mesfavoris.testutils.BookmarksTreeGenerator;
 import mesfavoris.testutils.IncrementalIDGenerator;
 import mesfavoris.testutils.RandomModificationApplier;
 
@@ -45,7 +44,7 @@ public class RemoteBookmarksSaverTest {
 		this.remoteBookmarksStore = new InMemoryRemoteBookmarksStore(eventBroker);
 		remoteBookmarksStoreManager = new RemoteBookmarksStoreManager(() -> Lists.newArrayList(remoteBookmarksStore));
 		saver = new RemoteBookmarksSaver(remoteBookmarksStoreManager);
-		originalBookmarksTree = new BookmarksTreeBuilder(incrementalIDGenerator, 5, 3, 2).build();
+		originalBookmarksTree = new BookmarksTreeGenerator(incrementalIDGenerator, 5, 3, 2).build();
 		addAllTopLevelBookmarkFoldersToRemoteBookmarksStore();
 	}
 

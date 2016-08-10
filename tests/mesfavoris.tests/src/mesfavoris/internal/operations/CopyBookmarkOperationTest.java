@@ -20,7 +20,7 @@ import mesfavoris.internal.operations.CopyBookmarkOperation;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
-import mesfavoris.testutils.BookmarksTreeBuilder;
+import mesfavoris.testutils.BookmarksTreeGenerator;
 import mesfavoris.testutils.IncrementalIDGenerator;
 
 public class CopyBookmarkOperationTest {
@@ -29,7 +29,7 @@ public class CopyBookmarkOperationTest {
 
 	@Before
 	public void setUp() {
-		bookmarksTree = new BookmarksTreeBuilder(new IncrementalIDGenerator(), 5, 3, 2).build();
+		bookmarksTree = new BookmarksTreeGenerator(new IncrementalIDGenerator(), 5, 3, 2).build();
 	}
 
 	@Test

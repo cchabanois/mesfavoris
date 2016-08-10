@@ -31,7 +31,7 @@ import mesfavoris.model.BookmarksTree;
 import mesfavoris.model.modification.BookmarksModification;
 import mesfavoris.model.modification.BookmarksMovedModification;
 import mesfavoris.testutils.BookmarksListener;
-import mesfavoris.testutils.BookmarksTreeBuilder;
+import mesfavoris.testutils.BookmarksTreeGenerator;
 import mesfavoris.testutils.IncrementalIDGenerator;
 import mesfavoris.validation.IBookmarkModificationValidator;
 
@@ -44,7 +44,7 @@ public class BookmarksViewerDropListenerTest {
 
 	@Before
 	public void setUp() {
-		BookmarksTree bookmarksTree = new BookmarksTreeBuilder(new IncrementalIDGenerator(), 5, 3, 2).build();
+		BookmarksTree bookmarksTree = new BookmarksTreeGenerator(new IncrementalIDGenerator(), 5, 3, 2).build();
 		bookmarkDatabase = new BookmarkDatabase("main", bookmarksTree);
 		bookmarkDatabase.addListener(bookmarksListener);
 		when(bookmarkModificationValidator.validateModification(any(BookmarksTree.class), any(BookmarkId.class)))

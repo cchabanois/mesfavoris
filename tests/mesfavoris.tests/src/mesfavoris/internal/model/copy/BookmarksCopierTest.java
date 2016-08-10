@@ -14,7 +14,7 @@ import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.model.modification.BookmarksTreeModifier;
-import mesfavoris.testutils.BookmarksTreeBuilder;
+import mesfavoris.testutils.BookmarksTreeGenerator;
 import mesfavoris.testutils.IncrementalIDGenerator;
 
 public class BookmarksCopierTest {
@@ -23,7 +23,7 @@ public class BookmarksCopierTest {
 
 	@Before
 	public void setUp() {
-		sourceBookmarksTree = new BookmarksTreeBuilder(new IncrementalIDGenerator(), 5, 3, 2).build();
+		sourceBookmarksTree = new BookmarksTreeGenerator(new IncrementalIDGenerator(), 5, 3, 2).build();
 		bookmarksCopier = new BookmarksCopier(sourceBookmarksTree, id -> new BookmarkId(id.toString() + "Copy"));
 	}
 

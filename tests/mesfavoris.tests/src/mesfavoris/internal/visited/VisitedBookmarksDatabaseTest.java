@@ -18,7 +18,7 @@ import com.google.common.collect.ImmutableMap;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
-import mesfavoris.testutils.BookmarksTreeBuilder;
+import mesfavoris.testutils.BookmarksTreeGenerator;
 import mesfavoris.testutils.IncrementalIDGenerator;
 import mesfavoris.topics.BookmarksEvents;
 
@@ -34,7 +34,7 @@ public class VisitedBookmarksDatabaseTest {
 	@Before
 	public void setUp() throws Exception {
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
-		BookmarksTree bookmarksTree = new BookmarksTreeBuilder(new IncrementalIDGenerator(), 5, 1, 5).build();
+		BookmarksTree bookmarksTree = new BookmarksTreeGenerator(new IncrementalIDGenerator(), 5, 1, 5).build();
 		bookmarkDatabase = new BookmarkDatabase("main", bookmarksTree);
 		file = temporaryFolder.newFile();
 		visitedBookmarksDatabase = new VisitedBookmarksDatabase(eventBroker, bookmarkDatabase, file);

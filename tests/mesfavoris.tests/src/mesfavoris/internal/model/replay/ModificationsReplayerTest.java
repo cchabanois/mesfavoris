@@ -13,7 +13,7 @@ import mesfavoris.internal.model.replay.ModificationsReplayer;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.model.modification.BookmarksModification;
 import mesfavoris.model.modification.BookmarksTreeModifier;
-import mesfavoris.testutils.BookmarksTreeBuilder;
+import mesfavoris.testutils.BookmarksTreeGenerator;
 import mesfavoris.testutils.IDGenerator;
 import mesfavoris.testutils.IncrementalIDGenerator;
 import mesfavoris.testutils.RandomModificationApplier;
@@ -25,7 +25,7 @@ public class ModificationsReplayerTest {
 
 	@Before
 	public void setUp() {
-		originalBookmarksTree = new BookmarksTreeBuilder(idGenerator, 5, 3, 2).build();
+		originalBookmarksTree = new BookmarksTreeGenerator(idGenerator, 5, 3, 2).build();
 		randomModificationApplier = new RandomModificationApplier(idGenerator);
 	}
 

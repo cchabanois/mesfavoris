@@ -11,7 +11,7 @@ import mesfavoris.internal.model.compare.BookmarksTreeComparer;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.model.modification.BookmarkPropertiesModification;
-import mesfavoris.testutils.BookmarksTreeBuilder;
+import mesfavoris.testutils.BookmarksTreeGenerator;
 import mesfavoris.testutils.IncrementalIDGenerator;
 
 public class BookmarksTreeComparerTest {
@@ -19,8 +19,8 @@ public class BookmarksTreeComparerTest {
 	@Test
 	public void testSameProperties() {
 		// Given
-		BookmarksTree sourceTree = new BookmarksTreeBuilder(new IncrementalIDGenerator(), 5, 3, 2).build();
-		BookmarksTree targetTree = new BookmarksTreeBuilder(new IncrementalIDGenerator(), 5, 3, 2).build();
+		BookmarksTree sourceTree = new BookmarksTreeGenerator(new IncrementalIDGenerator(), 5, 3, 2).build();
+		BookmarksTree targetTree = new BookmarksTreeGenerator(new IncrementalIDGenerator(), 5, 3, 2).build();
 
 		// When
 		BookmarksTreeComparer comparer = new BookmarksTreeComparer(sourceTree, targetTree);
@@ -34,9 +34,9 @@ public class BookmarksTreeComparerTest {
 	@Test
 	public void testDifferentProperties() {
 		// Given
-		BookmarksTree sourceTree = new BookmarksTreeBuilder(new IncrementalIDGenerator(), 5, 3, 2).build();
+		BookmarksTree sourceTree = new BookmarksTreeGenerator(new IncrementalIDGenerator(), 5, 3, 2).build();
 		BookmarkId bookmarkId = getBookmark(sourceTree, 1, 1, 1).getId();
-		BookmarksTree targetTree = new BookmarksTreeBuilder(new IncrementalIDGenerator(), 5, 3, 2).build()
+		BookmarksTree targetTree = new BookmarksTreeGenerator(new IncrementalIDGenerator(), 5, 3, 2).build()
 				.setPropertyValue(bookmarkId, "newProperty", "value");
 
 		// When
