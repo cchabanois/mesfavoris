@@ -11,6 +11,7 @@ import mesfavoris.internal.jobs.BackgroundBookmarksModificationsHandler.IBookmar
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.model.modification.BookmarksModification;
+import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
 
 /**
  * Save bookmarks from a {@link BookmarkDatabase} when bookmarks are
@@ -19,7 +20,7 @@ import mesfavoris.model.modification.BookmarksModification;
  * @author cchabanois
  *
  */
-public class BookmarksAutoSaver {
+public class BookmarksAutoSaver implements IBookmarksDatabaseDirtyStateTracker {
 	private static final int SAVE_DELAY = 2000;
 	private final BackgroundBookmarksModificationsHandler backgroundBookmarksModificationsHandler;
 	private final LocalBookmarksSaver localBookmarksSaver;
@@ -42,6 +43,11 @@ public class BookmarksAutoSaver {
 		backgroundBookmarksModificationsHandler.close();
 	}
 
+	@Override
+	public boolean isDirty() {
+		return backgroundBookmarksModificationsHandler.getQueueSize() > 0;
+	}
+	
 	private class SaveModificationsHandler implements IBookmarksModificationsHandler {
 
 		@Override

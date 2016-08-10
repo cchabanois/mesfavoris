@@ -1,27 +1,32 @@
 package mesfavoris.internal.operations;
 
 import java.io.IOException;
-import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.internal.model.merge.BookmarksTreeMerger;
 import mesfavoris.model.BookmarkDatabase;
-import mesfavoris.model.BookmarkId;
+import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
-import mesfavoris.remote.RemoteBookmarksTree;
 
+/**
+ * Connect to a remote bookmark store
+ * 
+ * @author cchabanois
+ *
+ */
 public class ConnectToRemoteBookmarksStoreOperation {
-	private final BookmarkDatabase bookmarkDatabase;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
+	private final RefreshRemoteFolderOperation refreshRemoteFolderOperation;
 
 	public ConnectToRemoteBookmarksStoreOperation(BookmarkDatabase bookmarkDatabase,
-			RemoteBookmarksStoreManager remoteBookmarksStoreManager) {
-		this.bookmarkDatabase = bookmarkDatabase;
+			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
+			IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker) {
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
+		this.refreshRemoteFolderOperation = new RefreshRemoteFolderOperation(bookmarkDatabase,
+				remoteBookmarksStoreManager, bookmarksDatabaseDirtyStateTracker);
 	}
 
 	public void connectToRemoteBookmarksStore(String storeId, IProgressMonitor monitor) throws BookmarksException {
@@ -32,7 +37,7 @@ public class ConnectToRemoteBookmarksStoreOperation {
 				throw new BookmarksException("Unknown store id");
 			}
 			store.connect(new SubProgressMonitor(monitor, 80));
-			loadRemoteBookmarkFolders(store, new SubProgressMonitor(monitor, 20));
+			refreshRemoteFolderOperation.refresh(store.getDescriptor().getId(), new SubProgressMonitor(monitor, 20));
 		} catch (IOException e) {
 			throw new BookmarksException("Could not connect to remote bookmarks store", e);
 		} finally {
@@ -40,28 +45,4 @@ public class ConnectToRemoteBookmarksStoreOperation {
 		}
 	}
 
-	private void loadRemoteBookmarkFolders(IRemoteBookmarksStore store, IProgressMonitor monitor)
-			throws BookmarksException {
-		Set<BookmarkId> remoteBookmarkFolderIds = store.getRemoteBookmarkFolderIds();
-		monitor.beginTask("Loading bookmark folders", remoteBookmarkFolderIds.size());
-		try {
-			for (BookmarkId bookmarkFolderId : remoteBookmarkFolderIds) {
-				RemoteBookmarksTree remoteBookmarksTree = store.load(bookmarkFolderId,
-						new SubProgressMonitor(monitor, 1));
-				replaceBookmark(remoteBookmarksTree);
-			}
-		} catch (IOException e) {
-			throw new BookmarksException("Could not load remote bookmark folders", e);
-		} finally {
-			monitor.done();
-		}
-	}
-
-	private void replaceBookmark(final RemoteBookmarksTree remoteBookmarksTree) throws BookmarksException {
-		bookmarkDatabase.modify(bookmarksTreeModifier -> {
-			BookmarksTreeMerger bookmarksTreeMerger = new BookmarksTreeMerger(remoteBookmarksTree.getBookmarksTree());
-			bookmarksTreeMerger.merge(bookmarksTreeModifier);
-		});
-
-	}
 }

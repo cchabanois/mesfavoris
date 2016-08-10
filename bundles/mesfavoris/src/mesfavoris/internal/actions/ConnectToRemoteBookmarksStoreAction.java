@@ -68,7 +68,8 @@ public class ConnectToRemoteBookmarksStoreAction extends Action implements IWork
 		protected IStatus run(IProgressMonitor monitor) {
 			try {
 				ConnectToRemoteBookmarksStoreOperation operation = new ConnectToRemoteBookmarksStoreOperation(
-						BookmarksPlugin.getBookmarkDatabase(), BookmarksPlugin.getRemoteBookmarksStoreManager());
+						BookmarksPlugin.getBookmarkDatabase(), BookmarksPlugin.getRemoteBookmarksStoreManager(),
+						BookmarksPlugin.getBookmarksDatabaseDirtyStateTracker());
 				operation.connectToRemoteBookmarksStore(storeDescriptor.getId(), monitor);
 				return Status.OK_STATUS;
 			} catch (BookmarksException e) {

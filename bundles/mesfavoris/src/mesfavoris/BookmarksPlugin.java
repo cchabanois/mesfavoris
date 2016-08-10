@@ -35,6 +35,7 @@ import mesfavoris.internal.visited.VisitedBookmarksDatabase;
 import mesfavoris.internal.workspace.BookmarksWorkspaceFactory;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
+import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
 import mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
 import mesfavoris.persistence.json.BookmarksTreeJsonSerializer;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
@@ -195,6 +196,10 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 
 	public static VisitedBookmarksDatabase getMostVisitedBookmarks() {
 		return mostVisitedBookmarks;
+	}
+	
+	public static IBookmarksDatabaseDirtyStateTracker getBookmarksDatabaseDirtyStateTracker() {
+		return bookmarksSaver;
 	}
 	
 	/**

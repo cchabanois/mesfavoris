@@ -34,7 +34,8 @@ public class BackgroundBookmarksModificationsHandler {
 	private final long scheduleDelay;
 	private final AtomicInteger previousSize = new AtomicInteger(0);
 	private final BookmarksModificationBatchHandlerJob job;
-
+	private final AtomicInteger unhandledEventsCount = new AtomicInteger(0);
+	
 	public BackgroundBookmarksModificationsHandler(String jobName, BookmarkDatabase bookmarkDatabase,
 			IBookmarksModificationsHandler bookmarksModificationsHandler, long delay) {
 		job = new BookmarksModificationBatchHandlerJob(jobName);
@@ -43,11 +44,20 @@ public class BackgroundBookmarksModificationsHandler {
 		this.scheduleDelay = delay;
 		this.bookmarksListener = modifications -> {
 			eventsQueue.addAll(modifications);
+			unhandledEventsCount.set(eventsQueue.size());
 			job.schedule(delay);
 		};
 
 	}
 
+	/**
+	 * Number of modification events that have not yet been handled
+	 * @return
+	 */
+	public int getQueueSize() {
+		return unhandledEventsCount.get();
+	}
+	
 	public void init() {
 		bookmarkDatabase.addListener(bookmarksListener);
 	}
@@ -86,6 +96,8 @@ public class BackgroundBookmarksModificationsHandler {
 				bookmarksModificationsHandler.handle(modifications, monitor);
 			} catch (BookmarksException e) {
 				return e.getStatus();
+			} finally {
+				unhandledEventsCount.set(eventsQueue.size());
 			}
 			return Status.OK_STATUS;
 		}

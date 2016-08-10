@@ -63,6 +63,7 @@ import mesfavoris.bookmarktype.IImportTeamProject;
 import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.internal.actions.AddToRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.ConnectToRemoteBookmarksStoreAction;
+import mesfavoris.internal.actions.RefreshRemoteFoldersAction;
 import mesfavoris.internal.actions.RemoveFromRemoteBookmarksStoreAction;
 import mesfavoris.internal.jobs.ImportTeamProjectFromBookmarkJob;
 import mesfavoris.internal.operations.GetLinkedBookmarksOperation;
@@ -70,6 +71,7 @@ import mesfavoris.internal.visited.LatestVisitedBookmarksVirtualFolder;
 import mesfavoris.internal.visited.MostVisitedBookmarksVirtualFolder;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
+import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.validation.BookmarkModificationValidator;
@@ -81,6 +83,8 @@ public class BookmarksView extends ViewPart {
 
 	private final BookmarkDatabase bookmarkDatabase;
 	private final IEventBroker eventBroker;
+	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
+	private final IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker;
 	private Text searchText;
 	private BookmarksTreeViewer bookmarksTreeViewer;
 	private BookmarkCommentViewer bookmarkCommentViewer;
@@ -92,6 +96,8 @@ public class BookmarksView extends ViewPart {
 	public BookmarksView() {
 		this.bookmarkDatabase = BookmarksPlugin.getBookmarkDatabase();
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
+		this.remoteBookmarksStoreManager = BookmarksPlugin.getRemoteBookmarksStoreManager();
+		this.bookmarksDatabaseDirtyStateTracker = BookmarksPlugin.getBookmarksDatabaseDirtyStateTracker();
 	}
 
 	public void createPartControl(Composite parent) {
@@ -212,12 +218,10 @@ public class BookmarksView extends ViewPart {
 		RemoteBookmarksStoreManager remoteBookmarksStoreManager = BookmarksPlugin.getRemoteBookmarksStoreManager();
 		IBookmarkPropertiesProvider bookmarkPropertiesProvider = BookmarksPlugin.getBookmarkPropertiesProvider();
 		MostVisitedBookmarksVirtualFolder mostVisitedBookmarksVirtualFolder = new MostVisitedBookmarksVirtualFolder(
-				eventBroker,
-				bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(),
+				eventBroker, bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(),
 				bookmarkDatabase.getBookmarksTree().getRootFolder().getId(), 10);
 		LatestVisitedBookmarksVirtualFolder latestVisitedBookmarksVirtualFolder = new LatestVisitedBookmarksVirtualFolder(
-				eventBroker,
-				bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(),
+				eventBroker, bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(),
 				bookmarkDatabase.getBookmarksTree().getRootFolder().getId(), 10);
 		IGotoBookmark gotoBookmark = BookmarksPlugin.getGotoBookmark();
 		bookmarksTreeViewer = new BookmarksTreeViewer(parent, bookmarkDatabase, defaultBookmarkFolderManager,
@@ -345,16 +349,8 @@ public class BookmarksView extends ViewPart {
 	}
 
 	private void makeActions() {
-		refreshAction = new Action() {
-			public void run() {
-				refreshInUIThread();
-			}
-		};
-		refreshAction.setText("&Refresh");
-		refreshAction.setToolTipText("Refresh bookmarks");
-		refreshAction.setImageDescriptor(
-				BookmarksPlugin.imageDescriptorFromPlugin(BookmarksPlugin.PLUGIN_ID, "icons/refresh.gif"));
-
+		refreshAction = new RefreshRemoteFoldersAction(bookmarkDatabase, remoteBookmarksStoreManager,
+				bookmarksDatabaseDirtyStateTracker);
 		toggleLinkAction = new ToggleLinkAction();
 		toggleLinkAction.setActionDefinitionId(IWorkbenchCommandConstants.NAVIGATE_TOGGLE_LINK_WITH_EDITOR);
 		toggleLinkAction.updateLinkImage(false);
@@ -362,14 +358,6 @@ public class BookmarksView extends ViewPart {
 
 	public void setFocus() {
 		bookmarksTreeViewer.getControl().setFocus();
-	}
-
-	private void refreshInUIThread() {
-		Display.getDefault().asyncExec(() -> {
-			if (bookmarksTreeViewer != null && !bookmarksTreeViewer.getControl().isDisposed()) {
-				bookmarksTreeViewer.refresh();
-			}
-		});
 	}
 
 	private ToggleLinkAction toggleLinkAction;
