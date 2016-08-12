@@ -64,6 +64,21 @@ public class DocumentFuzzySearcherTest {
 
 	}
 
+	@Test
+	public void testFindLineInRegionWithInvalidExpectedLineNumber() throws Exception {
+		// When
+		IRegion region = getRegion(document, 458, 483);
+
+		// When
+		int lineNumber = searcher.findLineNumber(region, 490,
+				"private int computeIndexInPosition(List positions, int offset, boolean orderedByOffset) {",
+				new NullProgressMonitor());
+
+		// Then
+		assertEquals(468, lineNumber);
+
+	}	
+	
 	private IRegion getRegion(IDocument document, int line1, int line2) throws BadLocationException {
 		int offset1 = document.getLineOffset(line1);
 		int offset2 = document.getLineOffset(line2);

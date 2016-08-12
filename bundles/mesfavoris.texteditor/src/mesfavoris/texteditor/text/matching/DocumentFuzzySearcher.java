@@ -44,6 +44,14 @@ public class DocumentFuzzySearcher {
 			if (expectedLineNumber == -1) {
 				expectedLocationInSubSequence = -1;
 			} else {
+				int minLineNumber = document.getLineOfOffset(region.getOffset());
+				int maxLineNumber = document.getLineOfOffset(region.getOffset()+region.getLength()-1);
+				if (expectedLineNumber < minLineNumber) {
+					expectedLineNumber = minLineNumber;
+				}
+				if (expectedLineNumber > maxLineNumber) {
+					expectedLineNumber = maxLineNumber;
+				}
 				expectedLocationInSubSequence = document.getLineOffset(expectedLineNumber) - region.getOffset();
 			}
 			IMatchScoreComputer matchScoreComputer = getMatchScoreComputer(document, region, expectedLineNumber);
