@@ -2,13 +2,12 @@ package mesfavoris.remote;
 
 import org.eclipse.e4.core.services.events.IEventBroker;
 
+import com.google.common.collect.ImmutableMap;
+
 import mesfavoris.model.BookmarkId;
 import mesfavoris.topics.BookmarksEvents;
 
 public abstract class AbstractRemoteBookmarksStore implements IRemoteBookmarksStore {
-	private static final String TOPIC_REMOTE_BOOKMARK_STORES = BookmarksEvents.BOOKMARKS_TOPIC_BASE
-			+ "/remoteBookmarkStores";
-	public static final String TOPIC_REMOTE_BOOKMARK_STORES_ALL = TOPIC_REMOTE_BOOKMARK_STORES + "/*";
 	private final IEventBroker eventBroker;
 	private IRemoteBookmarksStoreDescriptor descriptor;
 
@@ -34,15 +33,20 @@ public abstract class AbstractRemoteBookmarksStore implements IRemoteBookmarksSt
 	}
 
 	protected void postMappingAdded(BookmarkId bookmarkFolderId) {
-		eventBroker.post(TOPIC_REMOTE_BOOKMARK_STORES + "/" + getDescriptor().getId() + "/mappings/added",
-				bookmarkFolderId.toString());
+		eventBroker.post(TOPIC_MAPPING_ADDED, ImmutableMap.of(PROP_REMOTE_BOOKMARKS_STORE_ID, getDescriptor().getId(),
+				PROP_BOOKMARK_FOLDER_ID, bookmarkFolderId.toString()));
 	}
 
 	protected void postMappingRemoved(BookmarkId bookmarkFolderId) {
-		eventBroker.post(TOPIC_REMOTE_BOOKMARK_STORES + "/" + getDescriptor().getId() + "/mappings/removed",
-				bookmarkFolderId.toString());
-	}	
-	
+		eventBroker.post(TOPIC_MAPPING_REMOVED, ImmutableMap.of(PROP_REMOTE_BOOKMARKS_STORE_ID, getDescriptor().getId(),
+				PROP_BOOKMARK_FOLDER_ID, bookmarkFolderId.toString()));
+	}
+
+	protected void postRemoteBookmarksTreeChanged(BookmarkId bookmarkFolderId) {
+		eventBroker.post(TOPIC_MAPPING_CHANGED, ImmutableMap.of(PROP_REMOTE_BOOKMARKS_STORE_ID, getDescriptor().getId(),
+				PROP_BOOKMARK_FOLDER_ID, bookmarkFolderId.toString()));
+	}
+
 	public static String getConnectedTopic(String remoteBookmarksStoreId) {
 		return TOPIC_REMOTE_BOOKMARK_STORES + "/" + remoteBookmarksStoreId + "/connected";
 	}

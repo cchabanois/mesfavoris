@@ -25,10 +25,12 @@ import mesfavoris.internal.bookmarktypes.PluginBookmarkMarkerAttributesProvider;
 import mesfavoris.internal.bookmarktypes.PluginBookmarkPropertiesProvider;
 import mesfavoris.internal.bookmarktypes.PluginGotoBookmark;
 import mesfavoris.internal.markers.BookmarksMarkers;
+import mesfavoris.internal.operations.RefreshRemoteFolderOperation;
 import mesfavoris.internal.persistence.BookmarksAutoSaver;
 import mesfavoris.internal.persistence.LocalBookmarksSaver;
 import mesfavoris.internal.persistence.RemoteBookmarksSaver;
 import mesfavoris.internal.remote.RemoteBookmarksStoreLoader;
+import mesfavoris.internal.remote.RemoteBookmarksTreeChangeEventHandler;
 import mesfavoris.internal.service.BookmarksService;
 import mesfavoris.internal.views.virtual.BookmarkLink;
 import mesfavoris.internal.visited.VisitedBookmarksDatabase;
@@ -67,7 +69,8 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 	private static VisitedBookmarksDatabase mostVisitedBookmarks;
 	
 	private final BookmarkAdapterFactory bookmarkAdapterFactory = new BookmarkAdapterFactory();
-
+	private RemoteBookmarksTreeChangeEventHandler remoteBookmarksTreeChangeEventHandler;
+	
 	/**
 	 * The constructor
 	 */
@@ -105,6 +108,8 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		IEventBroker eventBroker = (IEventBroker) getWorkbench().getService(IEventBroker.class);
 		mostVisitedBookmarks = new VisitedBookmarksDatabase(eventBroker, bookmarkDatabase, mostVisitedBookmarksFile);
 		mostVisitedBookmarks.init();
+		remoteBookmarksTreeChangeEventHandler = new RemoteBookmarksTreeChangeEventHandler(eventBroker, new RefreshRemoteFolderOperation(bookmarkDatabase, remoteBookmarksStoreManager, bookmarksSaver));
+		remoteBookmarksTreeChangeEventHandler.subscribe();
 	}
 
 	private BookmarkDatabase loadBookmarkDatabase(File bookmarksFile) {
@@ -125,6 +130,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		remoteBookmarksTreeChangeEventHandler.unsubscribe();
 		bookmarksSaver.close();
 		IAdapterManager adapterManager = Platform.getAdapterManager();
 		adapterManager.unregisterAdapters(bookmarkAdapterFactory);

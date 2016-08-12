@@ -4,11 +4,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -19,6 +17,10 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
@@ -36,12 +38,12 @@ import mesfavoris.model.modification.BookmarksModification;
  * @author cchabanois
  *
  */
-public class BookmarkMappingsStore implements IBookmarksListener {
+public class BookmarkMappingsStore implements IBookmarksListener, IBookmarkMappings {
 	private final File storeFile;
-	private final Map<BookmarkId, String> mappings = new ConcurrentHashMap<BookmarkId, String>();
+	private final BiMap<BookmarkId, String> mappings = Maps.synchronizedBiMap(HashBiMap.create());
 	private final SaveJob saveJob = new SaveJob();
 	private final ListenerList listenerList = new ListenerList();
-	
+
 	public BookmarkMappingsStore(File storeFile) {
 		this.storeFile = storeFile;
 	}
@@ -53,12 +55,24 @@ public class BookmarkMappingsStore implements IBookmarksListener {
 		}
 	}
 
+	@Override
 	public String getFileId(BookmarkId bookmarkFolderId) {
 		return mappings.get(bookmarkFolderId);
 	}
 
+	@Override
+	public BookmarkId getBookmarkFolderId(String fileId) {
+		return mappings.inverse().get(fileId);
+	}
+
+	@Override
 	public Set<BookmarkId> getBookmarkFolderIds() {
-		return new HashSet<BookmarkId>(mappings.keySet());
+		return ImmutableSet.copyOf(mappings.keySet());
+	}
+
+	@Override
+	public Set<String> getFileIds() {
+		return ImmutableSet.copyOf(mappings.inverse().keySet());
 	}
 
 	public void remove(BookmarkId bookmarkFolderId) {
@@ -137,8 +151,8 @@ public class BookmarkMappingsStore implements IBookmarksListener {
 
 	public void removeListener(IBookmarkMappingsListener listener) {
 		listenerList.remove(listener);
-	}	
-	
+	}
+
 	private void fireMappingAdded(BookmarkId bookmarkFolderId) {
 		Object[] listeners = listenerList.getListeners();
 		for (int i = 0; i < listeners.length; i++) {
@@ -155,8 +169,8 @@ public class BookmarkMappingsStore implements IBookmarksListener {
 				}
 			});
 		}
-	}	
-	
+	}
+
 	private void fireMappingRemoved(BookmarkId bookmarkFolderId) {
 		Object[] listeners = listenerList.getListeners();
 		for (int i = 0; i < listeners.length; i++) {
@@ -173,8 +187,8 @@ public class BookmarkMappingsStore implements IBookmarksListener {
 				}
 			});
 		}
-	}	
-	
+	}
+
 	private class SaveJob extends Job {
 
 		public SaveJob() {

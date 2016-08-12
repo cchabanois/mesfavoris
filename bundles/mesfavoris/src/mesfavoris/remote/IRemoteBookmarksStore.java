@@ -7,9 +7,19 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
+import mesfavoris.topics.BookmarksEvents;
 
 public interface IRemoteBookmarksStore {
 
+	public static final String PROP_BOOKMARK_FOLDER_ID = "bookmarkFolderId";
+	public static final String PROP_REMOTE_BOOKMARKS_STORE_ID = "remoteBookmarksStoreId";
+	public static final String TOPIC_REMOTE_BOOKMARK_STORES = BookmarksEvents.BOOKMARKS_TOPIC_BASE
+			+ "/remoteBookmarkStores";
+	public static final String TOPIC_MAPPING_ADDED = TOPIC_REMOTE_BOOKMARK_STORES + "/mappings/added";
+	public static final String TOPIC_MAPPING_REMOVED = TOPIC_REMOTE_BOOKMARK_STORES + "/mappings/removed";
+	public static final String TOPIC_MAPPING_CHANGED = TOPIC_REMOTE_BOOKMARK_STORES + "/mappings/changed";
+	public static final String TOPIC_REMOTE_BOOKMARK_STORES_ALL = TOPIC_REMOTE_BOOKMARK_STORES + "/*";
+	
 	public static enum State {
 		disconnected, connecting, connected
 	}

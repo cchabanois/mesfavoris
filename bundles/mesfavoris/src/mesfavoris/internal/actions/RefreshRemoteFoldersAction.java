@@ -1,21 +1,16 @@
 package mesfavoris.internal.actions;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
-import org.eclipse.ui.IWorkbenchWindow;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.BookmarksPlugin;
-import mesfavoris.internal.operations.ConnectToRemoteBookmarksStoreOperation;
 import mesfavoris.internal.operations.RefreshRemoteFolderOperation;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
-import mesfavoris.remote.IRemoteBookmarksStoreDescriptor;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 
 public class RefreshRemoteFoldersAction extends Action {

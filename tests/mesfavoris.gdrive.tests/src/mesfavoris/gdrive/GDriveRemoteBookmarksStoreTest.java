@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
+import java.time.Duration;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.e4.core.services.events.IEventBroker;
@@ -17,6 +18,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import mesfavoris.gdrive.GDriveRemoteBookmarksStore;
+import mesfavoris.gdrive.changes.BookmarksFileChangeManager;
 import mesfavoris.gdrive.mappings.BookmarkMappingsStore;
 import mesfavoris.gdrive.test.GDriveConnectionRule;
 import mesfavoris.model.BookmarkFolder;
@@ -37,6 +39,7 @@ public class GDriveRemoteBookmarksStoreTest {
 	private BookmarkMappingsStore bookmarkMappingsStore;
 	private IRemoteBookmarksStoreDescriptor remoteBookmarksStoreDescriptor = mock(
 			IRemoteBookmarksStoreDescriptor.class);
+	private BookmarksFileChangeManager bookmarksFileChangeManager;
 
 	@Rule
 	public GDriveConnectionRule gDriveConnectionRule = new GDriveConnectionRule(false);
@@ -47,8 +50,10 @@ public class GDriveRemoteBookmarksStoreTest {
 	@Before
 	public void setUp() throws Exception {
 		bookmarkMappingsStore = new BookmarkMappingsStore(temporaryFolder.newFile());
+		bookmarksFileChangeManager = new BookmarksFileChangeManager(gDriveConnectionRule.getGDriveConnectionManager(),
+				bookmarkMappingsStore, Duration.ofSeconds(5));
 		gDriveRemoteBookmarksStore = new GDriveRemoteBookmarksStore(eventBroker,
-				gDriveConnectionRule.getGDriveConnectionManager(), bookmarkMappingsStore);
+				gDriveConnectionRule.getGDriveConnectionManager(), bookmarkMappingsStore, bookmarksFileChangeManager);
 		when(remoteBookmarksStoreDescriptor.getId()).thenReturn(ID);
 		gDriveRemoteBookmarksStore.init(remoteBookmarksStoreDescriptor);
 	}
@@ -120,32 +125,40 @@ public class GDriveRemoteBookmarksStoreTest {
 		// Given
 		BookmarksTree bookmarksTree = new BookmarksTree(new BookmarkFolder(new BookmarkId("tree1"), Maps.newHashMap()));
 		connect();
-		RemoteBookmarksTree remoteBookmarksTree = gDriveRemoteBookmarksStore.add(bookmarksTree, bookmarksTree.getRootFolder().getId(), new NullProgressMonitor());
+		RemoteBookmarksTree remoteBookmarksTree = gDriveRemoteBookmarksStore.add(bookmarksTree,
+				bookmarksTree.getRootFolder().getId(), new NullProgressMonitor());
 
 		// When
-		bookmarksTree = bookmarksTree.setPropertyValue(bookmarksTree.getRootFolder().getId(), "myProperty", "myPropertyValue");
-		gDriveRemoteBookmarksStore.save(bookmarksTree, bookmarksTree.getRootFolder().getId(), remoteBookmarksTree.getEtag(), new NullProgressMonitor());
-		
+		bookmarksTree = bookmarksTree.setPropertyValue(bookmarksTree.getRootFolder().getId(), "myProperty",
+				"myPropertyValue");
+		gDriveRemoteBookmarksStore.save(bookmarksTree, bookmarksTree.getRootFolder().getId(),
+				remoteBookmarksTree.getEtag(), new NullProgressMonitor());
+
 		// Then
 		remoteBookmarksTree = gDriveRemoteBookmarksStore.load(bookmarksTree.getRootFolder().getId(),
 				new NullProgressMonitor());
 		assertEquals(bookmarksTree.toString(), remoteBookmarksTree.getBookmarksTree().toString());
 	}
 
-	@Test(expected=ConflictException.class)
+	@Test(expected = ConflictException.class)
 	public void testConflictWhenSaving() throws Exception {
 		// Given
 		BookmarksTree bookmarksTree = new BookmarksTree(new BookmarkFolder(new BookmarkId("tree1"), Maps.newHashMap()));
 		connect();
-		RemoteBookmarksTree remoteBookmarksTree = gDriveRemoteBookmarksStore.add(bookmarksTree, bookmarksTree.getRootFolder().getId(), new NullProgressMonitor());
-		BookmarksTree bookmarksTree2 = bookmarksTree.setPropertyValue(bookmarksTree.getRootFolder().getId(), "myProperty", "myPropertyValue1");
-		gDriveRemoteBookmarksStore.save(bookmarksTree2, bookmarksTree2.getRootFolder().getId(), remoteBookmarksTree.getEtag(), new NullProgressMonitor());
-		
+		RemoteBookmarksTree remoteBookmarksTree = gDriveRemoteBookmarksStore.add(bookmarksTree,
+				bookmarksTree.getRootFolder().getId(), new NullProgressMonitor());
+		BookmarksTree bookmarksTree2 = bookmarksTree.setPropertyValue(bookmarksTree.getRootFolder().getId(),
+				"myProperty", "myPropertyValue1");
+		gDriveRemoteBookmarksStore.save(bookmarksTree2, bookmarksTree2.getRootFolder().getId(),
+				remoteBookmarksTree.getEtag(), new NullProgressMonitor());
+
 		// When
-		bookmarksTree = bookmarksTree.setPropertyValue(bookmarksTree.getRootFolder().getId(), "myProperty", "myPropertyValue2");
-		gDriveRemoteBookmarksStore.save(bookmarksTree, bookmarksTree.getRootFolder().getId(), remoteBookmarksTree.getEtag(), new NullProgressMonitor());
+		bookmarksTree = bookmarksTree.setPropertyValue(bookmarksTree.getRootFolder().getId(), "myProperty",
+				"myPropertyValue2");
+		gDriveRemoteBookmarksStore.save(bookmarksTree, bookmarksTree.getRootFolder().getId(),
+				remoteBookmarksTree.getEtag(), new NullProgressMonitor());
 	}
-	
+
 	private void disconnect() throws IOException {
 		gDriveRemoteBookmarksStore.disconnect(new NullProgressMonitor());
 	}

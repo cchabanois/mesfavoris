@@ -16,7 +16,6 @@ import org.junit.rules.TemporaryFolder;
 import mesfavoris.gdrive.Constants;
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
 import mesfavoris.gdrive.test.HtmlUnitAuthorizationCodeInstalledApp;
-import mesfavoris.remote.IConnectionListener;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
 
 import static org.mockito.Mockito.*;

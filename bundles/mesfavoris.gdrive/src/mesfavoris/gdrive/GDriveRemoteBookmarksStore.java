@@ -12,10 +12,14 @@ import org.eclipse.ui.PlatformUI;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.Change;
 import com.google.api.services.drive.model.File;
 import com.google.common.base.Charsets;
 
+import mesfavoris.gdrive.changes.BookmarksFileChangeManager;
+import mesfavoris.gdrive.changes.IBookmarksFileChangeListener;
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
+import mesfavoris.gdrive.connection.IConnectionListener;
 import mesfavoris.gdrive.mappings.BookmarkMappingsStore;
 import mesfavoris.gdrive.mappings.IBookmarkMappingsListener;
 import mesfavoris.gdrive.operations.CreateFileOperation;
@@ -33,45 +37,54 @@ import mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
 import mesfavoris.persistence.json.BookmarksTreeJsonSerializer;
 import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.ConflictException;
-import mesfavoris.remote.IConnectionListener;
 import mesfavoris.remote.RemoteBookmarksTree;
 
 public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 	private final GDriveConnectionManager gDriveConnectionManager;
 	private final BookmarkMappingsStore bookmarkMappingsStore;
+	private final BookmarksFileChangeManager bookmarksFileChangeManager;
 
 	public GDriveRemoteBookmarksStore() {
 		this((IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class),
-				Activator.getGDriveConnectionManager(), Activator.getBookmarkMappingsStore());
+				Activator.getGDriveConnectionManager(), Activator.getBookmarkMappingsStore(),
+				Activator.getBookmarksFileChangeManager());
 	}
 
 	public GDriveRemoteBookmarksStore(IEventBroker eventBroker, GDriveConnectionManager gDriveConnectionManager,
-			BookmarkMappingsStore bookmarksMappingsStore) {
+			BookmarkMappingsStore bookmarksMappingsStore, BookmarksFileChangeManager bookmarksFileChangeManager) {
 		super(eventBroker);
 		this.gDriveConnectionManager = gDriveConnectionManager;
 		this.bookmarkMappingsStore = bookmarksMappingsStore;
+		this.bookmarksFileChangeManager = bookmarksFileChangeManager;
 		this.gDriveConnectionManager.addConnectionListener(new IConnectionListener() {
-			
+
 			@Override
 			public void disconnected() {
 				postDisconnected();
 			}
-			
+
 			@Override
 			public void connected() {
 				postConnected();
 			}
 		});
 		this.bookmarkMappingsStore.addListener(new IBookmarkMappingsListener() {
-			
+
 			@Override
 			public void mappingRemoved(BookmarkId bookmarkFolderId) {
 				postMappingRemoved(bookmarkFolderId);
 			}
-			
+
 			@Override
 			public void mappingAdded(BookmarkId bookmarkFolderId) {
 				postMappingAdded(bookmarkFolderId);
+			}
+		});
+		this.bookmarksFileChangeManager.addListener(new IBookmarksFileChangeListener() {
+
+			@Override
+			public void bookmarksFileChanged(BookmarkId bookmarkFolderId, Change change) {
+				postRemoteBookmarksTreeChanged(bookmarkFolderId);
 			}
 		});
 	}
@@ -121,7 +134,7 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 	private void addMapping(BookmarkId bookmarkFolderId, String fileId) {
 		bookmarkMappingsStore.add(bookmarkFolderId, fileId);
 	}
-	
+
 	private byte[] serializeBookmarkFolder(BookmarksTree bookmarksTree, BookmarkId bookmarkFolderId,
 			IProgressMonitor monitor) throws IOException {
 		IBookmarksTreeSerializer serializer = new BookmarksTreeJsonSerializer(true);
@@ -201,9 +214,8 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 			byte[] content = serializeBookmarkFolder(bookmarksTree, bookmarkFolderId,
 					new SubProgressMonitor(monitor, 20));
 			File file = updateFileOperation.updateFile(fileId, content, etag, new SubProgressMonitor(monitor, 80));
-			// TODO : conflict exception ...
 			return new RemoteBookmarksTree(this, bookmarksTree.subTree(bookmarkFolderId), file.getEtag());
-		} catch(GoogleJsonResponseException e) {
+		} catch (GoogleJsonResponseException e) {
 			if (e.getStatusCode() == 412) {
 				// Precondition Failed
 				throw new ConflictException();

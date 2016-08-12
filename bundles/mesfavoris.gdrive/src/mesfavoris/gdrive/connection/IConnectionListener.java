@@ -1,4 +1,4 @@
-package mesfavoris.remote;
+package mesfavoris.gdrive.connection;
 
 
 public interface IConnectionListener {

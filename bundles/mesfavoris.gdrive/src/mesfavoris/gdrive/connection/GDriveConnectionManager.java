@@ -7,6 +7,8 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.inject.Provider;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.ListenerList;
@@ -31,7 +33,6 @@ import mesfavoris.gdrive.StatusHelper;
 import mesfavoris.gdrive.connection.auth.AuthorizationCodeEclipseApp;
 import mesfavoris.gdrive.connection.auth.CancellableLocalServerReceiver;
 import mesfavoris.gdrive.connection.auth.IAuthorizationCodeInstalledAppProvider;
-import mesfavoris.remote.IConnectionListener;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
 
 /**

@@ -1,11 +1,13 @@
 package mesfavoris.gdrive;
 
 import java.io.File;
+import java.time.Duration;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import mesfavoris.BookmarksPlugin;
+import mesfavoris.gdrive.changes.BookmarksFileChangeManager;
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
 import mesfavoris.gdrive.mappings.BookmarkMappingsStore;
 
@@ -22,6 +24,7 @@ public class Activator extends AbstractUIPlugin {
 
 	private static GDriveConnectionManager gDriveConnectionManager;
 	private static BookmarkMappingsStore bookmarkMappingsStore;
+	private static BookmarksFileChangeManager bookmarksFileChangeManager;
 
 	public Activator() {
 	}
@@ -38,6 +41,8 @@ public class Activator extends AbstractUIPlugin {
 		bookmarkMappingsStore = new BookmarkMappingsStore(storeFile);
 		bookmarkMappingsStore.init();
 		BookmarksPlugin.getBookmarkDatabase().addListener(bookmarkMappingsStore);
+		bookmarksFileChangeManager = new BookmarksFileChangeManager(gDriveConnectionManager, bookmarkMappingsStore);
+		bookmarksFileChangeManager.init();
 	}
 
 	@Override
@@ -46,6 +51,7 @@ public class Activator extends AbstractUIPlugin {
 		bookmarkMappingsStore.close();
 		try {
 			gDriveConnectionManager.close();
+			bookmarksFileChangeManager.close();
 		} finally {
 			plugin = null;
 			super.stop(context);
@@ -58,6 +64,10 @@ public class Activator extends AbstractUIPlugin {
 
 	public static BookmarkMappingsStore getBookmarkMappingsStore() {
 		return bookmarkMappingsStore;
+	}
+
+	public static BookmarksFileChangeManager getBookmarksFileChangeManager() {
+		return bookmarksFileChangeManager;
 	}
 
 	/**
