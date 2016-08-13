@@ -1,6 +1,6 @@
 package mesfavoris.java;
 
-import static mesfavoris.java.JavaBookmarkProperties.KIND_METHOD;
+import static mesfavoris.java.JavaBookmarkProperties.*;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_DECLARING_TYPE;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_KIND;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_NAME;
@@ -59,9 +59,26 @@ public class JavaBookmarkLocationProviderTest {
 				new NullProgressMonitor());
 
 		// Then
-		// currently, we only condider the first "parse" method
+		// there are several parse methods but we don't have enough information to choose : we get the first one
 		assertEquals("parse", location.getMember().getElementName());
 		assertEquals(57, location.getLineNumber().intValue());
+	}
+
+	@Test
+	public void testJavaMethodFindLocationUsingSignature() {
+		// Given
+		Bookmark bookmark = new Bookmark(new BookmarkId(),
+				ImmutableMap.of(PROP_JAVA_DECLARING_TYPE, "org.apache.commons.cli.DefaultParser",
+						PROP_JAVA_ELEMENT_KIND, KIND_METHOD, PROP_JAVA_ELEMENT_NAME, "parse",
+						PROP_JAVA_METHOD_SIGNATURE, "CommandLine parse(Options,String[],Properties,boolean)"));
+
+		// When
+		JavaEditorBookmarkLocation location = javaBookmarkLocationProvider.findLocation(bookmark,
+				new NullProgressMonitor());
+
+		// Then
+		assertEquals("parse", location.getMember().getElementName());
+		assertEquals(98, location.getLineNumber().intValue());
 	}
 
 	@Test

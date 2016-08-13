@@ -1,6 +1,6 @@
 package mesfavoris.java;
 
-import static mesfavoris.java.JavaBookmarkProperties.KIND_FIELD;
+import static mesfavoris.java.JavaBookmarkProperties.*;
 import static mesfavoris.java.JavaBookmarkProperties.KIND_METHOD;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_DECLARING_TYPE;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_KIND;
@@ -10,10 +10,10 @@ import static mesfavoris.java.JavaBookmarkProperties.PROP_LINE_NUMBER_INSIDE_ELE
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IMember;
@@ -140,14 +140,30 @@ public class JavaBookmarkLocationProvider {
 			return field.exists() ? field : null;
 		}
 		if (KIND_METHOD.equals(elementKind)) {
-			List<IMethod> candidates = getMethodsWithName(type, elementName);
-			return candidates.get(0);
+			String signature = javaBookmark.getPropertyValue(PROP_JAVA_METHOD_SIGNATURE);
+			IMethod method = null;
+			if (signature != null) {
+				method = getMethod(type, elementName, signature);
+			}
+			if (method == null) {
+				List<IMethod> candidates = getMethodsWithName(type, elementName);
+				if (candidates.size() > 0) {
+					method = candidates.get(0);
+				}
+			}
+			return method;
 		}
 		if (JavaEditorUtils.isType(elementKind) && elementName != null) {
 			IType memberType = type.getType(elementName);
 			return memberType.exists() ? memberType : null;
 		}
 		return null;
+	}
+
+	private IMethod getMethod(IType type, String name, String signature) {
+		return getMethodsWithName(type, name).stream()
+				.filter(method -> signature.equals(JavaEditorUtils.getMethodSimpleSignature(method))).findAny()
+				.orElse(null);
 	}
 
 	private List<IMethod> getMethodsWithName(IType type, String name) {
