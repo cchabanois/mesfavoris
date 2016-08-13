@@ -26,8 +26,10 @@ public class FuzzyFilteredStringMatcher implements IFuzzyStringMatcher {
 		FilteredCharSequence filteredCharSequence = new FilteredCharSequence(text, filter);
 		String filteredPattern = new FilteredCharSequence(pattern, filter).toString();
 		int filteredExpectedLocation;
-		if (expectedLocation == -1) {
+		if (expectedLocation < 0) {
 			filteredExpectedLocation = -1;
+		} else if (expectedLocation >= text.length()){
+			filteredExpectedLocation = filteredCharSequence.length()-1;
 		} else {
 			filteredExpectedLocation = filteredCharSequence.getIndex(expectedLocation);
 		}
