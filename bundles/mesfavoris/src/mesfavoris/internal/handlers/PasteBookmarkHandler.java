@@ -14,6 +14,7 @@ import org.eclipse.ui.progress.IProgressService;
 import mesfavoris.BookmarksException;
 import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
+import mesfavoris.handlers.AbstractBookmarkHandler;
 import mesfavoris.internal.handlers.AbstractBookmarkCreationHandler.BookmarkCreationOperationContext;
 import mesfavoris.internal.operations.AddBookmarkOperation;
 import mesfavoris.internal.operations.PasteBookmarkOperation;

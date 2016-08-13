@@ -22,6 +22,11 @@
                label="Import bookmarks"
                style="push">
          </command>
+         <command
+               commandId="mesfavoris.gdrive.commands.ShareBookmarksFile"
+               label="Share bookmarks file"
+               style="push">
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -30,6 +35,11 @@
             description="Import bookmarks from a Gdrive file"
             id="mesfavoris.gdrive.commands.ImportBookmarks"
             name="Import bookmarks">
+      </command>
+      <command
+            description="Share bookmarks file"
+            id="mesfavoris.gdrive.commands.ShareBookmarksFile"
+            name="Share">
       </command>
    </extension>
    <extension
@@ -62,6 +72,26 @@
                         value="0">
                   </count>
                </or>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            class="mesfavoris.gdrive.handlers.ShareBookmarksFileHandler"
+            commandId="mesfavoris.gdrive.commands.ShareBookmarksFile">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <and>
+                  <count
+                        value="1">
+                  </count>
+                  <iterate
+                        operator="and">
+                     <reference
+                           definitionId="mesfavoris.definitions.bookmarkFolder">
+                     </reference>
+                  </iterate>
+               </and>
             </with>
          </activeWhen>
       </handler>

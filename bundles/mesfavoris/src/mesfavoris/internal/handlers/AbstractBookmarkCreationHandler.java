@@ -9,6 +9,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import mesfavoris.commons.core.AdapterUtils;
+import mesfavoris.handlers.AbstractBookmarkHandler;
 
 public abstract class AbstractBookmarkCreationHandler extends AbstractBookmarkHandler {
 

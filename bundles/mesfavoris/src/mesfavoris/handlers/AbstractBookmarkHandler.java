@@ -1,4 +1,4 @@
-package mesfavoris.internal.handlers;
+package mesfavoris.handlers;
 
 import java.util.List;
 import java.util.stream.Collectors;

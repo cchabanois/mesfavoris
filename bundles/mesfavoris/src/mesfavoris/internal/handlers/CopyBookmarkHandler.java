@@ -8,6 +8,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import mesfavoris.BookmarksPlugin;
+import mesfavoris.handlers.AbstractBookmarkHandler;
 import mesfavoris.internal.operations.CopyBookmarkOperation;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;

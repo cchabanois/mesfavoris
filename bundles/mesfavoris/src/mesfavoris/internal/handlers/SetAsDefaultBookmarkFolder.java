@@ -7,6 +7,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.BookmarksPlugin;
+import mesfavoris.handlers.AbstractBookmarkHandler;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;

@@ -9,6 +9,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.BookmarksPlugin;
+import mesfavoris.handlers.AbstractBookmarkHandler;
 import mesfavoris.internal.operations.CutBookmarkOperation;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;

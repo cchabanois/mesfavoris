@@ -8,6 +8,7 @@ Bundle-ClassPath: .,
 Bundle-Activator: mesfavoris.BookmarksPlugin
 Export-Package: mesfavoris,
  mesfavoris.bookmarktype,
+ mesfavoris.handlers,
  mesfavoris.model,
  mesfavoris.model.modification,
  mesfavoris.persistence,
