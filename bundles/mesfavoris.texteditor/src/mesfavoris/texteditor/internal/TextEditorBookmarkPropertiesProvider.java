@@ -60,16 +60,16 @@ public class TextEditorBookmarkPropertiesProvider extends AbstractBookmarkProper
 		addLineNumber(properties, lineNumber);
 		addLineContent(properties, textEditor, lineNumber);
 		addWorkspacePath(properties, textEditor);
+		putIfAbsent(properties, PROPERTY_NAME, () -> {
+			if (lineNumber > 0) {
+				return textEditor.getEditorInput().getName() + ":" + (lineNumber + 1);
+			} else {
+				return textEditor.getEditorInput().getName();
+			}
+		});
 		IPath filePath = getFilePath(textEditor);
 		if (filePath != null) {
 			addFilePath(properties, filePath);
-			putIfAbsent(properties, PROPERTY_NAME, () -> {
-				if (lineNumber > 0) {
-					return filePath.lastSegment() + ":" + (lineNumber + 1);
-				} else {
-					return filePath.lastSegment();
-				}
-			});
 		}
 	}
 

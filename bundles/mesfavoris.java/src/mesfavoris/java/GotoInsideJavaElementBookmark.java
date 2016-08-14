@@ -32,17 +32,16 @@ public class GotoInsideJavaElementBookmark implements IGotoBookmark {
 		if (location == null) {
 			return false;
 		}
-		if (location.getLineNumber() == null) {
-			return false;
-		}
 		ITextEditor textEditor = (ITextEditor) openInEditor(location.getMember());
 		if (textEditor == null) {
 			return false;
 		}
-		try {
-			JavaEditorUtils.gotoLine(textEditor, location.getLineNumber());
-		} catch (BadLocationException e) {
-			return false;
+		if (location.getLineNumber() != null) {
+			try {
+				JavaEditorUtils.gotoLine(textEditor, location.getLineNumber());
+			} catch (BadLocationException e) {
+				return false;
+			}
 		}
 		return true;
 	}

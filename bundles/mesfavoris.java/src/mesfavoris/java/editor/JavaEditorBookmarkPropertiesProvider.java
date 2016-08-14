@@ -52,10 +52,7 @@ public class JavaEditorBookmarkPropertiesProvider extends JavaTypeMemberBookmark
 			putIfAbsent(bookmarkProperties, PROP_LINE_NUMBER_INSIDE_ELEMENT, Integer.toString(lineNumberInsideMethod));
 		} catch (JavaModelException e) {
 			return;
-		} catch (BadLocationException e) {
-			return;
 		}
-
 	}
 
 	private IJavaElement getContainingJavaElement(IJavaElement editorJavaElement, ITextSelection textSelection) {

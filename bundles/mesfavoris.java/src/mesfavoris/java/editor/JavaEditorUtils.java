@@ -1,7 +1,12 @@
 package mesfavoris.java.editor;
 
-import static mesfavoris.java.JavaBookmarkProperties.*;
+import static mesfavoris.java.JavaBookmarkProperties.KIND_ANNOTATION;
+import static mesfavoris.java.JavaBookmarkProperties.KIND_CLASS;
+import static mesfavoris.java.JavaBookmarkProperties.KIND_ENUM;
+import static mesfavoris.java.JavaBookmarkProperties.KIND_INTERFACE;
+import static mesfavoris.java.JavaBookmarkProperties.KIND_TYPE;
 
+import org.eclipse.jdt.core.IBuffer;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.ITypeRoot;
@@ -25,10 +30,13 @@ public class JavaEditorUtils {
 				|| KIND_TYPE.equals(elementKind);
 	}
 
-	public static int getLineNumber(IMember member) throws JavaModelException,
-			BadLocationException {
+	public static Integer getLineNumber(IMember member) throws JavaModelException {
 		ITypeRoot typeRoot = member.getTypeRoot();
-		Document document = new Document(typeRoot.getBuffer().getContents());
+		IBuffer buffer = typeRoot.getBuffer();
+		if (buffer == null) {
+			return null;
+		}
+		Document document = new Document(buffer.getContents());
 
 		int offset = 0;
 		if (SourceRange.isAvailable(member.getNameRange())) {
@@ -36,7 +44,11 @@ public class JavaEditorUtils {
 		} else if (SourceRange.isAvailable(member.getSourceRange())) {
 			offset = member.getSourceRange().getOffset();
 		}
-		return document.getLineOfOffset(offset);
+		try {
+			return document.getLineOfOffset(offset);
+		} catch (BadLocationException e) {
+			return null;
+		}
 	}
 
 	public static String getMethodSimpleSignature(IMethod method) {

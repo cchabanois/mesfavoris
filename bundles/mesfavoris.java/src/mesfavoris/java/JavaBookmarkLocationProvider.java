@@ -83,7 +83,10 @@ public class JavaBookmarkLocationProvider {
 
 	private Integer getEstimatedLineNumber(IMember member, Bookmark bookmark) {
 		try {
-			int lineNumber = JavaEditorUtils.getLineNumber(member);
+			Integer lineNumber = JavaEditorUtils.getLineNumber(member);
+			if (lineNumber == null) {
+				return null;
+			}
 			Integer lineNumberInsideElement = getLineNumberInsideElement(bookmark);
 			if (lineNumberInsideElement != null) {
 				lineNumber += lineNumberInsideElement;
@@ -91,10 +94,7 @@ public class JavaBookmarkLocationProvider {
 			return lineNumber;
 		} catch (JavaModelException e) {
 			return null;
-		} catch (BadLocationException e) {
-			return null;
 		}
-
 	}
 
 	private Integer getLineNumberInsideElement(Bookmark bookmark) {
