@@ -7,9 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -19,7 +17,6 @@ import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.AbstractMarkerAnnotationModel;
 import org.eclipse.ui.texteditor.IDocumentProvider;
@@ -32,6 +29,12 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 
+/**
+ * Get bookmarks linked to current selection
+ * 
+ * @author cchabanois
+ *
+ */
 public class GetLinkedBookmarksOperation {
 	private final BookmarkDatabase bookmarkDatabase;
 
@@ -72,28 +75,12 @@ public class GetLinkedBookmarksOperation {
 
 	@SuppressWarnings("unchecked")
 	private List<IMarker> getBookmarkMarkers(ITextEditor textEditor, int activeLine) {
-		final IResource resource = getResource(textEditor);
-		if (resource == null || !resource.exists())
-			return Collections.emptyList();
-
 		final IDocument document = getDocument(textEditor);
 		if (document == null)
 			return Collections.emptyList();
 
 		final AbstractMarkerAnnotationModel model = getAnnotationModel(textEditor);
 		if (model == null)
-			return Collections.emptyList();
-
-		final IMarker[] allMarkers;
-		try {
-			allMarkers = resource.findMarkers(BookmarksMarkers.MARKER_TYPE, true, IResource.DEPTH_ZERO);
-		} catch (CoreException x) {
-			// handleCoreException(x,
-			// TextEditorMessages.SelectMarkerRulerAction_getMarker);
-			return Collections.emptyList();
-		}
-
-		if (allMarkers.length == 0)
 			return Collections.emptyList();
 
 		if (activeLine == -1)
@@ -110,9 +97,17 @@ public class GetLinkedBookmarksOperation {
 		while (it.hasNext()) {
 			Annotation annotation = it.next();
 			if (annotation instanceof MarkerAnnotation) {
-				Position position = model.getPosition(annotation);
-				if (includesLine(position, document, activeLine)) {
-					markers.add(((MarkerAnnotation) annotation).getMarker());
+				MarkerAnnotation markerAnnotation = (MarkerAnnotation) annotation;
+				IMarker marker = markerAnnotation.getMarker();
+				try {
+					if (BookmarksMarkers.MARKER_TYPE.equals(marker.getType())) {
+						Position position = model.getPosition(markerAnnotation);
+						if (includesLine(document, position, activeLine)) {
+							markers.add(marker);
+						}
+					}
+				} catch (CoreException e) {
+					// could not get marker type
 				}
 			}
 		}
@@ -120,33 +115,23 @@ public class GetLinkedBookmarksOperation {
 		return Collections.unmodifiableList(markers);
 	}
 
-	private boolean includesLine(Position position, IDocument document, int line) {
-		if (position != null) {
-			try {
-				int markerLine = document.getLineOfOffset(position.getOffset());
-				if (line == markerLine)
-					return true;
-			} catch (BadLocationException x) {
-			}
+	private boolean includesLine(IDocument document, Position position, int line) {
+		if (position == null) {
+			return false;
 		}
-
-		return false;
+		try {
+			int line1 = document.getLineOfOffset(position.getOffset());
+			int line2 = position.getLength() == 0 ? line1
+					: document.getLineOfOffset(position.getOffset() + position.getLength() - 1);
+			return line >= line1 && line <= line2;
+		} catch (BadLocationException x) {
+			return false;
+		}
 	}
 
 	private IDocument getDocument(ITextEditor editor) {
 		IDocumentProvider provider = editor.getDocumentProvider();
 		return provider.getDocument(editor.getEditorInput());
-	}
-
-	private IResource getResource(ITextEditor editor) {
-		IEditorInput input = editor.getEditorInput();
-
-		IResource resource = (IResource) input.getAdapter(IFile.class);
-
-		if (resource == null)
-			resource = (IResource) input.getAdapter(IResource.class);
-
-		return resource;
 	}
 
 	private AbstractMarkerAnnotationModel getAnnotationModel(ITextEditor editor) {
