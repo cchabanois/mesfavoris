@@ -10,6 +10,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +50,8 @@ public class BookmarkMarkersTest {
 
 		// When
 		addBookmark(rootFolderId, bookmark);
-		IMarker marker = waitUntil("Cannot find marker", () -> bookmarksMarkers.findMarker(bookmark.getId()));
+		IMarker marker = waitUntil("Cannot find marker",
+				() -> bookmarksMarkers.findMarker(bookmark.getId(), new NullProgressMonitor()));
 
 		// Then
 		assertNotNull(marker);
@@ -63,13 +65,14 @@ public class BookmarkMarkersTest {
 		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(PROP_WORKSPACE_PATH,
 				"/testMarkerDeletedWhenBookmarkDeleted/file.txt", PROP_LINE_NUMBER, "0"));
 		addBookmark(rootFolderId, bookmark);
-		waitUntil("Cannot find marker", () -> bookmarksMarkers.findMarker(bookmark.getId()));
+		waitUntil("Cannot find marker", () -> bookmarksMarkers.findMarker(bookmark.getId(), new NullProgressMonitor()));
 
 		// When
 		deleteBookmark(bookmark.getId());
 
 		// Then
-		waitUntil("Marker not deleted", () -> bookmarksMarkers.findMarker(bookmark.getId()) == null);
+		waitUntil("Marker not deleted",
+				() -> bookmarksMarkers.findMarker(bookmark.getId(), new NullProgressMonitor()) == null);
 	}
 
 	@Test
@@ -81,13 +84,14 @@ public class BookmarkMarkersTest {
 		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(PROP_WORKSPACE_PATH,
 				"/testMarkerDeletedWhenBookmarkDeleted/file.txt", PROP_LINE_NUMBER, "0"));
 		addBookmark(bookmarkFolder.getId(), bookmark);
-		waitUntil("Cannot find marker", () -> bookmarksMarkers.findMarker(bookmark.getId()));
+		waitUntil("Cannot find marker", () -> bookmarksMarkers.findMarker(bookmark.getId(), new NullProgressMonitor()));
 
 		// When
 		deleteBookmarkRecursively(bookmarkFolder.getId());
 
 		// Then
-		waitUntil("Marker not deleted", () -> bookmarksMarkers.findMarker(bookmark.getId()) == null);
+		waitUntil("Marker not deleted",
+				() -> bookmarksMarkers.findMarker(bookmark.getId(), new NullProgressMonitor()) == null);
 	}
 
 	@Test
@@ -97,14 +101,14 @@ public class BookmarkMarkersTest {
 		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(PROP_WORKSPACE_PATH,
 				"/testMarkerAddedWhenBookmarkAdded/file.txt", PROP_LINE_NUMBER, "0"));
 		addBookmark(rootFolderId, bookmark);
-		waitUntil("Cannot find marker", () -> bookmarksMarkers.findMarker(bookmark.getId()));
+		waitUntil("Cannot find marker", () -> bookmarksMarkers.findMarker(bookmark.getId(), new NullProgressMonitor()));
 
 		// When
 		modifyBookmark(bookmark.getId(), PROP_LINE_NUMBER, "1");
 
 		// Then
-		waitUntil("Marker not modified",
-				() -> bookmarksMarkers.findMarker(bookmark.getId()).getAttribute(IMarker.LINE_NUMBER).equals(2));
+		waitUntil("Marker not modified", () -> bookmarksMarkers.findMarker(bookmark.getId(), new NullProgressMonitor())
+				.getAttribute(IMarker.LINE_NUMBER).equals(2));
 	}
 
 	@Test
@@ -114,7 +118,7 @@ public class BookmarkMarkersTest {
 		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(PROP_WORKSPACE_PATH,
 				"/testInvalidMarkersDeletedWhenProjectOpened/file.txt", PROP_LINE_NUMBER, "0"));
 		addBookmark(rootFolderId, bookmark);
-		waitUntil("Cannot find marker", () -> bookmarksMarkers.findMarker(bookmark.getId()));
+		waitUntil("Cannot find marker", () -> bookmarksMarkers.findMarker(bookmark.getId(), new NullProgressMonitor()));
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject project = workspace.getRoot().getProject("testInvalidMarkersDeletedWhenProjectOpened");
 		project.close(null);
@@ -124,7 +128,8 @@ public class BookmarkMarkersTest {
 		project.open(null);
 
 		// Then
-		waitUntil("Bookmark marker should be deleted", () -> bookmarksMarkers.findMarker(bookmark.getId()) == null);
+		waitUntil("Bookmark marker should be deleted",
+				() -> bookmarksMarkers.findMarker(bookmark.getId(), new NullProgressMonitor()) == null);
 	}
 
 	private void addBookmark(BookmarkId parentId, Bookmark bookmark) throws BookmarksException {

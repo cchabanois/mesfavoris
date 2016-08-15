@@ -1,16 +1,16 @@
 package mesfavoris.java;
 
-import static mesfavoris.java.JavaBookmarkProperties.*;
+import static mesfavoris.java.JavaBookmarkProperties.KIND_FIELD;
 import static mesfavoris.java.JavaBookmarkProperties.KIND_METHOD;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_DECLARING_TYPE;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_KIND;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_NAME;
+import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_METHOD_SIGNATURE;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_TYPE;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_LINE_NUMBER_INSIDE_ELEMENT;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -30,32 +30,27 @@ import org.eclipse.jdt.core.search.SearchParticipant;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.SearchRequestor;
 import org.eclipse.jdt.core.search.TypeDeclarationMatch;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 
+import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.java.editor.JavaEditorUtils;
 import mesfavoris.model.Bookmark;
 import mesfavoris.texteditor.TextEditorBookmarkProperties;
 import mesfavoris.texteditor.text.matching.DocumentFuzzySearcher;
 
-/**
- * Get the
- * 
- * @author cchabanois
- *
- */
-public class JavaBookmarkLocationProvider {
+public class JavaTypeMemberBookmarkLocationProvider implements IBookmarkLocationProvider {
 
-	public JavaEditorBookmarkLocation findLocation(Bookmark bookmark, IProgressMonitor monitor) {
+	@Override
+	public JavaTypeMemberBookmarkLocation getBookmarkLocation(Bookmark bookmark, IProgressMonitor monitor) {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
 		IMember member = getMember(bookmark, subMonitor.newChild(30));
 		if (member == null) {
 			return null;
 		}
 		Integer lineNumber = getLineNumber(member, bookmark, subMonitor.newChild(70));
-		return new JavaEditorBookmarkLocation(member, lineNumber);
+		return new JavaTypeMemberBookmarkLocation(member, lineNumber);
 	}
 
 	private Integer getLineNumber(IMember member, Bookmark bookmark, IProgressMonitor monitor) {
@@ -204,25 +199,6 @@ public class JavaBookmarkLocationProvider {
 		}
 
 		return types;
-	}
-
-	public static class JavaEditorBookmarkLocation {
-		private final IMember member;
-		private final Integer lineNumber;
-
-		public JavaEditorBookmarkLocation(IMember member, Integer lineNumber) {
-			this.member = member;
-			this.lineNumber = lineNumber;
-		}
-
-		public IMember getMember() {
-			return member;
-		}
-
-		public Integer getLineNumber() {
-			return lineNumber;
-		}
-
 	}
 
 }

@@ -15,12 +15,14 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.Preferences;
 
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
+import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.bookmarktype.IBookmarkMarkerAttributesProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.internal.adapters.BookmarkAdapterFactory;
 import mesfavoris.internal.bookmarktypes.ImportTeamProjectProvider;
 import mesfavoris.internal.bookmarktypes.PluginBookmarkLabelProvider;
+import mesfavoris.internal.bookmarktypes.PluginBookmarkLocationProvider;
 import mesfavoris.internal.bookmarktypes.PluginBookmarkMarkerAttributesProvider;
 import mesfavoris.internal.bookmarktypes.PluginBookmarkPropertiesProvider;
 import mesfavoris.internal.bookmarktypes.PluginGotoBookmark;
@@ -62,6 +64,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 	private static IBookmarkLabelProvider bookmarkLabelProvider;
 	private static IBookmarkMarkerAttributesProvider bookmarkMarkerAttributesProvider;
 	private static IBookmarkPropertiesProvider bookmarkPropertiesProvider;
+	private static IBookmarkLocationProvider bookmarkLocationProvider;
 	private static IGotoBookmark gotoBookmark;
 	private static ImportTeamProjectProvider importTeamProjectProvider;
 	private static RemoteBookmarksStoreManager remoteBookmarksStoreManager;
@@ -92,6 +95,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		bookmarkLabelProvider = new PluginBookmarkLabelProvider();
 		bookmarkMarkerAttributesProvider = new PluginBookmarkMarkerAttributesProvider();
 		bookmarkPropertiesProvider = new PluginBookmarkPropertiesProvider();
+		bookmarkLocationProvider = new PluginBookmarkLocationProvider();
 		gotoBookmark = new PluginGotoBookmark();
 		bookmarksMarkers = new BookmarksMarkers(bookmarkDatabase, bookmarkMarkerAttributesProvider);
 		importTeamProjectProvider = new ImportTeamProjectProvider();
@@ -144,6 +148,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		bookmarkLabelProvider = null;
 		bookmarkMarkerAttributesProvider = null;
 		bookmarkPropertiesProvider = null;
+		bookmarkLocationProvider = null;
 		gotoBookmark = null;
 		importTeamProjectProvider = null;
 		bookmarksMarkers = null;
@@ -184,6 +189,10 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		return bookmarkMarkerAttributesProvider;
 	}
 
+	public static IBookmarkLocationProvider getBookmarkLocationProvider() {
+		return bookmarkLocationProvider;
+	}
+	
 	public static IGotoBookmark getGotoBookmark() {
 		return gotoBookmark;
 	}

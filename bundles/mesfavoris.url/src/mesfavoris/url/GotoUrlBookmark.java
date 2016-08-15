@@ -1,8 +1,5 @@
 package mesfavoris.url;
 
-import static mesfavoris.url.UrlBookmarkProperties.PROP_URL;
-
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.ui.IWorkbenchWindow;
@@ -11,23 +8,20 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
+import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.model.Bookmark;
 
 public class GotoUrlBookmark implements IGotoBookmark {
 
 	@Override
-	public boolean gotoBookmark(IWorkbenchWindow window, Bookmark bookmark) {
-		String url = bookmark.getPropertyValue(PROP_URL);
-		if (url == null) {
+	public boolean gotoBookmark(IWorkbenchWindow window, Bookmark bookmark, IBookmarkLocation bookmarkLocation) {
+		if (!(bookmarkLocation instanceof UrlBookmarkLocation)) {
 			return false;
 		}
-		try {
-			openInExternalBrowser(new URL(url));
-			return true;
-		} catch (MalformedURLException e) {
-			return false;
-		}
+		UrlBookmarkLocation urlBookmarkLocation = (UrlBookmarkLocation) bookmarkLocation;
+		openInExternalBrowser(urlBookmarkLocation.getUrl());
+		return true;
 	}
 
 	private void openInExternalBrowser(URL url) {

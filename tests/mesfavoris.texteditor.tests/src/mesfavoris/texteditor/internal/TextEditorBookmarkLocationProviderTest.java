@@ -3,7 +3,6 @@ package mesfavoris.texteditor.internal;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_CONTENT;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_WORKSPACE_PATH;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -19,7 +18,6 @@ import com.google.common.collect.ImmutableMap;
 import mesfavoris.commons.ui.wizards.datatransfer.BundleProjectImportOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
-import mesfavoris.texteditor.internal.TextEditorBookmarkLocationProvider.TextEditorBookmarkLocation;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 import mesfavoris.texteditor.placeholders.PathPlaceholdersMap;
 
@@ -48,7 +46,8 @@ public class TextEditorBookmarkLocationProviderTest {
 				"for (Enumeration<?> enumeration = properties.propertyNames(); enumeration.hasMoreElements();)"));
 
 		// When
-		TextEditorBookmarkLocation location = locationProvider.findLocation(bookmark, new NullProgressMonitor());
+		WorkspaceFileBookmarkLocation location = (WorkspaceFileBookmarkLocation) locationProvider
+				.getBookmarkLocation(bookmark, new NullProgressMonitor());
 
 		// Then
 		assertEquals("/textEditorBookmarkLocationProviderTest/src/main/java/org/apache/commons/cli/DefaultParser.java",

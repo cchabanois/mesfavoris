@@ -57,6 +57,7 @@ import org.eclipse.ui.part.ViewPart;
 import com.google.common.collect.Lists;
 
 import mesfavoris.BookmarksPlugin;
+import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.bookmarktype.IImportTeamProject;
@@ -85,6 +86,7 @@ public class BookmarksView extends ViewPart {
 	private final IEventBroker eventBroker;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker;
+	private final IBookmarkLocationProvider bookmarkLocationProvider;
 	private Text searchText;
 	private BookmarksTreeViewer bookmarksTreeViewer;
 	private BookmarkCommentViewer bookmarkCommentViewer;
@@ -98,6 +100,7 @@ public class BookmarksView extends ViewPart {
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
 		this.remoteBookmarksStoreManager = BookmarksPlugin.getRemoteBookmarksStoreManager();
 		this.bookmarksDatabaseDirtyStateTracker = BookmarksPlugin.getBookmarksDatabaseDirtyStateTracker();
+		this.bookmarkLocationProvider = BookmarksPlugin.getBookmarkLocationProvider();
 	}
 
 	public void createPartControl(Composite parent) {
@@ -225,7 +228,7 @@ public class BookmarksView extends ViewPart {
 				bookmarkDatabase.getBookmarksTree().getRootFolder().getId(), 10);
 		IGotoBookmark gotoBookmark = BookmarksPlugin.getGotoBookmark();
 		bookmarksTreeViewer = new BookmarksTreeViewer(parent, bookmarkDatabase, defaultBookmarkFolderManager,
-				remoteBookmarksStoreManager, bookmarkPropertiesProvider, gotoBookmark,
+				remoteBookmarksStoreManager, bookmarkPropertiesProvider, bookmarkLocationProvider, gotoBookmark,
 				Lists.newArrayList(mostVisitedBookmarksVirtualFolder, latestVisitedBookmarksVirtualFolder));
 		drillDownAdapter = new DrillDownAdapter(bookmarksTreeViewer);
 		bookmarksTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {

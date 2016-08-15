@@ -23,6 +23,10 @@
             class="mesfavoris.java.JavaBookmarkMarkerAttributesProvider"
             priority="10">
       </markerAttributesProvider>
+      <locationProvider
+            class="mesfavoris.java.JavaTypeMemberBookmarkLocationProvider"
+            priority="10">
+      </locationProvider>
    </extension>
 
 </plugin>

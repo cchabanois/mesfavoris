@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.eclipse.ui.IWorkbenchWindow;
 
+import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.model.Bookmark;
 
@@ -21,8 +22,8 @@ public class PluginGotoBookmark implements IGotoBookmark {
 	}
 	
 	@Override
-	public boolean gotoBookmark(IWorkbenchWindow window, Bookmark bookmark) {
-		return getGotoBookmark().gotoBookmark(window, bookmark);
+	public boolean gotoBookmark(IWorkbenchWindow window, Bookmark bookmark, IBookmarkLocation bookmarkLocation) {
+		return getGotoBookmark().gotoBookmark(window, bookmark, bookmarkLocation);
 	}
 
 }

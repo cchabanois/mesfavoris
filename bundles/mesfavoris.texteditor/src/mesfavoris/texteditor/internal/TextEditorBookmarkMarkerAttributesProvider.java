@@ -8,9 +8,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import mesfavoris.bookmarktype.AbstractBookmarkMarkerPropertiesProvider;
 import mesfavoris.bookmarktype.BookmarkMarkerDescriptor;
+import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.texteditor.Activator;
-import mesfavoris.texteditor.internal.TextEditorBookmarkLocationProvider.TextEditorBookmarkLocation;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 
 public class TextEditorBookmarkMarkerAttributesProvider extends AbstractBookmarkMarkerPropertiesProvider {
@@ -28,14 +28,18 @@ public class TextEditorBookmarkMarkerAttributesProvider extends AbstractBookmark
 
 	@Override
 	public BookmarkMarkerDescriptor getMarkerDescriptor(Bookmark bookmark, IProgressMonitor monitor) {
-		TextEditorBookmarkLocation location = textEditorBookmarkLocationProvider.findLocation(bookmark, monitor);
-		if (location == null || location.getWorkspaceFile() == null || location.getLineNumber() == null) {
+		IBookmarkLocation location = textEditorBookmarkLocationProvider.getBookmarkLocation(bookmark, monitor);
+		if (!(location instanceof WorkspaceFileBookmarkLocation)) {
+			return null;
+		}
+		WorkspaceFileBookmarkLocation workspaceFileBookmarkLocation = (WorkspaceFileBookmarkLocation) location;
+		if (workspaceFileBookmarkLocation.getLineNumber() == null) {
 			return null;
 		}
 		Map attributes = new HashMap();
-		attributes.put(IMarker.LINE_NUMBER, new Integer(location.getLineNumber() + 1));
+		attributes.put(IMarker.LINE_NUMBER, new Integer(workspaceFileBookmarkLocation.getLineNumber() + 1));
 		getMessage(bookmark).ifPresent(message -> attributes.put(IMarker.MESSAGE, message));
-		return new BookmarkMarkerDescriptor(location.getWorkspaceFile(), attributes);
+		return new BookmarkMarkerDescriptor(workspaceFileBookmarkLocation.getWorkspaceFile(), attributes);
 	}
 
 }

@@ -1,9 +1,10 @@
 package mesfavoris.java;
 
-import static mesfavoris.java.JavaBookmarkProperties.*;
+import static mesfavoris.java.JavaBookmarkProperties.KIND_METHOD;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_DECLARING_TYPE;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_KIND;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_NAME;
+import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_METHOD_SIGNATURE;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_TYPE;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_LINE_NUMBER_INSIDE_ELEMENT;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_CONTENT;
@@ -20,12 +21,11 @@ import org.osgi.framework.Bundle;
 import com.google.common.collect.ImmutableMap;
 
 import mesfavoris.commons.ui.wizards.datatransfer.BundleProjectImportOperation;
-import mesfavoris.java.JavaBookmarkLocationProvider.JavaEditorBookmarkLocation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
 
 public class JavaBookmarkLocationProviderTest {
-	private final JavaBookmarkLocationProvider javaBookmarkLocationProvider = new JavaBookmarkLocationProvider();
+	private final JavaTypeMemberBookmarkLocationProvider javaBookmarkLocationProvider = new JavaTypeMemberBookmarkLocationProvider();
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
@@ -39,7 +39,7 @@ public class JavaBookmarkLocationProviderTest {
 				ImmutableMap.of(PROP_JAVA_TYPE, "org.apache.commons.cli.DefaultParser"));
 
 		// When
-		JavaEditorBookmarkLocation location = javaBookmarkLocationProvider.findLocation(bookmark,
+		JavaTypeMemberBookmarkLocation location = javaBookmarkLocationProvider.getBookmarkLocation(bookmark,
 				new NullProgressMonitor());
 
 		// Then
@@ -55,11 +55,12 @@ public class JavaBookmarkLocationProviderTest {
 						PROP_JAVA_ELEMENT_KIND, KIND_METHOD, PROP_JAVA_ELEMENT_NAME, "parse"));
 
 		// When
-		JavaEditorBookmarkLocation location = javaBookmarkLocationProvider.findLocation(bookmark,
+		JavaTypeMemberBookmarkLocation location = javaBookmarkLocationProvider.getBookmarkLocation(bookmark,
 				new NullProgressMonitor());
 
 		// Then
-		// there are several parse methods but we don't have enough information to choose : we get the first one
+		// there are several parse methods but we don't have enough information
+		// to choose : we get the first one
 		assertEquals("parse", location.getMember().getElementName());
 		assertEquals(57, location.getLineNumber().intValue());
 	}
@@ -73,7 +74,7 @@ public class JavaBookmarkLocationProviderTest {
 						PROP_JAVA_METHOD_SIGNATURE, "CommandLine parse(Options,String[],Properties,boolean)"));
 
 		// When
-		JavaEditorBookmarkLocation location = javaBookmarkLocationProvider.findLocation(bookmark,
+		JavaTypeMemberBookmarkLocation location = javaBookmarkLocationProvider.getBookmarkLocation(bookmark,
 				new NullProgressMonitor());
 
 		// Then
@@ -90,7 +91,7 @@ public class JavaBookmarkLocationProviderTest {
 						PROP_LINE_NUMBER_INSIDE_ELEMENT, "7"));
 
 		// When
-		JavaEditorBookmarkLocation location = javaBookmarkLocationProvider.findLocation(bookmark,
+		JavaTypeMemberBookmarkLocation location = javaBookmarkLocationProvider.getBookmarkLocation(bookmark,
 				new NullProgressMonitor());
 
 		// Then
@@ -107,7 +108,7 @@ public class JavaBookmarkLocationProviderTest {
 				"for (Enumeration<?> enumeration = properties.propertyNames(); enumeration.hasMoreElements();)"));
 
 		// When
-		JavaEditorBookmarkLocation location = javaBookmarkLocationProvider.findLocation(bookmark,
+		JavaTypeMemberBookmarkLocation location = javaBookmarkLocationProvider.getBookmarkLocation(bookmark,
 				new NullProgressMonitor());
 
 		// Then

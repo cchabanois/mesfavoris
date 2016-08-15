@@ -23,6 +23,7 @@
             <element ref="labelProvider" minOccurs="0" maxOccurs="unbounded"/>
             <element ref="markerAttributesProvider" minOccurs="0" maxOccurs="unbounded"/>
             <element ref="importTeamProject" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="locationProvider" minOccurs="0" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -159,6 +160,28 @@
                <appinfo>
                   <meta.attribute kind="resource"/>
                </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="locationProvider">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":mesfavoris.bookmarktype.IBookmarkLocationProvider"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="priority" type="string" use="default" value="10">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
             </annotation>
          </attribute>
       </complexType>

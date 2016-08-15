@@ -1,7 +1,6 @@
 package mesfavoris.texteditor.internal;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -10,32 +9,20 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.model.Bookmark;
-import mesfavoris.texteditor.Activator;
 import mesfavoris.texteditor.TextEditorUtils;
-import mesfavoris.texteditor.internal.TextEditorBookmarkLocationProvider.TextEditorBookmarkLocation;
-import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 
 public class GotoWorkspaceFileBookmark implements IGotoBookmark {
-	private final TextEditorBookmarkLocationProvider textEditorBookmarkLocationProvider;
-
-	public GotoWorkspaceFileBookmark() {
-		this(new TextEditorBookmarkLocationProvider(new PathPlaceholderResolver(Activator.getPathPlaceholdersStore())));
-	}
-
-	public GotoWorkspaceFileBookmark(TextEditorBookmarkLocationProvider textEditorBookmarkLocationProvider) {
-		this.textEditorBookmarkLocationProvider = textEditorBookmarkLocationProvider;
-	}
 
 	@Override
-	public boolean gotoBookmark(IWorkbenchWindow window, Bookmark bookmark) {
-		TextEditorBookmarkLocation location = textEditorBookmarkLocationProvider.findLocation(bookmark,
-				new NullProgressMonitor());
-		if (location == null || location.getWorkspaceFile() == null) {
+	public boolean gotoBookmark(IWorkbenchWindow window, Bookmark bookmark, IBookmarkLocation bookmarkLocation) {
+		if (!(bookmarkLocation instanceof WorkspaceFileBookmarkLocation)) {
 			return false;
 		}
-		IFile file = location.getWorkspaceFile();
+		WorkspaceFileBookmarkLocation workspaceFileBookmarkLocation = (WorkspaceFileBookmarkLocation) bookmarkLocation;
+		IFile file = workspaceFileBookmarkLocation.getWorkspaceFile();
 		IEditorPart editorPart = openEditor(window, file);
 		if (editorPart == null) {
 			return false;
@@ -44,10 +31,10 @@ public class GotoWorkspaceFileBookmark implements IGotoBookmark {
 			return false;
 		}
 		ITextEditor textEditor = (ITextEditor) editorPart;
-		if (location.getLineNumber() == null) {
-			return false;
+		if (workspaceFileBookmarkLocation.getLineNumber() != null) {
+			return gotoLine(textEditor, workspaceFileBookmarkLocation.getLineNumber());
 		}
-		return gotoLine(textEditor, location.getLineNumber());
+		return true;
 	}
 
 	private boolean gotoLine(ITextEditor textEditor, int lineNumber) {

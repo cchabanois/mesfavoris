@@ -90,9 +90,9 @@ public class BookmarksMarkers {
 	
 	private void updateMarker(Bookmark bookmarkModified, IProgressMonitor monitor) {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
-		IMarker marker = findMarker(bookmarkModified.getId());
+		IMarker marker = findMarker(bookmarkModified.getId(), subMonitor.newChild(10));
 		BookmarkMarkerDescriptor descriptor = bookmarkMarkerAttributesProvider.getMarkerDescriptor(bookmarkModified,
-				subMonitor.newChild(90));
+				subMonitor.newChild(80));
 		try {
 			if (descriptor == null) {
 				if (marker != null) {
@@ -129,12 +129,13 @@ public class BookmarksMarkers {
 	}
 
 	private void deleteMarker(BookmarkId bookmarkId, IProgressMonitor monitor) {
-		IMarker marker = findMarker(bookmarkId);
+		SubMonitor subMonitor = SubMonitor.convert(monitor, "Deleting bookmark marker", 100);
+		IMarker marker = findMarker(bookmarkId, subMonitor.newChild(50));
 		if (marker == null) {
 			return;
 		}
 		try {
-			deleteMarker(marker, monitor);
+			deleteMarker(marker, subMonitor.newChild(50));
 		} catch (CoreException e) {
 			StatusHelper.logWarn("Could not delete marker", e);
 		}
@@ -149,15 +150,17 @@ public class BookmarksMarkers {
 		run(getMarkerRule(marker.getResource()), wr, monitor);
 	}
 
-	public IMarker findMarker(BookmarkId bookmarkId) {
-		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+	public IMarker findMarker(BookmarkId bookmarkId, IProgressMonitor monitor) {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, "Finding marker", 100);
 		try {
-			IMarker[] markers = workspaceRoot.findMarkers(BookmarksMarkers.MARKER_TYPE, true, IResource.DEPTH_INFINITE);
+			IMarker[] markers = findAllBookmarkMarkers(subMonitor.newChild(50));
+			subMonitor.setWorkRemaining(markers.length);
 			for (IMarker marker : markers) {
 				String attributeBookmarkId = (String) marker.getAttribute(BookmarksMarkers.BOOKMARK_ID);
 				if (bookmarkId.toString().equals(attributeBookmarkId)) {
 					return marker;
 				}
+				subMonitor.worked(1);
 			}
 			return null;
 		} catch (CoreException e) {
@@ -165,6 +168,16 @@ public class BookmarksMarkers {
 		}
 	}
 
+	private IMarker[] findAllBookmarkMarkers(IProgressMonitor monitor) {
+		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		try {
+			IMarker[] markers = workspaceRoot.findMarkers(BookmarksMarkers.MARKER_TYPE, true, IResource.DEPTH_INFINITE);
+			return markers;
+		} catch (CoreException e) {
+			return new IMarker[0];
+		}
+	}
+	
 	public void refreshMarker(BookmarkId bookmarkId, IProgressMonitor monitor) {
 		Bookmark bookmark = bookmarkDatabase.getBookmarksTree().getBookmark(bookmarkId);
 		if (bookmark == null) {

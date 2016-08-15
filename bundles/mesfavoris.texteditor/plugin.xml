@@ -27,6 +27,10 @@
             class="mesfavoris.texteditor.internal.FileBookmarkPropertiesProvider"
             priority="10">
       </propertiesProvider>
+      <locationProvider
+            class="mesfavoris.texteditor.internal.TextEditorBookmarkLocationProvider"
+            priority="100">
+      </locationProvider>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">

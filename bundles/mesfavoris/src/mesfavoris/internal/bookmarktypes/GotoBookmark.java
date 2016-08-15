@@ -17,6 +17,7 @@ import com.google.common.collect.ImmutableMap;
 
 import mesfavoris.BookmarksPlugin;
 import mesfavoris.StatusHelper;
+import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.internal.markers.BookmarksMarkers;
 import mesfavoris.model.Bookmark;
@@ -43,9 +44,9 @@ public class GotoBookmark implements IGotoBookmark {
 	}
 
 	@Override
-	public boolean gotoBookmark(IWorkbenchWindow window, Bookmark bookmark) {
+	public boolean gotoBookmark(IWorkbenchWindow window, Bookmark bookmark, IBookmarkLocation bookmarkLocation) {
 		for (IGotoBookmark gotoBookmark : gotoBookmarks) {
-			if (gotoBookmark(gotoBookmark, window, bookmark)) {
+			if (gotoBookmark(gotoBookmark, window, bookmark, bookmarkLocation)) {
 				refreshMarker(bookmark);
 				postBookmarkVisited(bookmark.getId());
 				return true;
@@ -54,12 +55,12 @@ public class GotoBookmark implements IGotoBookmark {
 		return false;
 	}
 
-	private boolean gotoBookmark(IGotoBookmark gotoBookmark, IWorkbenchWindow window, Bookmark bookmark) {
+	private boolean gotoBookmark(IGotoBookmark gotoBookmark, IWorkbenchWindow window, Bookmark bookmark, IBookmarkLocation bookmarkLocation) {
 		final boolean[] result = new boolean[] { false };
 		SafeRunner.run(new ISafeRunnable() {
 
 			public void run() throws Exception {
-				result[0] = gotoBookmark.gotoBookmark(window, bookmark);
+				result[0] = gotoBookmark.gotoBookmark(window, bookmark, bookmarkLocation);
 			}
 
 			public void handleException(Throwable exception) {

@@ -274,6 +274,10 @@
             class="mesfavoris.internal.markers.GotoBookmarkMarker"
             priority="0">
       </gotoBookmark>
+      <locationProvider
+            class="mesfavoris.internal.markers.FileMarkerBookmarkLocationProvider"
+            priority="0">
+      </locationProvider>
    </extension>
    <extension
          point="org.eclipse.core.expressions.propertyTesters">

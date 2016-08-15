@@ -13,24 +13,23 @@ import org.eclipse.jdt.core.JavaCore;
 
 import mesfavoris.bookmarktype.AbstractBookmarkMarkerPropertiesProvider;
 import mesfavoris.bookmarktype.BookmarkMarkerDescriptor;
-import mesfavoris.java.JavaBookmarkLocationProvider.JavaEditorBookmarkLocation;
 import mesfavoris.model.Bookmark;
 
 public class JavaBookmarkMarkerAttributesProvider extends AbstractBookmarkMarkerPropertiesProvider {
 
-	private final JavaBookmarkLocationProvider locationProvider;
+	private final JavaTypeMemberBookmarkLocationProvider locationProvider;
 
 	public JavaBookmarkMarkerAttributesProvider() {
-		this(new JavaBookmarkLocationProvider());
+		this(new JavaTypeMemberBookmarkLocationProvider());
 	}
 
-	public JavaBookmarkMarkerAttributesProvider(JavaBookmarkLocationProvider locationProvider) {
+	public JavaBookmarkMarkerAttributesProvider(JavaTypeMemberBookmarkLocationProvider locationProvider) {
 		this.locationProvider = locationProvider;
 	}
 
 	@Override
 	public BookmarkMarkerDescriptor getMarkerDescriptor(Bookmark bookmark, IProgressMonitor monitor) {
-		JavaEditorBookmarkLocation location = locationProvider.findLocation(bookmark, monitor);
+		JavaTypeMemberBookmarkLocation location = locationProvider.getBookmarkLocation(bookmark, monitor);
 		if (location == null) {
 			return null;
 		}

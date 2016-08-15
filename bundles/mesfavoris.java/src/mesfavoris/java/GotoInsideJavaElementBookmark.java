@@ -1,6 +1,5 @@
 package mesfavoris.java;
 
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavaUI;
@@ -10,28 +9,19 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IGotoBookmark;
-import mesfavoris.java.JavaBookmarkLocationProvider.JavaEditorBookmarkLocation;
 import mesfavoris.java.editor.JavaEditorUtils;
 import mesfavoris.model.Bookmark;
 
 public class GotoInsideJavaElementBookmark implements IGotoBookmark {
-	private final JavaBookmarkLocationProvider locationProvider;
-
-	public GotoInsideJavaElementBookmark() {
-		this(new JavaBookmarkLocationProvider());
-	}
-
-	public GotoInsideJavaElementBookmark(JavaBookmarkLocationProvider locationProvider) {
-		this.locationProvider = locationProvider;
-	}
 
 	@Override
-	public boolean gotoBookmark(IWorkbenchWindow window, Bookmark bookmark) {
-		JavaEditorBookmarkLocation location = locationProvider.findLocation(bookmark, new NullProgressMonitor());
-		if (location == null) {
+	public boolean gotoBookmark(IWorkbenchWindow window, Bookmark bookmark, IBookmarkLocation bookmarkLocation) {
+		if (!(bookmarkLocation instanceof JavaTypeMemberBookmarkLocation)) {
 			return false;
 		}
+		JavaTypeMemberBookmarkLocation location = (JavaTypeMemberBookmarkLocation) bookmarkLocation;
 		ITextEditor textEditor = (ITextEditor) openInEditor(location.getMember());
 		if (textEditor == null) {
 			return false;
