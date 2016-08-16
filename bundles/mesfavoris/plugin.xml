@@ -191,10 +191,28 @@
                commandId="mesfavoris.commands.sortByName"
                label="Sort By Name"
                style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <or>
+                     <and>
+                        <count
+                              value="1">
+                        </count>
+                        <iterate>
+                           <reference
+                                 definitionId="mesfavoris.definitions.bookmarkFolder">
+                           </reference>
+                        </iterate>
+                     </and>
+                     <count
+                           value="0">
+                     </count>
+                  </or>
+               </with>
+            </visibleWhen>
          </command>
-         <separator
-               name="mesfavoris.separator2">
-         </separator>
       </menuContribution>
    </extension>
    <extension
@@ -286,7 +304,7 @@
       <handler
             class="mesfavoris.internal.handlers.SortByNameHandler"
             commandId="mesfavoris.commands.sortByName">
-         <activeWhen>
+         <enabledWhen>
             <with
                   variable="selection">
                <or>
@@ -309,7 +327,7 @@
                   </count>
                </or>
             </with>
-         </activeWhen>
+         </enabledWhen>
       </handler>
    </extension>
    <extension
