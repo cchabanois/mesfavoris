@@ -77,6 +77,10 @@
             id="mesfavoris.category"
             name="Mes Favoris">
       </category>
+      <command
+            id="mesfavoris.commands.sortByName"
+            name="Sort By Name">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -179,6 +183,18 @@
                commandId="org.eclipse.ui.edit.cut"
                style="push">
          </command>
+         <separator
+               name="mesfavoris.separator2"
+               visible="true">
+         </separator>
+         <command
+               commandId="mesfavoris.commands.sortByName"
+               label="Sort By Name"
+               style="push">
+         </command>
+         <separator
+               name="mesfavoris.separator2">
+         </separator>
       </menuContribution>
    </extension>
    <extension
@@ -258,6 +274,34 @@
                               property="mesfavoris.canBeModified"
                               value="true">
                         </test>
+                     </iterate>
+                  </and>
+                  <count
+                        value="0">
+                  </count>
+               </or>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            class="mesfavoris.internal.handlers.SortByNameHandler"
+            commandId="mesfavoris.commands.sortByName">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <or>
+                  <and>
+                     <count
+                           value="1">
+                     </count>
+                     <iterate>
+                        <test
+                              property="mesfavoris.canBeModified"
+                              value="true">
+                        </test>
+                        <reference
+                              definitionId="mesfavoris.definitions.bookmarkFolder">
+                        </reference>
                      </iterate>
                   </and>
                   <count
