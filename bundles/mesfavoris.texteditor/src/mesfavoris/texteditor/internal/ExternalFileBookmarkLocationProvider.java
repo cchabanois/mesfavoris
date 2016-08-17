@@ -1,7 +1,6 @@
 package mesfavoris.texteditor.internal;
 
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FILE_PATH;
-import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_NUMBER;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -25,12 +24,8 @@ public class ExternalFileBookmarkLocationProvider extends AbstractFileBookmarkLo
 
 	@Override
 	public ExternalFileBookmarkLocation getBookmarkLocation(Bookmark bookmark, IProgressMonitor monitor) {
-		String nonExpandedFilePath = bookmark.getPropertyValue(PROP_FILE_PATH);
-		IPath filePath = nonExpandedFilePath != null ? pathPlaceholderResolver.expand(nonExpandedFilePath) : null;
-		if (filePath != null && !filePath.toFile().exists()) {
-			filePath = null;
-		}
-		if (filePath == null) {
+		IPath filePath = getFilePath(bookmark);
+		if (filePath == null || !filePath.toFile().exists()) {
 			return null;
 		}
 		String lineContent = bookmark.getPropertyValue(TextEditorBookmarkProperties.PROP_LINE_CONTENT);
@@ -41,4 +36,10 @@ public class ExternalFileBookmarkLocationProvider extends AbstractFileBookmarkLo
 		return new ExternalFileBookmarkLocation(filePath, lineNumber);
 	}
 
+	private IPath getFilePath(Bookmark bookmark) {
+		String nonExpandedFilePath = bookmark.getPropertyValue(PROP_FILE_PATH);
+		IPath filePath = nonExpandedFilePath != null ? pathPlaceholderResolver.expand(nonExpandedFilePath) : null;
+		return filePath;
+	}
+	
 }
