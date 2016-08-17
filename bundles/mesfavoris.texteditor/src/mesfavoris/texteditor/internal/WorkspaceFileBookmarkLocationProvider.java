@@ -16,7 +16,7 @@ public class WorkspaceFileBookmarkLocationProvider extends AbstractFileBookmarkL
 	@Override
 	public WorkspaceFileBookmarkLocation getBookmarkLocation(Bookmark bookmark, IProgressMonitor monitor) {
 		IFile workspaceFile = getWorkspaceFile(bookmark);
-		if (workspaceFile == null) {
+		if (workspaceFile == null || !workspaceFile.exists()) {
 			return null;
 		}
 		IPath filePath = workspaceFile.getLocation();
