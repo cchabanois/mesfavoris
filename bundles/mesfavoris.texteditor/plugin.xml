@@ -12,7 +12,7 @@
             priority="101">
       </gotoBookmark>
       <markerAttributesProvider
-            class="mesfavoris.texteditor.internal.TextEditorBookmarkMarkerAttributesProvider"
+            class="mesfavoris.texteditor.internal.WorkspaceFileBookmarkMarkerAttributesProvider"
             priority="100">
       </markerAttributesProvider>
       <propertiesProvider

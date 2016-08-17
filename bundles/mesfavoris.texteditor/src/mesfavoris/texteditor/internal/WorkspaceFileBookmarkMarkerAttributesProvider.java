@@ -13,15 +13,15 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.texteditor.Activator;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 
-public class TextEditorBookmarkMarkerAttributesProvider extends AbstractBookmarkMarkerPropertiesProvider {
+public class WorkspaceFileBookmarkMarkerAttributesProvider extends AbstractBookmarkMarkerPropertiesProvider {
 
 	private final TextEditorBookmarkLocationProvider textEditorBookmarkLocationProvider;
 
-	public TextEditorBookmarkMarkerAttributesProvider() {
+	public WorkspaceFileBookmarkMarkerAttributesProvider() {
 		this(new TextEditorBookmarkLocationProvider(new PathPlaceholderResolver(Activator.getPathPlaceholdersStore())));
 	}
 
-	public TextEditorBookmarkMarkerAttributesProvider(
+	public WorkspaceFileBookmarkMarkerAttributesProvider(
 			TextEditorBookmarkLocationProvider textEditorBookmarkLocationProvider) {
 		this.textEditorBookmarkLocationProvider = textEditorBookmarkLocationProvider;
 	}
