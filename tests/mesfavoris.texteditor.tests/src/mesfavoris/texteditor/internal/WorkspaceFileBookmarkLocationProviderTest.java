@@ -18,13 +18,10 @@ import com.google.common.collect.ImmutableMap;
 import mesfavoris.commons.ui.wizards.datatransfer.BundleProjectImportOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
-import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
-import mesfavoris.texteditor.placeholders.PathPlaceholdersMap;
 
-public class TextEditorBookmarkLocationProviderTest {
+public class WorkspaceFileBookmarkLocationProviderTest {
 
-	private TextEditorBookmarkLocationProvider locationProvider;
-	private PathPlaceholdersMap pathPlaceholdersMap = new PathPlaceholdersMap();
+	private WorkspaceFileBookmarkLocationProvider locationProvider;
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
@@ -33,8 +30,7 @@ public class TextEditorBookmarkLocationProviderTest {
 
 	@Before
 	public void setUp() {
-		PathPlaceholderResolver pathPlaceholderResolver = new PathPlaceholderResolver(pathPlaceholdersMap);
-		locationProvider = new TextEditorBookmarkLocationProvider(pathPlaceholderResolver);
+		locationProvider = new WorkspaceFileBookmarkLocationProvider();
 	}
 
 	@Test
@@ -46,8 +42,8 @@ public class TextEditorBookmarkLocationProviderTest {
 				"for (Enumeration<?> enumeration = properties.propertyNames(); enumeration.hasMoreElements();)"));
 
 		// When
-		WorkspaceFileBookmarkLocation location = (WorkspaceFileBookmarkLocation) locationProvider
-				.getBookmarkLocation(bookmark, new NullProgressMonitor());
+		WorkspaceFileBookmarkLocation location = locationProvider.getBookmarkLocation(bookmark,
+				new NullProgressMonitor());
 
 		// Then
 		assertEquals("/textEditorBookmarkLocationProviderTest/src/main/java/org/apache/commons/cli/DefaultParser.java",

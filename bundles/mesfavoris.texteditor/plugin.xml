@@ -28,8 +28,12 @@
             priority="10">
       </propertiesProvider>
       <locationProvider
-            class="mesfavoris.texteditor.internal.TextEditorBookmarkLocationProvider"
+            class="mesfavoris.texteditor.internal.WorkspaceFileBookmarkLocationProvider"
             priority="100">
+      </locationProvider>
+      <locationProvider
+            class="mesfavoris.texteditor.internal.ExternalFileBookmarkLocationProvider"
+            priority="101">
       </locationProvider>
    </extension>
    <extension

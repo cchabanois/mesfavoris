@@ -10,25 +10,23 @@ import mesfavoris.bookmarktype.AbstractBookmarkMarkerPropertiesProvider;
 import mesfavoris.bookmarktype.BookmarkMarkerDescriptor;
 import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.model.Bookmark;
-import mesfavoris.texteditor.Activator;
-import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 
 public class WorkspaceFileBookmarkMarkerAttributesProvider extends AbstractBookmarkMarkerPropertiesProvider {
 
-	private final TextEditorBookmarkLocationProvider textEditorBookmarkLocationProvider;
+	private final WorkspaceFileBookmarkLocationProvider workspaceFileBookmarkLocationProvider;
 
 	public WorkspaceFileBookmarkMarkerAttributesProvider() {
-		this(new TextEditorBookmarkLocationProvider(new PathPlaceholderResolver(Activator.getPathPlaceholdersStore())));
+		this(new WorkspaceFileBookmarkLocationProvider());
 	}
 
 	public WorkspaceFileBookmarkMarkerAttributesProvider(
-			TextEditorBookmarkLocationProvider textEditorBookmarkLocationProvider) {
-		this.textEditorBookmarkLocationProvider = textEditorBookmarkLocationProvider;
+			WorkspaceFileBookmarkLocationProvider textEditorBookmarkLocationProvider) {
+		this.workspaceFileBookmarkLocationProvider = textEditorBookmarkLocationProvider;
 	}
 
 	@Override
 	public BookmarkMarkerDescriptor getMarkerDescriptor(Bookmark bookmark, IProgressMonitor monitor) {
-		IBookmarkLocation location = textEditorBookmarkLocationProvider.getBookmarkLocation(bookmark, monitor);
+		IBookmarkLocation location = workspaceFileBookmarkLocationProvider.getBookmarkLocation(bookmark, monitor);
 		if (!(location instanceof WorkspaceFileBookmarkLocation)) {
 			return null;
 		}
