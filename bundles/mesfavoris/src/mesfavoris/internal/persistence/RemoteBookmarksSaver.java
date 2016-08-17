@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 
 import com.google.common.collect.Lists;
@@ -17,6 +18,7 @@ import mesfavoris.internal.model.replay.ModificationsReplayer;
 import mesfavoris.internal.model.utils.BookmarksTreeUtils;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarksTree;
 import mesfavoris.model.modification.BookmarkDeletedModification;
 import mesfavoris.model.modification.BookmarkPropertiesModification;
 import mesfavoris.model.modification.BookmarksAddedModification;
@@ -47,25 +49,37 @@ public class RemoteBookmarksSaver {
 	 * 
 	 * @param bookmarksModifications
 	 * @param monitor
+	 * @return true if remote bookmark stores modified
 	 * @throws BookmarksException
 	 */
-	public void applyModificationsToRemoteBookmarksStores(List<BookmarksModification> bookmarksModifications,
+	public boolean applyModificationsToRemoteBookmarksStores(List<BookmarksModification> bookmarksModifications,
 			IProgressMonitor monitor) throws BookmarksException {
 		Map<RemoteBookmarkFolder, List<BookmarksModification>> remoteBookmarkFolders = getRemoteBookmarkFolders(
 				bookmarksModifications);
-		monitor.beginTask("Saving to remote stores", remoteBookmarkFolders.size());
+		if (remoteBookmarkFolders.isEmpty()) {
+			return false;
+		}
+		SubMonitor subMonitor = SubMonitor.convert(monitor, "Saving to remote stores", remoteBookmarkFolders.size());
 		try {
 			for (Map.Entry<RemoteBookmarkFolder, List<BookmarksModification>> entry : remoteBookmarkFolders
 					.entrySet()) {
-				applyModificationsToRemoteBookmarkFolder(entry.getKey(), entry.getValue(),
-						new SubProgressMonitor(monitor, 1));
+				applyModificationsToRemoteBookmarkFolder(entry.getKey(), entry.getValue(), subMonitor.newChild(1));
 			}
+			return true;
 		} catch (IOException e) {
 			throw new BookmarksException("Could not save bookmarks", e);
 		}
 
 	}
 
+	/**
+	 * 
+	 * @param remoteBookmarkFolder
+	 * @param modifications
+	 * @param monitor
+	 * @return true if
+	 * @throws IOException
+	 */
 	private void applyModificationsToRemoteBookmarkFolder(RemoteBookmarkFolder remoteBookmarkFolder,
 			List<BookmarksModification> modifications, IProgressMonitor monitor) throws IOException {
 		IRemoteBookmarksStore store = remoteBookmarksStoreManager
@@ -120,22 +134,30 @@ public class RemoteBookmarksSaver {
 				}
 			} else if (event instanceof BookmarksMovedModification) {
 				BookmarksMovedModification modification = (BookmarksMovedModification) event;
-				RemoteBookmarkFolder remoteBookmarkFolderSource = remoteBookmarksStoreManager
-						.getRemoteBookmarkFolderContaining(modification.getSourceTree(),
-								modification.getBookmarkIds().get(0));
+				RemoteBookmarkFolder remoteBookmarkFolderSource = getSourceRemoteBookmarkFolder(modification);
 				RemoteBookmarkFolder remoteBookmarkFolderTarget = remoteBookmarksStoreManager
 						.getRemoteBookmarkFolderContaining(modification.getSourceTree(), modification.getNewParentId());
 				if (remoteBookmarkFolderSource != null
 						&& remoteBookmarkFolderSource.equals(remoteBookmarkFolderTarget)) {
 					add(result, remoteBookmarkFolderSource, modification);
-				} else {
+				} else if (remoteBookmarkFolderSource != null || remoteBookmarkFolderTarget != null) {
 					getRemoteBookmarkFolders(movedModificationToDeleteAddModifications(modification))
-							.forEach((remoteBookmarkFolder, deleteAddModifications) -> add(result,
-									remoteBookmarkFolder, deleteAddModifications));
+							.forEach((remoteBookmarkFolder, deleteAddModifications) -> add(result, remoteBookmarkFolder,
+									deleteAddModifications));
 				}
 			}
 		}
 		return result;
+	}
+
+	private RemoteBookmarkFolder getSourceRemoteBookmarkFolder(BookmarksMovedModification modification) {
+		if (remoteBookmarksStoreManager.getRemoteBookmarkFolder(modification.getBookmarkIds().get(0)) != null) {
+			// the remote bookmark folder has been moved
+			return null;
+		} else {
+			return remoteBookmarksStoreManager.getRemoteBookmarkFolderContaining(modification.getSourceTree(),
+					modification.getBookmarkIds().get(0));
+		}
 	}
 
 	private List<BookmarksModification> movedModificationToDeleteAddModifications(
@@ -148,7 +170,8 @@ public class RemoteBookmarksSaver {
 		Bookmark bookmarkBefore = BookmarksTreeUtils.getBookmarkBefore(modification.getTargetTree(),
 				modification.getBookmarkIds().get(0),
 				b -> bookmarksTreeModifier.getCurrentTree().getBookmark(b.getId()) != null);
-		bookmarksCopier.copyAfter(bookmarksTreeModifier, modification.getNewParentId(), bookmarkBefore == null ? null : bookmarkBefore.getId(),modification.getBookmarkIds());			
+		bookmarksCopier.copyAfter(bookmarksTreeModifier, modification.getNewParentId(),
+				bookmarkBefore == null ? null : bookmarkBefore.getId(), modification.getBookmarkIds());
 		return bookmarksTreeModifier.getModifications();
 	}
 
@@ -166,5 +189,5 @@ public class RemoteBookmarksSaver {
 		}
 		list.addAll(modifications);
 	}
-	
+
 }
