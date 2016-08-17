@@ -45,6 +45,7 @@ public class PathPlaceholderCreationDialog extends StatusDialog {
 		super(parent);
 		this.pathPlaceholders = pathPlaceholders;
 		this.initialPathPlaceholder = pathPlaceholder;
+		this.pathPlaceholder = pathPlaceholder;
 		if (pathPlaceholder == null) {
 			setTitle("New Placeholder Entry");
 		} else {
@@ -76,8 +77,11 @@ public class PathPlaceholderCreationDialog extends StatusDialog {
 		gd.widthHint = fieldWidthHint;
 		gd.grabExcessHorizontalSpace = true;
 		nameText.setLayoutData(gd);
-		nameText.addModifyListener(e -> updateStatus());
+		if (initialPathPlaceholder != null) {
+			nameText.setText(initialPathPlaceholder.getName());
+		}
 		nameText.setEditable(initialPathPlaceholder == null);
+		nameText.addModifyListener(e -> updateStatus());
 		
 		createEmptySpace(inner, 1);
 
@@ -89,6 +93,9 @@ public class PathPlaceholderCreationDialog extends StatusDialog {
 		gd.widthHint = fieldWidthHint;
 		gd.grabExcessHorizontalSpace = true;
 		pathText.setLayoutData(gd);
+		if (initialPathPlaceholder != null) {
+			pathText.setText(initialPathPlaceholder.getPath().toString());
+		}	
 		pathText.addModifyListener(e -> updateStatus());
 
 		Button folderButton = new Button(inner, SWT.PUSH);
@@ -100,7 +107,7 @@ public class PathPlaceholderCreationDialog extends StatusDialog {
 				pathText.setText(path.toOSString());
 			}
 		});
-
+		
 		applyDialogFont(composite);
 		return composite;
 	}
