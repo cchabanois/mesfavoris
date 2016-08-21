@@ -1,7 +1,7 @@
 package mesfavoris.internal.model.merge;
 
-import static mesfavoris.testutils.BookmarksTreeTestUtil.getBookmark;
-import static mesfavoris.testutils.BookmarksTreeTestUtil.getBookmarkFolder;
+import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookmark;
+import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookmarkFolder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -24,9 +24,9 @@ import mesfavoris.model.modification.BookmarksAddedModification;
 import mesfavoris.model.modification.BookmarksModification;
 import mesfavoris.model.modification.BookmarksMovedModification;
 import mesfavoris.model.modification.BookmarksTreeModifier;
-import mesfavoris.testutils.BookmarksTreeGenerator;
-import mesfavoris.testutils.IDGenerator;
-import mesfavoris.testutils.IncrementalIDGenerator;
+import mesfavoris.tests.commons.bookmarks.BookmarksTreeGenerator;
+import mesfavoris.tests.commons.bookmarks.IDGenerator;
+import mesfavoris.tests.commons.bookmarks.IncrementalIDGenerator;
 
 public class BookmarksTreeMergerTest {
 	private BookmarksTree originalBookmarksTree;

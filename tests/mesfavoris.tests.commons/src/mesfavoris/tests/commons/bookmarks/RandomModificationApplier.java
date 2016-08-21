@@ -1,4 +1,4 @@
-package mesfavoris.testutils;
+package mesfavoris.tests.commons.bookmarks;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;

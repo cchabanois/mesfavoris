@@ -1,8 +1,8 @@
 package mesfavoris.internal.operations;
 
-import static mesfavoris.testutils.BookmarkBuilder.bookmark;
-import static mesfavoris.testutils.BookmarkBuilder.bookmarkFolder;
-import static mesfavoris.testutils.BookmarksTreeBuilder.bookmarksTree;
+import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmark;
+import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmarkFolder;
+import static mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder.bookmarksTree;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -19,7 +19,7 @@ import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
-import mesfavoris.testutils.BookmarksTreeBuilder;
+import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
 
 public class RefreshRemoteFolderOperationTest {
 	private InMemoryRemoteBookmarksStore remoteBookmarksStore;

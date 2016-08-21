@@ -10,8 +10,8 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.junit.Before;
 import org.junit.Test;
 
-import static mesfavoris.testutils.BookmarksTreeTestUtil.getBookmark;
-import static mesfavoris.testutils.BookmarksTreeTestUtil.getBookmarkFolder;
+import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookmark;
+import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookmarkFolder;
 import static org.junit.Assert.*;
 
 import com.google.common.collect.Lists;
@@ -20,8 +20,8 @@ import mesfavoris.internal.operations.CopyBookmarkOperation;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
-import mesfavoris.testutils.BookmarksTreeGenerator;
-import mesfavoris.testutils.IncrementalIDGenerator;
+import mesfavoris.tests.commons.bookmarks.BookmarksTreeGenerator;
+import mesfavoris.tests.commons.bookmarks.IncrementalIDGenerator;
 
 public class CopyBookmarkOperationTest {
 	private CopyBookmarkOperation copyBookmarkOperation = new CopyBookmarkOperation();

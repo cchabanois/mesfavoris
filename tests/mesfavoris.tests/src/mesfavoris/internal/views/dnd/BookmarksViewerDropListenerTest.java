@@ -1,6 +1,6 @@
 package mesfavoris.internal.views.dnd;
 
-import static mesfavoris.testutils.BookmarksTreeTestUtil.getBookmarkFolder;
+import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookmarkFolder;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -30,9 +30,9 @@ import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.model.modification.BookmarksModification;
 import mesfavoris.model.modification.BookmarksMovedModification;
-import mesfavoris.testutils.BookmarksListener;
-import mesfavoris.testutils.BookmarksTreeGenerator;
-import mesfavoris.testutils.IncrementalIDGenerator;
+import mesfavoris.tests.commons.bookmarks.BookmarksListener;
+import mesfavoris.tests.commons.bookmarks.BookmarksTreeGenerator;
+import mesfavoris.tests.commons.bookmarks.IncrementalIDGenerator;
 import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class BookmarksViewerDropListenerTest {

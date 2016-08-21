@@ -5,8 +5,11 @@ Bundle-SymbolicName: mesfavoris.tests.commons
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: mesfavoris.tests.commons.Activator
 Require-Bundle: org.eclipse.core.runtime,
- org.junit;bundle-version="4.11.0"
+ org.junit;bundle-version="4.11.0",
+ mesfavoris;bundle-version="1.0.0",
+ com.google.guava;bundle-version="18.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: mesfavoris.tests.commons.rules,
+Export-Package: mesfavoris.tests.commons.bookmarks,
+ mesfavoris.tests.commons.rules,
  mesfavoris.tests.commons.waits

@@ -1,4 +1,4 @@
-package mesfavoris.testutils;
+package mesfavoris.tests.commons.bookmarks;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

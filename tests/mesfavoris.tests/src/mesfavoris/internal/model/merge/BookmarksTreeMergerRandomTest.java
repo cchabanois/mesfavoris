@@ -11,10 +11,10 @@ import org.junit.Test;
 import mesfavoris.internal.model.merge.BookmarksTreeMerger;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.model.modification.BookmarksTreeModifier;
-import mesfavoris.testutils.BookmarksTreeGenerator;
-import mesfavoris.testutils.IDGenerator;
-import mesfavoris.testutils.IncrementalIDGenerator;
-import mesfavoris.testutils.RandomModificationApplier;
+import mesfavoris.tests.commons.bookmarks.BookmarksTreeGenerator;
+import mesfavoris.tests.commons.bookmarks.IDGenerator;
+import mesfavoris.tests.commons.bookmarks.IncrementalIDGenerator;
+import mesfavoris.tests.commons.bookmarks.RandomModificationApplier;
 
 public class BookmarksTreeMergerRandomTest {
 	private BookmarksTree originalBookmarksTree;

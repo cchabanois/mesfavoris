@@ -1,7 +1,7 @@
 package mesfavoris.internal.operations;
 
-import static mesfavoris.testutils.BookmarksTreeTestUtil.getBookmark;
-import static mesfavoris.testutils.BookmarksTreeTestUtil.getBookmarkFolder;
+import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookmark;
+import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookmarkFolder;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -31,8 +31,8 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
-import mesfavoris.testutils.BookmarksTreeGenerator;
-import mesfavoris.testutils.IncrementalIDGenerator;
+import mesfavoris.tests.commons.bookmarks.BookmarksTreeGenerator;
+import mesfavoris.tests.commons.bookmarks.IncrementalIDGenerator;
 import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class PasteBookmarkOperationTest {

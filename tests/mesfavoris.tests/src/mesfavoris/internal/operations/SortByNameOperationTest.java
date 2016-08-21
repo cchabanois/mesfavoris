@@ -1,8 +1,8 @@
 package mesfavoris.internal.operations;
 
-import static mesfavoris.testutils.BookmarkBuilder.bookmark;
-import static mesfavoris.testutils.BookmarkBuilder.bookmarkFolder;
-import static mesfavoris.testutils.BookmarksTreeBuilder.bookmarksTree;
+import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmark;
+import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmarkFolder;
+import static mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder.bookmarksTree;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -16,7 +16,7 @@ import mesfavoris.BookmarksException;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
-import mesfavoris.testutils.BookmarksTreeBuilder;
+import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
 import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class SortByNameOperationTest {

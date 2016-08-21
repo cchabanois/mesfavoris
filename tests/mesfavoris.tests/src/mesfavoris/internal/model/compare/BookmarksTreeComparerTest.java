@@ -1,6 +1,6 @@
 package mesfavoris.internal.model.compare;
 
-import static mesfavoris.testutils.BookmarksTreeTestUtil.getBookmark;
+import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookmark;
 import static org.junit.Assert.*;
 
 import java.util.Optional;
@@ -11,8 +11,8 @@ import mesfavoris.internal.model.compare.BookmarksTreeComparer;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.model.modification.BookmarkPropertiesModification;
-import mesfavoris.testutils.BookmarksTreeGenerator;
-import mesfavoris.testutils.IncrementalIDGenerator;
+import mesfavoris.tests.commons.bookmarks.BookmarksTreeGenerator;
+import mesfavoris.tests.commons.bookmarks.IncrementalIDGenerator;
 
 public class BookmarksTreeComparerTest {
 

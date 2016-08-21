@@ -26,9 +26,9 @@ import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.model.modification.BookmarksTreeModifier;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
-import mesfavoris.testutils.BookmarksTreeGenerator;
-import mesfavoris.testutils.IncrementalIDGenerator;
-import mesfavoris.testutils.RandomModificationApplier;
+import mesfavoris.tests.commons.bookmarks.BookmarksTreeGenerator;
+import mesfavoris.tests.commons.bookmarks.IncrementalIDGenerator;
+import mesfavoris.tests.commons.bookmarks.RandomModificationApplier;
 
 public class RemoteBookmarksSaverTest {
 	private RemoteBookmarksStoreManager remoteBookmarksStoreManager;

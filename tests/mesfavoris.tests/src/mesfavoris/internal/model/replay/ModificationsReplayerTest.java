@@ -13,10 +13,10 @@ import mesfavoris.internal.model.replay.ModificationsReplayer;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.model.modification.BookmarksModification;
 import mesfavoris.model.modification.BookmarksTreeModifier;
-import mesfavoris.testutils.BookmarksTreeGenerator;
-import mesfavoris.testutils.IDGenerator;
-import mesfavoris.testutils.IncrementalIDGenerator;
-import mesfavoris.testutils.RandomModificationApplier;
+import mesfavoris.tests.commons.bookmarks.BookmarksTreeGenerator;
+import mesfavoris.tests.commons.bookmarks.IDGenerator;
+import mesfavoris.tests.commons.bookmarks.IncrementalIDGenerator;
+import mesfavoris.tests.commons.bookmarks.RandomModificationApplier;
 
 public class ModificationsReplayerTest {
 	private BookmarksTree originalBookmarksTree;

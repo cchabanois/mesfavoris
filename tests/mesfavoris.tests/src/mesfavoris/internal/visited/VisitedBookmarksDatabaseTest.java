@@ -1,6 +1,6 @@
 package mesfavoris.internal.visited;
 
-import static mesfavoris.testutils.BookmarksTreeTestUtil.getBookmark;
+import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookmark;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
@@ -18,8 +18,8 @@ import com.google.common.collect.ImmutableMap;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
-import mesfavoris.testutils.BookmarksTreeGenerator;
-import mesfavoris.testutils.IncrementalIDGenerator;
+import mesfavoris.tests.commons.bookmarks.BookmarksTreeGenerator;
+import mesfavoris.tests.commons.bookmarks.IncrementalIDGenerator;
 import mesfavoris.topics.BookmarksEvents;
 
 public class VisitedBookmarksDatabaseTest {

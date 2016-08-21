@@ -1,8 +1,8 @@
 package mesfavoris.internal.operations;
 
+import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmark;
+import static mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder.bookmarksTree;
 import static mesfavoris.tests.commons.waits.Waiter.waitUntil;
-import static mesfavoris.testutils.BookmarkBuilder.bookmark;
-import static mesfavoris.testutils.BookmarksTreeBuilder.bookmarksTree;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_NUMBER;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_WORKSPACE_PATH;
 import static org.junit.Assert.assertEquals;
@@ -40,7 +40,7 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
-import mesfavoris.testutils.BookmarksTreeBuilder;
+import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
 
 public class GetLinkedBookmarksOperationTest {
 

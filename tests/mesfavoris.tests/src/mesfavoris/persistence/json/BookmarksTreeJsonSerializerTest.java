@@ -1,6 +1,6 @@
 package mesfavoris.persistence.json;
 
-import static mesfavoris.testutils.BookmarksTreeTestUtil.getBookmarkFolder;
+import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookmarkFolder;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -16,8 +16,8 @@ import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
 import mesfavoris.persistence.json.BookmarksTreeJsonSerializer;
-import mesfavoris.testutils.BookmarksTreeGenerator;
-import mesfavoris.testutils.IncrementalIDGenerator;
+import mesfavoris.tests.commons.bookmarks.BookmarksTreeGenerator;
+import mesfavoris.tests.commons.bookmarks.IncrementalIDGenerator;
 
 public class BookmarksTreeJsonSerializerTest {
 	private BookmarksTreeJsonSerializer bookmarksTreeJsonSerializer;
