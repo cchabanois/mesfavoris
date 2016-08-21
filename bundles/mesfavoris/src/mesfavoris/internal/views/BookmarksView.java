@@ -63,6 +63,7 @@ import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.bookmarktype.IImportTeamProject;
 import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.internal.actions.AddToRemoteBookmarksStoreAction;
+import mesfavoris.internal.actions.CollapseAllAction;
 import mesfavoris.internal.actions.ConnectToRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.RefreshRemoteFoldersAction;
 import mesfavoris.internal.actions.RemoveFromRemoteBookmarksStoreAction;
@@ -92,6 +93,7 @@ public class BookmarksView extends ViewPart {
 	private BookmarkCommentViewer bookmarkCommentViewer;
 	private DrillDownAdapter drillDownAdapter;
 	private Action refreshAction;
+	private Action collapseAllAction;
 	private FormToolkit toolkit;
 	private ToolBarManager commentsToolBarManager;
 
@@ -294,6 +296,7 @@ public class BookmarksView extends ViewPart {
 	private void fillLocalToolBar(IToolBarManager manager) {
 		ControlContribution controlContribution = createSearchTextControlContribution();
 		manager.add(controlContribution);
+		manager.add(collapseAllAction);
 		manager.add(refreshAction);
 		manager.add(toggleLinkAction);
 		manager.add(new Separator());
@@ -352,6 +355,7 @@ public class BookmarksView extends ViewPart {
 	}
 
 	private void makeActions() {
+		collapseAllAction = new CollapseAllAction(bookmarksTreeViewer);
 		refreshAction = new RefreshRemoteFoldersAction(bookmarkDatabase, remoteBookmarksStoreManager,
 				bookmarksDatabaseDirtyStateTracker);
 		toggleLinkAction = new ToggleLinkAction();
