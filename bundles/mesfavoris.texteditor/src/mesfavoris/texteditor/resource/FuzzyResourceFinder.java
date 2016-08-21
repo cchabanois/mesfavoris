@@ -12,7 +12,6 @@ import org.eclipse.core.runtime.IPath;
 
 import mesfavoris.texteditor.internal.StatusHelper;
 import mesfavoris.texteditor.internal.resource.ResourcePathDistanceComputer;
-import static BookmarkB
 
 /**
  * Find a resource. Name has to be the same than the given one but path can be

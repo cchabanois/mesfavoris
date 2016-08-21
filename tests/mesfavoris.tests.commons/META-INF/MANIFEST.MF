@@ -4,7 +4,9 @@ Bundle-Name: Commons
 Bundle-SymbolicName: mesfavoris.tests.commons
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: mesfavoris.tests.commons.Activator
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ org.junit;bundle-version="4.11.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: mesfavoris.tests.commons.waits
+Export-Package: mesfavoris.tests.commons.rules,
+ mesfavoris.tests.commons.waits

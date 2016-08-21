@@ -1,4 +1,4 @@
-package mesfavoris.testutils;
+package mesfavoris.tests.commons.rules;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
