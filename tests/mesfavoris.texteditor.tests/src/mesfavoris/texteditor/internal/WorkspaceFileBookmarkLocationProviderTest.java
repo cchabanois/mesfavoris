@@ -35,12 +35,30 @@ public class WorkspaceFileBookmarkLocationProviderTest {
 	}
 
 	@Test
-	public void testInsideWorkspaceFileFuzzyFindLocation() {
+	public void testWorkspaceFileFuzzyLineContent() {
 		// Given
 		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(PROP_WORKSPACE_PATH,
 				"/textEditorBookmarkLocationProviderTest/src/main/java/org/apache/commons/cli/DefaultParser.java",
 				PROP_LINE_CONTENT,
 				"for (Enumeration<?> enumeration = properties.propertyNames(); enumeration.hasMoreElements();)"));
+
+		// When
+		WorkspaceFileBookmarkLocation location = locationProvider.getBookmarkLocation(bookmark,
+				new NullProgressMonitor());
+
+		// Then
+		assertEquals("/textEditorBookmarkLocationProviderTest/src/main/java/org/apache/commons/cli/DefaultParser.java",
+				location.getWorkspaceFile().getFullPath().toString());
+		assertEquals(146, location.getLineNumber().intValue());
+	}
+
+	@Test
+	public void testWorkspaceFileFuzzyPath() {
+		// Given
+		Bookmark bookmark = new Bookmark(new BookmarkId(),
+				ImmutableMap.of(PROP_WORKSPACE_PATH,
+						"/textEditorBookmarkLocationProviderTest/src/main/java/org/apache/commons/cli2/DefaultParser.java",
+						PROP_LINE_NUMBER, "146"));
 
 		// When
 		WorkspaceFileBookmarkLocation location = locationProvider.getBookmarkLocation(bookmark,

@@ -1,17 +1,12 @@
 package mesfavoris.texteditor.text;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.InputStreamReader;
 
 import org.junit.Test;
 
 import com.google.common.io.CharStreams;
-
-import mesfavoris.texteditor.text.FilteredCharSequence;
-import mesfavoris.texteditor.text.ICharSequenceFilter;
-import mesfavoris.texteditor.text.RemoveExtraWhitespacesSequenceFilter;
 
 public class RemoveExtraWhitespacesSequenceFilterTest {
 
