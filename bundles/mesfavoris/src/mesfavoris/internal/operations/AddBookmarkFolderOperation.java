@@ -1,6 +1,7 @@
 package mesfavoris.internal.operations;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.eclipse.core.runtime.IStatus;
@@ -10,6 +11,7 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarksTree;
 import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class AddBookmarkFolderOperation {
@@ -36,8 +38,16 @@ public class AddBookmarkFolderOperation {
 			if (!status.isOK()) {
 				throw new BookmarksException(status);
 			}
-			bookmarksTreeModifier.addBookmarks(parentFolderId, Arrays.asList((Bookmark) bookmarkFolder));
+			Optional<BookmarkId> latestFolderBookmark = latestFolderBookmark(bookmarksTreeModifier.getCurrentTree(),
+					parentFolderId);
+			bookmarksTreeModifier.addBookmarksAfter(parentFolderId, latestFolderBookmark.orElse(null),
+					Arrays.asList((Bookmark) bookmarkFolder));
 		});
+	}
+
+	private Optional<BookmarkId> latestFolderBookmark(BookmarksTree bookmarksTree, BookmarkId parentFolderId) {
+		return bookmarksTree.getChildren(parentFolderId).stream().filter(bookmark -> bookmark instanceof BookmarkFolder)
+				.map(bookmark -> bookmark.getId()).reduce((a, b) -> b);
 	}
 
 }
