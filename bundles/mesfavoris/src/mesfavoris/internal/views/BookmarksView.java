@@ -177,12 +177,6 @@ public class BookmarksView extends ViewPart {
 			importProjectAction.setImageDescriptor(importTeamProject.get().getIcon());
 			commentsToolBarManager.add(importProjectAction);
 		}
-		commentsToolBarManager.add(new Action("Update", IAction.AS_PUSH_BUTTON) {
-
-			public void run() {
-
-			}
-		});
 		commentsToolBarManager.update(true);
 	}
 
