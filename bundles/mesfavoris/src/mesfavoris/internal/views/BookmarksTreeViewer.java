@@ -146,4 +146,11 @@ public class BookmarksTreeViewer extends TreeViewer {
 		});
 	}
 
+	public Bookmark getSelectedBookmark() {
+		IStructuredSelection selection = (IStructuredSelection) getSelection();
+		if (selection.size() == 0)
+			return null;
+		return AdapterUtils.getAdapter(selection.getFirstElement(), Bookmark.class);
+	}	
+	
 }

@@ -105,7 +105,10 @@ public class ToggleLinkAction extends Action {
 			return;
 		}
 		updateLinkImage(false);
-		bookmarksTreeViewer.setSelection(new StructuredSelection(bookmarks.get(0)), true);
+		Bookmark selectedBookmark = bookmarksTreeViewer.getSelectedBookmark();
+		if (selectedBookmark == null || !bookmarks.contains(selectedBookmark)) {
+			bookmarksTreeViewer.setSelection(new StructuredSelection(bookmarks.get(0)), true);
+		}
 	}	
 	
 	/**

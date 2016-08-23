@@ -140,13 +140,6 @@ public class BookmarksView extends ViewPart {
 		bookmarkCommentViewer.setBookmark(null);
 	}
 
-	private Bookmark getSelectedBookmark() {
-		IStructuredSelection selection = (IStructuredSelection) bookmarksTreeViewer.getSelection();
-		if (selection.size() == 0)
-			return null;
-		return AdapterUtils.getAdapter(selection.getFirstElement(), Bookmark.class);
-	}
-
 	private void createCommentsSectionToolbar(Section commentsSection) {
 		this.commentsToolBarManager = new ToolBarManager(SWT.FLAT | SWT.HORIZONTAL);
 		ToolBar toolbar = commentsToolBarManager.createControl(commentsSection);
@@ -222,7 +215,7 @@ public class BookmarksView extends ViewPart {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				final Bookmark bookmark = getSelectedBookmark();
+				final Bookmark bookmark = bookmarksTreeViewer.getSelectedBookmark();
 				updateCommentsSectionToolbar(bookmark);
 				bookmarkCommentViewer.setBookmark(bookmark);
 			}
