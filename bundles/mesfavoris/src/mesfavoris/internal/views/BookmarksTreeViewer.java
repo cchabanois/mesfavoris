@@ -3,7 +3,6 @@ package mesfavoris.internal.views;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
@@ -17,17 +16,16 @@ import org.eclipse.swt.dnd.URLTransfer;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.osgi.service.event.EventHandler;
 
 import mesfavoris.BookmarksPlugin;
-import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.commons.core.AdapterUtils;
+import mesfavoris.internal.jobs.FindLocationAndGotoBookmarkJob;
 import mesfavoris.internal.views.dnd.BookmarksViewerDragListener;
 import mesfavoris.internal.views.dnd.BookmarksViewerDropListener;
 import mesfavoris.internal.views.virtual.ExtendedBookmarksTreeContentProvider;
@@ -64,8 +62,8 @@ public class BookmarksTreeViewer extends TreeViewer {
 	public BookmarksTreeViewer(Composite parent, BookmarkDatabase bookmarkDatabase,
 			DefaultBookmarkFolderManager defaultBookmarkFolderManager,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
-			IBookmarkPropertiesProvider bookmarkPropertiesProvider, IBookmarkLocationProvider bookmarkLocationProvider, IGotoBookmark gotoBookmark,
-			List<VirtualBookmarkFolder> virtualBookmarkFolders) {
+			IBookmarkPropertiesProvider bookmarkPropertiesProvider, IBookmarkLocationProvider bookmarkLocationProvider,
+			IGotoBookmark gotoBookmark, List<VirtualBookmarkFolder> virtualBookmarkFolders) {
 		super(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
 		this.bookmarkDatabase = bookmarkDatabase;
@@ -124,12 +122,7 @@ public class BookmarksTreeViewer extends TreeViewer {
 					//
 				}
 			} else {
-				IBookmarkLocation bookmarkLocation = bookmarkLocationProvider.getBookmarkLocation(bookmark,
-						new NullProgressMonitor());
-				if (bookmarkLocation != null) {
-					IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-					gotoBookmark.gotoBookmark(workbenchWindow, bookmark, bookmarkLocation);
-				}
+				new FindLocationAndGotoBookmarkJob(bookmark).schedule();
 			}
 		});
 	}

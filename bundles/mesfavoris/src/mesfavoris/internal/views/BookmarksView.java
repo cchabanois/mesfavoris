@@ -78,6 +78,7 @@ public class BookmarksView extends ViewPart {
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker;
 	private final IBookmarkLocationProvider bookmarkLocationProvider;
+	private final IGotoBookmark gotoBookmark;
 	private Text searchText;
 	private BookmarksTreeViewer bookmarksTreeViewer;
 	private BookmarkCommentViewer bookmarkCommentViewer;
@@ -94,6 +95,7 @@ public class BookmarksView extends ViewPart {
 		this.remoteBookmarksStoreManager = BookmarksPlugin.getRemoteBookmarksStoreManager();
 		this.bookmarksDatabaseDirtyStateTracker = BookmarksPlugin.getBookmarksDatabaseDirtyStateTracker();
 		this.bookmarkLocationProvider = BookmarksPlugin.getBookmarkLocationProvider();
+		this.gotoBookmark = BookmarksPlugin.getGotoBookmark();
 	}
 
 	public void createPartControl(Composite parent) {
@@ -205,7 +207,6 @@ public class BookmarksView extends ViewPart {
 		// searchText = new Text(parent, SWT.ICON_SEARCH);
 		// searchText.setLayoutData(new GridData(style));
 		DefaultBookmarkFolderManager defaultBookmarkFolderManager = BookmarksPlugin.getDefaultBookmarkFolderManager();
-		RemoteBookmarksStoreManager remoteBookmarksStoreManager = BookmarksPlugin.getRemoteBookmarksStoreManager();
 		IBookmarkPropertiesProvider bookmarkPropertiesProvider = BookmarksPlugin.getBookmarkPropertiesProvider();
 		MostVisitedBookmarksVirtualFolder mostVisitedBookmarksVirtualFolder = new MostVisitedBookmarksVirtualFolder(
 				eventBroker, bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(),
@@ -213,7 +214,6 @@ public class BookmarksView extends ViewPart {
 		LatestVisitedBookmarksVirtualFolder latestVisitedBookmarksVirtualFolder = new LatestVisitedBookmarksVirtualFolder(
 				eventBroker, bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(),
 				bookmarkDatabase.getBookmarksTree().getRootFolder().getId(), 10);
-		IGotoBookmark gotoBookmark = BookmarksPlugin.getGotoBookmark();
 		bookmarksTreeViewer = new BookmarksTreeViewer(parent, bookmarkDatabase, defaultBookmarkFolderManager,
 				remoteBookmarksStoreManager, bookmarkPropertiesProvider, bookmarkLocationProvider, gotoBookmark,
 				Lists.newArrayList(mostVisitedBookmarksVirtualFolder, latestVisitedBookmarksVirtualFolder));
