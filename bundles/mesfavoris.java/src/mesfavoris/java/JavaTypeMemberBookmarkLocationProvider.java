@@ -61,6 +61,9 @@ public class JavaTypeMemberBookmarkLocationProvider implements IBookmarkLocation
 		}
 		try {
 			ITypeRoot typeRoot = member.getTypeRoot();
+			if (typeRoot.getBuffer() == null) {
+				return null;
+			}
 			Document document = new Document(typeRoot.getBuffer().getContents());
 			DocumentFuzzySearcher searcher = new DocumentFuzzySearcher(document);
 
@@ -68,7 +71,7 @@ public class JavaTypeMemberBookmarkLocationProvider implements IBookmarkLocation
 					estimatedLineNumber == null ? -1 : estimatedLineNumber, lineContent, monitor);
 			return lineNumber == -1 ? null : lineNumber;
 		} catch (JavaModelException e) {
-			return estimatedLineNumber;
+			return null;
 		}
 	}
 
