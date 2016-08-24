@@ -59,6 +59,7 @@ import mesfavoris.internal.actions.RefreshRemoteFoldersAction;
 import mesfavoris.internal.actions.RemoveFromRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.ToggleLinkAction;
 import mesfavoris.internal.jobs.ImportTeamProjectFromBookmarkJob;
+import mesfavoris.internal.views.comment.BookmarkCommentArea;
 import mesfavoris.internal.visited.LatestVisitedBookmarksVirtualFolder;
 import mesfavoris.internal.visited.MostVisitedBookmarksVirtualFolder;
 import mesfavoris.model.Bookmark;
@@ -81,7 +82,7 @@ public class BookmarksView extends ViewPart {
 	private final IGotoBookmark gotoBookmark;
 	private Text searchText;
 	private BookmarksTreeViewer bookmarksTreeViewer;
-	private BookmarkCommentViewer bookmarkCommentViewer;
+	private BookmarkCommentArea bookmarkCommentViewer;
 	private DrillDownAdapter drillDownAdapter;
 	private Action refreshAction;
 	private Action collapseAllAction;
@@ -129,14 +130,12 @@ public class BookmarksView extends ViewPart {
 		GridLayoutFactory.fillDefaults().extendedMargins(2, 2, 2, 2).applyTo(commentsComposite);
 		IBookmarkModificationValidator bookmarkModificationValidator = new BookmarkModificationValidator(
 				BookmarksPlugin.getRemoteBookmarksStoreManager());
-		bookmarkCommentViewer = new BookmarkCommentViewer(commentsComposite,
+		bookmarkCommentViewer = new BookmarkCommentArea(commentsComposite,
 				SWT.MULTI | SWT.V_SCROLL | SWT.WRAP | toolkit.getBorderStyle(), bookmarkDatabase,
 				bookmarkModificationValidator);
-		bookmarkCommentViewer.getControl().setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(bookmarkCommentViewer.getControl());
-		addBulbDecorator(bookmarkCommentViewer.getControl(), "Content assist available");
-		TextSourceViewerConfiguration configuration = new TextSourceViewerConfiguration(EditorsUI.getPreferenceStore());
-		bookmarkCommentViewer.configure(configuration);
+		bookmarkCommentViewer.getTextWidget().setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(bookmarkCommentViewer);
+		addBulbDecorator(bookmarkCommentViewer.getTextWidget(), "Content assist available");
 		bookmarkCommentViewer.setBookmark(null);
 	}
 
