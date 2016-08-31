@@ -10,6 +10,7 @@ import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -29,7 +30,7 @@ import mesfavoris.internal.views.virtual.VirtualBookmarkFolder;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkFolder;
 
-public class BookmarksLabelProvider extends StyledCellLabelProvider {
+public class BookmarksLabelProvider extends StyledCellLabelProvider implements ILabelProvider {
 	private static final String ICON_VIRTUAL_BOOKMARK_FOLDER = "icons/ovr16/virt_ovr.png";
 	private static final String ICON_BOOKMARK_LINK = "icons/ovr16/link_ovr.png";
 	private static final String ELLIPSES = " ... ";
@@ -108,7 +109,8 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider {
 		commentColor.dispose();
 	}
 
-	private Image getImage(final Object element) {
+	@Override
+	public Image getImage(final Object element) {
 		Bookmark bookmark = (Bookmark) AdapterUtils.getAdapter(element, Bookmark.class);
 		Image image = null;
 		if (bookmark instanceof BookmarkFolder) {
@@ -155,6 +157,11 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider {
 			}
 		}
 
+	}
+
+	@Override
+	public String getText(Object element) {
+		return getStyledText(element).toString();
 	}
 
 }

@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.ControlContribution;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IContributionManager;
@@ -19,25 +18,19 @@ import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
+import org.eclipse.ui.dialogs.FilteredTree;
+import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -51,7 +44,6 @@ import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.bookmarktype.IImportTeamProject;
-import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.internal.actions.AddToRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.CollapseAllAction;
 import mesfavoris.internal.actions.ConnectToRemoteBookmarksStoreAction;
@@ -69,6 +61,7 @@ import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.validation.BookmarkModificationValidator;
 import mesfavoris.validation.IBookmarkModificationValidator;
+import mesfavoris.viewers.BookmarkPatternFilter;
 import mesfavoris.workspace.DefaultBookmarkFolderManager;
 
 public class BookmarksView extends ViewPart {
@@ -80,7 +73,6 @@ public class BookmarksView extends ViewPart {
 	private final IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker;
 	private final IBookmarkLocationProvider bookmarkLocationProvider;
 	private final IGotoBookmark gotoBookmark;
-	private Text searchText;
 	private BookmarksTreeViewer bookmarksTreeViewer;
 	private BookmarkCommentArea bookmarkCommentViewer;
 	private DrillDownAdapter drillDownAdapter;
@@ -194,10 +186,6 @@ public class BookmarksView extends ViewPart {
 	}
 
 	private void createTreeControl(Composite parent) {
-		// GridLayout gridLayout = new GridLayout(1, false);
-		// parent.setLayout(gridLayout);
-		// searchText = new Text(parent, SWT.ICON_SEARCH);
-		// searchText.setLayoutData(new GridData(style));
 		DefaultBookmarkFolderManager defaultBookmarkFolderManager = BookmarksPlugin.getDefaultBookmarkFolderManager();
 		IBookmarkPropertiesProvider bookmarkPropertiesProvider = BookmarksPlugin.getBookmarkPropertiesProvider();
 		MostVisitedBookmarksVirtualFolder mostVisitedBookmarksVirtualFolder = new MostVisitedBookmarksVirtualFolder(
@@ -206,9 +194,21 @@ public class BookmarksView extends ViewPart {
 		LatestVisitedBookmarksVirtualFolder latestVisitedBookmarksVirtualFolder = new LatestVisitedBookmarksVirtualFolder(
 				eventBroker, bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(),
 				bookmarkDatabase.getBookmarksTree().getRootFolder().getId(), 10);
-		bookmarksTreeViewer = new BookmarksTreeViewer(parent, bookmarkDatabase, defaultBookmarkFolderManager,
-				remoteBookmarksStoreManager, bookmarkPropertiesProvider, bookmarkLocationProvider, gotoBookmark,
-				Lists.newArrayList(mostVisitedBookmarksVirtualFolder, latestVisitedBookmarksVirtualFolder));
+		
+		PatternFilter patternFilter = new BookmarkPatternFilter();
+		patternFilter.setIncludeLeadingWildcard(true);
+		FilteredTree filteredTree = new FilteredTree(parent, SWT.SINGLE | SWT.BORDER
+				| SWT.H_SCROLL | SWT.V_SCROLL, patternFilter, true) {
+			
+			protected TreeViewer doCreateTreeViewer(Composite parent, int style) {
+				return new BookmarksTreeViewer(parent, bookmarkDatabase, defaultBookmarkFolderManager,
+						remoteBookmarksStoreManager, bookmarkPropertiesProvider, bookmarkLocationProvider, gotoBookmark,
+						Lists.newArrayList(mostVisitedBookmarksVirtualFolder, latestVisitedBookmarksVirtualFolder));
+			};
+			
+		};
+		filteredTree.setQuickSelectionMode(true);
+		bookmarksTreeViewer = (BookmarksTreeViewer)filteredTree.getViewer();
 		drillDownAdapter = new DrillDownAdapter(bookmarksTreeViewer);
 		bookmarksTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -271,8 +271,6 @@ public class BookmarksView extends ViewPart {
 	}
 
 	private void fillLocalToolBar(IToolBarManager manager) {
-		ControlContribution controlContribution = createSearchTextControlContribution();
-		manager.add(controlContribution);
 		manager.add(collapseAllAction);
 		manager.add(refreshAction);
 		manager.add(toggleLinkAction);
@@ -288,47 +286,6 @@ public class BookmarksView extends ViewPart {
 					store);
 			manager.add(connectAction);
 		}
-	}
-
-	private ControlContribution createSearchTextControlContribution() {
-		ControlContribution controlContribution = new ControlContribution("StagingView.searchText") {
-			@Override
-			protected Control createControl(Composite parent) {
-				Composite toolbarComposite = toolkit.createComposite(parent, SWT.NONE);
-				toolbarComposite.setBackground(null);
-				GridLayout headLayout = new GridLayout();
-				headLayout.numColumns = 2;
-				headLayout.marginHeight = 0;
-				headLayout.marginWidth = 0;
-				headLayout.marginTop = 0;
-				headLayout.marginBottom = 0;
-				headLayout.marginLeft = 0;
-				headLayout.marginRight = 0;
-				toolbarComposite.setLayout(headLayout);
-
-				Text filterText = new Text(toolbarComposite, SWT.SEARCH | SWT.ICON_CANCEL | SWT.ICON_SEARCH);
-				filterText.setMessage("Filter bookmarks");
-				GridData data = new GridData(GridData.FILL_HORIZONTAL);
-				data.widthHint = 150;
-				filterText.setLayoutData(data);
-				final Display display = Display.getCurrent();
-				filterText.addModifyListener(new ModifyListener() {
-					public void modifyText(ModifyEvent e) {
-						// final StagingViewSearchThread searchThread = new
-						// StagingViewSearchThread(
-						// StagingView.this);
-						// display.timerExec(200, new Runnable() {
-						// public void run() {
-						// searchThread.start();
-						// }
-						// }
-						// );
-					}
-				});
-				return toolbarComposite;
-			}
-		};
-		return controlContribution;
 	}
 
 	private void makeActions() {
