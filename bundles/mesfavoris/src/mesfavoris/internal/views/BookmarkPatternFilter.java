@@ -1,4 +1,4 @@
-package mesfavoris.viewers;
+package mesfavoris.internal.views;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.dialogs.PatternFilter;

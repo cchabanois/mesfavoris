@@ -59,7 +59,6 @@ import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.validation.BookmarkModificationValidator;
 import mesfavoris.validation.IBookmarkModificationValidator;
-import mesfavoris.viewers.BookmarkPatternFilter;
 import mesfavoris.workspace.DefaultBookmarkFolderManager;
 
 public class BookmarksView extends ViewPart {
