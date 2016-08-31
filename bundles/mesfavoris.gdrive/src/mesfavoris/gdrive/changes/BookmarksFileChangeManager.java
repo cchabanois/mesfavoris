@@ -109,6 +109,7 @@ public class BookmarksFileChangeManager {
 
 		public BookmarksFileChangeJob() {
 			super("Get changes from GDrive");
+			setSystem(true);
 		}
 
 		@Override
