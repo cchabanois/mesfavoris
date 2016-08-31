@@ -5,7 +5,6 @@ import org.eclipse.jface.viewers.IDecoration;
 
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
-import mesfavoris.model.BookmarkFolder;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarkFolder;
 import mesfavoris.remote.RemoteBookmarksStoreManager;

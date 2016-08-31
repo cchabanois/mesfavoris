@@ -11,15 +11,13 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import mesfavoris.BookmarksException;
 import mesfavoris.BookmarksPlugin;
 import mesfavoris.handlers.AbstractBookmarkHandler;
-import mesfavoris.internal.operations.AddBookmarkFolderOperation;
 import mesfavoris.internal.operations.RenameBookmarkOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
-import mesfavoris.model.BookmarkFolder;
 import mesfavoris.remote.IRemoteBookmarksStore;
+import mesfavoris.remote.IRemoteBookmarksStore.State;
 import mesfavoris.remote.RemoteBookmarkFolder;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
-import mesfavoris.remote.IRemoteBookmarksStore.State;
 import mesfavoris.validation.BookmarkModificationValidator;
 import mesfavoris.validation.IBookmarkModificationValidator;
 

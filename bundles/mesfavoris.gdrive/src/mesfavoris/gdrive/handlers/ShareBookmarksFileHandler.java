@@ -2,7 +2,6 @@ package mesfavoris.gdrive.handlers;
 
 import java.io.IOException;
 
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.Dialog;
@@ -12,7 +11,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import com.google.api.services.drive.Drive;
 
-import mesfavoris.BookmarksPlugin;
 import mesfavoris.gdrive.Activator;
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
 import mesfavoris.gdrive.dialogs.ShareBookmarksFileDialog;
@@ -20,11 +18,7 @@ import mesfavoris.gdrive.mappings.BookmarkMappingsStore;
 import mesfavoris.gdrive.operations.ShareFileOperation;
 import mesfavoris.handlers.AbstractBookmarkHandler;
 import mesfavoris.model.Bookmark;
-import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
-import mesfavoris.remote.IRemoteBookmarksStore;
-import mesfavoris.remote.RemoteBookmarkFolder;
-import mesfavoris.remote.IRemoteBookmarksStore.State;
 
 public class ShareBookmarksFileHandler extends AbstractBookmarkHandler {
 	private final GDriveConnectionManager gDriveConnectionManager;

@@ -9,7 +9,6 @@ import com.google.common.collect.Lists;
 
 import mesfavoris.internal.model.merge.BookmarksTreeIterable.Algorithm;
 import mesfavoris.internal.model.merge.MinimumMovesSolver.Move;
-import mesfavoris.internal.model.utils.BookmarksTreeUtils;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;

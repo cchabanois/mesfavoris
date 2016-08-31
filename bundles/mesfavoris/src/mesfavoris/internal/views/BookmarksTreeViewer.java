@@ -21,9 +21,7 @@ import org.eclipse.ui.handlers.IHandlerService;
 import org.osgi.service.event.EventHandler;
 
 import mesfavoris.BookmarksPlugin;
-import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
-import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.internal.jobs.FindLocationAndGotoBookmarkJob;
 import mesfavoris.internal.views.dnd.BookmarksViewerDragListener;
@@ -53,8 +51,6 @@ public class BookmarksTreeViewer extends TreeViewer {
 	private final DefaultBookmarkFolderManager defaultBookmarkFolderManager;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
-	private final IBookmarkLocationProvider bookmarkLocationProvider;
-	private final IGotoBookmark gotoBookmark;
 	private final IBookmarksListener bookmarksListener = (modifications) -> refreshInUIThread();
 	private final IDefaultBookmarkFolderListener defaultBookmarkFolderListener = () -> refreshInUIThread();
 	private final EventHandler bookmarkStoresEventHandler = (event) -> refresh();
@@ -62,16 +58,14 @@ public class BookmarksTreeViewer extends TreeViewer {
 	public BookmarksTreeViewer(Composite parent, BookmarkDatabase bookmarkDatabase,
 			DefaultBookmarkFolderManager defaultBookmarkFolderManager,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
-			IBookmarkPropertiesProvider bookmarkPropertiesProvider, IBookmarkLocationProvider bookmarkLocationProvider,
-			IGotoBookmark gotoBookmark, List<VirtualBookmarkFolder> virtualBookmarkFolders) {
+			IBookmarkPropertiesProvider bookmarkPropertiesProvider,
+			List<VirtualBookmarkFolder> virtualBookmarkFolders) {
 		super(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.defaultBookmarkFolderManager = defaultBookmarkFolderManager;
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
-		this.bookmarkLocationProvider = bookmarkLocationProvider;
-		this.gotoBookmark = gotoBookmark;
 		setContentProvider(new ExtendedBookmarksTreeContentProvider(bookmarkDatabase, virtualBookmarkFolders));
 		setUseHashlookup(true);
 		BookmarksLabelProvider bookmarksLabelProvider = getBookmarksLabelProvider();
@@ -151,6 +145,6 @@ public class BookmarksTreeViewer extends TreeViewer {
 		if (selection.size() == 0)
 			return null;
 		return AdapterUtils.getAdapter(selection.getFirstElement(), Bookmark.class);
-	}	
-	
+	}
+
 }

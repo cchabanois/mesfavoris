@@ -9,9 +9,8 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.remote.IRemoteBookmarksStore;
-import mesfavoris.remote.RemoteBookmarksStoreManager;
-import mesfavoris.remote.RemoteBookmarksTree;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
+import mesfavoris.remote.RemoteBookmarksStoreManager;
 
 /**
  * Add a folder to a remote bookmarks store
@@ -40,7 +39,7 @@ public class AddToRemoteBookmarksStoreOperation {
 		}
 		try {
 			BookmarksTree bookmarksTree = bookmarkDatabase.getBookmarksTree();
-			RemoteBookmarksTree remoteBookmarksTree = store.add(bookmarksTree, bookmarkFolderId, monitor);
+			store.add(bookmarksTree, bookmarkFolderId, monitor);
 		} catch (IOException e) {
 			throw new BookmarksException("Could not add bookmark folder to remote store", e);
 		}

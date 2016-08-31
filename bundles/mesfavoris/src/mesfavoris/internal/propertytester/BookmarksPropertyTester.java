@@ -4,7 +4,6 @@ import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.core.runtime.IStatus;
 
 import mesfavoris.BookmarksPlugin;
-import mesfavoris.internal.model.utils.BookmarksTreeUtils;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.remote.RemoteBookmarksStoreManager;

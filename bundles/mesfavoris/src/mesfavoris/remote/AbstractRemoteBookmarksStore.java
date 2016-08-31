@@ -5,7 +5,6 @@ import org.eclipse.e4.core.services.events.IEventBroker;
 import com.google.common.collect.ImmutableMap;
 
 import mesfavoris.model.BookmarkId;
-import mesfavoris.topics.BookmarksEvents;
 
 public abstract class AbstractRemoteBookmarksStore implements IRemoteBookmarksStore {
 	private final IEventBroker eventBroker;

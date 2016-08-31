@@ -7,8 +7,6 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.inject.Provider;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.ListenerList;

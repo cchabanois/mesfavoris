@@ -1,7 +1,5 @@
 package mesfavoris.viewers;
 
-import java.util.function.Function;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
 

@@ -3,8 +3,6 @@ package mesfavoris.internal.views;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.text.StyledEditorKit.ForegroundAction;
-
 import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;

@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -15,8 +14,6 @@ import mesfavoris.BookmarksException;
 import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.handlers.AbstractBookmarkHandler;
-import mesfavoris.internal.handlers.AbstractBookmarkCreationHandler.BookmarkCreationOperationContext;
-import mesfavoris.internal.operations.AddBookmarkOperation;
 import mesfavoris.internal.operations.PasteBookmarkOperation;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;

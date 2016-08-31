@@ -18,7 +18,6 @@ import mesfavoris.internal.model.replay.ModificationsReplayer;
 import mesfavoris.internal.model.utils.BookmarksTreeUtils;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
-import mesfavoris.model.BookmarksTree;
 import mesfavoris.model.modification.BookmarkDeletedModification;
 import mesfavoris.model.modification.BookmarkPropertiesModification;
 import mesfavoris.model.modification.BookmarksAddedModification;

@@ -40,9 +40,7 @@ import org.eclipse.ui.part.ViewPart;
 import com.google.common.collect.Lists;
 
 import mesfavoris.BookmarksPlugin;
-import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
-import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.bookmarktype.IImportTeamProject;
 import mesfavoris.internal.actions.AddToRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.CollapseAllAction;
@@ -71,8 +69,6 @@ public class BookmarksView extends ViewPart {
 	private final IEventBroker eventBroker;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker;
-	private final IBookmarkLocationProvider bookmarkLocationProvider;
-	private final IGotoBookmark gotoBookmark;
 	private BookmarksTreeViewer bookmarksTreeViewer;
 	private BookmarkCommentArea bookmarkCommentViewer;
 	private DrillDownAdapter drillDownAdapter;
@@ -87,8 +83,6 @@ public class BookmarksView extends ViewPart {
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
 		this.remoteBookmarksStoreManager = BookmarksPlugin.getRemoteBookmarksStoreManager();
 		this.bookmarksDatabaseDirtyStateTracker = BookmarksPlugin.getBookmarksDatabaseDirtyStateTracker();
-		this.bookmarkLocationProvider = BookmarksPlugin.getBookmarkLocationProvider();
-		this.gotoBookmark = BookmarksPlugin.getGotoBookmark();
 	}
 
 	public void createPartControl(Composite parent) {
@@ -194,21 +188,21 @@ public class BookmarksView extends ViewPart {
 		LatestVisitedBookmarksVirtualFolder latestVisitedBookmarksVirtualFolder = new LatestVisitedBookmarksVirtualFolder(
 				eventBroker, bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(),
 				bookmarkDatabase.getBookmarksTree().getRootFolder().getId(), 10);
-		
+
 		PatternFilter patternFilter = new BookmarkPatternFilter();
 		patternFilter.setIncludeLeadingWildcard(true);
-		FilteredTree filteredTree = new FilteredTree(parent, SWT.SINGLE | SWT.BORDER
-				| SWT.H_SCROLL | SWT.V_SCROLL, patternFilter, true) {
-			
+		FilteredTree filteredTree = new FilteredTree(parent, SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL,
+				patternFilter, true) {
+
 			protected TreeViewer doCreateTreeViewer(Composite parent, int style) {
 				return new BookmarksTreeViewer(parent, bookmarkDatabase, defaultBookmarkFolderManager,
-						remoteBookmarksStoreManager, bookmarkPropertiesProvider, bookmarkLocationProvider, gotoBookmark,
+						remoteBookmarksStoreManager, bookmarkPropertiesProvider,
 						Lists.newArrayList(mostVisitedBookmarksVirtualFolder, latestVisitedBookmarksVirtualFolder));
 			};
-			
+
 		};
 		filteredTree.setQuickSelectionMode(true);
-		bookmarksTreeViewer = (BookmarksTreeViewer)filteredTree.getViewer();
+		bookmarksTreeViewer = (BookmarksTreeViewer) filteredTree.getViewer();
 		drillDownAdapter = new DrillDownAdapter(bookmarksTreeViewer);
 		bookmarksTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 

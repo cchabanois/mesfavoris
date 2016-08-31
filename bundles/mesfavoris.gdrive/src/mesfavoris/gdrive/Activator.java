@@ -1,7 +1,6 @@
 package mesfavoris.gdrive;
 
 import java.io.File;
-import java.time.Duration;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
