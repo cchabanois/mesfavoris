@@ -23,6 +23,7 @@ import com.google.api.client.http.HttpResponse;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.Revision;
 
+import mesfavoris.gdrive.GDriveTestUser;
 import mesfavoris.gdrive.operations.CreateFileOperation;
 import mesfavoris.gdrive.operations.DownloadFileOperation;
 import mesfavoris.gdrive.operations.GetFileMetadataOperation;
@@ -32,7 +33,7 @@ import mesfavoris.gdrive.test.GDriveConnectionRule;
 public class DownloadFileOperationTest {
 
 	@Rule
-	public GDriveConnectionRule gdriveConnectionRule = new GDriveConnectionRule(true);
+	public GDriveConnectionRule gdriveConnectionRule = new GDriveConnectionRule(GDriveTestUser.USER1, true);
 
 	@Test
 	public void testDownloadFile() throws Exception {
@@ -73,10 +74,10 @@ public class DownloadFileOperationTest {
 		// Given
 		File file = createFile("myFile.txt", "the contents");
 		Revision revision = gdriveConnectionRule.getDrive().revisions().get(file.getId(), "head").execute();
-		
+
 		// When
 		HttpResponse responseExecuteMedia = gdriveConnectionRule.getDrive().files().get(file.getId()).executeMedia();
-		
+
 		// Then
 		assertNotEquals(revision.getEtag(), responseExecuteMedia.getHeaders().getETag());
 	}

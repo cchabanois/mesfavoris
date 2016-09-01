@@ -13,12 +13,13 @@ import org.junit.Test;
 import com.google.api.services.drive.model.Change;
 import com.google.api.services.drive.model.File;
 
+import mesfavoris.gdrive.GDriveTestUser;
 import mesfavoris.gdrive.test.GDriveConnectionRule;
 
 public class GetChangesOperationTest {
 
 	@Rule
-	public GDriveConnectionRule gdriveConnectionRule = new GDriveConnectionRule(true);
+	public GDriveConnectionRule gdriveConnectionRule = new GDriveConnectionRule(GDriveTestUser.USER1, true);
 
 	private GetChangesOperation getChangesOperation;
 	private Long startChangeId;
@@ -62,7 +63,7 @@ public class GetChangesOperationTest {
 		List<Change> changes = getChangesOperation.getChanges(startChangeId);
 
 		// When
-		startChangeId = changes.get(changes.size() - 1).getId()+1;
+		startChangeId = changes.get(changes.size() - 1).getId() + 1;
 		File file2 = createFile("file2.txt", "the contents");
 		changes = getChangesOperation.getChanges(startChangeId);
 

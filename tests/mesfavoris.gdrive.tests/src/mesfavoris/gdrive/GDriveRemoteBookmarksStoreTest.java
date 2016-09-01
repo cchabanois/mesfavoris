@@ -42,7 +42,7 @@ public class GDriveRemoteBookmarksStoreTest {
 	private BookmarksFileChangeManager bookmarksFileChangeManager;
 
 	@Rule
-	public GDriveConnectionRule gDriveConnectionRule = new GDriveConnectionRule(false);
+	public GDriveConnectionRule gDriveConnectionRule = new GDriveConnectionRule(GDriveTestUser.USER1, false);
 
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();

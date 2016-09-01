@@ -14,6 +14,7 @@ import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.util.Charsets;
 import com.google.api.services.drive.model.File;
 
+import mesfavoris.gdrive.GDriveTestUser;
 import mesfavoris.gdrive.operations.CreateFileOperation;
 import mesfavoris.gdrive.operations.DownloadFileOperation;
 import mesfavoris.gdrive.operations.UpdateFileOperation;
@@ -22,7 +23,7 @@ import mesfavoris.gdrive.test.GDriveConnectionRule;
 public class UpdateFileOperationTest {
 
 	@Rule
-	public GDriveConnectionRule gdriveConnectionRule = new GDriveConnectionRule(true);
+	public GDriveConnectionRule gdriveConnectionRule = new GDriveConnectionRule(GDriveTestUser.USER1, true);
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -50,7 +51,7 @@ public class UpdateFileOperationTest {
 				new NullProgressMonitor());
 		exception.expect(GoogleJsonResponseException.class);
 		exception.expectMessage("412 Precondition Failed");
-		
+
 		// When
 		updateFileOperation.updateFile(file.getId(), "the newest contents".getBytes(Charsets.UTF_8), file.getEtag(),
 				new NullProgressMonitor());

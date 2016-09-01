@@ -17,22 +17,22 @@ import org.junit.Test;
 
 import com.google.api.services.drive.model.File;
 
-import mesfavoris.gdrive.operations.CreateFileOperation;
-import mesfavoris.gdrive.operations.DownloadHeadRevisionOperation;
+import mesfavoris.gdrive.GDriveTestUser;
 import mesfavoris.gdrive.operations.DownloadHeadRevisionOperation.Contents;
 import mesfavoris.gdrive.test.GDriveConnectionRule;
 
 public class DownloadHeadRevisionOperationTest {
-	
+
 	@Rule
-	public GDriveConnectionRule gdriveConnectionRule = new GDriveConnectionRule(true);
+	public GDriveConnectionRule gdriveConnectionRule = new GDriveConnectionRule(GDriveTestUser.USER1, true);
 
 	@Test
 	public void testDownloadFile() throws Exception {
 		// Given
 		File file = createFile("myFile.txt", "the contents");
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
-		DownloadHeadRevisionOperation downloadFileOperation = new DownloadHeadRevisionOperation(gdriveConnectionRule.getDrive());
+		DownloadHeadRevisionOperation downloadFileOperation = new DownloadHeadRevisionOperation(
+				gdriveConnectionRule.getDrive());
 
 		// When
 		Contents contents = downloadFileOperation.downloadFile(file.getId(), monitor);
@@ -43,13 +43,13 @@ public class DownloadHeadRevisionOperationTest {
 		verify(monitor).beginTask(anyString(), anyInt());
 		verify(monitor, atLeast(1)).worked(anyInt());
 		verify(monitor, atLeast(1)).done();
-	}	
-	
+	}
+
 	private File createFile(String name, String contents) throws UnsupportedEncodingException, IOException {
 		CreateFileOperation createFileOperation = new CreateFileOperation(gdriveConnectionRule.getDrive());
 		File file = createFileOperation.createFile(gdriveConnectionRule.getApplicationFolderId(), name,
 				contents.getBytes("UTF-8"), new NullProgressMonitor());
 		return file;
 	}
-	
+
 }

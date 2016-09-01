@@ -1,6 +1,9 @@
 package mesfavoris.gdrive.connection;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,12 +16,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import mesfavoris.gdrive.Constants;
-import mesfavoris.gdrive.connection.GDriveConnectionManager;
+import mesfavoris.gdrive.GDriveTestUser;
 import mesfavoris.gdrive.test.HtmlUnitAuthorizationCodeInstalledApp;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
-
-import static org.mockito.Mockito.*;
 
 public class GDriveConnectionManagerTest {
 
@@ -33,7 +33,8 @@ public class GDriveConnectionManagerTest {
 		File dataStoreDir = temporaryFolder.newFolder();
 		String applicationFolderName = "gdriveConnectionManagerTest" + new Random().nextInt(1000);
 		gDriveConnectionManager = new GDriveConnectionManager(dataStoreDir,
-				new HtmlUnitAuthorizationCodeInstalledApp.Provider(Constants.TEST_USERNAME, Constants.TEST_PASSWORD),
+				new HtmlUnitAuthorizationCodeInstalledApp.Provider(GDriveTestUser.USER1.getUserName(),
+						GDriveTestUser.USER1.getPassword()),
 				"mes favoris", applicationFolderName);
 		gDriveConnectionManager.init();
 		gDriveConnectionManager.addConnectionListener(connectionListener);

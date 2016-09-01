@@ -1,13 +1,11 @@
 package mesfavoris.gdrive.changes;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.After;
@@ -19,6 +17,7 @@ import com.google.api.client.util.Charsets;
 import com.google.api.services.drive.model.Change;
 import com.google.api.services.drive.model.File;
 
+import mesfavoris.gdrive.GDriveTestUser;
 import mesfavoris.gdrive.mappings.BookmarkMappings;
 import mesfavoris.gdrive.operations.CreateFileOperation;
 import mesfavoris.gdrive.operations.UpdateFileOperation;
@@ -29,7 +28,7 @@ import mesfavoris.tests.commons.waits.Waiter;
 public class BookmarksFileChangeManagerTest {
 
 	@Rule
-	public GDriveConnectionRule gdriveConnectionRule = new GDriveConnectionRule(true);
+	public GDriveConnectionRule gdriveConnectionRule = new GDriveConnectionRule(GDriveTestUser.USER1, true);
 
 	private BookmarksFileChangeManager bookmarksFileChangeManager;
 	private BookmarkMappings bookmarkMappings = new BookmarkMappings();
@@ -67,7 +66,7 @@ public class BookmarksFileChangeManagerTest {
 	public void testListenerNotCalledIfClosed() throws Exception {
 		// Given
 		bookmarksFileChangeManager.close();
-		
+
 		// When
 		updateFile(bookmarkMappings.getFileId(new BookmarkId("bookmarkFolder1")), "new bookmarks for folder1");
 
