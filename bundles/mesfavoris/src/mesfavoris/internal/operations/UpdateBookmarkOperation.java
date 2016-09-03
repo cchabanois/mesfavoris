@@ -32,7 +32,7 @@ public class UpdateBookmarkOperation {
 		updateBookmark(bookmarkId, bookmarkProperties);
 	}
 
-	public void updateBookmark(final BookmarkId bookmarkId, Map<String, String> properties) throws BookmarksException {
+	private void updateBookmark(final BookmarkId bookmarkId, Map<String, String> properties) throws BookmarksException {
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
 			properties.forEach((propertyName, propertyValue) -> bookmarksTreeModifier.setPropertyValue(bookmarkId,
 					propertyName, propertyValue));

@@ -107,7 +107,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		Preferences preferences = InstanceScope.INSTANCE.getNode(PLUGIN_ID);
 		defaultBookmarkFolderManager = new DefaultBookmarkFolderManager(bookmarkDatabase, preferences);
 		bookmarksService = new BookmarksService(bookmarkDatabase,
-				new BookmarkModificationValidator(remoteBookmarksStoreManager));
+				new BookmarkModificationValidator(remoteBookmarksStoreManager), bookmarkPropertiesProvider, defaultBookmarkFolderManager, remoteBookmarksStoreManager, bookmarksSaver);
 		File mostVisitedBookmarksFile = new File(getStateLocation().toFile(), "mostVisitedBookmarks.json");
 		IEventBroker eventBroker = (IEventBroker) getWorkbench().getService(IEventBroker.class);
 		mostVisitedBookmarks = new VisitedBookmarksDatabase(eventBroker, bookmarkDatabase, mostVisitedBookmarksFile);

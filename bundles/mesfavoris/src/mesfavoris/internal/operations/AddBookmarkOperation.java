@@ -42,7 +42,7 @@ public class AddBookmarkOperation {
 		return bookmarkId;
 	}
 
-	public void addBookmark(final Bookmark bookmark) throws BookmarksException {
+	private void addBookmark(final Bookmark bookmark) throws BookmarksException {
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
 			BookmarkFolder folder = defaultBookmarkFolderManager.getDefaultFolder();
 			if (folder == null) {
