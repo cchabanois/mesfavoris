@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Rule;
@@ -12,32 +13,32 @@ import org.junit.Test;
 import com.google.api.services.drive.model.File;
 
 import mesfavoris.gdrive.GDriveTestUser;
-import mesfavoris.gdrive.operations.DownloadHeadRevisionOperation.Contents;
 import mesfavoris.gdrive.test.GDriveConnectionRule;
 
-public class ShareFileOperationTest {
+public class GetBookmarksFilesOperationTest {
 
 	@Rule
 	public GDriveConnectionRule gdriveConnectionUser1 = new GDriveConnectionRule(GDriveTestUser.USER1, true);
 	
 	@Rule
 	public GDriveConnectionRule gdriveConnectionUser2 = new GDriveConnectionRule(GDriveTestUser.USER2, true);
-
+	
+	
 	@Test
-	public void testShareFile() throws Exception {
+	public void testGetSharedBookmarkFile() throws Exception {
 		// Given
-		File file = createFile(gdriveConnectionUser1, "myFile.txt", "the contents");
-		ShareFileOperation shareFileOperation = new ShareFileOperation(gdriveConnectionUser1.getDrive());
+		File file = createFile(gdriveConnectionUser1, "user1File.txt", "the contents");
+		share(gdriveConnectionUser1, file.getId(), GDriveTestUser.USER2.getEmail());
+		GetBookmarkFilesOperation operation = new GetBookmarkFilesOperation(gdriveConnectionUser2.getDrive());
 		
 		// When
-		shareFileOperation.shareWithUser(file.getId(), GDriveTestUser.USER2.getEmail(), true);
+		List<File> bookmarkFiles = operation.getBookmarkFiles();
 		
 		// Then
-		byte[] contentsAsBytes = downloadHeadRevision(gdriveConnectionUser2, file.getId());
-		assertEquals("the contents", new String(contentsAsBytes, "UTF-8"));
+		assertEquals(1, bookmarkFiles.size());
+		assertEquals(file.getId(), bookmarkFiles.get(0).getId());
 	}
-	
-	
+
 	private File createFile(GDriveConnectionRule driveConnection, String name, String contents) throws UnsupportedEncodingException, IOException {
 		CreateFileOperation createFileOperation = new CreateFileOperation(driveConnection.getDrive());
 		File file = createFileOperation.createFile(driveConnection.getApplicationFolderId(), name,
@@ -45,10 +46,9 @@ public class ShareFileOperationTest {
 		return file;
 	}	
 	
-	private byte[] downloadHeadRevision(GDriveConnectionRule driveConnection, String fileId) throws IOException {
-		DownloadHeadRevisionOperation operation = new DownloadHeadRevisionOperation(driveConnection.getDrive());
-		Contents contents = operation.downloadFile(fileId, new NullProgressMonitor());
-		return contents.getFileContents();
-	}	
+	private void share(GDriveConnectionRule driveConnection, String fileId, String userEmail) throws IOException {
+		ShareFileOperation shareFileOperation = new ShareFileOperation(gdriveConnectionUser1.getDrive());
+		shareFileOperation.shareWithUser(fileId,userEmail, true);
+	}
 	
 }

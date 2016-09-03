@@ -182,7 +182,7 @@ public class GDriveConnectionManager {
 					new InputStreamReader(GDriveConnectionManager.class.getResourceAsStream("client_secrets.json")));
 			// set up authorization code flow
 			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY,
-					clientSecrets, Collections.singleton(DriveScopes.DRIVE_FILE)).setDataStoreFactory(dataStoreFactory)
+					clientSecrets, Collections.singleton(DriveScopes.DRIVE)).setDataStoreFactory(dataStoreFactory)
 							.build();
 			// authorize
 			LocalServerReceiver localServerReceiver = new CancellableLocalServerReceiver(monitor);
