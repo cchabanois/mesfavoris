@@ -49,7 +49,7 @@ public class GetBookmarksFilesOperationTest {
 	}	
 	
 	private void share(GDriveConnectionRule driveConnection, String fileId, String userEmail) throws IOException {
-		ShareFileOperation shareFileOperation = new ShareFileOperation(gdriveConnectionUser1.getDrive());
+		ShareFileOperation shareFileOperation = new ShareFileOperation(driveConnection.getDrive());
 		shareFileOperation.shareWithUser(fileId,userEmail, true);
 	}
 	
