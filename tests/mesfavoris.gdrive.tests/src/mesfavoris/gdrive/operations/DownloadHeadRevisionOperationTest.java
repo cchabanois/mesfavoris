@@ -41,7 +41,6 @@ public class DownloadHeadRevisionOperationTest {
 		assertEquals("the contents", new String(contents.getFileContents(), "UTF-8"));
 		assertEquals(file.getEtag(), contents.getFileEtag());
 		verify(monitor).beginTask(anyString(), anyInt());
-		verify(monitor, atLeast(1)).worked(anyInt());
 		verify(monitor, atLeast(1)).done();
 	}
 
