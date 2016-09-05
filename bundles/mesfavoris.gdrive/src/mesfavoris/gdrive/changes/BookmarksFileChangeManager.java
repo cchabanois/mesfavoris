@@ -3,6 +3,7 @@ package mesfavoris.gdrive.changes;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -20,6 +21,7 @@ import mesfavoris.BookmarksException;
 import mesfavoris.gdrive.StatusHelper;
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
 import mesfavoris.gdrive.connection.IConnectionListener;
+import mesfavoris.gdrive.mappings.BookmarkMapping;
 import mesfavoris.gdrive.mappings.IBookmarkMappings;
 import mesfavoris.gdrive.operations.GetChangesOperation;
 import mesfavoris.model.BookmarkId;
@@ -125,9 +127,9 @@ public class BookmarksFileChangeManager {
 				}
 				List<Change> changes = operation.getChanges(startChangeId);
 				for (Change change : changes) {
-					BookmarkId bookmarkFolderId = bookmarkMappings.getBookmarkFolderId(change.getFileId());
-					if (bookmarkFolderId != null) {
-						fireBookmarksFileChanged(bookmarkFolderId, change);
+					Optional<BookmarkMapping> bookmarkMapping = bookmarkMappings.getMapping(change.getFileId());
+					if (bookmarkMapping.isPresent()) {
+						fireBookmarksFileChanged(bookmarkMapping.get().getBookmarkFolderId(), change);
 					}
 				}
 				if (changes.size() > 0) {

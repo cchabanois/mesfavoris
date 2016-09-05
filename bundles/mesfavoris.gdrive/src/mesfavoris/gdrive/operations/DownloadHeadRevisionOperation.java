@@ -21,7 +21,7 @@ public class DownloadHeadRevisionOperation extends AbstractGDriveOperation {
 		super(drive);
 	}
 
-	public Contents downloadFile(String fileId, IProgressMonitor monitor) throws IOException {
+	public FileContents downloadFile(String fileId, IProgressMonitor monitor) throws IOException {
 		File file = drive.files().get(fileId).execute();
 		
 		// Don't use Revision revision = drive.revisions().get(fileId, file.getHeadRevisionId()).execute();
@@ -39,27 +39,27 @@ public class DownloadHeadRevisionOperation extends AbstractGDriveOperation {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			get.executeMediaAndDownloadTo(baos);
-			return new Contents(baos.toByteArray(), file.getEtag());
+			return new FileContents(file, baos.toByteArray());
 		} finally {
 			downloadProgressListener.done();
 		}
 	}
 
-	public static class Contents {
+	public static class FileContents {
+		private final File file;
 		private final byte[] fileContents;
-		private final String fileEtag;
 
-		public Contents(byte[] fileContents, String fileEtag) {
+		public FileContents(File file, byte[] fileContents) {
+			this.file = file;
 			this.fileContents = fileContents;
-			this.fileEtag = fileEtag;
 		}
 
 		public byte[] getFileContents() {
 			return fileContents;
 		}
 
-		public String getFileEtag() {
-			return fileEtag;
+		public File getFile() {
+			return file;
 		}
 
 	}

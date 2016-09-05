@@ -13,7 +13,7 @@ import org.junit.Test;
 import com.google.api.services.drive.model.File;
 
 import mesfavoris.gdrive.GDriveTestUser;
-import mesfavoris.gdrive.operations.DownloadHeadRevisionOperation.Contents;
+import mesfavoris.gdrive.operations.DownloadHeadRevisionOperation.FileContents;
 import mesfavoris.gdrive.test.GDriveConnectionRule;
 
 @Ignore
@@ -49,7 +49,7 @@ public class ShareFileOperationTest {
 	
 	private byte[] downloadHeadRevision(GDriveConnectionRule driveConnection, String fileId) throws IOException {
 		DownloadHeadRevisionOperation operation = new DownloadHeadRevisionOperation(driveConnection.getDrive());
-		Contents contents = operation.downloadFile(fileId, new NullProgressMonitor());
+		FileContents contents = operation.downloadFile(fileId, new NullProgressMonitor());
 		return contents.getFileContents();
 	}	
 	

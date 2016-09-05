@@ -1,6 +1,7 @@
 package mesfavoris.gdrive.handlers;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -36,8 +37,8 @@ public class ShareBookmarksFileHandler extends AbstractBookmarkHandler {
 		if (bookmarkFolder == null) {
 			return null;
 		}
-		String fileId = bookmarkMappingsStore.getFileId(bookmarkFolder.getId());
-		if (fileId == null) {
+		Optional<String> fileId = bookmarkMappingsStore.getMapping(bookmarkFolder.getId()).map(mapping->mapping.getFileId());
+		if (!fileId.isPresent()) {
 			return null;
 		}
 		Shell shell = HandlerUtil.getActiveShell(event);
@@ -51,7 +52,7 @@ public class ShareBookmarksFileHandler extends AbstractBookmarkHandler {
 		}
 		ShareFileOperation shareFileOperation = new ShareFileOperation(drive);
 		try {
-			shareFileOperation.shareWithUser(fileId, dialog.getEmail(), dialog.canWrite());
+			shareFileOperation.shareWithUser(fileId.get(), dialog.getEmail(), dialog.canWrite());
 		} catch (IOException e) {
 			throw new ExecutionException("Could not share bookmarks file with user", e);
 		}
@@ -64,8 +65,8 @@ public class ShareBookmarksFileHandler extends AbstractBookmarkHandler {
 		if (bookmarkFolder == null) {
 			return false;
 		}
-		String fileId = bookmarkMappingsStore.getFileId(bookmarkFolder.getId());
-		if (fileId == null) {
+		Optional<String> fileId = bookmarkMappingsStore.getMapping(bookmarkFolder.getId()).map(mapping->mapping.getFileId());
+		if (!fileId.isPresent()) {
 			return false;
 		}
 		Drive drive = gDriveConnectionManager.getDrive();

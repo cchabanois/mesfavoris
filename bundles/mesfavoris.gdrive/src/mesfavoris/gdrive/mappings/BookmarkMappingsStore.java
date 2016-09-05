@@ -1,12 +1,12 @@
 package mesfavoris.gdrive.mappings;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -17,12 +17,8 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import com.google.api.services.drive.model.File;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 
 import mesfavoris.gdrive.Activator;
 import mesfavoris.gdrive.StatusHelper;
@@ -39,44 +35,47 @@ import mesfavoris.model.modification.BookmarksModification;
  *
  */
 public class BookmarkMappingsStore implements IBookmarksListener, IBookmarkMappings {
-	private final File storeFile;
-	private final BiMap<BookmarkId, String> mappings = Maps.synchronizedBiMap(HashBiMap.create());
+	private final IBookmarkMappingsPersister bookmarkMappingsPersister;
+	private final Set<BookmarkMapping> mappings = ConcurrentHashMap.newKeySet();
 	private final SaveJob saveJob = new SaveJob();
 	private final ListenerList listenerList = new ListenerList();
 
-	public BookmarkMappingsStore(File storeFile) {
-		this.storeFile = storeFile;
+	public BookmarkMappingsStore(IBookmarkMappingsPersister bookmarkMappingsPersister) {
+		this.bookmarkMappingsPersister = bookmarkMappingsPersister;
 	}
 
-	public void add(BookmarkId bookmarkFolderId, String fileId) {
-		if (!fileId.equals(mappings.put(bookmarkFolderId, fileId))) {
+	public void add(BookmarkId bookmarkFolderId, File file) {
+		if (mappings.add(new BookmarkMapping(bookmarkFolderId, file.getId(), getProperties(file)))) {
 			fireMappingAdded(bookmarkFolderId);
 			saveJob.schedule();
 		}
 	}
 
-	@Override
-	public String getFileId(BookmarkId bookmarkFolderId) {
-		return mappings.get(bookmarkFolderId);
+	private Map<String, String> getProperties(File file) {
+		Map<String,String> properties = new HashMap<>();
+		if (Boolean.FALSE.equals(file.getEditable())) {
+			properties.put("readonly", Boolean.TRUE.toString());
+		}
+		if (file.getSharingUser() != null) {
+			properties.put("sharingUser", file.getSharingUser().getDisplayName());
+		}
+		return properties;
 	}
 
-	@Override
-	public BookmarkId getBookmarkFolderId(String fileId) {
-		return mappings.inverse().get(fileId);
+	public Optional<BookmarkMapping> getMapping(BookmarkId bookmarkFolderId) {
+		return mappings.stream().filter(mapping -> mapping.getBookmarkFolderId().equals(bookmarkFolderId)).findAny();
 	}
 
-	@Override
-	public Set<BookmarkId> getBookmarkFolderIds() {
-		return ImmutableSet.copyOf(mappings.keySet());
+	public Optional<BookmarkMapping> getMapping(String fileId) {
+		return mappings.stream().filter(mapping -> mapping.getFileId().equals(fileId)).findAny();
 	}
-
-	@Override
-	public Set<String> getFileIds() {
-		return ImmutableSet.copyOf(mappings.inverse().keySet());
+	
+	public Set<BookmarkMapping> getMappings() {
+		return ImmutableSet.copyOf(mappings);
 	}
 
 	public void remove(BookmarkId bookmarkFolderId) {
-		if (mappings.remove(bookmarkFolderId) != null) {
+		if (mappings.removeIf(mapping -> mapping.getBookmarkFolderId().equals(bookmarkFolderId))) {
 			fireMappingRemoved(bookmarkFolderId);
 			saveJob.schedule();
 		}
@@ -84,7 +83,8 @@ public class BookmarkMappingsStore implements IBookmarksListener, IBookmarkMappi
 
 	public void init() {
 		try {
-			load();
+			mappings.clear();
+			mappings.addAll(bookmarkMappingsPersister.load());
 		} catch (IOException e) {
 			StatusHelper.logError("Could not load bookmark mappings", e);
 		}
@@ -92,43 +92,6 @@ public class BookmarkMappingsStore implements IBookmarksListener, IBookmarkMappi
 
 	public void close() throws InterruptedException {
 		saveJob.join();
-	}
-
-	private void load() throws IOException {
-		if (!storeFile.exists()) {
-			return;
-		}
-		mappings.clear();
-		JsonReader jsonReader = new JsonReader(new FileReader(storeFile));
-		try {
-			jsonReader.beginObject();
-			while (jsonReader.hasNext()) {
-				String name = jsonReader.nextName();
-				String value = jsonReader.nextString();
-				mappings.put(new BookmarkId(name), value);
-			}
-			jsonReader.endObject();
-		} finally {
-			jsonReader.close();
-		}
-	}
-
-	private void save(IProgressMonitor monitor) throws IOException {
-		monitor.beginTask("Saving bookmark mappings", mappings.size());
-		JsonWriter jsonWriter = new JsonWriter(new FileWriter(storeFile));
-		jsonWriter.setIndent("  ");
-		try {
-			jsonWriter.beginObject();
-			for (Map.Entry<BookmarkId, String> mapping : mappings.entrySet()) {
-				jsonWriter.name(mapping.getKey().toString());
-				jsonWriter.value(mapping.getValue());
-				monitor.worked(1);
-			}
-			jsonWriter.endObject();
-
-		} finally {
-			jsonWriter.close();
-		}
 	}
 
 	@Override
@@ -140,7 +103,7 @@ public class BookmarkMappingsStore implements IBookmarksListener, IBookmarkMappi
 
 	private List<BookmarkId> getDeletedMappedBookmarkFolders(List<BookmarksModification> events) {
 		return events.stream().filter(p -> p instanceof BookmarkDeletedModification)
-				.map(p -> (BookmarkDeletedModification) p).filter(p -> mappings.containsKey(p.getBookmarkId()))
+				.map(p -> (BookmarkDeletedModification) p).filter(p -> getMapping(p.getBookmarkId()).isPresent())
 				.map(p -> p.getBookmarkId()).collect(Collectors.toList());
 
 	}
@@ -198,7 +161,7 @@ public class BookmarkMappingsStore implements IBookmarksListener, IBookmarkMappi
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
 			try {
-				save(monitor);
+				bookmarkMappingsPersister.save(mappings, monitor);
 				return Status.OK_STATUS;
 			} catch (IOException e) {
 				return new Status(IStatus.ERROR, Activator.PLUGIN_ID, 0, "Could save GDrive bookmarks store", e);

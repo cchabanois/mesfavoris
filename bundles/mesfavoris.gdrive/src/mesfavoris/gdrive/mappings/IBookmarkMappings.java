@@ -1,16 +1,15 @@
 package mesfavoris.gdrive.mappings;
 
+import java.util.Optional;
 import java.util.Set;
 
 import mesfavoris.model.BookmarkId;
 
 public interface IBookmarkMappings {
 
-	String getFileId(BookmarkId bookmarkFolderId);
+	public Optional<BookmarkMapping> getMapping(BookmarkId bookmarkFolderId);
 
-	BookmarkId getBookmarkFolderId(String fileId);
+	public Optional<BookmarkMapping> getMapping(String fileId);
 
-	Set<BookmarkId> getBookmarkFolderIds();
-
-	Set<String> getFileIds();
+	public Set<BookmarkMapping> getMappings();
 }

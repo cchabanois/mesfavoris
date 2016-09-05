@@ -19,6 +19,7 @@ import com.google.common.collect.Sets;
 
 import mesfavoris.gdrive.GDriveRemoteBookmarksStore;
 import mesfavoris.gdrive.changes.BookmarksFileChangeManager;
+import mesfavoris.gdrive.mappings.BookmarkMappingsPersister;
 import mesfavoris.gdrive.mappings.BookmarkMappingsStore;
 import mesfavoris.gdrive.test.GDriveConnectionRule;
 import mesfavoris.model.BookmarkFolder;
@@ -49,7 +50,7 @@ public class GDriveRemoteBookmarksStoreTest {
 
 	@Before
 	public void setUp() throws Exception {
-		bookmarkMappingsStore = new BookmarkMappingsStore(temporaryFolder.newFile());
+		bookmarkMappingsStore = new BookmarkMappingsStore(new BookmarkMappingsPersister(temporaryFolder.newFile()));
 		bookmarksFileChangeManager = new BookmarksFileChangeManager(gDriveConnectionRule.getGDriveConnectionManager(),
 				bookmarkMappingsStore, Duration.ofSeconds(5));
 		gDriveRemoteBookmarksStore = new GDriveRemoteBookmarksStore(eventBroker,

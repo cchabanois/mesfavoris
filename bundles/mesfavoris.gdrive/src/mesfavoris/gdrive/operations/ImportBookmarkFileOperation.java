@@ -10,7 +10,7 @@ import com.google.api.services.drive.Drive;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.gdrive.mappings.BookmarkMappingsStore;
-import mesfavoris.gdrive.operations.DownloadHeadRevisionOperation.Contents;
+import mesfavoris.gdrive.operations.DownloadHeadRevisionOperation.FileContents;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.persistence.IBookmarksTreeDeserializer;
@@ -33,13 +33,13 @@ public class ImportBookmarkFileOperation extends AbstractGDriveOperation {
 		try {
 			monitor.beginTask("Importing bookmark folder", 100);
 			DownloadHeadRevisionOperation downloadFileOperation = new DownloadHeadRevisionOperation(drive);
-			Contents contents = downloadFileOperation.downloadFile(fileId, new SubProgressMonitor(monitor, 80));
+			FileContents contents = downloadFileOperation.downloadFile(fileId, new SubProgressMonitor(monitor, 80));
 			IBookmarksTreeDeserializer deserializer = new BookmarksTreeJsonDeserializer();
 			BookmarksTree bookmarksTree = deserializer.deserialize(
 					new StringReader(new String(contents.getFileContents(), "UTF-8")),
 					new SubProgressMonitor(monitor, 20));
 			bookmarksService.addBookmarksTree(parentId, bookmarksTree,
-					newBookmarksTree -> bookmarkMappingsStore.add(bookmarksTree.getRootFolder().getId(), fileId));
+					newBookmarksTree -> bookmarkMappingsStore.add(bookmarksTree.getRootFolder().getId(), contents.getFile()));
 		} finally {
 			monitor.done();
 		}

@@ -1,6 +1,7 @@
 package mesfavoris.gdrive.changes;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -12,13 +13,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mock;
 
 import com.google.api.client.util.Charsets;
 import com.google.api.services.drive.model.Change;
 import com.google.api.services.drive.model.File;
 
 import mesfavoris.gdrive.GDriveTestUser;
-import mesfavoris.gdrive.mappings.BookmarkMappings;
+import mesfavoris.gdrive.mappings.BookmarkMappingsStore;
+import mesfavoris.gdrive.mappings.IBookmarkMappings;
+import mesfavoris.gdrive.mappings.IBookmarkMappingsPersister;
 import mesfavoris.gdrive.operations.CreateFileOperation;
 import mesfavoris.gdrive.operations.UpdateFileOperation;
 import mesfavoris.gdrive.test.GDriveConnectionRule;
@@ -31,11 +35,12 @@ public class BookmarksFileChangeManagerTest {
 	public GDriveConnectionRule gdriveConnectionRule = new GDriveConnectionRule(GDriveTestUser.USER1, true);
 
 	private BookmarksFileChangeManager bookmarksFileChangeManager;
-	private BookmarkMappings bookmarkMappings = new BookmarkMappings();
+	private BookmarkMappingsStore bookmarkMappings;
 	private BookmarksFileChangeListener listener = new BookmarksFileChangeListener();
 
 	@Before
 	public void setUp() throws Exception {
+		bookmarkMappings = new BookmarkMappingsStore(mock(IBookmarkMappingsPersister.class));
 		bookmarkMappings.add(new BookmarkId("bookmarkFolder1"), createFile("bookmarks1", "bookmarks for folder1"));
 		bookmarkMappings.add(new BookmarkId("bookmarkFolder2"), createFile("bookmarks1", "bookmarks for folder2"));
 		bookmarksFileChangeManager = new BookmarksFileChangeManager(gdriveConnectionRule.getGDriveConnectionManager(),
@@ -53,7 +58,8 @@ public class BookmarksFileChangeManagerTest {
 	@Test
 	public void testListenerCalledWhenChangeInBookmarksFile() throws Exception {
 		// When
-		updateFile(bookmarkMappings.getFileId(new BookmarkId("bookmarkFolder1")), "new bookmarks for folder1");
+		updateFile(bookmarkMappings.getMapping(new BookmarkId("bookmarkFolder1")).get().getFileId(),
+				"new bookmarks for folder1");
 
 		// Then
 		Waiter.waitUntil("Listener not called", () -> listener.getEvents().size() == 1);
@@ -68,7 +74,8 @@ public class BookmarksFileChangeManagerTest {
 		bookmarksFileChangeManager.close();
 
 		// When
-		updateFile(bookmarkMappings.getFileId(new BookmarkId("bookmarkFolder1")), "new bookmarks for folder1");
+		updateFile(bookmarkMappings.getMapping(new BookmarkId("bookmarkFolder1")).get().getFileId(),
+				"new bookmarks for folder1");
 
 		// Then
 		Thread.sleep(300);
@@ -78,22 +85,22 @@ public class BookmarksFileChangeManagerTest {
 	@Test
 	public void testListenerNotCalledIfChangeInAFileThatIsNotABookmarkFile() throws Exception {
 		// Given
-		String fileId = createFile("notABookmarkFile", "not bookmarks");
+		File file = createFile("notABookmarkFile", "not bookmarks");
 
 		// When
-		updateFile(fileId, "really not bookmarks");
+		updateFile(file.getId(), "really not bookmarks");
 		Thread.sleep(300);
 
 		// Then
 		assertEquals(0, listener.getEvents().size());
 	}
 
-	private String createFile(String name, String contents) throws IOException {
+	private File createFile(String name, String contents) throws IOException {
 		CreateFileOperation createFileOperation = new CreateFileOperation(gdriveConnectionRule.getDrive());
 		byte[] bytes = contents.getBytes("UTF-8");
 		File file = createFileOperation.createFile(gdriveConnectionRule.getApplicationFolderId(), name, bytes,
 				new NullProgressMonitor());
-		return file.getId();
+		return file;
 	}
 
 	private void updateFile(String fileId, String newContents) throws IOException {

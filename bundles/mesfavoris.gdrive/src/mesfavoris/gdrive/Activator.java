@@ -8,6 +8,7 @@ import org.osgi.framework.BundleContext;
 import mesfavoris.BookmarksPlugin;
 import mesfavoris.gdrive.changes.BookmarksFileChangeManager;
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
+import mesfavoris.gdrive.mappings.BookmarkMappingsPersister;
 import mesfavoris.gdrive.mappings.BookmarkMappingsStore;
 
 /**
@@ -37,7 +38,7 @@ public class Activator extends AbstractUIPlugin {
 		gDriveConnectionManager = new GDriveConnectionManager(dataStoreDir, "mes favoris", "eclipse-bookmarks");
 		gDriveConnectionManager.init();
 		File storeFile = new File(getStateLocation().toFile(), "bookmarksStore.json");
-		bookmarkMappingsStore = new BookmarkMappingsStore(storeFile);
+		bookmarkMappingsStore = new BookmarkMappingsStore(new BookmarkMappingsPersister(storeFile));
 		bookmarkMappingsStore.init();
 		BookmarksPlugin.getBookmarkDatabase().addListener(bookmarkMappingsStore);
 		bookmarksFileChangeManager = new BookmarksFileChangeManager(gDriveConnectionManager, bookmarkMappingsStore);

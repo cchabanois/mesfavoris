@@ -18,7 +18,7 @@ import org.junit.Test;
 import com.google.api.services.drive.model.File;
 
 import mesfavoris.gdrive.GDriveTestUser;
-import mesfavoris.gdrive.operations.DownloadHeadRevisionOperation.Contents;
+import mesfavoris.gdrive.operations.DownloadHeadRevisionOperation.FileContents;
 import mesfavoris.gdrive.test.GDriveConnectionRule;
 
 public class DownloadHeadRevisionOperationTest {
@@ -35,11 +35,11 @@ public class DownloadHeadRevisionOperationTest {
 				gdriveConnectionRule.getDrive());
 
 		// When
-		Contents contents = downloadFileOperation.downloadFile(file.getId(), monitor);
+		FileContents contents = downloadFileOperation.downloadFile(file.getId(), monitor);
 
 		// Then
 		assertEquals("the contents", new String(contents.getFileContents(), "UTF-8"));
-		assertEquals(file.getEtag(), contents.getFileEtag());
+		assertEquals(file.getEtag(), contents.getFile().getEtag());
 		verify(monitor).beginTask(anyString(), anyInt());
 		verify(monitor, atLeast(1)).done();
 	}
