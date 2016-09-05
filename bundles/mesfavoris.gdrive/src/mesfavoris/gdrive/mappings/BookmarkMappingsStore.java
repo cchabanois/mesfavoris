@@ -2,6 +2,7 @@ package mesfavoris.gdrive.mappings;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,7 +53,7 @@ public class BookmarkMappingsStore implements IBookmarksListener, IBookmarkMappi
 	}
 
 	private Map<String, String> getProperties(File file) {
-		Map<String,String> properties = new HashMap<>();
+		Map<String, String> properties = new HashMap<>();
 		if (Boolean.FALSE.equals(file.getEditable())) {
 			properties.put("readonly", Boolean.TRUE.toString());
 		}
@@ -69,7 +70,7 @@ public class BookmarkMappingsStore implements IBookmarksListener, IBookmarkMappi
 	public Optional<BookmarkMapping> getMapping(String fileId) {
 		return mappings.stream().filter(mapping -> mapping.getFileId().equals(fileId)).findAny();
 	}
-	
+
 	public Set<BookmarkMapping> getMappings() {
 		return ImmutableSet.copyOf(mappings);
 	}
@@ -96,16 +97,21 @@ public class BookmarkMappingsStore implements IBookmarksListener, IBookmarkMappi
 
 	@Override
 	public void bookmarksModified(List<BookmarksModification> modifications) {
-		for (BookmarkId bookmarkFolderId : getDeletedMappedBookmarkFolders(modifications)) {
-			remove(bookmarkFolderId);
-		}
+		Set<BookmarkMapping> mappingsToRemove = modifications.stream()
+				.filter(modification -> modification instanceof BookmarkDeletedModification)
+				.map(modification -> (BookmarkDeletedModification) modification)
+				.map(modification -> getDeletedMappings(modification))
+				.reduce(new HashSet<BookmarkMapping>(), (mappingsSet, modificationMappingsSet) -> {
+					mappingsSet.addAll(modificationMappingsSet);
+					return mappingsSet;
+				});
+		mappingsToRemove.forEach(mapping->remove(mapping.getBookmarkFolderId()));
 	}
 
-	private List<BookmarkId> getDeletedMappedBookmarkFolders(List<BookmarksModification> events) {
-		return events.stream().filter(p -> p instanceof BookmarkDeletedModification)
-				.map(p -> (BookmarkDeletedModification) p).filter(p -> getMapping(p.getBookmarkId()).isPresent())
-				.map(p -> p.getBookmarkId()).collect(Collectors.toList());
-
+	private Set<BookmarkMapping> getDeletedMappings(BookmarkDeletedModification modification) {
+		return mappings.stream()
+				.filter(mapping -> modification.getTargetTree().getBookmark(mapping.getBookmarkFolderId()) == null)
+				.collect(Collectors.toSet());
 	}
 
 	public void addListener(IBookmarkMappingsListener listener) {
