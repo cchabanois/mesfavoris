@@ -23,17 +23,21 @@ public class RemoteBookmarkFolderDecorationProvider implements IBookmarkDecorati
 		if (!(bookmark instanceof BookmarkFolder)) {
 			return overlayImages;
 		}
-		IRemoteBookmarksStoreDescriptor storeDescriptor = getRemoteBookmarkStoreDescriptor(bookmark.getId());
+		IRemoteBookmarksStore store = getRemoteBookmarkStore(bookmark.getId());
+		if (store == null) {
+			return overlayImages;
+		}
+		IRemoteBookmarksStoreDescriptor storeDescriptor = store.getDescriptor();
 		if (storeDescriptor != null) {
 			overlayImages[IDecoration.TOP_RIGHT] = storeDescriptor.getImageOverlayDescriptor();
 		}
 		return overlayImages;
 	}
 
-	private IRemoteBookmarksStoreDescriptor getRemoteBookmarkStoreDescriptor(BookmarkId bookmarkFolderId) {
+	private IRemoteBookmarksStore getRemoteBookmarkStore(BookmarkId bookmarkFolderId) {
 		for (IRemoteBookmarksStore store : remoteBookmarksStoreManager.getRemoteBookmarksStores()) {
-			if (store.getRemoteBookmarkFolderIds().contains(bookmarkFolderId)) {
-				return store.getDescriptor();
+			if (store.getRemoteBookmarkFolder(bookmarkFolderId).isPresent()) {
+				return store;
 			}
 		}
 		return null;

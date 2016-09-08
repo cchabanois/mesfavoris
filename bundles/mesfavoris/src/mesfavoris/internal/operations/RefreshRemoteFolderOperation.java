@@ -71,13 +71,13 @@ public class RefreshRemoteFolderOperation {
 		if (store == null) {
 			throw new BookmarksException("Remore bookmarks store not found");
 		}
-		Set<BookmarkId> remoteBookmarkFolderIds = store.getRemoteBookmarkFolderIds();
+		Set<RemoteBookmarkFolder> remoteBookmarkFolders = store.getRemoteBookmarkFolders();
 		SubMonitor subMonitor = SubMonitor.convert(monitor,
-				"Loading bookmark folders from " + store.getDescriptor().getLabel(), remoteBookmarkFolderIds.size());
+				"Loading bookmark folders from " + store.getDescriptor().getLabel(), remoteBookmarkFolders.size());
 		Exception exception = null;
-		for (BookmarkId bookmarkFolderId : remoteBookmarkFolderIds) {
+		for (RemoteBookmarkFolder bookmarkFolder : remoteBookmarkFolders) {
 			try {
-				refresh(bookmarkFolderId, subMonitor.newChild(1));
+				refresh(bookmarkFolder.getBookmarkFolderId(), subMonitor.newChild(1));
 			} catch (OperationCanceledException e) {
 				throw e;
 			} catch (Exception e) {

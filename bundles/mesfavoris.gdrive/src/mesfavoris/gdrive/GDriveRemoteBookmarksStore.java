@@ -3,6 +3,7 @@ package mesfavoris.gdrive;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,7 @@ import mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
 import mesfavoris.persistence.json.BookmarksTreeJsonSerializer;
 import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.ConflictException;
+import mesfavoris.remote.RemoteBookmarkFolder;
 import mesfavoris.remote.RemoteBookmarksTree;
 
 public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
@@ -162,11 +164,19 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 	}
 
 	@Override
-	public Set<BookmarkId> getRemoteBookmarkFolderIds() {
-		return bookmarkMappingsStore.getMappings().stream().map(mapping -> mapping.getBookmarkFolderId())
+	public Set<RemoteBookmarkFolder> getRemoteBookmarkFolders() {
+		return bookmarkMappingsStore.getMappings().stream()
+				.map(mapping -> new RemoteBookmarkFolder(getDescriptor().getId(), mapping.getBookmarkFolderId(),
+						mapping.getProperties()))
 				.collect(Collectors.toSet());
 	}
 
+	@Override
+	public Optional<RemoteBookmarkFolder> getRemoteBookmarkFolder(BookmarkId bookmarkFolderId) {
+		return bookmarkMappingsStore.getMapping(bookmarkFolderId).map(mapping->new RemoteBookmarkFolder(getDescriptor().getId(), mapping.getBookmarkFolderId(),
+						mapping.getProperties()));
+	}
+	
 	@Override
 	public RemoteBookmarksTree load(BookmarkId bookmarkFolderId, IProgressMonitor monitor) throws IOException {
 		Drive drive = gDriveConnectionManager.getDrive();
@@ -180,6 +190,7 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 			monitor.beginTask("Loading bookmark folder", 100);
 			DownloadHeadRevisionOperation downloadFileOperation = new DownloadHeadRevisionOperation(drive);
 			FileContents contents = downloadFileOperation.downloadFile(fileId, new SubProgressMonitor(monitor, 80));
+			bookmarkMappingsStore.update(contents.getFile());
 			IBookmarksTreeDeserializer deserializer = new BookmarksTreeJsonDeserializer();
 			BookmarksTree bookmarkFolder = deserializer.deserialize(
 					new StringReader(new String(contents.getFileContents(), "UTF-8")),
@@ -206,6 +217,7 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 			byte[] content = serializeBookmarkFolder(bookmarksTree, bookmarkFolderId,
 					new SubProgressMonitor(monitor, 20));
 			File file = updateFileOperation.updateFile(fileId, content, etag, new SubProgressMonitor(monitor, 80));
+			bookmarkMappingsStore.update(file);
 			return new RemoteBookmarksTree(this, bookmarksTree.subTree(bookmarkFolderId), file.getEtag());
 		} catch (GoogleJsonResponseException e) {
 			if (e.getStatusCode() == 412) {

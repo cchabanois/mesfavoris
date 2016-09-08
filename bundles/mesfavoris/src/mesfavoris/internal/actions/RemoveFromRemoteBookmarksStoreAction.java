@@ -67,7 +67,7 @@ public class RemoveFromRemoteBookmarksStoreAction extends SelectionProviderActio
 			setEnabled(false);
 			return;
 		}
-		if (!remoteBookmarksStore.getRemoteBookmarkFolderIds().contains(bookmarkFolder.getId())) {
+		if (!remoteBookmarksStore.getRemoteBookmarkFolder(bookmarkFolder.getId()).isPresent()) {
 			setEnabled(false);
 			return;
 		}

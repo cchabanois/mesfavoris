@@ -1,6 +1,7 @@
 package mesfavoris.remote;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -38,8 +39,10 @@ public interface IRemoteBookmarksStore {
 	public void remove(BookmarkId bookmarkFolderId, IProgressMonitor monitor)
 			throws IOException;
 
-	public Set<BookmarkId> getRemoteBookmarkFolderIds();
+	public Set<RemoteBookmarkFolder> getRemoteBookmarkFolders();
 
+	public Optional<RemoteBookmarkFolder> getRemoteBookmarkFolder(BookmarkId bookmarkFolderId);
+	
 	public RemoteBookmarksTree load(BookmarkId bookmarkFolderId,
 			IProgressMonitor monitor) throws IOException;
 

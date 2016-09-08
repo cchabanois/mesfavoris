@@ -1,14 +1,22 @@
 package mesfavoris.remote;
 
+import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
+
 import mesfavoris.model.BookmarkId;
 
 public class RemoteBookmarkFolder {
+	public static final String PROP_READONLY = "readonly";
+	
 	private final String remoteBookmarkStoreId;
 	private final BookmarkId bookmarkFolderId;
+	private final Map<String, String> properties;
 	
-	public RemoteBookmarkFolder(String remoteBookmarkStoreId, BookmarkId bookmarkFolderId) {
+	public RemoteBookmarkFolder(String remoteBookmarkStoreId, BookmarkId bookmarkFolderId, Map<String,String> properties) {
 		this.remoteBookmarkStoreId = remoteBookmarkStoreId;
 		this.bookmarkFolderId = bookmarkFolderId;
+		this.properties = ImmutableMap.copyOf(properties);
 	}
 	
 	public String getRemoteBookmarkStoreId() {
@@ -19,6 +27,10 @@ public class RemoteBookmarkFolder {
 		return bookmarkFolderId;
 	}
 
+	public Map<String, String> getProperties() {
+		return properties;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

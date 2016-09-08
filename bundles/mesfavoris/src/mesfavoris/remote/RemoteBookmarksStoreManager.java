@@ -2,6 +2,7 @@ package mesfavoris.remote;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Provider;
 
@@ -56,8 +57,9 @@ public class RemoteBookmarksStoreManager {
 
 	public RemoteBookmarkFolder getRemoteBookmarkFolder(BookmarkId bookmarkFolderId) {
 		for (IRemoteBookmarksStore store : getRemoteBookmarksStores()) {
-			if (store.getRemoteBookmarkFolderIds().contains(bookmarkFolderId)) {
-				return new RemoteBookmarkFolder(store.getDescriptor().getId(), bookmarkFolderId);
+			Optional<RemoteBookmarkFolder> remoteBookmarkFolder = store.getRemoteBookmarkFolder(bookmarkFolderId);
+			if (remoteBookmarkFolder.isPresent()) {
+				return remoteBookmarkFolder.get();
 			}
 		}
 		return null;
