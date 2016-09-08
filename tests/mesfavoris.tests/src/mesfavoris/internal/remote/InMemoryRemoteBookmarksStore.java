@@ -1,8 +1,9 @@
 package mesfavoris.internal.remote;
 
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,6 +24,7 @@ import mesfavoris.model.modification.BookmarksModification;
 import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.ConflictException;
 import mesfavoris.remote.IRemoteBookmarksStoreDescriptor;
+import mesfavoris.remote.RemoteBookmarkFolder;
 import mesfavoris.remote.RemoteBookmarksTree;
 
 public class InMemoryRemoteBookmarksStore extends AbstractRemoteBookmarksStore implements IBookmarksListener {
@@ -70,10 +72,19 @@ public class InMemoryRemoteBookmarksStore extends AbstractRemoteBookmarksStore i
 	}
 
 	@Override
-	public Set<BookmarkId> getRemoteBookmarkFolderIds() {
-		return new HashSet<BookmarkId>(inMemoryRemoteBookmarksTrees.keySet());
+	public Set<RemoteBookmarkFolder> getRemoteBookmarkFolders() {
+		return inMemoryRemoteBookmarksTrees.keySet().stream()
+				.map(bookmarkFolderId -> new RemoteBookmarkFolder(getDescriptor().getId(), bookmarkFolderId,
+						Collections.emptyMap()))
+				.collect(Collectors.toSet());
 	}
 
+	@Override
+	public Optional<RemoteBookmarkFolder> getRemoteBookmarkFolder(BookmarkId bookmarkFolderId) {
+		return Optional.of(new RemoteBookmarkFolder(getDescriptor().getId(), bookmarkFolderId,
+				Collections.emptyMap()));
+	}	
+	
 	@Override
 	public RemoteBookmarksTree load(BookmarkId bookmarkFolderId, IProgressMonitor monitor) throws IOException {
 		InMemoryRemoteBookmarksTree inMemoryRemoteBookmarksTree = inMemoryRemoteBookmarksTrees.get(bookmarkFolderId);
@@ -153,5 +164,6 @@ public class InMemoryRemoteBookmarksStore extends AbstractRemoteBookmarksStore i
 		}
 
 	}
+
 
 }

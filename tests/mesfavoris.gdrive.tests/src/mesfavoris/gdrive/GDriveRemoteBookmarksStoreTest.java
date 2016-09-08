@@ -1,6 +1,7 @@
 package mesfavoris.gdrive;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
@@ -103,8 +104,7 @@ public class GDriveRemoteBookmarksStoreTest {
 		RemoteBookmarksTree remoteBookmarksTree = gDriveRemoteBookmarksStore.load(bookmarksTree.getRootFolder().getId(),
 				new NullProgressMonitor());
 		assertEquals(bookmarksTree.toString(), remoteBookmarksTree.getBookmarksTree().toString());
-		assertEquals(Sets.newHashSet(bookmarksTree.getRootFolder().getId()),
-				gDriveRemoteBookmarksStore.getRemoteBookmarkFolderIds());
+		assertTrue(gDriveRemoteBookmarksStore.getRemoteBookmarkFolder(bookmarksTree.getRootFolder().getId()).isPresent());
 	}
 
 	@Test
@@ -118,7 +118,7 @@ public class GDriveRemoteBookmarksStoreTest {
 		gDriveRemoteBookmarksStore.remove(bookmarksTree.getRootFolder().getId(), new NullProgressMonitor());
 
 		// Then
-		assertEquals(Sets.newHashSet(), gDriveRemoteBookmarksStore.getRemoteBookmarkFolderIds());
+		assertEquals(Sets.newHashSet(), gDriveRemoteBookmarksStore.getRemoteBookmarkFolders());
 	}
 
 	@Test

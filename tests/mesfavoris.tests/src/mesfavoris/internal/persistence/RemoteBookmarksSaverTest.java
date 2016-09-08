@@ -25,6 +25,7 @@ import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.model.modification.BookmarksTreeModifier;
+import mesfavoris.remote.RemoteBookmarkFolder;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeGenerator;
 import mesfavoris.tests.commons.bookmarks.IncrementalIDGenerator;
@@ -91,9 +92,10 @@ public class RemoteBookmarksSaverTest {
 	}
 
 	private void verify(BookmarksTree bookmarksTree) throws IOException {
-		for (BookmarkId bookmarkFolderId : remoteBookmarksStore.getRemoteBookmarkFolderIds()) {
-			assertEquals(bookmarksTree.subTree(bookmarkFolderId).toString(), remoteBookmarksStore
-					.load(bookmarkFolderId, new NullProgressMonitor()).getBookmarksTree().toString());
+		for (RemoteBookmarkFolder remoteBookmarkFolder : remoteBookmarksStore.getRemoteBookmarkFolders()) {
+			assertEquals(bookmarksTree.subTree(remoteBookmarkFolder.getBookmarkFolderId()).toString(),
+					remoteBookmarksStore.load(remoteBookmarkFolder.getBookmarkFolderId(), new NullProgressMonitor())
+							.getBookmarksTree().toString());
 		}
 	}
 
