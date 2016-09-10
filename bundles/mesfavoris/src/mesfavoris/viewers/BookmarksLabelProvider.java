@@ -28,12 +28,10 @@ import mesfavoris.internal.views.StylerProvider;
 import mesfavoris.internal.views.virtual.BookmarkLink;
 import mesfavoris.internal.views.virtual.VirtualBookmarkFolder;
 import mesfavoris.model.Bookmark;
-import mesfavoris.model.BookmarkFolder;
 
 public class BookmarksLabelProvider extends StyledCellLabelProvider implements ILabelProvider {
 	private static final String ICON_VIRTUAL_BOOKMARK_FOLDER = "icons/ovr16/virt_ovr.png";
 	private static final String ICON_BOOKMARK_LINK = "icons/ovr16/link_ovr.png";
-	private static final String ELLIPSES = " ... ";
 	private final IBookmarkLabelProvider bookmarkLabelProvider;
 	private final ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
 	private final Color commentColor;
@@ -112,16 +110,10 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 	@Override
 	public Image getImage(final Object element) {
 		Bookmark bookmark = (Bookmark) AdapterUtils.getAdapter(element, Bookmark.class);
-		Image image = null;
-		if (bookmark instanceof BookmarkFolder) {
-			String imageKey = ISharedImages.IMG_OBJ_FOLDER;
+		Image image = bookmarkLabelProvider.getImage(bookmark);
+		if (image == null) {
+			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
 			image = PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
-		} else {
-			image = bookmarkLabelProvider.getImage(bookmark);
-			if (image == null) {
-				String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
-				image = PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
-			}
 		}
 		ImageDescriptor[] overlayImages = getOverlayImages(element);
 		DecorationOverlayIcon decorated = new DecorationOverlayIcon(image, overlayImages);

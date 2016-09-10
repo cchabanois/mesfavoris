@@ -340,6 +340,10 @@
             class="mesfavoris.internal.markers.FileMarkerBookmarkLocationProvider"
             priority="0">
       </locationProvider>
+      <labelProvider
+            class="mesfavoris.viewers.BookmarkFolderLabelProvider"
+            priority="0">
+      </labelProvider>
    </extension>
    <extension
          point="org.eclipse.core.expressions.propertyTesters">
