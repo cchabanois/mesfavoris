@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -16,7 +15,6 @@ import mesfavoris.gdrive.GDriveTestUser;
 import mesfavoris.gdrive.operations.DownloadHeadRevisionOperation.FileContents;
 import mesfavoris.gdrive.test.GDriveConnectionRule;
 
-@Ignore
 public class ShareFileOperationTest {
 
 	@Rule

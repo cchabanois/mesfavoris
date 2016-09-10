@@ -7,7 +7,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -16,7 +15,6 @@ import com.google.api.services.drive.model.File;
 import mesfavoris.gdrive.GDriveTestUser;
 import mesfavoris.gdrive.test.GDriveConnectionRule;
 
-@Ignore
 public class GetBookmarksFilesOperationTest {
 
 	@Rule
