@@ -81,10 +81,14 @@ public class InMemoryRemoteBookmarksStore extends AbstractRemoteBookmarksStore i
 
 	@Override
 	public Optional<RemoteBookmarkFolder> getRemoteBookmarkFolder(BookmarkId bookmarkFolderId) {
-		return Optional.of(new RemoteBookmarkFolder(getDescriptor().getId(), bookmarkFolderId,
-				Collections.emptyMap()));
-	}	
-	
+		if (inMemoryRemoteBookmarksTrees.get(bookmarkFolderId) != null) {
+			return Optional
+					.of(new RemoteBookmarkFolder(getDescriptor().getId(), bookmarkFolderId, Collections.emptyMap()));
+		} else {
+			return Optional.empty();
+		}
+	}
+
 	@Override
 	public RemoteBookmarksTree load(BookmarkId bookmarkFolderId, IProgressMonitor monitor) throws IOException {
 		InMemoryRemoteBookmarksTree inMemoryRemoteBookmarksTree = inMemoryRemoteBookmarksTrees.get(bookmarkFolderId);
@@ -164,6 +168,5 @@ public class InMemoryRemoteBookmarksStore extends AbstractRemoteBookmarksStore i
 		}
 
 	}
-
 
 }
