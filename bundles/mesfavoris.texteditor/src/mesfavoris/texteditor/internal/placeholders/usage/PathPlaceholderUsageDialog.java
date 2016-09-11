@@ -79,7 +79,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 		Composite parentComposite = (Composite) super.createDialogArea(parent);
 
 		Composite container = new Composite(parentComposite, SWT.NONE);
-		GridData gd= new GridData(GridData.FILL_BOTH);
+		GridData gd = new GridData(GridData.FILL_BOTH);
 		container.setLayoutData(gd);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
@@ -127,11 +127,12 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 		Predicate<Bookmark> selectedBookmarkPredicate = bookmark -> false;
 		Predicate<Bookmark> disabledBookmarkPredicate = new UnderDisconnectedRemoteBookmarkFolderPredicate(
 				bookmarkDatabase, remoteBookmarksStoreManager);
+		Predicate<Bookmark> dirtyBookmarkPredicate = bookmark -> false;
 		IBookmarkDecorationProvider bookmarkDecorationProvider = new UnderRemoteBookmarkFolderDecorationProvider(
 				bookmarkDatabase, remoteBookmarksStoreManager);
 		BookmarksLabelProvider bookmarksLabelProvider = new BookmarksLabelProvider(selectedBookmarkPredicate,
-				disabledBookmarkPredicate, bookmarkDecorationProvider, BookmarksPlugin.getBookmarkLabelProvider(),
-				bookmark -> bookmark.getPropertyValue(PROP_FILE_PATH));
+				disabledBookmarkPredicate, dirtyBookmarkPredicate, bookmarkDecorationProvider,
+				BookmarksPlugin.getBookmarkLabelProvider(), bookmark -> bookmark.getPropertyValue(PROP_FILE_PATH));
 		return bookmarksLabelProvider;
 	}
 
