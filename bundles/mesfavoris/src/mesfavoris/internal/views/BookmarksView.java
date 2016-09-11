@@ -187,6 +187,8 @@ public class BookmarksView extends ViewPart {
 		LatestVisitedBookmarksVirtualFolder latestVisitedBookmarksVirtualFolder = new LatestVisitedBookmarksVirtualFolder(
 				eventBroker, bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(),
 				bookmarkDatabase.getBookmarksTree().getRootFolder().getId(), 10);
+		IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker = BookmarksPlugin
+				.getBookmarksDatabaseDirtyStateTracker();
 
 		PatternFilter patternFilter = new BookmarkPatternFilter();
 		patternFilter.setIncludeLeadingWildcard(true);
@@ -195,7 +197,7 @@ public class BookmarksView extends ViewPart {
 
 			protected TreeViewer doCreateTreeViewer(Composite parent, int style) {
 				return new BookmarksTreeViewer(parent, bookmarkDatabase, defaultBookmarkFolderManager,
-						remoteBookmarksStoreManager, bookmarkPropertiesProvider,
+						bookmarksDatabaseDirtyStateTracker, remoteBookmarksStoreManager, bookmarkPropertiesProvider,
 						Lists.newArrayList(mostVisitedBookmarksVirtualFolder, latestVisitedBookmarksVirtualFolder));
 			};
 

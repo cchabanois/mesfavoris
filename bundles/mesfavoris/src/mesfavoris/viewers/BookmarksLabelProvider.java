@@ -40,15 +40,17 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 	private final Color disabledColor;
 	private final Predicate<Bookmark> selectedBookmarkPredicate;
 	private final Predicate<Bookmark> disabledBookmarkPredicate;
+	private final Predicate<Bookmark> dirtyBookmarkPredicate;
 	private final IBookmarkDecorationProvider bookmarkDecorationProvider;
 	private final IBookmarkCommentProvider bookmarkCommentProvider;
 
 	public BookmarksLabelProvider(Predicate<Bookmark> selectedBookmarkPredicate,
-			Predicate<Bookmark> disabledBookmarkPredicate, IBookmarkDecorationProvider bookmarkDecorationProvider,
+			Predicate<Bookmark> disabledBookmarkPredicate, Predicate<Bookmark> dirtyBookmarkPredicate, IBookmarkDecorationProvider bookmarkDecorationProvider,
 			IBookmarkLabelProvider bookmarkLabelProvider, IBookmarkCommentProvider bookmarkCommentProvider) {
 		this.selectedBookmarkPredicate = selectedBookmarkPredicate;
 		this.bookmarkLabelProvider = bookmarkLabelProvider;
 		this.disabledBookmarkPredicate = disabledBookmarkPredicate;
+		this.dirtyBookmarkPredicate = dirtyBookmarkPredicate;
 		this.bookmarkDecorationProvider = bookmarkDecorationProvider;
 		this.bookmarkCommentProvider = bookmarkCommentProvider;
 		this.boldFont = JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT);
@@ -72,7 +74,11 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 		boolean hasComment = comment != null && comment.trim().length() > 0;
 		boolean isDisabled = disabledBookmarkPredicate.test(bookmark);
 		boolean isSelectedBookmark = selectedBookmarkPredicate.test(bookmark);
-		StyledString styledString = bookmarkLabelProvider.getStyledText(bookmark);
+		StyledString styledString = new StyledString();
+		if (dirtyBookmarkPredicate.test(bookmark)) {
+			styledString.append("> ");
+		}
+		styledString.append(bookmarkLabelProvider.getStyledText(bookmark));
 		if (isDisabled || isSelectedBookmark) {
 			Color color = null;
 			Font font = null;

@@ -32,12 +32,15 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.IBookmarksListener;
+import mesfavoris.persistence.IBookmarksDatabaseDirtyStateListener;
+import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
 import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.validation.BookmarkModificationValidator;
 import mesfavoris.viewers.BookmarksLabelProvider;
 import mesfavoris.viewers.BookmarksLabelProvider.DefaultBookmarkCommentProvider;
 import mesfavoris.viewers.DefaultBookmarkFolderPredicate;
+import mesfavoris.viewers.DirtyBookmarkPredicate;
 import mesfavoris.viewers.IBookmarkDecorationProvider;
 import mesfavoris.viewers.RemoteBookmarkFolderDecorationProvider;
 import mesfavoris.viewers.UnderDisconnectedRemoteBookmarkFolderPredicate;
@@ -53,10 +56,14 @@ public class BookmarksTreeViewer extends TreeViewer {
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
 	private final IBookmarksListener bookmarksListener = (modifications) -> refreshInUIThread();
 	private final IDefaultBookmarkFolderListener defaultBookmarkFolderListener = () -> refreshInUIThread();
+	private final IBookmarksDatabaseDirtyStateListener dirtyListener = (dirtyBookmarks) -> refreshInUIThread();
 	private final EventHandler bookmarkStoresEventHandler = (event) -> refresh();
-
+	private final DirtyBookmarkPredicate dirtyBookmarkPredicate;
+	private final IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker;
+	
 	public BookmarksTreeViewer(Composite parent, BookmarkDatabase bookmarkDatabase,
 			DefaultBookmarkFolderManager defaultBookmarkFolderManager,
+			IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
 			IBookmarkPropertiesProvider bookmarkPropertiesProvider,
 			List<VirtualBookmarkFolder> virtualBookmarkFolders) {
@@ -66,12 +73,14 @@ public class BookmarksTreeViewer extends TreeViewer {
 		this.defaultBookmarkFolderManager = defaultBookmarkFolderManager;
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
+		this.bookmarksDatabaseDirtyStateTracker = bookmarksDatabaseDirtyStateTracker;
 		setContentProvider(new ExtendedBookmarksTreeContentProvider(bookmarkDatabase, virtualBookmarkFolders));
 		setUseHashlookup(true);
+		this.dirtyBookmarkPredicate = new DirtyBookmarkPredicate(bookmarksDatabaseDirtyStateTracker);
+		this.dirtyBookmarkPredicate.init();
 		BookmarksLabelProvider bookmarksLabelProvider = getBookmarksLabelProvider();
 		bookmarksLabelProvider.addListener(event -> refresh());
 		setLabelProvider(getBookmarksLabelProvider());
-		// viewer.setSorter(new BookmarksViewerSorter());
 		setInput(bookmarkDatabase.getBookmarksTree().getRootFolder());
 		installDragAndDropSupport();
 		hookDoubleClickAction();
@@ -79,8 +88,9 @@ public class BookmarksTreeViewer extends TreeViewer {
 		defaultBookmarkFolderManager.addListener(defaultBookmarkFolderListener);
 		eventBroker.subscribe(AbstractRemoteBookmarksStore.TOPIC_REMOTE_BOOKMARK_STORES_ALL,
 				bookmarkStoresEventHandler);
+		bookmarksDatabaseDirtyStateTracker.addListener(dirtyListener);
 	}
-
+	
 	private BookmarksLabelProvider getBookmarksLabelProvider() {
 		Predicate<Bookmark> selectedBookmarkPredicate = new DefaultBookmarkFolderPredicate(
 				defaultBookmarkFolderManager);
@@ -89,13 +99,15 @@ public class BookmarksTreeViewer extends TreeViewer {
 		IBookmarkDecorationProvider bookmarkDecorationProvider = new RemoteBookmarkFolderDecorationProvider(
 				remoteBookmarksStoreManager);
 		BookmarksLabelProvider bookmarksLabelProvider = new BookmarksLabelProvider(selectedBookmarkPredicate,
-				disabledBookmarkPredicate, bookmarkDecorationProvider, BookmarksPlugin.getBookmarkLabelProvider(),
-				new DefaultBookmarkCommentProvider());
+				disabledBookmarkPredicate, dirtyBookmarkPredicate, bookmarkDecorationProvider,
+				BookmarksPlugin.getBookmarkLabelProvider(), new DefaultBookmarkCommentProvider());
 		return bookmarksLabelProvider;
 	}
 
 	@Override
 	protected void handleDispose(DisposeEvent event) {
+		bookmarksDatabaseDirtyStateTracker.removeListener(dirtyListener);
+		dirtyBookmarkPredicate.dispose();
 		eventBroker.unsubscribe(bookmarkStoresEventHandler);
 		bookmarkDatabase.removeListener(bookmarksListener);
 		defaultBookmarkFolderManager.removeListener(defaultBookmarkFolderListener);

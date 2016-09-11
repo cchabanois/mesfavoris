@@ -1,5 +1,9 @@
 package mesfavoris.persistence;
 
+import java.util.Set;
+
+import mesfavoris.model.BookmarkId;
+
 public interface IBookmarksDatabaseDirtyStateTracker {
 
 	/**
@@ -10,4 +14,15 @@ public interface IBookmarksDatabaseDirtyStateTracker {
 	 */
 	boolean isDirty();
 
+	/**
+	 * Get the ids of dirty bookmarks
+	 * 
+	 * @return dirty bookmarks ids
+	 */
+	public Set<BookmarkId> getDirtyBookmarks();
+
+	public void addListener(IBookmarksDatabaseDirtyStateListener listener);
+	
+	public void removeListener(IBookmarksDatabaseDirtyStateListener listener);
+	
 }

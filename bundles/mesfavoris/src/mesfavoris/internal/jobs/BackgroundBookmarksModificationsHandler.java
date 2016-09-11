@@ -58,6 +58,10 @@ public class BackgroundBookmarksModificationsHandler {
 		return unhandledEventsCount.get();
 	}
 	
+	public List<BookmarksModification> getUnhandledEvents() {
+		return new ArrayList<BookmarksModification>(eventsQueue);
+	}
+	
 	public void init() {
 		bookmarkDatabase.addListener(bookmarksListener);
 	}
@@ -113,7 +117,7 @@ public class BackgroundBookmarksModificationsHandler {
 	}
 
 	public static interface IBookmarksModificationsHandler {
-
+		
 		public void handle(List<BookmarksModification> modifications, IProgressMonitor monitor)
 				throws BookmarksException;
 
