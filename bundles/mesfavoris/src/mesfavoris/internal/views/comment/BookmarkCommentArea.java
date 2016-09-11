@@ -51,7 +51,11 @@ public class BookmarkCommentArea extends SpellcheckableMessageArea {
 			getSourceViewer().setEditable(false);
 			return;
 		}
-		setText(bookmark.getPropertyValue(Bookmark.PROPERTY_COMMENT));
+		String comment = bookmark.getPropertyValue(Bookmark.PROPERTY_COMMENT);
+		if (comment == null) {
+			comment = "";
+		}
+		setText(comment);
 		getSourceViewer().setEditable(bookmarkModificationValidator
 				.validateModification(bookmarkDatabase.getBookmarksTree(), bookmark.getId()).isOK());
 	}
