@@ -39,13 +39,14 @@ import mesfavoris.internal.visited.VisitedBookmarksDatabase;
 import mesfavoris.internal.workspace.BookmarksWorkspaceFactory;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
+import mesfavoris.model.BookmarkId;
 import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
 import mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
 import mesfavoris.persistence.json.BookmarksTreeJsonSerializer;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.service.IBookmarksService;
 import mesfavoris.validation.BookmarkModificationValidator;
-import mesfavoris.workspace.DefaultBookmarkFolderManager;
+import mesfavoris.workspace.DefaultBookmarkFolderProvider;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -60,7 +61,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 	private static BookmarkDatabase bookmarkDatabase;
 	private static BookmarksMarkers bookmarksMarkers;
 	private static BookmarksAutoSaver bookmarksSaver;
-	private static DefaultBookmarkFolderManager defaultBookmarkFolderManager;
+	private static DefaultBookmarkFolderProvider defaultBookmarkFolderProvider;
 	private static IBookmarkLabelProvider bookmarkLabelProvider;
 	private static IBookmarkMarkerAttributesProvider bookmarkMarkerAttributesProvider;
 	private static IBookmarkPropertiesProvider bookmarkPropertiesProvider;
@@ -105,9 +106,10 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		bookmarksSaver = new BookmarksAutoSaver(bookmarkDatabase, localBookmarksSaver, remoteBookmarksSaver);
 		bookmarksSaver.init();
 		Preferences preferences = InstanceScope.INSTANCE.getNode(PLUGIN_ID);
-		defaultBookmarkFolderManager = new DefaultBookmarkFolderManager(bookmarkDatabase, preferences);
+		defaultBookmarkFolderProvider = new DefaultBookmarkFolderProvider(bookmarkDatabase, new BookmarkId("default"),
+				new BookmarkModificationValidator(remoteBookmarksStoreManager));
 		bookmarksService = new BookmarksService(bookmarkDatabase,
-				new BookmarkModificationValidator(remoteBookmarksStoreManager), bookmarkPropertiesProvider, defaultBookmarkFolderManager, remoteBookmarksStoreManager, bookmarksSaver);
+				new BookmarkModificationValidator(remoteBookmarksStoreManager), bookmarkPropertiesProvider, defaultBookmarkFolderProvider, remoteBookmarksStoreManager, bookmarksSaver);
 		File mostVisitedBookmarksFile = new File(getStateLocation().toFile(), "mostVisitedBookmarks.json");
 		IEventBroker eventBroker = (IEventBroker) getWorkbench().getService(IEventBroker.class);
 		mostVisitedBookmarks = new VisitedBookmarksDatabase(eventBroker, bookmarkDatabase, mostVisitedBookmarksFile);
@@ -169,8 +171,8 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		return bookmarkDatabase;
 	}
 
-	public static DefaultBookmarkFolderManager getDefaultBookmarkFolderManager() {
-		return defaultBookmarkFolderManager;
+	public static DefaultBookmarkFolderProvider getDefaultBookmarkFolderProvider() {
+		return defaultBookmarkFolderProvider;
 	}
 
 	public static BookmarksMarkers getBookmarksMarkers() {

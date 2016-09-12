@@ -39,30 +39,24 @@ import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.validation.BookmarkModificationValidator;
 import mesfavoris.viewers.BookmarksLabelProvider;
 import mesfavoris.viewers.BookmarksLabelProvider.DefaultBookmarkCommentProvider;
-import mesfavoris.viewers.DefaultBookmarkFolderPredicate;
 import mesfavoris.viewers.DirtyBookmarkPredicate;
 import mesfavoris.viewers.IBookmarkDecorationProvider;
 import mesfavoris.viewers.RemoteBookmarkFolderDecorationProvider;
 import mesfavoris.viewers.UnderDisconnectedRemoteBookmarkFolderPredicate;
-import mesfavoris.workspace.DefaultBookmarkFolderManager;
-import mesfavoris.workspace.IDefaultBookmarkFolderListener;
 
 public class BookmarksTreeViewer extends TreeViewer {
 	private static final String SET_AS_DEFAULT_COMMAND_ID = "mesfavoris.commands.setAsDefaultBookmarkFolder";
 	private final IEventBroker eventBroker;
 	private final BookmarkDatabase bookmarkDatabase;
-	private final DefaultBookmarkFolderManager defaultBookmarkFolderManager;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
 	private final IBookmarksListener bookmarksListener = (modifications) -> refreshInUIThread();
-	private final IDefaultBookmarkFolderListener defaultBookmarkFolderListener = () -> refreshInUIThread();
 	private final IBookmarksDatabaseDirtyStateListener dirtyListener = (dirtyBookmarks) -> refreshInUIThread();
 	private final EventHandler bookmarkStoresEventHandler = (event) -> refresh();
 	private final DirtyBookmarkPredicate dirtyBookmarkPredicate;
 	private final IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker;
 	
 	public BookmarksTreeViewer(Composite parent, BookmarkDatabase bookmarkDatabase,
-			DefaultBookmarkFolderManager defaultBookmarkFolderManager,
 			IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
 			IBookmarkPropertiesProvider bookmarkPropertiesProvider,
@@ -70,7 +64,6 @@ public class BookmarksTreeViewer extends TreeViewer {
 		super(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
 		this.bookmarkDatabase = bookmarkDatabase;
-		this.defaultBookmarkFolderManager = defaultBookmarkFolderManager;
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 		this.bookmarksDatabaseDirtyStateTracker = bookmarksDatabaseDirtyStateTracker;
@@ -85,15 +78,13 @@ public class BookmarksTreeViewer extends TreeViewer {
 		installDragAndDropSupport();
 		hookDoubleClickAction();
 		bookmarkDatabase.addListener(bookmarksListener);
-		defaultBookmarkFolderManager.addListener(defaultBookmarkFolderListener);
 		eventBroker.subscribe(AbstractRemoteBookmarksStore.TOPIC_REMOTE_BOOKMARK_STORES_ALL,
 				bookmarkStoresEventHandler);
 		bookmarksDatabaseDirtyStateTracker.addListener(dirtyListener);
 	}
 	
 	private BookmarksLabelProvider getBookmarksLabelProvider() {
-		Predicate<Bookmark> selectedBookmarkPredicate = new DefaultBookmarkFolderPredicate(
-				defaultBookmarkFolderManager);
+		Predicate<Bookmark> selectedBookmarkPredicate = bookmark -> false;
 		Predicate<Bookmark> disabledBookmarkPredicate = new UnderDisconnectedRemoteBookmarkFolderPredicate(
 				bookmarkDatabase, remoteBookmarksStoreManager);
 		IBookmarkDecorationProvider bookmarkDecorationProvider = new RemoteBookmarkFolderDecorationProvider(
@@ -110,7 +101,6 @@ public class BookmarksTreeViewer extends TreeViewer {
 		dirtyBookmarkPredicate.dispose();
 		eventBroker.unsubscribe(bookmarkStoresEventHandler);
 		bookmarkDatabase.removeListener(bookmarksListener);
-		defaultBookmarkFolderManager.removeListener(defaultBookmarkFolderListener);
 		super.handleDispose(event);
 	}
 

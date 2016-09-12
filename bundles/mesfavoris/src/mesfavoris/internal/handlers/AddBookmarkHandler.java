@@ -16,10 +16,10 @@ import mesfavoris.internal.operations.AddBookmarkOperation;
 import mesfavoris.internal.operations.ShowInBookmarksViewOperation;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
-import mesfavoris.workspace.DefaultBookmarkFolderManager;
+import mesfavoris.workspace.DefaultBookmarkFolderProvider;
 
 public class AddBookmarkHandler extends AbstractBookmarkCreationHandler {
-	private final DefaultBookmarkFolderManager defaultBookmarkFolderManager;
+	private final DefaultBookmarkFolderProvider defaultBookmarkFolderProvider;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
 	private final BookmarkDatabase bookmarkDatabase;
 	private final ShowInBookmarksViewOperation showInBookmarksViewOperation;
@@ -27,7 +27,7 @@ public class AddBookmarkHandler extends AbstractBookmarkCreationHandler {
 	public AddBookmarkHandler() {
 		this.bookmarkDatabase = BookmarksPlugin.getBookmarkDatabase();
 		this.bookmarkPropertiesProvider = BookmarksPlugin.getBookmarkPropertiesProvider();
-		this.defaultBookmarkFolderManager = BookmarksPlugin.getDefaultBookmarkFolderManager();
+		this.defaultBookmarkFolderProvider = BookmarksPlugin.getDefaultBookmarkFolderProvider();
 		this.showInBookmarksViewOperation = new ShowInBookmarksViewOperation(bookmarkDatabase);
 	}
 
@@ -51,7 +51,7 @@ public class AddBookmarkHandler extends AbstractBookmarkCreationHandler {
 		try {
 			progressService.busyCursorWhile(monitor -> {
 				AddBookmarkOperation addBookmarkOperation = new AddBookmarkOperation(bookmarkDatabase,
-						bookmarkPropertiesProvider, defaultBookmarkFolderManager);
+						bookmarkPropertiesProvider, defaultBookmarkFolderProvider);
 				try {
 					bookmarkId[0] = addBookmarkOperation.addBookmark(operationContext.part, operationContext.selection,
 							monitor);

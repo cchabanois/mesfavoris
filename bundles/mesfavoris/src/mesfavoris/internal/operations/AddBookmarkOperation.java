@@ -6,26 +6,26 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
-import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
-import mesfavoris.workspace.DefaultBookmarkFolderManager;
+import mesfavoris.workspace.DefaultBookmarkFolderProvider;
 
 public class AddBookmarkOperation {
 	private final BookmarkDatabase bookmarkDatabase;
-	private final DefaultBookmarkFolderManager defaultBookmarkFolderManager;
+	private final DefaultBookmarkFolderProvider defaultBookmarkFolderProvider;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
 
 	public AddBookmarkOperation(BookmarkDatabase bookmarkDatabase,
 			IBookmarkPropertiesProvider bookmarkPropertiesProvider,
-			DefaultBookmarkFolderManager defaultBookmarkFolderManager) {
+			DefaultBookmarkFolderProvider defaultBookmarkFolderProvider) {
 		this.bookmarkDatabase = bookmarkDatabase;
-		this.defaultBookmarkFolderManager = defaultBookmarkFolderManager;
+		this.defaultBookmarkFolderProvider = defaultBookmarkFolderProvider;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 	}
 
@@ -38,17 +38,14 @@ public class AddBookmarkOperation {
 		}
 		BookmarkId bookmarkId = new BookmarkId();
 		Bookmark bookmark = new Bookmark(bookmarkId, bookmarkProperties);
-		addBookmark(bookmark);
+		addBookmark(part.getSite().getPage(), bookmark);
 		return bookmarkId;
 	}
 
-	private void addBookmark(final Bookmark bookmark) throws BookmarksException {
+	private void addBookmark(final IWorkbenchPage page, final Bookmark bookmark) throws BookmarksException {
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
-			BookmarkFolder folder = defaultBookmarkFolderManager.getDefaultFolder();
-			if (folder == null) {
-				folder = bookmarksTreeModifier.getCurrentTree().getRootFolder();
-			}
-			bookmarksTreeModifier.addBookmarks(folder.getId(), Arrays.asList(bookmark));
+			BookmarkId folderId = defaultBookmarkFolderProvider.getDefaultBookmarkFolder(page);
+			bookmarksTreeModifier.addBookmarks(folderId, Arrays.asList(bookmark));
 		});
 	}
 

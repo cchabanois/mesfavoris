@@ -59,7 +59,6 @@ import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.validation.BookmarkModificationValidator;
 import mesfavoris.validation.IBookmarkModificationValidator;
-import mesfavoris.workspace.DefaultBookmarkFolderManager;
 
 public class BookmarksView extends ViewPart {
 	public static final String ID = "mesfavoris.views.BookmarksView";
@@ -179,7 +178,6 @@ public class BookmarksView extends ViewPart {
 	}
 
 	private void createTreeControl(Composite parent) {
-		DefaultBookmarkFolderManager defaultBookmarkFolderManager = BookmarksPlugin.getDefaultBookmarkFolderManager();
 		IBookmarkPropertiesProvider bookmarkPropertiesProvider = BookmarksPlugin.getBookmarkPropertiesProvider();
 		MostVisitedBookmarksVirtualFolder mostVisitedBookmarksVirtualFolder = new MostVisitedBookmarksVirtualFolder(
 				eventBroker, bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(),
@@ -196,8 +194,8 @@ public class BookmarksView extends ViewPart {
 				patternFilter, true) {
 
 			protected TreeViewer doCreateTreeViewer(Composite parent, int style) {
-				return new BookmarksTreeViewer(parent, bookmarkDatabase, defaultBookmarkFolderManager,
-						bookmarksDatabaseDirtyStateTracker, remoteBookmarksStoreManager, bookmarkPropertiesProvider,
+				return new BookmarksTreeViewer(parent, bookmarkDatabase, bookmarksDatabaseDirtyStateTracker,
+						remoteBookmarksStoreManager, bookmarkPropertiesProvider,
 						Lists.newArrayList(mostVisitedBookmarksVirtualFolder, latestVisitedBookmarksVirtualFolder));
 			};
 

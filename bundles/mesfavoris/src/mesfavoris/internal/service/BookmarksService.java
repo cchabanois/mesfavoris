@@ -36,26 +36,26 @@ import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.service.IBookmarksService;
 import mesfavoris.validation.IBookmarkModificationValidator;
-import mesfavoris.workspace.DefaultBookmarkFolderManager;
+import mesfavoris.workspace.DefaultBookmarkFolderProvider;
 
 public class BookmarksService implements IBookmarksService {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final IBookmarkModificationValidator bookmarkModificationValidator;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
-	private final DefaultBookmarkFolderManager defaultBookmarkFolderManager;
+	private final DefaultBookmarkFolderProvider defaultBookmarkFolderProvider;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker;
 
 	public BookmarksService(BookmarkDatabase bookmarkDatabase,
 			IBookmarkModificationValidator bookmarkModificationValidator,
 			IBookmarkPropertiesProvider bookmarkPropertiesProvider,
-			DefaultBookmarkFolderManager defaultBookmarkFolderManager,
+			DefaultBookmarkFolderProvider defaultBookmarkFolderProvider,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
 			IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.bookmarkModificationValidator = bookmarkModificationValidator;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
-		this.defaultBookmarkFolderManager = defaultBookmarkFolderManager;
+		this.defaultBookmarkFolderProvider = defaultBookmarkFolderProvider;
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
 		this.bookmarksDatabaseDirtyStateTracker = bookmarksDatabaseDirtyStateTracker;
 	}
@@ -76,7 +76,7 @@ public class BookmarksService implements IBookmarksService {
 	public BookmarkId addBookmark(IWorkbenchPart part, ISelection selection, IProgressMonitor monitor)
 			throws BookmarksException {
 		AddBookmarkOperation operation = new AddBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider,
-				defaultBookmarkFolderManager);
+				defaultBookmarkFolderProvider);
 		return operation.addBookmark(part, selection, monitor);
 	}
 
