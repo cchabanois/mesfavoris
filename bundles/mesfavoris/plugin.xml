@@ -57,11 +57,6 @@
             name="New folder">
       </command>
       <command
-            defaultHandler="mesfavoris.internal.handlers.SetAsDefaultBookmarkFolder"
-            id="mesfavoris.commands.setAsDefaultBookmarkFolder"
-            name="Set as default bookmark folder">
-      </command>
-      <command
             defaultHandler="mesfavoris.internal.handlers.RenameBookmarkHandler"
             id="mesfavoris.commands.renameBookmark"
             name="Rename bookmark">
@@ -212,6 +207,18 @@
                   </or>
                </with>
             </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:edit?after=additions">
+         <command
+               commandId="mesfavoris.command.addFavori"
+               style="push">
+         </command>
+         <command
+               commandId="mesfavoris.command.updateFavori"
+               style="push">
          </command>
       </menuContribution>
    </extension>
@@ -415,5 +422,16 @@
             verticalRulerPreferenceKey="bookmarkIndicationInVerticalRuler"
             verticalRulerPreferenceValue="true">
       </specification>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commandImages">
+      <image
+            commandId="mesfavoris.command.addFavori"
+            icon="icons/bookmark-16.png">
+      </image>
+      <image
+            commandId="mesfavoris.command.updateFavori"
+            icon="icons/bookmark-update.png">
+      </image>
    </extension>
 </plugin>
