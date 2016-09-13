@@ -43,8 +43,8 @@ public class AddBookmarkOperation {
 	}
 
 	private void addBookmark(final IWorkbenchPage page, final Bookmark bookmark) throws BookmarksException {
+		BookmarkId folderId = defaultBookmarkFolderProvider.getDefaultBookmarkFolder(page);
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
-			BookmarkId folderId = defaultBookmarkFolderProvider.getDefaultBookmarkFolder(page);
 			bookmarksTreeModifier.addBookmarks(folderId, Arrays.asList(bookmark));
 		});
 	}

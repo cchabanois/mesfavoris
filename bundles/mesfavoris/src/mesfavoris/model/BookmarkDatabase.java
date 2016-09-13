@@ -39,9 +39,12 @@ public class BookmarkDatabase {
 	public void modify(IBookmarksOperation operation, Consumer<BookmarksTree> afterCommit) throws BookmarksException {
 		List<BookmarksModification> modifications = Collections.emptyList();
 		try {
-			BookmarksTreeModifier bookmarksTreeModifier = new BookmarksTreeModifier(bookmarksTree);
 			writeLock.lock();
+			BookmarksTreeModifier bookmarksTreeModifier = new BookmarksTreeModifier(bookmarksTree);
 			operation.exec(bookmarksTreeModifier);
+			if (bookmarksTree != bookmarksTreeModifier.getOriginalTree()) {
+				throw new BookmarksException("BookmarksDatabase.modify is not reentrant");
+			}
 			this.bookmarksTree = bookmarksTreeModifier.getCurrentTree();
 			modifications = bookmarksTreeModifier.getModifications();
 			afterCommit.accept(this.bookmarksTree);

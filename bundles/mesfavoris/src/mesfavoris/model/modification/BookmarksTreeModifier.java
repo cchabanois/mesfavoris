@@ -116,9 +116,5 @@ public class BookmarksTreeModifier implements IBookmarksTreeModifier {
 			modifications.add(new BookmarkPropertiesModification(sourceTree, currentTree, bookmarkId));
 		}
 	}
-
-	public BookmarkFolder getRootFolder() {
-		return currentTree.getRootFolder();
-	}
-
+	
 }

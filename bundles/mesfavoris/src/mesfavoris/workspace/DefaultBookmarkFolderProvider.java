@@ -4,6 +4,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPage;
 
+import com.google.common.collect.Lists;
+
+import mesfavoris.BookmarksException;
+import mesfavoris.StatusHelper;
 import mesfavoris.internal.views.BookmarksView;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
@@ -15,7 +19,7 @@ public class DefaultBookmarkFolderProvider {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final IBookmarkModificationValidator bookmarkModificationValidator;
 	private final BookmarkId defaultBookmarkId;
-	
+
 	public DefaultBookmarkFolderProvider(BookmarkDatabase bookmarkDatabase, BookmarkId defaultBookmarkId,
 			IBookmarkModificationValidator bookmarkModificationValidator) {
 		this.bookmarkDatabase = bookmarkDatabase;
@@ -26,13 +30,27 @@ public class DefaultBookmarkFolderProvider {
 	public BookmarkId getDefaultBookmarkFolder(IWorkbenchPage workbenchPage) {
 		BookmarkFolder bookmarkFolder = getCurrentBookmarkFolderFromBookmarksView(workbenchPage);
 		if (bookmarkFolder == null || !isModifiable(bookmarkFolder.getId())) {
-			bookmarkFolder = (BookmarkFolder) bookmarkDatabase.getBookmarksTree()
-					.getBookmark(defaultBookmarkId);
+			bookmarkFolder = (BookmarkFolder) bookmarkDatabase.getBookmarksTree().getBookmark(defaultBookmarkId);
 		}
-		if (bookmarkFolder == null|| !isModifiable(bookmarkFolder.getId())) {
+		if (bookmarkFolder == null || !isModifiable(bookmarkFolder.getId())) {
+			createDefaultBookmarkFolder();
+			bookmarkFolder = (BookmarkFolder) bookmarkDatabase.getBookmarksTree().getBookmark(defaultBookmarkId);
+		}
+		if (bookmarkFolder == null || !isModifiable(bookmarkFolder.getId())) {
 			bookmarkFolder = bookmarkDatabase.getBookmarksTree().getRootFolder();
 		}
 		return bookmarkFolder.getId();
+	}
+
+	private void createDefaultBookmarkFolder() {
+		try {
+			bookmarkDatabase.modify(bookmarksTreeModifier-> {
+				BookmarkFolder bookmarkFolder = new BookmarkFolder(defaultBookmarkId, "default");
+				bookmarksTreeModifier.addBookmarksAfter(bookmarksTreeModifier.getCurrentTree().getRootFolder().getId(), null, Lists.newArrayList(bookmarkFolder));
+				});
+		} catch (BookmarksException e) {
+			StatusHelper.logWarn("Could not create default folder", e);
+		}
 	}
 
 	private boolean isModifiable(BookmarkId bookmarkId) {
