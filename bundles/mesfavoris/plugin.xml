@@ -88,13 +88,13 @@
             commandId="mesfavoris.command.addFavori"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+@">
+            sequence="M1+B M1+B">
       </key>
       <key
             commandId="mesfavoris.command.updateFavori"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+M2+@">
+            sequence="M1+M2+B M1+M2+B">
       </key>
    </extension>
    <extension
