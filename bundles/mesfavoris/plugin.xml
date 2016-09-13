@@ -31,19 +31,6 @@
       </perspectiveExtension>
    </extension>
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <viewerContribution
-            id="mesfavoris.ruler.context.actions"
-            targetID="#TextRulerContext">
-         <action
-               class="mesfavoris.internal.actions.AddBookmarkRulerAction"
-               id="mesfavoris.BookmarkRulerAction"
-               label="Add favori"
-               menubarPath="additions">
-         </action>
-      </viewerContribution>
-   </extension>
-   <extension
          point="org.eclipse.ui.commands">
       <command
             categoryId="mesfavoris.category"
