@@ -78,6 +78,30 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+B M1+M2+B">
       </key>
+	<key
+		commandId="org.eclipse.ui.views.showView"
+		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+		sequence="M2+M3+Q B B">
+		<parameter
+			id="org.eclipse.ui.views.showView.viewId"
+			value="mesfavoris.views.BookmarksView">
+		</parameter>
+	</key>
+ <key
+       platform="carbon"
+       schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+       sequence="M2+M3+Q B B">
+ </key>
+ <key
+       commandId="org.eclipse.ui.views.showView"
+       platform="carbon"
+       schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+       sequence="M1+M3+Q B B">
+    <parameter
+          id="org.eclipse.ui.views.showView.viewId"
+          value="mesfavoris.views.BookmarksView">
+    </parameter>
+ </key>
    </extension>
    <extension
          point="org.eclipse.core.expressions.definitions">
