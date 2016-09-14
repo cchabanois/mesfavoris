@@ -2,9 +2,11 @@
 <feature
       id="mesfavoris.feature"
       label="mesfavoris"
-      version="1.0.0.qualifier"
-      license-feature="mesfavoris.license.feature"
-      license-feature-version="1.0.0.qualifier">
+      version="1.0.0.qualifier">
+
+   <copyright>
+      %copyright
+   </copyright>
 
    <license url="%licenseURL">
       %license

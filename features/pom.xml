@@ -16,7 +16,6 @@
 	<modules>
 		<module>mesfavoris.feature</module>
 		<module>mesfavoris.perforce.feature</module>
-		<module>mesfavoris.license.feature</module>
 	</modules>
 
 </project>
