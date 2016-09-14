@@ -1,8 +1,5 @@
 package mesfavoris.gdrive.operations;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -16,6 +13,7 @@ import com.google.api.services.drive.model.File;
 
 import mesfavoris.gdrive.GDriveTestUser;
 import mesfavoris.gdrive.test.GDriveConnectionRule;
+import mesfavoris.tests.commons.waits.Waiter;
 
 public class GetBookmarksFilesOperationTest {
 
@@ -36,8 +34,8 @@ public class GetBookmarksFilesOperationTest {
 		List<File> bookmarkFiles = operation.getBookmarkFiles();
 
 		// Then
-		assertThat(bookmarkFiles.stream().map(f -> f.getId()).collect(Collectors.toList()))
-				.contains(file.getId());
+		Waiter.waitUntil("Bookmark files does not contain shared file",
+				() -> bookmarkFiles.stream().map(f -> f.getId()).collect(Collectors.toList()).contains(file.getId()));
 	}
 
 	private File createFile(GDriveConnectionRule driveConnection, String name, String contents)
