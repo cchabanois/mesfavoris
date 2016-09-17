@@ -38,8 +38,9 @@ public class JavaEditorBookmarkPropertiesProvider extends JavaTypeMemberBookmark
 			return;
 		}
 		IMember member = (IMember) containingJavaElement;
-		super.addBookmarkProperties(bookmarkProperties, part, new StructuredSelection(member), monitor);
+		super.addMemberBookmarkProperties(bookmarkProperties, member);
 		addLineNumberInsideMemberProperty(bookmarkProperties, member, textSelection);
+		addJavadocComment(bookmarkProperties, member, textSelection);
 	}
 
 	private void addLineNumberInsideMemberProperty(Map<String, String> bookmarkProperties, IMember member,
@@ -49,6 +50,18 @@ public class JavaEditorBookmarkPropertiesProvider extends JavaTypeMemberBookmark
 			int lineNumber = textSelection.getStartLine();
 			int lineNumberInsideMethod = lineNumber - methodLineNumber;
 			putIfAbsent(bookmarkProperties, PROP_LINE_NUMBER_INSIDE_ELEMENT, Integer.toString(lineNumberInsideMethod));
+		} catch (JavaModelException e) {
+			return;
+		}
+	}
+
+	private void addJavadocComment(Map<String, String> bookmarkProperties, IMember member,
+			ITextSelection textSelection) {
+		try {
+			if (JavaEditorUtils.getLineNumber(member) != textSelection.getStartLine()) {
+				return;
+			}
+			super.addJavadocComment(bookmarkProperties, member);
 		} catch (JavaModelException e) {
 			return;
 		}

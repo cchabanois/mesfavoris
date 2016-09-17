@@ -14,6 +14,8 @@ import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_NAME;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_METHOD_SIGNATURE;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_TYPE;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -24,15 +26,20 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeRoot;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.ui.JavadocContentAccess;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 
+import com.google.common.io.CharStreams;
+
 import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
 import mesfavoris.java.editor.JavaEditorUtils;
+import mesfavoris.java.javadoc.JavadocCommentProvider;
 import mesfavoris.model.Bookmark;
 
 public class JavaTypeMemberBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {
-
+	private final JavadocCommentProvider javadocCommentProvider = new JavadocCommentProvider();
+	
 	@Override
 	public void addBookmarkProperties(Map<String, String> bookmarkProperties,IWorkbenchPart part,
 			ISelection selection, IProgressMonitor monitor) {
@@ -47,7 +54,7 @@ public class JavaTypeMemberBookmarkPropertiesProvider extends AbstractBookmarkPr
 		addMemberBookmarkProperties(bookmarkProperties, member);
 	}
 
-	private void addMemberBookmarkProperties(
+	protected void addMemberBookmarkProperties(
 			Map<String, String> bookmarkProperties, IMember member) {
 		putIfAbsent(bookmarkProperties, PROP_JAVA_ELEMENT_NAME,
 				member.getElementName());
@@ -79,6 +86,13 @@ public class JavaTypeMemberBookmarkPropertiesProvider extends AbstractBookmarkPr
 				member.getElementName());
 	}
 
+	protected void addJavadocComment(Map<String, String> bookmarkProperties, IMember member) {
+		String javadoc = javadocCommentProvider.getJavadocCommentShortDescription(member);
+		if (javadoc != null) {
+			putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_COMMENT, javadoc);
+		}
+	}
+	
 	private String getKind(IMember member) {
 		switch (member.getElementType()) {
 		case IJavaElement.METHOD:

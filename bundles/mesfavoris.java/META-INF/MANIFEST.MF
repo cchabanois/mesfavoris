@@ -13,4 +13,5 @@ Require-Bundle: mesfavoris,
  org.eclipse.ui.workbench.texteditor;bundle-version="3.9.0",
  org.eclipse.ui;bundle-version="3.106.0",
  mesfavoris.commons;bundle-version="1.0.0",
- mesfavoris.texteditor;bundle-version="1.0.0"
+ mesfavoris.texteditor;bundle-version="1.0.0",
+ com.google.guava;bundle-version="18.0.0"
