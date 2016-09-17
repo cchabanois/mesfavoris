@@ -15,11 +15,6 @@ import org.junit.rules.ExpectedException;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import mesfavoris.model.Bookmark;
-import mesfavoris.model.BookmarkFolder;
-import mesfavoris.model.BookmarkId;
-import mesfavoris.model.BookmarksTree;
-
 public class BookmarksTreeTest {
 	private BookmarksTree bookmarksTree;
 	private BookmarkFolder rootFolder = new BookmarkFolder(new BookmarkId("rootId"), "root");
@@ -190,6 +185,20 @@ public class BookmarksTreeTest {
 	}
 
 	@Test
+	public void testSetSamePropertyValue() {
+		// Given
+		bookmarksTree = bookmarksTree.setPropertyValue(bookmark1.getId(), "prop1", "value1");
+		bookmarksTree = bookmarksTree.setPropertyValue(bookmark1.getId(), "prop2", "value2");
+
+		// When
+		BookmarksTree newBookmarkTree = bookmarksTree.setPropertyValue(bookmark1.getId(), new String("prop1"),
+				new String("value1"));
+
+		// Then
+		assertSame(bookmarksTree, newBookmarkTree);
+	}	
+	
+	@Test
 	public void testDeletePropertyValue() {
 		// Given
 		bookmarksTree = bookmarksTree.setPropertyValue(bookmark1.getId(), "prop1", "value1");
@@ -228,8 +237,8 @@ public class BookmarksTreeTest {
 
 		// When
 		Map<String, String> newProperties = Maps.newTreeMap();
-		newProperties.put("prop1", "value1");
-		newProperties.put("prop2", "value2");
+		newProperties.put(new String("prop1"), new String("value1"));
+		newProperties.put(new String("prop2"), new String("value2"));
 		BookmarksTree newBookmarksTree = bookmarksTree.setProperties(bookmark1.getId(), newProperties);
 
 		// Then

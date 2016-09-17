@@ -48,8 +48,8 @@ public class BookmarksTree implements Iterable<Bookmark> {
 
 	private BookmarksTree createBookmarksTree(BookmarkId rootFolderId, BookmarksMap bookmarksMap,
 			BookmarksChildrenMap idToChildren, BookmarksParentsMap idToParent) {
-		if (rootFolderId.equals(this.rootFolderId) && bookmarksMap == this.bookmarksMap && idToChildren == this.childrenMap
-				&& idToParent == parentsMap) {
+		if (rootFolderId.equals(this.rootFolderId) && bookmarksMap == this.bookmarksMap
+				&& idToChildren == this.childrenMap && idToParent == parentsMap) {
 			return this;
 		} else {
 			return new BookmarksTree(rootFolderId, bookmarksMap, idToChildren, idToParent);
@@ -65,7 +65,11 @@ public class BookmarksTree implements Iterable<Bookmark> {
 		if (propertyValue == null) {
 			newProperties = bookmark.properties.delete(propertyName);
 		} else {
-			newProperties = bookmark.properties.assign(propertyName, propertyValue);
+			if (!propertyValue.equals(bookmark.properties.get(propertyName))) {
+				newProperties = bookmark.properties.assign(propertyName, propertyValue);
+			} else {
+				newProperties = bookmark.properties;
+			}
 		}
 		if (newProperties == bookmark.properties) {
 			return this;
@@ -106,7 +110,8 @@ public class BookmarksTree implements Iterable<Bookmark> {
 		return bookmarks.stream().map(b -> b.getId()).collect(Collectors.toList());
 	}
 
-	public BookmarksTree addBookmarksBefore(BookmarkId parentId, BookmarkId existingBookmarkId, List<Bookmark> bookmarks) {
+	public BookmarksTree addBookmarksBefore(BookmarkId parentId, BookmarkId existingBookmarkId,
+			List<Bookmark> bookmarks) {
 		checkBookmarkFolderExist(parentId);
 		checkBookmarksNotInTree(bookmarks);
 		if (existingBookmarkId != null) {
@@ -118,7 +123,8 @@ public class BookmarksTree implements Iterable<Bookmark> {
 				parentsMap.setParent(bookmarkIds, parentId));
 	}
 
-	public BookmarksTree addBookmarksAfter(BookmarkId parentId, BookmarkId existingBookmarkId, List<Bookmark> bookmarks) {
+	public BookmarksTree addBookmarksAfter(BookmarkId parentId, BookmarkId existingBookmarkId,
+			List<Bookmark> bookmarks) {
 		checkBookmarkFolderExist(parentId);
 		checkBookmarksNotInTree(bookmarks);
 		if (existingBookmarkId != null) {
@@ -304,7 +310,8 @@ public class BookmarksTree implements Iterable<Bookmark> {
 		return path;
 	}
 
-	public BookmarksTree moveAfter(List<BookmarkId> bookmarkIds, BookmarkId newParentId, BookmarkId existingBookmarkId) {
+	public BookmarksTree moveAfter(List<BookmarkId> bookmarkIds, BookmarkId newParentId,
+			BookmarkId existingBookmarkId) {
 		checkBookmarkFolderExist(newParentId);
 		checkBookmarksCanBeMoved(bookmarkIds, newParentId);
 		if (existingBookmarkId != null) {
@@ -325,7 +332,8 @@ public class BookmarksTree implements Iterable<Bookmark> {
 		return createBookmarksTree(rootFolderId, bookmarksMap, newChildrenMap, newParentsMap);
 	}
 
-	public BookmarksTree moveBefore(List<BookmarkId> bookmarkIds, BookmarkId newParentId, BookmarkId existingBookmarkId) {
+	public BookmarksTree moveBefore(List<BookmarkId> bookmarkIds, BookmarkId newParentId,
+			BookmarkId existingBookmarkId) {
 		checkBookmarkFolderExist(newParentId);
 		checkBookmarksCanBeMoved(bookmarkIds, newParentId);
 		if (existingBookmarkId != null) {
@@ -371,9 +379,9 @@ public class BookmarksTree implements Iterable<Bookmark> {
 	public Iterator<Bookmark> iterator() {
 		return bookmarksMap.iterator();
 	}
-	
+
 	public int size() {
 		return bookmarksMap.size();
 	}
-	
+
 }
