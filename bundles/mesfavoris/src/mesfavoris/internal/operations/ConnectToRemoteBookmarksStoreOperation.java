@@ -3,7 +3,7 @@ package mesfavoris.internal.operations;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.model.BookmarkDatabase;
@@ -30,18 +30,16 @@ public class ConnectToRemoteBookmarksStoreOperation {
 	}
 
 	public void connectToRemoteBookmarksStore(String storeId, IProgressMonitor monitor) throws BookmarksException {
-		monitor.beginTask("Connecting to remote bookmarks store", 100);
+		SubMonitor subMonitor = SubMonitor.convert(monitor, "Connecting to remote bookmarks store", 100);
 		try {
 			IRemoteBookmarksStore store = remoteBookmarksStoreManager.getRemoteBookmarksStore(storeId);
 			if (store == null) {
 				throw new BookmarksException("Unknown store id");
 			}
-			store.connect(new SubProgressMonitor(monitor, 80));
-			refreshRemoteFolderOperation.refresh(store.getDescriptor().getId(), new SubProgressMonitor(monitor, 20));
+			store.connect(subMonitor.newChild(50));
+			refreshRemoteFolderOperation.refresh(store.getDescriptor().getId(), subMonitor.newChild(50));
 		} catch (IOException e) {
 			throw new BookmarksException("Could not connect to remote bookmarks store", e);
-		} finally {
-			monitor.done();
 		}
 	}
 
