@@ -9,6 +9,7 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
+import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 
@@ -34,9 +35,19 @@ public class UpdateBookmarkOperation {
 
 	private void updateBookmark(final BookmarkId bookmarkId, Map<String, String> properties) throws BookmarksException {
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
-			properties.forEach((propertyName, propertyValue) -> bookmarksTreeModifier.setPropertyValue(bookmarkId,
-					propertyName, propertyValue));
+			properties.forEach((propertyName, propertyValue) -> {
+				if (!isUserEditableProperty(propertyName)) {
+					bookmarksTreeModifier.setPropertyValue(bookmarkId, propertyName, propertyValue);
+				}
+			});
 		});
+	}
+
+	private boolean isUserEditableProperty(String propertyName) {
+		if (Bookmark.PROPERTY_NAME.equals(propertyName) || Bookmark.PROPERTY_COMMENT.equals(propertyName)) {
+			return true;
+		}
+		return false;
 	}
 
 }
