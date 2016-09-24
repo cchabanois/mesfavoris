@@ -49,11 +49,13 @@ import mesfavoris.internal.actions.RefreshRemoteFoldersAction;
 import mesfavoris.internal.actions.RemoveFromRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.ToggleLinkAction;
 import mesfavoris.internal.jobs.ImportTeamProjectFromBookmarkJob;
+import mesfavoris.internal.numberedbookmarks.NumberedBookmarksVirtualFolder;
 import mesfavoris.internal.views.comment.BookmarkCommentArea;
 import mesfavoris.internal.visited.LatestVisitedBookmarksVirtualFolder;
 import mesfavoris.internal.visited.MostVisitedBookmarksVirtualFolder;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
+import mesfavoris.model.BookmarkId;
 import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
@@ -179,12 +181,13 @@ public class BookmarksView extends ViewPart {
 
 	private void createTreeControl(Composite parent) {
 		IBookmarkPropertiesProvider bookmarkPropertiesProvider = BookmarksPlugin.getBookmarkPropertiesProvider();
+		BookmarkId rootId = bookmarkDatabase.getBookmarksTree().getRootFolder().getId();
 		MostVisitedBookmarksVirtualFolder mostVisitedBookmarksVirtualFolder = new MostVisitedBookmarksVirtualFolder(
-				eventBroker, bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(),
-				bookmarkDatabase.getBookmarksTree().getRootFolder().getId(), 10);
+				eventBroker, bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(), rootId, 10);
 		LatestVisitedBookmarksVirtualFolder latestVisitedBookmarksVirtualFolder = new LatestVisitedBookmarksVirtualFolder(
-				eventBroker, bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(),
-				bookmarkDatabase.getBookmarksTree().getRootFolder().getId(), 10);
+				eventBroker, bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(), rootId, 10);
+		NumberedBookmarksVirtualFolder numberedBookmarksVirtualFolder = new NumberedBookmarksVirtualFolder(eventBroker,
+				bookmarkDatabase, rootId, BookmarksPlugin.getNumberedBookmarks());
 		IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker = BookmarksPlugin
 				.getBookmarksDatabaseDirtyStateTracker();
 
@@ -196,7 +199,8 @@ public class BookmarksView extends ViewPart {
 			protected TreeViewer doCreateTreeViewer(Composite parent, int style) {
 				return new BookmarksTreeViewer(parent, bookmarkDatabase, bookmarksDatabaseDirtyStateTracker,
 						remoteBookmarksStoreManager, bookmarkPropertiesProvider,
-						Lists.newArrayList(mostVisitedBookmarksVirtualFolder, latestVisitedBookmarksVirtualFolder));
+						Lists.newArrayList(mostVisitedBookmarksVirtualFolder, latestVisitedBookmarksVirtualFolder,
+								numberedBookmarksVirtualFolder));
 			};
 
 		};

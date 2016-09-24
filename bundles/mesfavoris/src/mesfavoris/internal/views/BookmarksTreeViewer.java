@@ -24,6 +24,7 @@ import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.internal.jobs.FindLocationAndGotoBookmarkJob;
+import mesfavoris.internal.numberedbookmarks.NumberedBookmarkDecorationProvider;
 import mesfavoris.internal.views.dnd.BookmarksViewerDragListener;
 import mesfavoris.internal.views.dnd.BookmarksViewerDropListener;
 import mesfavoris.internal.views.virtual.ExtendedBookmarksTreeContentProvider;
@@ -37,6 +38,7 @@ import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
 import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.validation.BookmarkModificationValidator;
+import mesfavoris.viewers.BookmarkDecorationProvider;
 import mesfavoris.viewers.BookmarksLabelProvider;
 import mesfavoris.viewers.BookmarksLabelProvider.DefaultBookmarkCommentProvider;
 import mesfavoris.viewers.DirtyBookmarkPredicate;
@@ -87,8 +89,8 @@ public class BookmarksTreeViewer extends TreeViewer {
 		Predicate<Bookmark> selectedBookmarkPredicate = bookmark -> false;
 		Predicate<Bookmark> disabledBookmarkPredicate = new UnderDisconnectedRemoteBookmarkFolderPredicate(
 				bookmarkDatabase, remoteBookmarksStoreManager);
-		IBookmarkDecorationProvider bookmarkDecorationProvider = new RemoteBookmarkFolderDecorationProvider(
-				remoteBookmarksStoreManager);
+		IBookmarkDecorationProvider bookmarkDecorationProvider = new BookmarkDecorationProvider(new RemoteBookmarkFolderDecorationProvider(
+				remoteBookmarksStoreManager), new NumberedBookmarkDecorationProvider(BookmarksPlugin.getNumberedBookmarks()));
 		BookmarksLabelProvider bookmarksLabelProvider = new BookmarksLabelProvider(selectedBookmarkPredicate,
 				disabledBookmarkPredicate, dirtyBookmarkPredicate, bookmarkDecorationProvider,
 				BookmarksPlugin.getBookmarkLabelProvider(), new DefaultBookmarkCommentProvider());
