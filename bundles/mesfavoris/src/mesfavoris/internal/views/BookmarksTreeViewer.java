@@ -17,7 +17,6 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.handlers.IHandlerService;
 import org.osgi.service.event.EventHandler;
 
 import mesfavoris.BookmarksPlugin;
@@ -47,7 +46,6 @@ import mesfavoris.viewers.RemoteBookmarkFolderDecorationProvider;
 import mesfavoris.viewers.UnderDisconnectedRemoteBookmarkFolderPredicate;
 
 public class BookmarksTreeViewer extends TreeViewer {
-	private static final String SET_AS_DEFAULT_COMMAND_ID = "mesfavoris.commands.setAsDefaultBookmarkFolder";
 	private final IEventBroker eventBroker;
 	private final BookmarkDatabase bookmarkDatabase;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
@@ -111,15 +109,7 @@ public class BookmarksTreeViewer extends TreeViewer {
 			ISelection selection = getSelection();
 			Object firstElement = ((IStructuredSelection) selection).getFirstElement();
 			Bookmark bookmark = AdapterUtils.getAdapter(firstElement, Bookmark.class);
-			if (bookmark instanceof BookmarkFolder) {
-				IHandlerService handlerService = (IHandlerService) PlatformUI.getWorkbench()
-						.getService(IHandlerService.class);
-				try {
-					handlerService.executeCommand(SET_AS_DEFAULT_COMMAND_ID, null);
-				} catch (Exception e) {
-					//
-				}
-			} else {
+			if (!(bookmark instanceof BookmarkFolder)) {
 				new FindLocationAndGotoBookmarkJob(bookmark).schedule();
 			}
 		});
