@@ -10,6 +10,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 
 import mesfavoris.BookmarksException;
+import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
@@ -60,4 +61,8 @@ public interface IBookmarksService {
 
 	void updateBookmark(BookmarkId bookmarkId, IWorkbenchPart part, ISelection selection, IProgressMonitor monitor)
 			throws BookmarksException;
+
+	void gotoBookmark(BookmarkId bookmarkId, IProgressMonitor monitor) throws BookmarksException;
+
+	void addNumberedBookmark(BookmarkId bookmarkId, BookmarkNumber bookmarkNumber);
 }

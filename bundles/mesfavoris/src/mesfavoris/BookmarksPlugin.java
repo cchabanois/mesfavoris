@@ -111,9 +111,6 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode(PLUGIN_ID);
 		defaultBookmarkFolderProvider = new DefaultBookmarkFolderProvider(bookmarkDatabase, new BookmarkId("default"),
 				new BookmarkModificationValidator(remoteBookmarksStoreManager));
-		bookmarksService = new BookmarksService(bookmarkDatabase,
-				new BookmarkModificationValidator(remoteBookmarksStoreManager), bookmarkPropertiesProvider,
-				defaultBookmarkFolderProvider, remoteBookmarksStoreManager, bookmarksSaver);
 		File mostVisitedBookmarksFile = new File(getStateLocation().toFile(), "mostVisitedBookmarks.json");
 		IEventBroker eventBroker = (IEventBroker) getWorkbench().getService(IEventBroker.class);
 		mostVisitedBookmarks = new VisitedBookmarksDatabase(eventBroker, bookmarkDatabase, mostVisitedBookmarksFile);
@@ -124,6 +121,10 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		numberedBookmarks = new NumberedBookmarks((IEclipsePreferences) preferences.node("numberedBookmarks"),
 				eventBroker);
 		numberedBookmarks.init();
+		bookmarksService = new BookmarksService(bookmarkDatabase,
+				new BookmarkModificationValidator(remoteBookmarksStoreManager), bookmarkPropertiesProvider,
+				defaultBookmarkFolderProvider, remoteBookmarksStoreManager, bookmarksSaver, bookmarkLocationProvider,
+				gotoBookmark, numberedBookmarks);
 	}
 
 	private BookmarkDatabase loadBookmarkDatabase(File bookmarksFile) {

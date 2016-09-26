@@ -10,16 +10,22 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 
 import mesfavoris.BookmarksException;
+import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
+import mesfavoris.bookmarktype.IGotoBookmark;
+import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
+import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;
 import mesfavoris.internal.operations.AddBookmarkFolderOperation;
 import mesfavoris.internal.operations.AddBookmarkOperation;
 import mesfavoris.internal.operations.AddBookmarksTreeOperation;
+import mesfavoris.internal.operations.AddNumberedBookmarkOperation;
 import mesfavoris.internal.operations.AddToRemoteBookmarksStoreOperation;
 import mesfavoris.internal.operations.ConnectToRemoteBookmarksStoreOperation;
 import mesfavoris.internal.operations.CopyBookmarkOperation;
 import mesfavoris.internal.operations.CutBookmarkOperation;
 import mesfavoris.internal.operations.DeleteBookmarksOperation;
 import mesfavoris.internal.operations.GetLinkedBookmarksOperation;
+import mesfavoris.internal.operations.GotoBookmarkOperation;
 import mesfavoris.internal.operations.PasteBookmarkOperation;
 import mesfavoris.internal.operations.RefreshRemoteFolderOperation;
 import mesfavoris.internal.operations.RemoveFromRemoteBookmarksStoreOperation;
@@ -45,19 +51,27 @@ public class BookmarksService implements IBookmarksService {
 	private final DefaultBookmarkFolderProvider defaultBookmarkFolderProvider;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker;
+	private final IBookmarkLocationProvider bookmarkLocationProvider;
+	private final IGotoBookmark gotoBookmark;
+	private final NumberedBookmarks numberedBookmarks;
 
 	public BookmarksService(BookmarkDatabase bookmarkDatabase,
 			IBookmarkModificationValidator bookmarkModificationValidator,
 			IBookmarkPropertiesProvider bookmarkPropertiesProvider,
 			DefaultBookmarkFolderProvider defaultBookmarkFolderProvider,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
-			IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker) {
+			IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker,
+			IBookmarkLocationProvider bookmarkLocationProvider,
+			IGotoBookmark gotoBookmark, NumberedBookmarks numberedBookmarks) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.bookmarkModificationValidator = bookmarkModificationValidator;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 		this.defaultBookmarkFolderProvider = defaultBookmarkFolderProvider;
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
 		this.bookmarksDatabaseDirtyStateTracker = bookmarksDatabaseDirtyStateTracker;
+		this.bookmarkLocationProvider = bookmarkLocationProvider;
+		this.gotoBookmark = gotoBookmark;
+		this.numberedBookmarks = numberedBookmarks;
 	}
 
 	@Override
@@ -198,4 +212,17 @@ public class BookmarksService implements IBookmarksService {
 		operation.updateBookmark(bookmarkId, part, selection, monitor);
 	}
 
+	@Override
+	public void gotoBookmark(BookmarkId bookmarkId, IProgressMonitor monitor) throws BookmarksException {
+		GotoBookmarkOperation gotoBookmarkOperation = new GotoBookmarkOperation(bookmarkDatabase, bookmarkLocationProvider, gotoBookmark);
+		gotoBookmarkOperation.gotoBookmark(bookmarkId, monitor);
+	}
+
+	@Override
+	public void addNumberedBookmark(BookmarkId bookmarkId, BookmarkNumber bookmarkNumber) {
+		AddNumberedBookmarkOperation operation = new AddNumberedBookmarkOperation(numberedBookmarks);
+		operation.addNumberedBookmark(bookmarkId, bookmarkNumber);
+	}
+	
+	
 }
