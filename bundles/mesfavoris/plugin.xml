@@ -75,6 +75,18 @@
                values="mesfavoris.internal.numberedbookmarks.BookmarkNumberParameterValues">
          </commandParameter>
       </command>
+      <command
+            categoryId="mesfavoris.category"
+            defaultHandler="mesfavoris.internal.handlers.GotoNumberedBookmarkHandler"
+            id="mesfavoris.command.gotoNumberedFavori"
+            name="Goto a Numbered Favori">
+         <commandParameter
+               id="mesfavoris.command.gotoNumberedFavori.numberParameter"
+               name="number"
+               optional="true"
+               values="mesfavoris.internal.numberedbookmarks.BookmarkNumberParameterValues">
+         </commandParameter>
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -212,6 +224,126 @@
     <parameter
           id="mesfavoris.command.addNumberedFavori.numberParameter"
           value="ZERO">
+    </parameter>
+ </key>
+ <key
+       commandId="mesfavoris.command.gotoNumberedFavori"
+       contextId="org.eclipse.ui.contexts.window"
+       schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+       sequence="M1+B F1">
+    <parameter
+          id="mesfavoris.command.gotoNumberedFavori.numberParameter"
+          value="ONE">
+    </parameter>
+ </key>
+ <key
+       commandId="mesfavoris.command.gotoNumberedFavori"
+       contextId="org.eclipse.ui.contexts.window"
+       schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+       sequence="M1+B F2">
+    <parameter
+          id="mesfavoris.command.gotoNumberedFavori.numberParameter"
+          value="TWO">
+    </parameter>
+ </key>
+ <key
+       commandId="mesfavoris.command.gotoNumberedFavori"
+       contextId="org.eclipse.ui.contexts.window"
+       schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+       sequence="M1+B F3">
+    <parameter
+          id="mesfavoris.command.gotoNumberedFavori.numberParameter"
+          value="THREE">
+    </parameter>
+ </key>
+ <key
+       commandId="mesfavoris.command.gotoNumberedFavori"
+       contextId="org.eclipse.ui.contexts.window"
+       schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+       sequence="M1+B F10">
+    <parameter
+          id="mesfavoris.command.gotoNumberedFavori.numberParameter"
+          value="TEN">
+    </parameter>
+ </key>
+ <key
+       commandId="mesfavoris.command.gotoNumberedFavori"
+       contextId="org.eclipse.ui.contexts.window"
+       schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+       sequence="M1+B F10">
+    <parameter
+          id="mesfavoris.command.gotoNumberedFavori.numberParameter"
+          value="NINE">
+    </parameter>
+ </key>
+ <key
+       commandId="mesfavoris.command.gotoNumberedFavori"
+       contextId="org.eclipse.ui.contexts.window"
+       schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+       sequence="M1+B F9">
+    <parameter
+          id="mesfavoris.command.gotoNumberedFavori.numberParameter"
+          value="NINE">
+    </parameter>
+ </key>
+ <key
+       commandId="mesfavoris.command.gotoNumberedFavori"
+       contextId="org.eclipse.ui.contexts.window"
+       schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+       sequence="M1+B F8">
+    <parameter
+          id="mesfavoris.command.gotoNumberedFavori.numberParameter"
+          value="EIGHT">
+    </parameter>
+ </key>
+ <key
+       commandId="mesfavoris.command.gotoNumberedFavori"
+       contextId="org.eclipse.ui.contexts.window"
+       schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+       sequence="M1+B F7">
+    <parameter
+          id="mesfavoris.command.gotoNumberedFavori.numberParameter"
+          value="SEVEN">
+    </parameter>
+ </key>
+ <key
+       commandId="mesfavoris.command.gotoNumberedFavori"
+       contextId="org.eclipse.ui.contexts.window"
+       schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+       sequence="M1+B F6">
+    <parameter
+          id="mesfavoris.command.gotoNumberedFavori.numberParameter"
+          value="SIX">
+    </parameter>
+ </key>
+ <key
+       commandId="mesfavoris.command.gotoNumberedFavori"
+       contextId="org.eclipse.ui.contexts.window"
+       schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+       sequence="M1+B F6">
+    <parameter
+          id="mesfavoris.command.gotoNumberedFavori.numberParameter"
+          value="FIVE">
+    </parameter>
+ </key>
+ <key
+       commandId="mesfavoris.command.gotoNumberedFavori"
+       contextId="org.eclipse.ui.contexts.window"
+       schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+       sequence="M1+B F5">
+    <parameter
+          id="mesfavoris.command.gotoNumberedFavori.numberParameter"
+          value="FIVE">
+    </parameter>
+ </key>
+ <key
+       commandId="mesfavoris.command.gotoNumberedFavori"
+       contextId="org.eclipse.ui.contexts.window"
+       schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+       sequence="M1+B F4">
+    <parameter
+          id="mesfavoris.command.gotoNumberedFavori.numberParameter"
+          value="FOUR">
     </parameter>
  </key>
    </extension>

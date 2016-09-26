@@ -65,4 +65,7 @@ public interface IBookmarksService {
 	void gotoBookmark(BookmarkId bookmarkId, IProgressMonitor monitor) throws BookmarksException;
 
 	void addNumberedBookmark(BookmarkId bookmarkId, BookmarkNumber bookmarkNumber);
+	
+	void gotoNumberedBookmark(BookmarkNumber bookmarkNumber, IProgressMonitor monitor) throws BookmarksException;
+
 }

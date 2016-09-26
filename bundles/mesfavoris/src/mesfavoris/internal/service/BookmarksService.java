@@ -26,6 +26,7 @@ import mesfavoris.internal.operations.CutBookmarkOperation;
 import mesfavoris.internal.operations.DeleteBookmarksOperation;
 import mesfavoris.internal.operations.GetLinkedBookmarksOperation;
 import mesfavoris.internal.operations.GotoBookmarkOperation;
+import mesfavoris.internal.operations.GotoNumberedBookmarkOperation;
 import mesfavoris.internal.operations.PasteBookmarkOperation;
 import mesfavoris.internal.operations.RefreshRemoteFolderOperation;
 import mesfavoris.internal.operations.RemoveFromRemoteBookmarksStoreOperation;
@@ -61,8 +62,8 @@ public class BookmarksService implements IBookmarksService {
 			DefaultBookmarkFolderProvider defaultBookmarkFolderProvider,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
 			IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker,
-			IBookmarkLocationProvider bookmarkLocationProvider,
-			IGotoBookmark gotoBookmark, NumberedBookmarks numberedBookmarks) {
+			IBookmarkLocationProvider bookmarkLocationProvider, IGotoBookmark gotoBookmark,
+			NumberedBookmarks numberedBookmarks) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.bookmarkModificationValidator = bookmarkModificationValidator;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
@@ -214,7 +215,8 @@ public class BookmarksService implements IBookmarksService {
 
 	@Override
 	public void gotoBookmark(BookmarkId bookmarkId, IProgressMonitor monitor) throws BookmarksException {
-		GotoBookmarkOperation gotoBookmarkOperation = new GotoBookmarkOperation(bookmarkDatabase, bookmarkLocationProvider, gotoBookmark);
+		GotoBookmarkOperation gotoBookmarkOperation = new GotoBookmarkOperation(bookmarkDatabase,
+				bookmarkLocationProvider, gotoBookmark);
 		gotoBookmarkOperation.gotoBookmark(bookmarkId, monitor);
 	}
 
@@ -223,6 +225,13 @@ public class BookmarksService implements IBookmarksService {
 		AddNumberedBookmarkOperation operation = new AddNumberedBookmarkOperation(numberedBookmarks);
 		operation.addNumberedBookmark(bookmarkId, bookmarkNumber);
 	}
-	
-	
+
+	@Override
+	public void gotoNumberedBookmark(BookmarkNumber bookmarkNumber, IProgressMonitor monitor)
+			throws BookmarksException {
+		GotoNumberedBookmarkOperation operation = new GotoNumberedBookmarkOperation(numberedBookmarks, bookmarkDatabase,
+				bookmarkLocationProvider, gotoBookmark);
+		operation.gotoNumberedBookmark(bookmarkNumber, monitor);
+	}
+
 }
