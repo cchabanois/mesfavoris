@@ -17,4 +17,8 @@ public enum BookmarkNumber {
 	private BookmarkNumber(int number) {
 		this.number = number;
 	}		
+	
+	public int getNumber() {
+		return number;
+	}
 }

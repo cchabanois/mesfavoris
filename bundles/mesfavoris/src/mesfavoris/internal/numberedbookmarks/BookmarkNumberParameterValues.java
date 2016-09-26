@@ -17,7 +17,7 @@ public class BookmarkNumberParameterValues implements IParameterValues {
 	public Map getParameterValues() {
 		Map<String, String> result = new HashMap<>();
 		for (BookmarkNumber bookmarkNumber : BookmarkNumber.values()) {
-			result.put(bookmarkNumber.toString(), bookmarkNumber.toString());
+			result.put(Integer.toString(bookmarkNumber.getNumber()), bookmarkNumber.toString());
 		}
 		return result;
 	}
