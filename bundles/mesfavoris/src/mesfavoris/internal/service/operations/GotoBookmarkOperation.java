@@ -1,4 +1,4 @@
-package mesfavoris.internal.operations;
+package mesfavoris.internal.service.operations;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;

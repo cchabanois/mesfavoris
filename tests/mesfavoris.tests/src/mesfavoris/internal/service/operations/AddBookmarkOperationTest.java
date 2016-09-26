@@ -1,4 +1,4 @@
-package mesfavoris.internal.operations;
+package mesfavoris.internal.service.operations;
 
 import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmark;
 import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmarkFolder;
@@ -28,6 +28,7 @@ import org.mockito.stubbing.Answer;
 import com.google.common.collect.ImmutableMap;
 
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
+import mesfavoris.internal.service.operations.AddBookmarkOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;

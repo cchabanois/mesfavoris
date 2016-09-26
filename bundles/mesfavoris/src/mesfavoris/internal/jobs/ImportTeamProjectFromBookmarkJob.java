@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.BookmarksPlugin;
-import mesfavoris.internal.operations.ImportTeamProjectOperation;
+import mesfavoris.internal.service.operations.ImportTeamProjectOperation;
 import mesfavoris.model.Bookmark;
 
 public class ImportTeamProjectFromBookmarkJob extends Job {

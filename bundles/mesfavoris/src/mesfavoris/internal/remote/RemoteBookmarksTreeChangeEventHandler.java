@@ -12,7 +12,7 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.internal.operations.RefreshRemoteFolderOperation;
+import mesfavoris.internal.service.operations.RefreshRemoteFolderOperation;
 import mesfavoris.model.BookmarkId;
 
 /**

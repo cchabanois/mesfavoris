@@ -1,4 +1,4 @@
-package mesfavoris.internal.operations;
+package mesfavoris.internal.service.operations;
 
 import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookmark;
 import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookmarkFolder;
@@ -27,6 +27,8 @@ import com.google.common.collect.Lists;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
+import mesfavoris.internal.service.operations.CopyBookmarkOperation;
+import mesfavoris.internal.service.operations.PasteBookmarkOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;

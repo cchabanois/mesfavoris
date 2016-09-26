@@ -1,4 +1,4 @@
-package mesfavoris.internal.operations;
+package mesfavoris.internal.service.operations;
 
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;

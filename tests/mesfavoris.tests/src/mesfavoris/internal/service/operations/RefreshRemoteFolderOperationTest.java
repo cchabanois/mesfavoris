@@ -1,4 +1,4 @@
-package mesfavoris.internal.operations;
+package mesfavoris.internal.service.operations;
 
 import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmark;
 import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmarkFolder;
@@ -14,6 +14,7 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 
 import mesfavoris.internal.remote.InMemoryRemoteBookmarksStore;
+import mesfavoris.internal.service.operations.RefreshRemoteFolderOperation;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;

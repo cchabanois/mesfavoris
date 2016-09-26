@@ -6,21 +6,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.BookmarksPlugin;
 import mesfavoris.handlers.AbstractBookmarkHandler;
-import mesfavoris.internal.operations.DeleteBookmarksOperation;
-import mesfavoris.model.BookmarkDatabase;
-import mesfavoris.validation.BookmarkModificationValidator;
 
 public class DeleteBookmarkHandler extends AbstractBookmarkHandler {
-	private final BookmarkDatabase bookmarkDatabase;
-	private final BookmarkModificationValidator bookmarkModificationValidator;
-
-	public DeleteBookmarkHandler() {
-		this.bookmarkDatabase = BookmarksPlugin.getBookmarkDatabase();
-		this.bookmarkModificationValidator = new BookmarkModificationValidator(
-				BookmarksPlugin.getRemoteBookmarksStoreManager());
-	}
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -29,9 +17,7 @@ public class DeleteBookmarkHandler extends AbstractBookmarkHandler {
 			return null;
 		}
 		try {
-			DeleteBookmarksOperation operation = new DeleteBookmarksOperation(bookmarkDatabase,
-					bookmarkModificationValidator);
-			operation.deleteBookmarks(getAsBookmarkIds(selection));
+			bookmarksService.deleteBookmarks(getAsBookmarkIds(selection));
 		} catch (BookmarksException e) {
 			throw new ExecutionException("Could not delete bookmark", e);
 		}

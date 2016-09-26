@@ -13,7 +13,7 @@ import org.osgi.service.event.EventHandler;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.BookmarksPlugin;
-import mesfavoris.internal.operations.AddToRemoteBookmarksStoreOperation;
+import mesfavoris.internal.service.operations.AddToRemoteBookmarksStoreOperation;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.IRemoteBookmarksStore;

@@ -8,7 +8,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.BookmarksPlugin;
 import mesfavoris.StatusHelper;
 import mesfavoris.handlers.AbstractBookmarkHandler;
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
@@ -28,7 +27,7 @@ public class GotoNumberedBookmarkHandler extends AbstractBookmarkHandler {
 		try {
 			progressService.busyCursorWhile(monitor -> {
 				try {
-					BookmarksPlugin.getBookmarksService().gotoNumberedBookmark(bookmarkNumber, monitor);
+					bookmarksService.gotoNumberedBookmark(bookmarkNumber, monitor);
 				} catch (BookmarksException e) {
 					throw new InvocationTargetException(e);
 				}

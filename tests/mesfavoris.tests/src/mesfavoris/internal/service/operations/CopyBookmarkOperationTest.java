@@ -1,4 +1,4 @@
-package mesfavoris.internal.operations;
+package mesfavoris.internal.service.operations;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 
 import com.google.common.collect.Lists;
 
-import mesfavoris.internal.operations.CopyBookmarkOperation;
+import mesfavoris.internal.service.operations.CopyBookmarkOperation;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;

@@ -5,7 +5,7 @@ import org.eclipse.jface.text.TextEvent;
 import org.eclipse.swt.widgets.Composite;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.internal.operations.SetBookmarkCommentOperation;
+import mesfavoris.internal.service.operations.SetBookmarkCommentOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.validation.IBookmarkModificationValidator;

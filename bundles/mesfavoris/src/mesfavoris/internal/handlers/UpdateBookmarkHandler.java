@@ -12,23 +12,12 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.progress.IProgressService;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.BookmarksPlugin;
-import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
-import mesfavoris.internal.operations.UpdateBookmarkOperation;
 import mesfavoris.internal.views.BookmarksView;
 import mesfavoris.model.Bookmark;
-import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 
 public class UpdateBookmarkHandler extends AbstractBookmarkCreationHandler {
-	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
-	private final BookmarkDatabase bookmarkDatabase;
-
-	public UpdateBookmarkHandler() {
-		this.bookmarkDatabase = BookmarksPlugin.getBookmarkDatabase();
-		this.bookmarkPropertiesProvider = BookmarksPlugin.getBookmarkPropertiesProvider();
-	}
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -53,9 +42,7 @@ public class UpdateBookmarkHandler extends AbstractBookmarkCreationHandler {
 		try {
 			progressService.busyCursorWhile(monitor -> {
 				try {
-					UpdateBookmarkOperation updateBookmarkOperation = new UpdateBookmarkOperation(bookmarkDatabase,
-							bookmarkPropertiesProvider);
-					updateBookmarkOperation.updateBookmark(bookmarkId, operationContext.part, operationContext.selection,
+					bookmarksService.updateBookmark(bookmarkId, operationContext.part, operationContext.selection,
 							monitor);
 				} catch (BookmarksException e) {
 					throw new InvocationTargetException(e);

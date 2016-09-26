@@ -11,26 +11,11 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.progress.IProgressService;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.BookmarksPlugin;
-import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.handlers.AbstractBookmarkHandler;
-import mesfavoris.internal.operations.PasteBookmarkOperation;
-import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
-import mesfavoris.validation.BookmarkModificationValidator;
 
 public class PasteBookmarkHandler extends AbstractBookmarkHandler {
-	private final BookmarkDatabase bookmarkDatabase;
-	private final BookmarkModificationValidator bookmarkModificationValidator;
-	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
-
-	public PasteBookmarkHandler() {
-		this.bookmarkDatabase = BookmarksPlugin.getBookmarkDatabase();
-		this.bookmarkModificationValidator = new BookmarkModificationValidator(
-				BookmarksPlugin.getRemoteBookmarksStoreManager());
-		this.bookmarkPropertiesProvider = BookmarksPlugin.getBookmarkPropertiesProvider();
-	}
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -48,10 +33,8 @@ public class PasteBookmarkHandler extends AbstractBookmarkHandler {
 		IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
 		try {
 			progressService.busyCursorWhile(monitor -> {
-				PasteBookmarkOperation operation = new PasteBookmarkOperation(bookmarkDatabase,
-						bookmarkPropertiesProvider, bookmarkModificationValidator);
 				try {
-					operation.paste(display, bookmarkFolderId, monitor);
+					bookmarksService.paste(display, bookmarkFolderId, monitor);
 				} catch (BookmarksException e) {
 					throw new InvocationTargetException(e);
 				}

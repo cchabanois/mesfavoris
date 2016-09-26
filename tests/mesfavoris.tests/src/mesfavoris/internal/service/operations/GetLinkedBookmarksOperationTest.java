@@ -1,4 +1,4 @@
-package mesfavoris.internal.operations;
+package mesfavoris.internal.service.operations;
 
 import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmark;
 import static mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder.bookmarksTree;
@@ -36,6 +36,7 @@ import mesfavoris.BookmarksException;
 import mesfavoris.commons.ui.wizards.datatransfer.BundleProjectImportOperation;
 import mesfavoris.internal.bookmarktypes.PluginBookmarkMarkerAttributesProvider;
 import mesfavoris.internal.markers.BookmarksMarkers;
+import mesfavoris.internal.service.operations.GetLinkedBookmarksOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;

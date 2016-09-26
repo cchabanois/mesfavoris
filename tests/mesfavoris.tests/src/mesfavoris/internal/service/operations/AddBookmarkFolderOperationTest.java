@@ -1,4 +1,4 @@
-package mesfavoris.internal.operations;
+package mesfavoris.internal.service.operations;
 
 import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.*;
 import static mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder.bookmarksTree;
@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import mesfavoris.BookmarksException;
+import mesfavoris.internal.service.operations.AddBookmarkFolderOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;

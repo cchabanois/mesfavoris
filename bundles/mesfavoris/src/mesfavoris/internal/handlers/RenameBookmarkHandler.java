@@ -11,7 +11,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import mesfavoris.BookmarksException;
 import mesfavoris.BookmarksPlugin;
 import mesfavoris.handlers.AbstractBookmarkHandler;
-import mesfavoris.internal.operations.RenameBookmarkOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.remote.IRemoteBookmarksStore;
@@ -42,10 +41,8 @@ public class RenameBookmarkHandler extends AbstractBookmarkHandler {
 		if (newName == null) {
 			return null;
 		}
-		RenameBookmarkOperation operation = new RenameBookmarkOperation(bookmarkDatabase,
-				bookmarkModificationValidator);
 		try {
-			operation.renameBookmark(bookmark.getId(), newName);
+			bookmarksService.renameBookmark(bookmark.getId(), newName);
 		} catch (BookmarksException e) {
 			throw new ExecutionException("Could not rename bookmark", e);
 		}

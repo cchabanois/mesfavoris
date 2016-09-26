@@ -1,6 +1,5 @@
 package mesfavoris.internal.handlers;
 
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -10,30 +9,18 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.BookmarksPlugin;
-import mesfavoris.internal.operations.AddBookmarkFolderOperation;
+import mesfavoris.handlers.AbstractBookmarkHandler;
 import mesfavoris.model.Bookmark;
-import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
-import mesfavoris.validation.BookmarkModificationValidator;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
-public class NewBookmarkFolderHandler extends AbstractHandler {
-	private final BookmarkDatabase bookmarkDatabase;
-	private final IBookmarkModificationValidator bookmarkModificationValidator;
-
-	public NewBookmarkFolderHandler() {
-		this.bookmarkDatabase = BookmarksPlugin.getBookmarkDatabase();
-		this.bookmarkModificationValidator = new BookmarkModificationValidator(
-				BookmarksPlugin.getRemoteBookmarksStoreManager());
-	}
+public class NewBookmarkFolderHandler extends AbstractBookmarkHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil.getCurrentSelection(event);
 		BookmarkFolder parent = null;
 		if (selection.isEmpty()) {
-			parent = bookmarkDatabase.getBookmarksTree().getRootFolder();
+			parent = bookmarksService.getBookmarksTree().getRootFolder();
 		} else {
 			Bookmark bookmark = (Bookmark) selection.getFirstElement();
 			if (!(bookmark instanceof BookmarkFolder)) {
@@ -46,10 +33,8 @@ public class NewBookmarkFolderHandler extends AbstractHandler {
 		if (folderName == null) {
 			return null;
 		}
-		AddBookmarkFolderOperation operation = new AddBookmarkFolderOperation(bookmarkDatabase,
-				bookmarkModificationValidator);
 		try {
-			operation.addBookmarkFolder(parent.getId(), folderName);
+			bookmarksService.addBookmarkFolder(parent.getId(), folderName);
 		} catch (BookmarksException e) {
 			throw new ExecutionException("Could not add bookmark folder", e);
 		}
