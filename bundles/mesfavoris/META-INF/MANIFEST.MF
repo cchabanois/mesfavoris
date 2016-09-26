@@ -16,8 +16,7 @@ Export-Package: mesfavoris,
  mesfavoris.remote,
  mesfavoris.service,
  mesfavoris.validation,
- mesfavoris.viewers,
- mesfavoris.workspace
+ mesfavoris.viewers
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jdt.ui;bundle-version="3.9.2",
