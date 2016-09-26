@@ -520,6 +520,7 @@
    <extension
          point="org.eclipse.ui.editors.markerAnnotationSpecification">
       <specification
+            annotationImageProvider="mesfavoris.internal.markers.BookmarkAnnotationImageProvider"
             annotationType="mesfavoris.texteditor.bookmark"
             colorPreferenceKey="bookmarkIndicationColor"
             colorPreferenceValue="34,164,99"

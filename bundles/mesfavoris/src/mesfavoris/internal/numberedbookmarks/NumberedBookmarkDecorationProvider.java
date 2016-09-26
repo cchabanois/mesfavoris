@@ -27,7 +27,7 @@ public class NumberedBookmarkDecorationProvider implements IBookmarkDecorationPr
 		return overlayImages;
 	}
 
-	private ImageDescriptor getImageDescriptor(BookmarkNumber bookmarkNumber) {
+	public static ImageDescriptor getImageDescriptor(BookmarkNumber bookmarkNumber) {
 		switch (bookmarkNumber) {
 		case ONE:
 			return BookmarksPlugin.getImageDescriptor("icons/ovr16/1_ovr.png");
