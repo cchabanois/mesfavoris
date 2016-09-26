@@ -96,5 +96,20 @@
          </activeWhen>
       </handler>
    </extension>
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            class="mesfavoris.gdrive.decoration.GDriveBookmarkFolderLightweightDecorator"
+            id="mesfavoris.gdrive.decorator"
+            label="Mes favoris : gdrive"
+            lightweight="true"
+            state="true">
+         <enablement>
+            <objectClass
+                  name="mesfavoris.model.Bookmark">
+            </objectClass>
+         </enablement>
+      </decorator>
+   </extension>
 
 </plugin>
