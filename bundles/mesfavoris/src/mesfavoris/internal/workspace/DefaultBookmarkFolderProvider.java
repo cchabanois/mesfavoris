@@ -1,4 +1,4 @@
-package mesfavoris.workspace;
+package mesfavoris.internal.workspace;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -15,6 +15,15 @@ import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.validation.IBookmarkModificationValidator;
 
+/**
+ * Provides the default bookmark folder where to add a new bookmark.
+ * 
+ * If bookmarks view is opened, the selected bookmark is used to determine the
+ * bookmark folder, otherwise the "default" bookmark folder is returned.
+ * 
+ * @author cchabanois
+ *
+ */
 public class DefaultBookmarkFolderProvider {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final IBookmarkModificationValidator bookmarkModificationValidator;
@@ -44,10 +53,11 @@ public class DefaultBookmarkFolderProvider {
 
 	private void createDefaultBookmarkFolder() {
 		try {
-			bookmarkDatabase.modify(bookmarksTreeModifier-> {
+			bookmarkDatabase.modify(bookmarksTreeModifier -> {
 				BookmarkFolder bookmarkFolder = new BookmarkFolder(defaultBookmarkId, "default");
-				bookmarksTreeModifier.addBookmarksAfter(bookmarksTreeModifier.getCurrentTree().getRootFolder().getId(), null, Lists.newArrayList(bookmarkFolder));
-				});
+				bookmarksTreeModifier.addBookmarksAfter(bookmarksTreeModifier.getCurrentTree().getRootFolder().getId(),
+						null, Lists.newArrayList(bookmarkFolder));
+			});
 		} catch (BookmarksException e) {
 			StatusHelper.logWarn("Could not create default folder", e);
 		}

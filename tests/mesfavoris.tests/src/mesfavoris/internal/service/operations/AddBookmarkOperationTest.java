@@ -29,12 +29,12 @@ import com.google.common.collect.ImmutableMap;
 
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.internal.service.operations.AddBookmarkOperation;
+import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
-import mesfavoris.workspace.DefaultBookmarkFolderProvider;
 
 public class AddBookmarkOperationTest {
 	private AddBookmarkOperation operation;

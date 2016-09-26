@@ -11,10 +11,10 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
+import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
-import mesfavoris.workspace.DefaultBookmarkFolderProvider;
 
 public class AddBookmarkOperation {
 	private final BookmarkDatabase bookmarkDatabase;

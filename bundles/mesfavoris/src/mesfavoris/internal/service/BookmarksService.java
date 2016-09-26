@@ -35,6 +35,7 @@ import mesfavoris.internal.service.operations.SetBookmarkCommentOperation;
 import mesfavoris.internal.service.operations.ShowInBookmarksViewOperation;
 import mesfavoris.internal.service.operations.SortByNameOperation;
 import mesfavoris.internal.service.operations.UpdateBookmarkOperation;
+import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
@@ -43,7 +44,6 @@ import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.service.IBookmarksService;
 import mesfavoris.validation.IBookmarkModificationValidator;
-import mesfavoris.workspace.DefaultBookmarkFolderProvider;
 
 public class BookmarksService implements IBookmarksService {
 	private final BookmarkDatabase bookmarkDatabase;

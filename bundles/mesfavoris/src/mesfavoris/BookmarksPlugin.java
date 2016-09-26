@@ -38,6 +38,7 @@ import mesfavoris.internal.service.operations.RefreshRemoteFolderOperation;
 import mesfavoris.internal.views.virtual.BookmarkLink;
 import mesfavoris.internal.visited.VisitedBookmarksDatabase;
 import mesfavoris.internal.workspace.BookmarksWorkspaceFactory;
+import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
@@ -47,7 +48,6 @@ import mesfavoris.persistence.json.BookmarksTreeJsonSerializer;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.service.IBookmarksService;
 import mesfavoris.validation.BookmarkModificationValidator;
-import mesfavoris.workspace.DefaultBookmarkFolderProvider;
 
 /**
  * The activator class controls the plug-in life cycle
