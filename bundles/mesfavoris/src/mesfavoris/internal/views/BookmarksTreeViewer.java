@@ -109,7 +109,9 @@ public class BookmarksTreeViewer extends TreeViewer {
 			ISelection selection = getSelection();
 			Object firstElement = ((IStructuredSelection) selection).getFirstElement();
 			Bookmark bookmark = AdapterUtils.getAdapter(firstElement, Bookmark.class);
-			if (!(bookmark instanceof BookmarkFolder)) {
+			if (bookmark instanceof BookmarkFolder) {
+				this.setExpandedState(firstElement, !getExpandedState(firstElement));
+			} else {
 				new FindLocationAndGotoBookmarkJob(bookmark).schedule();
 			}
 		});
