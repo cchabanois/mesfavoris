@@ -146,4 +146,8 @@ public class BookmarksTreeViewer extends TreeViewer {
 		return AdapterUtils.getAdapter(selection.getFirstElement(), Bookmark.class);
 	}
 
+	public BookmarkDatabase getBookmarkDatabase() {
+		return bookmarkDatabase;
+	}
+	
 }

@@ -27,7 +27,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
@@ -77,7 +80,8 @@ public class BookmarksView extends ViewPart {
 	private ToggleLinkAction toggleLinkAction;
 	private FormToolkit toolkit;
 	private ToolBarManager commentsToolBarManager;
-
+	private IMemento memento;
+	
 	public BookmarksView() {
 		this.bookmarkDatabase = BookmarksPlugin.getBookmarkDatabase();
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
@@ -101,6 +105,7 @@ public class BookmarksView extends ViewPart {
 		contributeToActionBars();
 		getSite().setSelectionProvider(bookmarksTreeViewer);
 		toggleLinkAction.init();
+		restoreState(memento);
 	}
 
 	private void createCommentsSection(Composite parent) {
@@ -294,6 +299,23 @@ public class BookmarksView extends ViewPart {
 
 	public void setFocus() {
 		bookmarksTreeViewer.getControl().setFocus();
+	}
+
+	@Override
+	public void init(IViewSite site, IMemento memento) throws PartInitException {
+		this.memento = memento;
+		super.init(site, memento);
+	}
+	
+	@Override
+	public void saveState(IMemento memento) {
+		BookmarksTreeViewerStateManager manager = new BookmarksTreeViewerStateManager(bookmarksTreeViewer);
+		manager.saveState(memento);
+	}
+	
+	private void restoreState(IMemento memento) {
+		BookmarksTreeViewerStateManager manager = new BookmarksTreeViewerStateManager(bookmarksTreeViewer);
+		manager.restoreState(memento);
 	}
 
 }
