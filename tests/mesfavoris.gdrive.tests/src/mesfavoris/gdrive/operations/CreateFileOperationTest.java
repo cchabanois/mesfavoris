@@ -1,6 +1,7 @@
 package mesfavoris.gdrive.operations;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeast;
@@ -17,8 +18,6 @@ import org.junit.Test;
 import com.google.api.services.drive.model.File;
 
 import mesfavoris.gdrive.GDriveTestUser;
-import mesfavoris.gdrive.operations.CreateFileOperation;
-import mesfavoris.gdrive.operations.DownloadFileOperation;
 import mesfavoris.gdrive.test.GDriveConnectionRule;
 
 public class CreateFileOperationTest {

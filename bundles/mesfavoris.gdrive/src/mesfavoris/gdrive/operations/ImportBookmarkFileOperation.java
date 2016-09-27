@@ -2,6 +2,7 @@ package mesfavoris.gdrive.operations;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Optional;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
@@ -20,18 +21,25 @@ import mesfavoris.service.IBookmarksService;
 public class ImportBookmarkFileOperation extends AbstractGDriveOperation {
 	private final BookmarkMappingsStore bookmarkMappingsStore;
 	private final IBookmarksService bookmarksService;
-
+	private final Optional<String> applicationFolderId;
+	
 	public ImportBookmarkFileOperation(Drive drive, BookmarkMappingsStore bookmarkMappingsStore,
-			IBookmarksService bookmarksService) {
+			IBookmarksService bookmarksService, Optional<String> applicationFolderId) {
 		super(drive);
 		this.bookmarkMappingsStore = bookmarkMappingsStore;
 		this.bookmarksService = bookmarksService;
+		this.applicationFolderId = applicationFolderId;
 	}
 
 	public void importBookmarkFile(BookmarkId parentId, String fileId, IProgressMonitor monitor)
 			throws BookmarksException, IOException {
 		try {
 			monitor.beginTask("Importing bookmark folder", 100);
+			if (applicationFolderId.isPresent()) {
+				// add it to the application folder
+				AddFileToFolderOperation addFileToFolderOperation = new AddFileToFolderOperation(drive);
+				addFileToFolderOperation.addToFolder(applicationFolderId.get(), fileId);			
+			}
 			DownloadHeadRevisionOperation downloadFileOperation = new DownloadHeadRevisionOperation(drive);
 			FileContents contents = downloadFileOperation.downloadFile(fileId, new SubProgressMonitor(monitor, 80));
 			IBookmarksTreeDeserializer deserializer = new BookmarksTreeJsonDeserializer();

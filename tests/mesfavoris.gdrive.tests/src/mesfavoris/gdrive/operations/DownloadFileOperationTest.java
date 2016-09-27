@@ -24,10 +24,6 @@ import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.Revision;
 
 import mesfavoris.gdrive.GDriveTestUser;
-import mesfavoris.gdrive.operations.CreateFileOperation;
-import mesfavoris.gdrive.operations.DownloadFileOperation;
-import mesfavoris.gdrive.operations.GetFileMetadataOperation;
-import mesfavoris.gdrive.operations.UpdateFileOperation;
 import mesfavoris.gdrive.test.GDriveConnectionRule;
 
 public class DownloadFileOperationTest {

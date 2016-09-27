@@ -2,6 +2,7 @@ package mesfavoris.gdrive.handlers;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -55,7 +56,7 @@ public class ImportBookmarksFromGdriveHandler extends AbstractHandler {
 			return null;
 		}
 		ImportBookmarkFileOperation importBookmarkFileOperation = new ImportBookmarkFileOperation(drive,
-				bookmarkMappingsStore, bookmarksService);
+				bookmarkMappingsStore, bookmarksService, Optional.of(gDriveConnectionManager.getApplicationFolderId()));
 		try {
 			importBookmarkFileOperation.importBookmarkFile(bookmarkFolder.getId(), file.getId(),
 					new NullProgressMonitor());

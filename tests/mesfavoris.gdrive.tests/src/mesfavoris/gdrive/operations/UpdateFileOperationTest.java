@@ -15,9 +15,6 @@ import com.google.api.client.util.Charsets;
 import com.google.api.services.drive.model.File;
 
 import mesfavoris.gdrive.GDriveTestUser;
-import mesfavoris.gdrive.operations.CreateFileOperation;
-import mesfavoris.gdrive.operations.DownloadFileOperation;
-import mesfavoris.gdrive.operations.UpdateFileOperation;
 import mesfavoris.gdrive.test.GDriveConnectionRule;
 
 public class UpdateFileOperationTest {
