@@ -1,4 +1,4 @@
-package mesfavoris.internal.views;
+package mesfavoris.viewers;
 
 import java.util.HashMap;
 import java.util.Map;

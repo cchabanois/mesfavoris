@@ -18,7 +18,7 @@ public class GetFileIdFromUrlOperation {
 //		https://drive.google.com/open?id=0B7a_ei8brT1TMy1CQ0o5NmZQNEE
 		try {
 			URI uri = new URI(url);
-			if (!uri.getHost().endsWith(".google.com")) {
+			if (uri.getHost() == null || !uri.getHost().endsWith(".google.com")) {
 				return Optional.empty();
 			}
 			List<NameValuePair> params = URLEncodedUtils.parse(uri, "UTF-8");
