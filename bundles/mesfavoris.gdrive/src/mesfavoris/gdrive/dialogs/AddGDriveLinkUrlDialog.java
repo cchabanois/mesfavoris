@@ -29,6 +29,7 @@ public class AddGDriveLinkUrlDialog extends TitleAreaDialog {
 	public void create() {
 		super.create();
 		setTitle("Add a link to a gdrive bookmarks file");
+		getShell().setText("Add a link to a gdrive bookmarks file");
 		setPageComplete(false);
 	}
 

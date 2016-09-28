@@ -49,8 +49,8 @@ public class ImportBookmarksFromGdriveHandler extends AbstractHandler {
 		if (drive == null) {
 			return null;
 		}
-		ImportBookmarksFileDialog dialog = new ImportBookmarksFileDialog(shell, gDriveConnectionManager,
-				bookmarkMappings);
+		ImportBookmarksFileDialog dialog = new ImportBookmarksFileDialog(shell, gDriveConnectionManager.getDrive(),
+				gDriveConnectionManager.getApplicationFolderId(), bookmarkMappings);
 		if (dialog.open() == Dialog.CANCEL) {
 			return null;
 		}
@@ -73,6 +73,6 @@ public class ImportBookmarksFromGdriveHandler extends AbstractHandler {
 			return false;
 		}
 		return true;
-	}	
-	
+	}
+
 }

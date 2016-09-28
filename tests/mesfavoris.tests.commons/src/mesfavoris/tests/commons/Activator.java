@@ -1,30 +1,37 @@
 package mesfavoris.tests.commons;
 
-import org.osgi.framework.BundleActivator;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-public class Activator implements BundleActivator {
+public class Activator extends AbstractUIPlugin {
 
-	private static BundleContext context;
+	// The plug-in ID
+	public static final String PLUGIN_ID = "mesfavoris.tests.commons"; //$NON-NLS-1$
 
-	static BundleContext getContext() {
-		return context;
+	// The shared instance
+	private static Activator plugin;
+
+	public Activator() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext bundleContext) throws Exception {
-		Activator.context = bundleContext;
+	@Override
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		plugin = this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	@Override
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
+	}
+
+	/**
+	 * Returns the shared instance
+	 *
+	 * @return the shared instance
 	 */
-	public void stop(BundleContext bundleContext) throws Exception {
-		Activator.context = null;
+	public static Activator getDefault() {
+		return plugin;
 	}
 
 }

@@ -26,23 +26,25 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 
 import com.google.api.client.util.Lists;
+import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 
-import mesfavoris.gdrive.connection.GDriveConnectionManager;
 import mesfavoris.gdrive.mappings.IBookmarkMappings;
 import mesfavoris.gdrive.operations.AddFileToFolderOperation;
 import mesfavoris.gdrive.operations.GetBookmarkFilesOperation;
 
 public class ImportBookmarksFileDialog extends TitleAreaDialog {
 	private FileTableViewer fileTableViewer;
-	private final GDriveConnectionManager gDriveConnectionManager;
+	private final Drive drive;
+	private final String applicationFolderId;
 	private final IBookmarkMappings bookmarkMappings;
 	private File file;
 
-	public ImportBookmarksFileDialog(Shell parentShell, GDriveConnectionManager gDriveConnectionManager,
+	public ImportBookmarksFileDialog(Shell parentShell, Drive drive, String applicationFolderId,
 			IBookmarkMappings bookmarkMappings) {
 		super(parentShell);
-		this.gDriveConnectionManager = gDriveConnectionManager;
+		this.drive = drive;
+		this.applicationFolderId = applicationFolderId;
 		this.bookmarkMappings = bookmarkMappings;
 	}
 
@@ -106,10 +108,9 @@ public class ImportBookmarksFileDialog extends TitleAreaDialog {
 			public void widgetSelected(SelectionEvent event) {
 				AddGDriveLinkUrlDialog dialog = new AddGDriveLinkUrlDialog(getShell());
 				if (dialog.open() == Window.OK) {
-					AddFileToFolderOperation operation = new AddFileToFolderOperation(
-							gDriveConnectionManager.getDrive());
+					AddFileToFolderOperation operation = new AddFileToFolderOperation(drive);
 					try {
-						operation.addToFolder(gDriveConnectionManager.getApplicationFolderId(), dialog.getFileId());
+						operation.addToFolder(applicationFolderId, dialog.getFileId());
 					} catch (IOException e) {
 
 					}
@@ -136,8 +137,7 @@ public class ImportBookmarksFileDialog extends TitleAreaDialog {
 			progressService.busyCursorWhile(monitor -> {
 				List<File> bookmarkFiles = Lists.newArrayList();
 				try {
-					GetBookmarkFilesOperation operation = new GetBookmarkFilesOperation(
-							gDriveConnectionManager.getDrive());
+					GetBookmarkFilesOperation operation = new GetBookmarkFilesOperation(drive);
 					bookmarkFiles.addAll(operation.getBookmarkFiles());
 				} catch (IOException e) {
 					throw new InvocationTargetException(e);
