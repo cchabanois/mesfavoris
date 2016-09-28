@@ -66,4 +66,13 @@ public class ImportBookmarksFromGdriveHandler extends AbstractHandler {
 		return null;
 	}
 
+	@Override
+	public boolean isEnabled() {
+		Drive drive = gDriveConnectionManager.getDrive();
+		if (drive == null) {
+			return false;
+		}
+		return true;
+	}	
+	
 }
