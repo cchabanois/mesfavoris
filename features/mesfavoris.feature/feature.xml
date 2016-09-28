@@ -30,22 +30,17 @@
       <import plugin="com.google.guava" version="18.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.e4.core.services"/>
       <import plugin="org.eclipse.osgi.services" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="mesfavoris.commons" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="mesfavoris" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.9.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.runtime" version="3.10.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jgit" version="3.4.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jgit.archive" version="3.4.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.egit.core" version="3.4.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.team.core" version="3.7.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jface" version="3.10.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.core" version="3.10.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.ui" version="3.10.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jface.text" version="3.9.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.9.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.106.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface.text" version="3.9.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.10.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.9.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.9.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.filebuffers" version="3.5.400" match="greaterOrEqual"/>
       <import plugin="org.jsoup" version="1.7.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.swt" version="3.103.1" match="greaterOrEqual"/>
-      <import plugin="mesfavoris.commons" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface" version="3.10.1" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -71,20 +66,6 @@
 
    <plugin
          id="mesfavoris.gdrive"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="mesfavoris.git"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="mesfavoris.java"
          download-size="0"
          install-size="0"
          version="0.0.0"

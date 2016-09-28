@@ -16,6 +16,8 @@
 	<modules>
 		<module>mesfavoris.feature</module>
 		<module>mesfavoris.perforce.feature</module>
+		<module>mesfavoris.java.feature</module>
+		<module>mesfavoris.git.feature</module>
 	</modules>
 
 </project>
