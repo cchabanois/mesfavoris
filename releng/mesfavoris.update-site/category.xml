@@ -6,5 +6,11 @@
    <feature url="features/mesfavoris.perforce.feature_1.0.0.qualifier.jar" id="mesfavoris.perforce.feature" version="1.0.0.qualifier">
       <category name="mesfavoris"/>
    </feature>
+   <feature url="features/mesfavoris.git.feature_1.0.0.qualifier.jar" id="mesfavoris.git.feature" version="1.0.0.qualifier">
+      <category name="mesfavoris"/>
+   </feature>
+   <feature url="features/mesfavoris.java.feature_1.0.0.qualifier.jar" id="mesfavoris.java.feature" version="1.0.0.qualifier">
+      <category name="mesfavoris"/>
+   </feature>
    <category-def name="mesfavoris" label="mesfavoris"/>
 </site>
