@@ -2,6 +2,7 @@ package mesfavoris.gdrive.test;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.logging.Level;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -25,6 +26,10 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 	private final String userName;
 	private final String password;
 	private final IProgressMonitor monitor;
+	
+	static {
+		java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.SEVERE); 
+	}
 	
 	public HtmlUnitAuthorizationCodeInstalledApp(AuthorizationCodeFlow flow, VerificationCodeReceiver receiver, IProgressMonitor monitor, String userName, String password) {
 		super(flow, receiver);
