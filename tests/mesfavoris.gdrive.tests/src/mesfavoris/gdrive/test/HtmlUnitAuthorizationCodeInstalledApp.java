@@ -39,9 +39,7 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 				+ authorizationUrl);
 
 		try (final WebClient webClient = new WebClient()) {
-			webClient.getOptions().setJavaScriptEnabled(true);
 			webClient.getOptions().setThrowExceptionOnScriptError(false);
-			webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
 			HtmlPage allowAccessPage = signIn(webClient, authorizationUrl.build());
 			HtmlPage tokenPage = allowAccess(webClient, allowAccessPage);
 		}
