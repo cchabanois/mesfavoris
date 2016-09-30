@@ -23,11 +23,15 @@ public class AbstractDialogTest {
 
 	@After
 	public void closeDialog() {
+		closeShell(shellText);
+	}
+
+	protected void closeShell(String shellText) {
 		if (Arrays.stream(bot.shells()).filter(shell -> shellText.equals(shell.getText())).findAny().isPresent()) {
 			bot.shell(shellText).close();
 		}
 	}
-
+	
 	public void activateShell() {
 		bot.shell(shellText).activate();
 	}
