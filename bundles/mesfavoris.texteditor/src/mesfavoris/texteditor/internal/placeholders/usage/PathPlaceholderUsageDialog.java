@@ -124,15 +124,14 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 	}
 
 	private BookmarksLabelProvider getBookmarksLabelProvider() {
-		Predicate<Bookmark> selectedBookmarkPredicate = bookmark -> false;
 		Predicate<Bookmark> disabledBookmarkPredicate = new UnderDisconnectedRemoteBookmarkFolderPredicate(
 				bookmarkDatabase, remoteBookmarksStoreManager);
 		Predicate<Bookmark> dirtyBookmarkPredicate = bookmark -> false;
 		IBookmarkDecorationProvider bookmarkDecorationProvider = new UnderRemoteBookmarkFolderDecorationProvider(
 				bookmarkDatabase, remoteBookmarksStoreManager);
-		BookmarksLabelProvider bookmarksLabelProvider = new BookmarksLabelProvider(selectedBookmarkPredicate,
-				disabledBookmarkPredicate, dirtyBookmarkPredicate, bookmarkDecorationProvider,
-				BookmarksPlugin.getBookmarkLabelProvider(), bookmark -> bookmark.getPropertyValue(PROP_FILE_PATH));
+		BookmarksLabelProvider bookmarksLabelProvider = new BookmarksLabelProvider(disabledBookmarkPredicate,
+				dirtyBookmarkPredicate, bookmarkDecorationProvider, BookmarksPlugin.getBookmarkLabelProvider(),
+				bookmark -> bookmark.getPropertyValue(PROP_FILE_PATH));
 		return bookmarksLabelProvider;
 	}
 

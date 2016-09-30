@@ -35,24 +35,20 @@ public class BookmarksLabelProvider extends LabelProvider implements ILabelProvi
 	private final ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
 	private final Color commentColor;
 	private final StylerProvider stylerProvider = new StylerProvider();
-	private final Font boldFont;
 	private final Color disabledColor;
-	private final Predicate<Bookmark> selectedBookmarkPredicate;
 	private final Predicate<Bookmark> disabledBookmarkPredicate;
 	private final Predicate<Bookmark> dirtyBookmarkPredicate;
 	private final IBookmarkDecorationProvider bookmarkDecorationProvider;
 	private final IBookmarkCommentProvider bookmarkCommentProvider;
 
-	public BookmarksLabelProvider(Predicate<Bookmark> selectedBookmarkPredicate,
-			Predicate<Bookmark> disabledBookmarkPredicate, Predicate<Bookmark> dirtyBookmarkPredicate, IBookmarkDecorationProvider bookmarkDecorationProvider,
+	public BookmarksLabelProvider(Predicate<Bookmark> disabledBookmarkPredicate,
+			Predicate<Bookmark> dirtyBookmarkPredicate, IBookmarkDecorationProvider bookmarkDecorationProvider,
 			IBookmarkLabelProvider bookmarkLabelProvider, IBookmarkCommentProvider bookmarkCommentProvider) {
-		this.selectedBookmarkPredicate = selectedBookmarkPredicate;
 		this.bookmarkLabelProvider = bookmarkLabelProvider;
 		this.disabledBookmarkPredicate = disabledBookmarkPredicate;
 		this.dirtyBookmarkPredicate = dirtyBookmarkPredicate;
 		this.bookmarkDecorationProvider = bookmarkDecorationProvider;
 		this.bookmarkCommentProvider = bookmarkCommentProvider;
-		this.boldFont = JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT);
 		this.disabledColor = PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_GRAY);
 
 		this.commentColor = new Color(PlatformUI.getWorkbench().getDisplay(), 63, 127, 95);
@@ -63,20 +59,16 @@ public class BookmarksLabelProvider extends LabelProvider implements ILabelProvi
 		String comment = bookmarkCommentProvider.apply(bookmark);
 		boolean hasComment = comment != null && comment.trim().length() > 0;
 		boolean isDisabled = disabledBookmarkPredicate.test(bookmark);
-		boolean isSelectedBookmark = selectedBookmarkPredicate.test(bookmark);
 		StyledString styledString = new StyledString();
 		if (dirtyBookmarkPredicate.test(bookmark)) {
 			styledString.append("> ");
 		}
 		styledString.append(bookmarkLabelProvider.getStyledText(bookmark));
-		if (isDisabled || isSelectedBookmark) {
+		if (isDisabled) {
 			Color color = null;
 			Font font = null;
 			if (isDisabled) {
 				color = disabledColor;
-			}
-			if (isSelectedBookmark) {
-				font = boldFont;
 			}
 			styledString.setStyle(0, styledString.length(), stylerProvider.getStyler(font, color, null));
 		}
@@ -87,14 +79,11 @@ public class BookmarksLabelProvider extends LabelProvider implements ILabelProvi
 			if (isDisabled) {
 				color = disabledColor;
 			}
-			if (isSelectedBookmark) {
-				font = boldFont;
-			}
 			styledString.append(" - " + comment, stylerProvider.getStyler(font, color, null));
 		}
 		return styledString;
 	}
-	
+
 	@Override
 	public void dispose() {
 		super.dispose();
@@ -129,7 +118,7 @@ public class BookmarksLabelProvider extends LabelProvider implements ILabelProvi
 		}
 		return overlayImages;
 	}
-	
+
 	public static class DefaultBookmarkCommentProvider implements IBookmarkCommentProvider {
 
 		@Override

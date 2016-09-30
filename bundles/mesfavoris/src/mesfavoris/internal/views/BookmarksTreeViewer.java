@@ -87,14 +87,14 @@ public class BookmarksTreeViewer extends TreeViewer {
 	}
 	
 	private BookmarksLabelProvider getBookmarksLabelProvider() {
-		Predicate<Bookmark> selectedBookmarkPredicate = bookmark -> false;
 		Predicate<Bookmark> disabledBookmarkPredicate = new UnderDisconnectedRemoteBookmarkFolderPredicate(
 				bookmarkDatabase, remoteBookmarksStoreManager);
-		IBookmarkDecorationProvider bookmarkDecorationProvider = new BookmarkDecorationProvider(new RemoteBookmarkFolderDecorationProvider(
-				remoteBookmarksStoreManager), new NumberedBookmarkDecorationProvider(BookmarksPlugin.getNumberedBookmarks()));
-		BookmarksLabelProvider bookmarksLabelProvider = new BookmarksLabelProvider(selectedBookmarkPredicate,
-				disabledBookmarkPredicate, dirtyBookmarkPredicate, bookmarkDecorationProvider,
-				BookmarksPlugin.getBookmarkLabelProvider(), new DefaultBookmarkCommentProvider());
+		IBookmarkDecorationProvider bookmarkDecorationProvider = new BookmarkDecorationProvider(
+				new RemoteBookmarkFolderDecorationProvider(remoteBookmarksStoreManager),
+				new NumberedBookmarkDecorationProvider(BookmarksPlugin.getNumberedBookmarks()));
+		BookmarksLabelProvider bookmarksLabelProvider = new BookmarksLabelProvider(disabledBookmarkPredicate,
+				dirtyBookmarkPredicate, bookmarkDecorationProvider, BookmarksPlugin.getBookmarkLabelProvider(),
+				new DefaultBookmarkCommentProvider());
 		return bookmarksLabelProvider;
 	}
 
