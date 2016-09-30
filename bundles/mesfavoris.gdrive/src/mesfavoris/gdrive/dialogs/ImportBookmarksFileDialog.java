@@ -32,6 +32,7 @@ import com.google.api.services.drive.model.File;
 import mesfavoris.gdrive.mappings.IBookmarkMappings;
 import mesfavoris.gdrive.operations.AddFileToFolderOperation;
 import mesfavoris.gdrive.operations.GetBookmarkFilesOperation;
+import mesfavoris.gdrive.operations.IBookmarkFilesProvider;
 
 public class ImportBookmarksFileDialog extends TitleAreaDialog {
 	private FileTableViewer fileTableViewer;
@@ -39,13 +40,20 @@ public class ImportBookmarksFileDialog extends TitleAreaDialog {
 	private final String applicationFolderId;
 	private final IBookmarkMappings bookmarkMappings;
 	private File file;
+	private IBookmarkFilesProvider bookmarkFilesProvider;
 
 	public ImportBookmarksFileDialog(Shell parentShell, Drive drive, String applicationFolderId,
 			IBookmarkMappings bookmarkMappings) {
+		this(parentShell, drive, applicationFolderId, bookmarkMappings, new GetBookmarkFilesOperation(drive));
+	}
+	
+	public ImportBookmarksFileDialog(Shell parentShell, Drive drive, String applicationFolderId,
+			IBookmarkMappings bookmarkMappings, IBookmarkFilesProvider bookmarkFilesProvider) {
 		super(parentShell);
 		this.drive = drive;
 		this.applicationFolderId = applicationFolderId;
 		this.bookmarkMappings = bookmarkMappings;
+		this.bookmarkFilesProvider = bookmarkFilesProvider;
 	}
 
 	@Override
@@ -137,8 +145,7 @@ public class ImportBookmarksFileDialog extends TitleAreaDialog {
 			progressService.busyCursorWhile(monitor -> {
 				List<File> bookmarkFiles = Lists.newArrayList();
 				try {
-					GetBookmarkFilesOperation operation = new GetBookmarkFilesOperation(drive);
-					bookmarkFiles.addAll(operation.getBookmarkFiles());
+					bookmarkFiles.addAll(bookmarkFilesProvider.getBookmarkFiles());
 				} catch (IOException e) {
 					throw new InvocationTargetException(e);
 				} finally {
