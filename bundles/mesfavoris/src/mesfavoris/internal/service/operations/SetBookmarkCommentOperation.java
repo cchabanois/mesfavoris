@@ -25,7 +25,11 @@ public class SetBookmarkCommentOperation {
 			if (!status.isOK()) {
 				throw new BookmarksException(status);
 			}
-			bookmarksTreeModifier.setPropertyValue(bookmarkId, Bookmark.PROPERTY_COMMENT, comment);
+			if (comment.length() == 0) {
+				bookmarksTreeModifier.setPropertyValue(bookmarkId, Bookmark.PROPERTY_COMMENT, null);
+			} else {
+				bookmarksTreeModifier.setPropertyValue(bookmarkId, Bookmark.PROPERTY_COMMENT, comment);
+			}
 		});
 	}
 
