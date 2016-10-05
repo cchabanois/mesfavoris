@@ -18,7 +18,7 @@ import mesfavoris.internal.service.operations.RefreshRemoteFolderOperation;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
-import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
+import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
 
@@ -26,8 +26,7 @@ public class RefreshRemoteFolderOperationTest {
 	private InMemoryRemoteBookmarksStore remoteBookmarksStore;
 	private RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private RefreshRemoteFolderOperation refreshRemoteFolderOperation;
-	private IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker = mock(
-			IBookmarksDatabaseDirtyStateTracker.class);
+	private IBookmarksDirtyStateTracker bookmarksDirtyStateTracker = mock(IBookmarksDirtyStateTracker.class);
 	private BookmarkDatabase bookmarkDatabase;
 
 	@Before
@@ -38,7 +37,7 @@ public class RefreshRemoteFolderOperationTest {
 				() -> Lists.newArrayList(remoteBookmarksStore));
 		this.bookmarkDatabase = new BookmarkDatabase("testId", getInitialTree());
 		this.refreshRemoteFolderOperation = new RefreshRemoteFolderOperation(bookmarkDatabase,
-				remoteBookmarksStoreManager, bookmarksDatabaseDirtyStateTracker);
+				remoteBookmarksStoreManager, bookmarksDirtyStateTracker);
 	}
 
 	@Test
@@ -60,7 +59,7 @@ public class RefreshRemoteFolderOperationTest {
 		// Given
 		remoteBookmarksStore.add(getRemoteBookmarkFolder2(), new BookmarkId("bookmarkFolder2"),
 				new NullProgressMonitor());
-		when(bookmarksDatabaseDirtyStateTracker.isDirty()).thenReturn(true, true, true, false);
+		when(bookmarksDirtyStateTracker.isDirty()).thenReturn(true, true, true, false);
 
 		// When
 		refreshRemoteFolderOperation.refresh(new BookmarkId("bookmarkFolder2"), new NullProgressMonitor());
@@ -68,7 +67,7 @@ public class RefreshRemoteFolderOperationTest {
 		// Then
 		assertEquals(getRemoteBookmarkFolder2().toString(),
 				bookmarkDatabase.getBookmarksTree().subTree(new BookmarkId("bookmarkFolder2")).toString());
-		verify(bookmarksDatabaseDirtyStateTracker, times(4)).isDirty();
+		verify(bookmarksDirtyStateTracker, times(4)).isDirty();
 
 	}
 

@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -11,6 +12,8 @@ import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.SubProgressMonitor;
+
+import com.google.common.collect.ImmutableSet;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.StatusHelper;
@@ -25,8 +28,8 @@ import mesfavoris.model.modification.BookmarkPropertiesModification;
 import mesfavoris.model.modification.BookmarksAddedModification;
 import mesfavoris.model.modification.BookmarksModification;
 import mesfavoris.model.modification.BookmarksMovedModification;
-import mesfavoris.persistence.IBookmarksDatabaseDirtyStateListener;
-import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
+import mesfavoris.persistence.IBookmarksDirtyStateListener;
+import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 
 /**
  * Save bookmarks from a {@link BookmarkDatabase} when bookmarks are
@@ -35,7 +38,7 @@ import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
  * @author cchabanois
  *
  */
-public class BookmarksAutoSaver implements IBookmarksDatabaseDirtyStateTracker {
+public class BookmarksAutoSaver implements IBookmarksDirtyStateTracker {
 	private static final int SAVE_DELAY = 2000;
 	private final BookmarkDatabase bookmarkDatabase;
 	private final BackgroundBookmarksModificationsHandler backgroundBookmarksModificationsHandler;
@@ -44,7 +47,9 @@ public class BookmarksAutoSaver implements IBookmarksDatabaseDirtyStateTracker {
 	private final SaveModificationsHandler saveModificationsHandler = new SaveModificationsHandler();
 	private final IBookmarksListener bookmarksListener;
 	private final ListenerList listenerList = new ListenerList();
-
+	private final AtomicReference<Set<BookmarkId>> dirtyBookmarksRef = new AtomicReference<Set<BookmarkId>>(
+			Collections.emptySet());
+	
 	public BookmarksAutoSaver(BookmarkDatabase bookmarkDatabase, LocalBookmarksSaver localBookmarksSaver,
 			RemoteBookmarksSaver remoteBookmarksSaver) {
 		this.bookmarkDatabase = bookmarkDatabase;
@@ -53,6 +58,7 @@ public class BookmarksAutoSaver implements IBookmarksDatabaseDirtyStateTracker {
 		this.backgroundBookmarksModificationsHandler = new BackgroundBookmarksModificationsHandler("Saving bookmarks",
 				bookmarkDatabase, saveModificationsHandler, SAVE_DELAY);
 		this.bookmarksListener = modifications -> {
+			computeDirtyBookmarks();
 			fireDirtyBookmarksChanged(getDirtyBookmarks());
 		};
 	}
@@ -68,17 +74,13 @@ public class BookmarksAutoSaver implements IBookmarksDatabaseDirtyStateTracker {
 	}
 
 	@Override
-	public boolean isDirty() {
-		return backgroundBookmarksModificationsHandler.getQueueSize() > 0;
-	}
-
-	@Override
 	public Set<BookmarkId> getDirtyBookmarks() {
+		return dirtyBookmarksRef.get();
+	}
+	
+	private void computeDirtyBookmarks() {
 		List<BookmarksModification> bookmarksModifications = backgroundBookmarksModificationsHandler
 				.getUnhandledEvents();
-		if (bookmarksModifications.isEmpty()) {
-			return Collections.emptySet();
-		}
 		Set<BookmarkId> dirtyBookmarks = new HashSet<>();
 		for (BookmarksModification bookmarksModification : bookmarksModifications) {
 			if (bookmarksModification instanceof BookmarkDeletedModification) {
@@ -97,23 +99,23 @@ public class BookmarksAutoSaver implements IBookmarksDatabaseDirtyStateTracker {
 				dirtyBookmarks.add(bookmarksMovedModification.getNewParentId());
 			}
 		}
-		return dirtyBookmarks;
+		dirtyBookmarksRef.set(ImmutableSet.copyOf(dirtyBookmarks));
 	}
 
 	@Override
-	public void addListener(IBookmarksDatabaseDirtyStateListener listener) {
+	public void addListener(IBookmarksDirtyStateListener listener) {
 		listenerList.add(listener);
 	}
 
 	@Override
-	public void removeListener(IBookmarksDatabaseDirtyStateListener listener) {
+	public void removeListener(IBookmarksDirtyStateListener listener) {
 		listenerList.remove(listener);
 	}
 
 	private void fireDirtyBookmarksChanged(Set<BookmarkId> dirtyBookmarks) {
 		Object[] listeners = listenerList.getListeners();
 		for (int i = 0; i < listeners.length; i++) {
-			final IBookmarksDatabaseDirtyStateListener listener = (IBookmarksDatabaseDirtyStateListener) listeners[i];
+			final IBookmarksDirtyStateListener listener = (IBookmarksDirtyStateListener) listeners[i];
 			SafeRunner.run(new ISafeRunnable() {
 
 				public void run() throws Exception {
@@ -137,6 +139,7 @@ public class BookmarksAutoSaver implements IBookmarksDatabaseDirtyStateTracker {
 			localBookmarksSaver.saveBookmarks(bookmarksTree, new SubProgressMonitor(monitor, 20));
 			remoteBookmarksSaver.applyModificationsToRemoteBookmarksStores(modifications,
 					new SubProgressMonitor(monitor, 80));
+			computeDirtyBookmarks();
 			fireDirtyBookmarksChanged(getDirtyBookmarks());
 		}
 

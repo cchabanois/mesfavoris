@@ -59,7 +59,7 @@ import mesfavoris.internal.visited.MostVisitedBookmarksVirtualFolder;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
-import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
+import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.validation.BookmarkModificationValidator;
@@ -71,7 +71,7 @@ public class BookmarksView extends ViewPart {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final IEventBroker eventBroker;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
-	private final IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker;
+	private final IBookmarksDirtyStateTracker bookmarksDirtyStateTracker;
 	private BookmarksTreeViewer bookmarksTreeViewer;
 	private BookmarkCommentArea bookmarkCommentViewer;
 	private DrillDownAdapter drillDownAdapter;
@@ -81,12 +81,12 @@ public class BookmarksView extends ViewPart {
 	private FormToolkit toolkit;
 	private ToolBarManager commentsToolBarManager;
 	private IMemento memento;
-	
+
 	public BookmarksView() {
 		this.bookmarkDatabase = BookmarksPlugin.getBookmarkDatabase();
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
 		this.remoteBookmarksStoreManager = BookmarksPlugin.getRemoteBookmarksStoreManager();
-		this.bookmarksDatabaseDirtyStateTracker = BookmarksPlugin.getBookmarksDatabaseDirtyStateTracker();
+		this.bookmarksDirtyStateTracker = BookmarksPlugin.getBookmarksDirtyStateTracker();
 	}
 
 	public void createPartControl(Composite parent) {
@@ -193,8 +193,7 @@ public class BookmarksView extends ViewPart {
 				eventBroker, bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(), rootId, 10);
 		NumberedBookmarksVirtualFolder numberedBookmarksVirtualFolder = new NumberedBookmarksVirtualFolder(eventBroker,
 				bookmarkDatabase, rootId, BookmarksPlugin.getNumberedBookmarks());
-		IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker = BookmarksPlugin
-				.getBookmarksDatabaseDirtyStateTracker();
+		IBookmarksDirtyStateTracker bookmarksDirtyStateTracker = BookmarksPlugin.getBookmarksDirtyStateTracker();
 
 		PatternFilter patternFilter = new BookmarkPatternFilter();
 		patternFilter.setIncludeLeadingWildcard(true);
@@ -202,7 +201,7 @@ public class BookmarksView extends ViewPart {
 				patternFilter, true) {
 
 			protected TreeViewer doCreateTreeViewer(Composite parent, int style) {
-				return new BookmarksTreeViewer(parent, bookmarkDatabase, bookmarksDatabaseDirtyStateTracker,
+				return new BookmarksTreeViewer(parent, bookmarkDatabase, bookmarksDirtyStateTracker,
 						remoteBookmarksStoreManager, bookmarkPropertiesProvider,
 						Lists.newArrayList(mostVisitedBookmarksVirtualFolder, latestVisitedBookmarksVirtualFolder,
 								numberedBookmarksVirtualFolder));
@@ -293,7 +292,7 @@ public class BookmarksView extends ViewPart {
 	private void makeActions() {
 		collapseAllAction = new CollapseAllAction(bookmarksTreeViewer);
 		refreshAction = new RefreshRemoteFoldersAction(bookmarkDatabase, remoteBookmarksStoreManager,
-				bookmarksDatabaseDirtyStateTracker);
+				bookmarksDirtyStateTracker);
 		toggleLinkAction = new ToggleLinkAction(bookmarkDatabase, getSite(), bookmarksTreeViewer);
 	}
 
@@ -306,13 +305,13 @@ public class BookmarksView extends ViewPart {
 		this.memento = memento;
 		super.init(site, memento);
 	}
-	
+
 	@Override
 	public void saveState(IMemento memento) {
 		BookmarksTreeViewerStateManager manager = new BookmarksTreeViewerStateManager(bookmarksTreeViewer);
 		manager.saveState(memento);
 	}
-	
+
 	private void restoreState(IMemento memento) {
 		BookmarksTreeViewerStateManager manager = new BookmarksTreeViewerStateManager(bookmarksTreeViewer);
 		manager.restoreState(memento);

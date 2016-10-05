@@ -14,7 +14,7 @@ import mesfavoris.BookmarksException;
 import mesfavoris.internal.model.merge.BookmarksTreeMerger;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
-import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
+import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
 import mesfavoris.remote.RemoteBookmarkFolder;
@@ -31,14 +31,14 @@ import mesfavoris.remote.RemoteBookmarksTree;
 public class RefreshRemoteFolderOperation {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
-	private final IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker;
+	private final IBookmarksDirtyStateTracker bookmarksDirtyStateTracker;
 
 	public RefreshRemoteFolderOperation(BookmarkDatabase bookmarkDatabase,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
-			IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker) {
+			IBookmarksDirtyStateTracker bookmarksDirtyStateTracker) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
-		this.bookmarksDatabaseDirtyStateTracker = bookmarksDatabaseDirtyStateTracker;
+		this.bookmarksDirtyStateTracker = bookmarksDirtyStateTracker;
 	}
 
 	public void refresh(IProgressMonitor monitor) throws BookmarksException {
@@ -124,7 +124,7 @@ public class RefreshRemoteFolderOperation {
 
 	private void replaceBookmark(final RemoteBookmarksTree remoteBookmarksTree) throws BookmarksException {
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
-			if (bookmarksDatabaseDirtyStateTracker.isDirty()) {
+			if (bookmarksDirtyStateTracker.isDirty()) {
 				throw new DirtyBookmarksDatabaseException("Bookmark database is dirty");
 			}
 			BookmarksTreeMerger bookmarksTreeMerger = new BookmarksTreeMerger(remoteBookmarksTree.getBookmarksTree());

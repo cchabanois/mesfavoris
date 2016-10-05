@@ -40,7 +40,7 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
-import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
+import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.service.IBookmarksService;
 import mesfavoris.validation.IBookmarkModificationValidator;
@@ -51,7 +51,7 @@ public class BookmarksService implements IBookmarksService {
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
 	private final DefaultBookmarkFolderProvider defaultBookmarkFolderProvider;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
-	private final IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker;
+	private final IBookmarksDirtyStateTracker bookmarksDirtyStateTracker;
 	private final IBookmarkLocationProvider bookmarkLocationProvider;
 	private final IGotoBookmark gotoBookmark;
 	private final NumberedBookmarks numberedBookmarks;
@@ -61,7 +61,7 @@ public class BookmarksService implements IBookmarksService {
 			IBookmarkPropertiesProvider bookmarkPropertiesProvider,
 			DefaultBookmarkFolderProvider defaultBookmarkFolderProvider,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
-			IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker,
+			IBookmarksDirtyStateTracker bookmarksDirtyStateTracker,
 			IBookmarkLocationProvider bookmarkLocationProvider, IGotoBookmark gotoBookmark,
 			NumberedBookmarks numberedBookmarks) {
 		this.bookmarkDatabase = bookmarkDatabase;
@@ -69,7 +69,7 @@ public class BookmarksService implements IBookmarksService {
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 		this.defaultBookmarkFolderProvider = defaultBookmarkFolderProvider;
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
-		this.bookmarksDatabaseDirtyStateTracker = bookmarksDatabaseDirtyStateTracker;
+		this.bookmarksDirtyStateTracker = bookmarksDirtyStateTracker;
 		this.bookmarkLocationProvider = bookmarkLocationProvider;
 		this.gotoBookmark = gotoBookmark;
 		this.numberedBookmarks = numberedBookmarks;
@@ -114,7 +114,7 @@ public class BookmarksService implements IBookmarksService {
 	@Override
 	public void connectToRemoteBookmarksStore(String storeId, IProgressMonitor monitor) throws BookmarksException {
 		ConnectToRemoteBookmarksStoreOperation operation = new ConnectToRemoteBookmarksStoreOperation(bookmarkDatabase,
-				remoteBookmarksStoreManager, bookmarksDatabaseDirtyStateTracker);
+				remoteBookmarksStoreManager, bookmarksDirtyStateTracker);
 		operation.connectToRemoteBookmarksStore(storeId, monitor);
 	}
 
@@ -154,21 +154,21 @@ public class BookmarksService implements IBookmarksService {
 	@Override
 	public void refresh(BookmarkId bookmarkFolderId, IProgressMonitor monitor) throws BookmarksException {
 		RefreshRemoteFolderOperation operation = new RefreshRemoteFolderOperation(bookmarkDatabase,
-				remoteBookmarksStoreManager, bookmarksDatabaseDirtyStateTracker);
+				remoteBookmarksStoreManager, bookmarksDirtyStateTracker);
 		operation.refresh(bookmarkFolderId, monitor);
 	}
 
 	@Override
 	public void refresh(IProgressMonitor monitor) throws BookmarksException {
 		RefreshRemoteFolderOperation operation = new RefreshRemoteFolderOperation(bookmarkDatabase,
-				remoteBookmarksStoreManager, bookmarksDatabaseDirtyStateTracker);
+				remoteBookmarksStoreManager, bookmarksDirtyStateTracker);
 		operation.refresh(monitor);
 	}
 
 	@Override
 	public void refresh(String storeId, IProgressMonitor monitor) throws BookmarksException {
 		RefreshRemoteFolderOperation operation = new RefreshRemoteFolderOperation(bookmarkDatabase,
-				remoteBookmarksStoreManager, bookmarksDatabaseDirtyStateTracker);
+				remoteBookmarksStoreManager, bookmarksDirtyStateTracker);
 		operation.refresh(storeId, monitor);
 	}
 

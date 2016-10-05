@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.SubMonitor;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.model.BookmarkDatabase;
-import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
+import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 
@@ -23,10 +23,10 @@ public class ConnectToRemoteBookmarksStoreOperation {
 
 	public ConnectToRemoteBookmarksStoreOperation(BookmarkDatabase bookmarkDatabase,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
-			IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker) {
+			IBookmarksDirtyStateTracker bookmarksDirtyStateTracker) {
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
 		this.refreshRemoteFolderOperation = new RefreshRemoteFolderOperation(bookmarkDatabase,
-				remoteBookmarksStoreManager, bookmarksDatabaseDirtyStateTracker);
+				remoteBookmarksStoreManager, bookmarksDirtyStateTracker);
 	}
 
 	public void connectToRemoteBookmarksStore(String storeId, IProgressMonitor monitor) throws BookmarksException {

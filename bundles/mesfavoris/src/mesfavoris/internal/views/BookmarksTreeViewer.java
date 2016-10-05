@@ -34,8 +34,8 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.IBookmarksListener;
-import mesfavoris.persistence.IBookmarksDatabaseDirtyStateListener;
-import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
+import mesfavoris.persistence.IBookmarksDirtyStateListener;
+import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.validation.BookmarkModificationValidator;
@@ -53,13 +53,13 @@ public class BookmarksTreeViewer extends TreeViewer {
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
 	private final IBookmarksListener bookmarksListener = (modifications) -> refreshInUIThread();
-	private final IBookmarksDatabaseDirtyStateListener dirtyListener = (dirtyBookmarks) -> refreshInUIThread();
+	private final IBookmarksDirtyStateListener dirtyListener = (dirtyBookmarks) -> refreshInUIThread();
 	private final EventHandler bookmarkStoresEventHandler = (event) -> refresh();
 	private final DirtyBookmarkPredicate dirtyBookmarkPredicate;
-	private final IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker;
+	private final IBookmarksDirtyStateTracker bookmarksDirtyStateTracker;
 	
 	public BookmarksTreeViewer(Composite parent, BookmarkDatabase bookmarkDatabase,
-			IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker,
+			IBookmarksDirtyStateTracker bookmarksDirtyStateTracker,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
 			IBookmarkPropertiesProvider bookmarkPropertiesProvider,
 			List<VirtualBookmarkFolder> virtualBookmarkFolders) {
@@ -68,11 +68,10 @@ public class BookmarksTreeViewer extends TreeViewer {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
-		this.bookmarksDatabaseDirtyStateTracker = bookmarksDatabaseDirtyStateTracker;
+		this.bookmarksDirtyStateTracker = bookmarksDirtyStateTracker;
 		setContentProvider(new ExtendedBookmarksTreeContentProvider(bookmarkDatabase, virtualBookmarkFolders));
 		setUseHashlookup(true);
-		this.dirtyBookmarkPredicate = new DirtyBookmarkPredicate(bookmarksDatabaseDirtyStateTracker);
-		this.dirtyBookmarkPredicate.init();
+		this.dirtyBookmarkPredicate = new DirtyBookmarkPredicate(bookmarksDirtyStateTracker);
 		BookmarksLabelProvider bookmarksLabelProvider = getBookmarksLabelProvider();
 		bookmarksLabelProvider.addListener(event -> refresh());		
 		ILabelDecorator decorator = PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator();
@@ -83,7 +82,7 @@ public class BookmarksTreeViewer extends TreeViewer {
 		bookmarkDatabase.addListener(bookmarksListener);
 		eventBroker.subscribe(AbstractRemoteBookmarksStore.TOPIC_REMOTE_BOOKMARK_STORES_ALL,
 				bookmarkStoresEventHandler);
-		bookmarksDatabaseDirtyStateTracker.addListener(dirtyListener);
+		bookmarksDirtyStateTracker.addListener(dirtyListener);
 	}
 	
 	private BookmarksLabelProvider getBookmarksLabelProvider() {
@@ -100,8 +99,7 @@ public class BookmarksTreeViewer extends TreeViewer {
 
 	@Override
 	protected void handleDispose(DisposeEvent event) {
-		bookmarksDatabaseDirtyStateTracker.removeListener(dirtyListener);
-		dirtyBookmarkPredicate.dispose();
+		bookmarksDirtyStateTracker.removeListener(dirtyListener);
 		eventBroker.unsubscribe(bookmarkStoresEventHandler);
 		bookmarkDatabase.removeListener(bookmarksListener);
 		super.handleDispose(event);

@@ -10,26 +10,29 @@ import mesfavoris.BookmarksException;
 import mesfavoris.BookmarksPlugin;
 import mesfavoris.internal.service.operations.RefreshRemoteFolderOperation;
 import mesfavoris.model.BookmarkDatabase;
-import mesfavoris.persistence.IBookmarksDatabaseDirtyStateTracker;
+import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 
 public class RefreshRemoteFoldersAction extends Action {
+	private static final String ID = "mesfavoris.view.refresh";
 	private final BookmarkDatabase bookmarkDatabase;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
-	private final IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker;
-	
-	public RefreshRemoteFoldersAction(BookmarkDatabase bookmarkDatabase, RemoteBookmarksStoreManager remoteBookmarksStoreManager, IBookmarksDatabaseDirtyStateTracker bookmarksDatabaseDirtyStateTracker) {
+	private final IBookmarksDirtyStateTracker bookmarksDirtyStateTracker;
+
+	public RefreshRemoteFoldersAction(BookmarkDatabase bookmarkDatabase,
+			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
+			IBookmarksDirtyStateTracker bookmarksDirtyStateTracker) {
 		super("&Refresh", BookmarksPlugin.imageDescriptorFromPlugin(BookmarksPlugin.PLUGIN_ID, "icons/refresh.gif"));
-		setToolTipText("Refresh bookmarks");	
+		setToolTipText("Refresh bookmarks");
+		setId(ID);
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
-		this.bookmarksDatabaseDirtyStateTracker = bookmarksDatabaseDirtyStateTracker;
+		this.bookmarksDirtyStateTracker = bookmarksDirtyStateTracker;
 	}
-	
+
 	public void run() {
 		RefreshRemoteFolderOperation operation = new RefreshRemoteFolderOperation(bookmarkDatabase,
-				remoteBookmarksStoreManager,
-				bookmarksDatabaseDirtyStateTracker);
+				remoteBookmarksStoreManager, bookmarksDirtyStateTracker);
 		ConnectToBookmarksStoreJob job = new ConnectToBookmarksStoreJob(operation);
 		job.setUser(true);
 		job.schedule();
@@ -56,6 +59,4 @@ public class RefreshRemoteFoldersAction extends Action {
 
 	}
 
-	
-	
 }
