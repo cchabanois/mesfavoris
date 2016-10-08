@@ -125,7 +125,7 @@ public class JavaTypeMemberBookmarkLocationProvider implements IBookmarkLocation
 		}
 		String declaringType = javaBookmark.getPropertyValue(PROP_JAVA_DECLARING_TYPE);
 		if (declaringType == null) {
-			return null;
+			return Collections.emptyList();
 		}
 		List<IMember> matchingMembers = searchType(declaringType, monitor).stream()
 				.flatMap(matchingType -> getMemberCandidates(matchingType, javaBookmark).stream())
@@ -156,7 +156,7 @@ public class JavaTypeMemberBookmarkLocationProvider implements IBookmarkLocation
 			IType memberType = type.getType(elementName);
 			return memberType.exists() ? Lists.newArrayList(memberType) : Collections.emptyList();
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 	private IMethod getMethod(IType type, String name, String signature) {
