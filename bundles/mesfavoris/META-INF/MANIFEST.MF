@@ -9,6 +9,7 @@ Bundle-Activator: mesfavoris.BookmarksPlugin
 Export-Package: mesfavoris,
  mesfavoris.bookmarktype,
  mesfavoris.handlers,
+ mesfavoris.markers,
  mesfavoris.model,
  mesfavoris.model.modification,
  mesfavoris.persistence,

@@ -39,6 +39,7 @@ import mesfavoris.internal.views.virtual.BookmarkLink;
 import mesfavoris.internal.visited.VisitedBookmarksDatabase;
 import mesfavoris.internal.workspace.BookmarksWorkspaceFactory;
 import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
+import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
@@ -185,7 +186,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		return defaultBookmarkFolderProvider;
 	}
 
-	public static BookmarksMarkers getBookmarksMarkers() {
+	public static IBookmarksMarkers getBookmarksMarkers() {
 		return bookmarksMarkers;
 	}
 

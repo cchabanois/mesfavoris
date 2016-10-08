@@ -27,6 +27,14 @@
             class="mesfavoris.java.JavaTypeMemberBookmarkLocationProvider"
             priority="10">
       </locationProvider>
+      <locationProvider
+            class="mesfavoris.java.JavaMarkerBookmarkLocationProvider"
+            priority="-1">
+      </locationProvider>
+      <gotoBookmark
+            class="mesfavoris.java.GotoJavaBookmarkMarker"
+            priority="10">
+      </gotoBookmark>
    </extension>
 
 </plugin>

@@ -30,6 +30,7 @@ import mesfavoris.bookmarktype.BookmarkMarkerDescriptor;
 import mesfavoris.bookmarktype.IBookmarkMarkerAttributesProvider;
 import mesfavoris.internal.jobs.BackgroundBookmarksModificationsHandler;
 import mesfavoris.internal.jobs.BackgroundBookmarksModificationsHandler.IBookmarksModificationsHandler;
+import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
@@ -45,7 +46,7 @@ import mesfavoris.model.modification.BookmarksModification;
  * @author cchabanois
  *
  */
-public class BookmarksMarkers {
+public class BookmarksMarkers implements IBookmarksMarkers {
 	public static final String BOOKMARK_ID = "bookmarkId";
 	public static final String MARKER_TYPE = "mesfavoris.bookmark";
 	private final BookmarkDatabase bookmarkDatabase;
@@ -150,6 +151,7 @@ public class BookmarksMarkers {
 		run(getMarkerRule(marker.getResource()), wr, monitor);
 	}
 
+	@Override
 	public IMarker findMarker(BookmarkId bookmarkId, IProgressMonitor monitor) {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, "Finding marker", 100);
 		try {
@@ -178,6 +180,7 @@ public class BookmarksMarkers {
 		}
 	}
 	
+	@Override
 	public void refreshMarker(BookmarkId bookmarkId, IProgressMonitor monitor) {
 		Bookmark bookmark = bookmarkDatabase.getBookmarksTree().getBookmark(bookmarkId);
 		if (bookmark == null) {

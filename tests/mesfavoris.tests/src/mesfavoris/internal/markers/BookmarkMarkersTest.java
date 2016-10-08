@@ -22,6 +22,7 @@ import com.google.common.collect.Lists;
 import mesfavoris.BookmarksException;
 import mesfavoris.BookmarksPlugin;
 import mesfavoris.commons.ui.wizards.datatransfer.BundleProjectImportOperation;
+import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
@@ -30,7 +31,7 @@ import mesfavoris.model.BookmarkId;
 public class BookmarkMarkersTest {
 	public static final String PROP_LINE_NUMBER = "lineNumber";
 	public static final String PROP_WORKSPACE_PATH = "workspacePath";
-	private BookmarksMarkers bookmarksMarkers;
+	private IBookmarksMarkers bookmarksMarkers;
 	private BookmarkDatabase bookmarkDatabase;
 	private BookmarkId rootFolderId;
 

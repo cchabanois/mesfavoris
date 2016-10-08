@@ -1,6 +1,5 @@
-package mesfavoris.internal.markers;
+package mesfavoris.java;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -10,10 +9,10 @@ import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.Bookmark;
 
-public class FileMarkerBookmarkLocationProvider implements IBookmarkLocationProvider {
+public class JavaMarkerBookmarkLocationProvider implements IBookmarkLocationProvider {
 	private final IBookmarksMarkers bookmarksMarkers;
 	
-	public FileMarkerBookmarkLocationProvider() {
+	public JavaMarkerBookmarkLocationProvider() {
 		bookmarksMarkers = BookmarksPlugin.getBookmarksMarkers();
 	}
 	
@@ -23,10 +22,11 @@ public class FileMarkerBookmarkLocationProvider implements IBookmarkLocationProv
 		if (marker == null) {
 			return null;
 		}
-		if (!(marker.getResource() instanceof IFile)) {
+		String handle = marker.getAttribute(JavaMarkerBookmarkLocation.ATT_HANDLE_ID, null);
+		if (handle == null) {
 			return null;
 		}
-		return new FileMarkerBookmarkLocation(marker);
+		return new JavaMarkerBookmarkLocation(marker);
 	}
 
 }

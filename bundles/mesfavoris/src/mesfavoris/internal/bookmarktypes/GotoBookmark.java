@@ -19,7 +19,7 @@ import mesfavoris.BookmarksPlugin;
 import mesfavoris.StatusHelper;
 import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IGotoBookmark;
-import mesfavoris.internal.markers.BookmarksMarkers;
+import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.topics.BookmarksEvents;
@@ -27,7 +27,7 @@ import mesfavoris.topics.BookmarksEvents;
 public class GotoBookmark implements IGotoBookmark {
 
 	private final List<IGotoBookmark> gotoBookmarks;
-	private final BookmarksMarkers bookmarksMarkers;
+	private final IBookmarksMarkers bookmarksMarkers;
 	private final IEventBroker eventBroker;
 
 	public GotoBookmark(List<IGotoBookmark> gotoBookmarks) {
@@ -37,7 +37,7 @@ public class GotoBookmark implements IGotoBookmark {
 	}
 
 	public GotoBookmark(IEventBroker eventBroker, List<IGotoBookmark> gotoBookmarks,
-			BookmarksMarkers bookmarksMarkers) {
+			IBookmarksMarkers bookmarksMarkers) {
 		this.eventBroker = eventBroker;
 		this.gotoBookmarks = new ArrayList<IGotoBookmark>(gotoBookmarks);
 		this.bookmarksMarkers = bookmarksMarkers;
