@@ -10,7 +10,9 @@ import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_TYPE;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_LINE_NUMBER_INSIDE_ELEMENT;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -34,6 +36,8 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 
+import com.google.common.collect.Lists;
+
 import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.java.editor.JavaEditorUtils;
 import mesfavoris.model.Bookmark;
@@ -45,12 +49,18 @@ public class JavaTypeMemberBookmarkLocationProvider implements IBookmarkLocation
 	@Override
 	public JavaTypeMemberBookmarkLocation getBookmarkLocation(Bookmark bookmark, IProgressMonitor monitor) {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
-		IMember member = getMember(bookmark, subMonitor.newChild(30));
-		if (member == null) {
-			return null;
+		List<IMember> memberCandidates = getMemberCandidates(bookmark, subMonitor.newChild(30));
+		for (IMember member : memberCandidates) {
+			Integer lineNumber = getLineNumber(member, bookmark, subMonitor.newChild(70));
+			if (lineNumber != null) {
+				return new JavaTypeMemberBookmarkLocation(member, lineNumber);
+			}
 		}
-		Integer lineNumber = getLineNumber(member, bookmark, subMonitor.newChild(70));
-		return new JavaTypeMemberBookmarkLocation(member, lineNumber);
+		if (memberCandidates.isEmpty()) {
+			return null;
+		} else {
+			return new JavaTypeMemberBookmarkLocation(memberCandidates.get(0), null);
+		}
 	}
 
 	private Integer getLineNumber(IMember member, Bookmark bookmark, IProgressMonitor monitor) {
@@ -107,35 +117,28 @@ public class JavaTypeMemberBookmarkLocationProvider implements IBookmarkLocation
 		}
 	}
 
-	private IMember getMember(Bookmark javaBookmark, IProgressMonitor monitor) {
+	private List<IMember> getMemberCandidates(Bookmark javaBookmark, IProgressMonitor monitor) {
 		String type = javaBookmark.getPropertyValue(PROP_JAVA_TYPE);
 		if (type != null) {
 			List<IType> matchingTypes = searchType(type, monitor);
-			if (matchingTypes.size() == 0) {
-				return null;
-			}
-			IType matchingType = matchingTypes.get(0);
-			return matchingType;
+			return Lists.newArrayList(matchingTypes);
 		}
 		String declaringType = javaBookmark.getPropertyValue(PROP_JAVA_DECLARING_TYPE);
 		if (declaringType == null) {
 			return null;
 		}
-		List<IType> matchingTypes = searchType(declaringType, monitor);
-		if (matchingTypes.size() == 0) {
-			return null;
-		}
-		IType matchingType = matchingTypes.get(0);
-		IMember member = getMember(matchingType, javaBookmark);
-		return member;
+		List<IMember> matchingMembers = searchType(declaringType, monitor).stream()
+				.flatMap(matchingType -> getMemberCandidates(matchingType, javaBookmark).stream())
+				.collect(Collectors.toList());
+		return matchingMembers;
 	}
 
-	private IMember getMember(IType type, Bookmark javaBookmark) {
+	private List<IMember> getMemberCandidates(IType type, Bookmark javaBookmark) {
 		String elementKind = javaBookmark.getPropertyValue(PROP_JAVA_ELEMENT_KIND);
 		String elementName = javaBookmark.getPropertyValue(PROP_JAVA_ELEMENT_NAME);
 		if (KIND_FIELD.equals(elementKind)) {
 			IField field = type.getField(elementName);
-			return field.exists() ? field : null;
+			return field.exists() ? Lists.newArrayList(field) : Collections.emptyList();
 		}
 		if (KIND_METHOD.equals(elementKind)) {
 			String signature = javaBookmark.getPropertyValue(PROP_JAVA_METHOD_SIGNATURE);
@@ -145,15 +148,13 @@ public class JavaTypeMemberBookmarkLocationProvider implements IBookmarkLocation
 			}
 			if (method == null) {
 				List<IMethod> candidates = getMethodsWithName(type, elementName);
-				if (candidates.size() > 0) {
-					method = candidates.get(0);
-				}
+				return Lists.newArrayList(candidates);
 			}
-			return method;
+			return Lists.newArrayList(method);
 		}
 		if (JavaEditorUtils.isType(elementKind) && elementName != null) {
 			IType memberType = type.getType(elementName);
-			return memberType.exists() ? memberType : null;
+			return memberType.exists() ? Lists.newArrayList(memberType) : Collections.emptyList();
 		}
 		return null;
 	}
@@ -203,5 +204,6 @@ public class JavaTypeMemberBookmarkLocationProvider implements IBookmarkLocation
 
 		return types;
 	}
+
 
 }
