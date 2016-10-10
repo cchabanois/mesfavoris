@@ -11,6 +11,7 @@ import org.eclipse.ui.progress.IProgressService;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.StatusHelper;
+import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.handlers.AbstractBookmarkHandler;
 import mesfavoris.model.Bookmark;
 
@@ -42,8 +43,7 @@ public class GotoBookmarkHandler extends AbstractBookmarkHandler {
 		if (selection.isEmpty()) {
 			return null;
 		}
-		Bookmark bookmark = (Bookmark) selection.getFirstElement();
-		return bookmark;
+		return AdapterUtils.getAdapter(selection.getFirstElement(), Bookmark.class);
 	}
 
 }
