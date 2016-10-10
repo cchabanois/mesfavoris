@@ -49,7 +49,7 @@ public class BookmarksAutoSaver implements IBookmarksDirtyStateTracker {
 	private final ListenerList listenerList = new ListenerList();
 	private final AtomicReference<Set<BookmarkId>> dirtyBookmarksRef = new AtomicReference<Set<BookmarkId>>(
 			Collections.emptySet());
-	
+
 	public BookmarksAutoSaver(BookmarkDatabase bookmarkDatabase, LocalBookmarksSaver localBookmarksSaver,
 			RemoteBookmarksSaver remoteBookmarksSaver) {
 		this.bookmarkDatabase = bookmarkDatabase;
@@ -77,7 +77,7 @@ public class BookmarksAutoSaver implements IBookmarksDirtyStateTracker {
 	public Set<BookmarkId> getDirtyBookmarks() {
 		return dirtyBookmarksRef.get();
 	}
-	
+
 	private void computeDirtyBookmarks() {
 		List<BookmarksModification> bookmarksModifications = backgroundBookmarksModificationsHandler
 				.getUnhandledEvents();
@@ -134,13 +134,16 @@ public class BookmarksAutoSaver implements IBookmarksDirtyStateTracker {
 		@Override
 		public void handle(List<BookmarksModification> modifications, IProgressMonitor monitor)
 				throws BookmarksException {
-			BookmarksModification latestModification = modifications.get(modifications.size() - 1);
-			BookmarksTree bookmarksTree = latestModification.getTargetTree();
-			localBookmarksSaver.saveBookmarks(bookmarksTree, new SubProgressMonitor(monitor, 20));
-			remoteBookmarksSaver.applyModificationsToRemoteBookmarksStores(modifications,
-					new SubProgressMonitor(monitor, 80));
-			computeDirtyBookmarks();
-			fireDirtyBookmarksChanged(getDirtyBookmarks());
+			try {
+				BookmarksModification latestModification = modifications.get(modifications.size() - 1);
+				BookmarksTree bookmarksTree = latestModification.getTargetTree();
+				localBookmarksSaver.saveBookmarks(bookmarksTree, new SubProgressMonitor(monitor, 20));
+				remoteBookmarksSaver.applyModificationsToRemoteBookmarksStores(modifications,
+						new SubProgressMonitor(monitor, 80));
+			} finally {
+				computeDirtyBookmarks();
+				fireDirtyBookmarksChanged(getDirtyBookmarks());
+			}
 		}
 
 	}
