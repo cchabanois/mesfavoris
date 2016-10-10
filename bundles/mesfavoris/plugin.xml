@@ -87,6 +87,12 @@
                values="mesfavoris.internal.numberedbookmarks.BookmarkNumberParameterValues">
          </commandParameter>
       </command>
+      <command
+            categoryId="mesfavoris.category"
+            defaultHandler="mesfavoris.internal.handlers.GotoBookmarkHandler"
+            id="mesfavoris.command.gotoFavori"
+            name="Goto Favori">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">

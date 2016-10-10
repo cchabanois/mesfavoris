@@ -7,7 +7,6 @@ import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ILabelDecorator;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -24,7 +23,6 @@ import org.osgi.service.event.EventHandler;
 import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.commons.core.AdapterUtils;
-import mesfavoris.internal.jobs.FindLocationAndGotoBookmarkJob;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarkDecorationProvider;
 import mesfavoris.internal.views.dnd.BookmarksViewerDragListener;
 import mesfavoris.internal.views.dnd.BookmarksViewerDropListener;
@@ -32,7 +30,6 @@ import mesfavoris.internal.views.virtual.ExtendedBookmarksTreeContentProvider;
 import mesfavoris.internal.views.virtual.VirtualBookmarkFolder;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
-import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.IBookmarksListener;
 import mesfavoris.persistence.IBookmarksDirtyStateListener;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
@@ -78,7 +75,6 @@ public class BookmarksTreeViewer extends TreeViewer {
 		setLabelProvider(new DecoratingStyledCellLabelProvider(bookmarksLabelProvider, decorator, null));
 		setInput(bookmarkDatabase.getBookmarksTree().getRootFolder());
 		installDragAndDropSupport();
-		hookDoubleClickAction();
 		bookmarkDatabase.addListener(bookmarksListener);
 		eventBroker.subscribe(AbstractRemoteBookmarksStore.TOPIC_REMOTE_BOOKMARK_STORES_ALL,
 				bookmarkStoresEventHandler);
@@ -103,19 +99,6 @@ public class BookmarksTreeViewer extends TreeViewer {
 		eventBroker.unsubscribe(bookmarkStoresEventHandler);
 		bookmarkDatabase.removeListener(bookmarksListener);
 		super.handleDispose(event);
-	}
-
-	private void hookDoubleClickAction() {
-		addDoubleClickListener(event -> {
-			ISelection selection = getSelection();
-			Object firstElement = ((IStructuredSelection) selection).getFirstElement();
-			Bookmark bookmark = AdapterUtils.getAdapter(firstElement, Bookmark.class);
-			if (bookmark instanceof BookmarkFolder) {
-				this.setExpandedState(firstElement, !getExpandedState(firstElement));
-			} else {
-				new FindLocationAndGotoBookmarkJob(bookmark).schedule();
-			}
-		});
 	}
 
 	private void installDragAndDropSupport() {

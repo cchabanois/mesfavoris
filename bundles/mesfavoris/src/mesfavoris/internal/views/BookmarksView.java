@@ -2,6 +2,10 @@ package mesfavoris.internal.views;
 
 import java.util.Optional;
 
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.NotEnabledException;
+import org.eclipse.core.commands.NotHandledException;
+import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -17,7 +21,9 @@ import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -37,14 +43,17 @@ import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
 import com.google.common.collect.Lists;
 
 import mesfavoris.BookmarksPlugin;
+import mesfavoris.StatusHelper;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IImportTeamProject;
+import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.internal.actions.AddToRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.CollapseAllAction;
 import mesfavoris.internal.actions.ConnectToRemoteBookmarksStoreAction;
@@ -58,6 +67,7 @@ import mesfavoris.internal.visited.LatestVisitedBookmarksVirtualFolder;
 import mesfavoris.internal.visited.MostVisitedBookmarksVirtualFolder;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
+import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.remote.IRemoteBookmarksStore;
@@ -66,6 +76,8 @@ import mesfavoris.validation.BookmarkModificationValidator;
 import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class BookmarksView extends ViewPart {
+	private static final String COMMAND_ID_GOTO_FAVORI = "mesfavoris.command.gotoFavori";
+
 	public static final String ID = "mesfavoris.views.BookmarksView";
 
 	private final BookmarkDatabase bookmarkDatabase;
@@ -220,6 +232,7 @@ public class BookmarksView extends ViewPart {
 				bookmarkCommentViewer.setBookmark(bookmark);
 			}
 		});
+		hookDoubleClickAction();
 	}
 
 	private void hookContextMenu() {
@@ -315,6 +328,25 @@ public class BookmarksView extends ViewPart {
 	private void restoreState(IMemento memento) {
 		BookmarksTreeViewerStateManager manager = new BookmarksTreeViewerStateManager(bookmarksTreeViewer);
 		manager.restoreState(memento);
+	}
+	
+	private void hookDoubleClickAction() {
+		bookmarksTreeViewer.addDoubleClickListener(event -> {
+			ISelection selection = bookmarksTreeViewer.getSelection();
+			Object firstElement = ((IStructuredSelection) selection).getFirstElement();
+			Bookmark bookmark = AdapterUtils.getAdapter(firstElement, Bookmark.class);
+			if (bookmark instanceof BookmarkFolder) {
+				bookmarksTreeViewer.setExpandedState(firstElement, !bookmarksTreeViewer.getExpandedState(firstElement));
+			} else {
+				IHandlerService handlerService = (IHandlerService) getSite()
+					    .getService(IHandlerService.class);
+				try {
+					handlerService.executeCommand(COMMAND_ID_GOTO_FAVORI, null);
+				} catch (ExecutionException | NotDefinedException | NotEnabledException | NotHandledException e) {
+					StatusHelper.logError("Could not go to bookmark", e);
+				}
+			}
+		});
 	}
 
 }
