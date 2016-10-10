@@ -1,6 +1,5 @@
 package mesfavoris.java;
 
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.internal.ui.javaeditor.EditorUtility;

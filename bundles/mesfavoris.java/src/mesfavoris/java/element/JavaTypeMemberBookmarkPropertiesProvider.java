@@ -14,8 +14,6 @@ import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_NAME;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_METHOD_SIGNATURE;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_TYPE;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -26,11 +24,8 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeRoot;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.ui.JavadocContentAccess;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
-
-import com.google.common.io.CharStreams;
 
 import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
 import mesfavoris.java.editor.JavaEditorUtils;
