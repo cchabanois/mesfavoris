@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
+import org.eclipse.ui.progress.IProgressConstants;
 import org.osgi.service.event.EventHandler;
 
 import mesfavoris.BookmarksException;
@@ -16,8 +17,8 @@ import mesfavoris.BookmarksPlugin;
 import mesfavoris.internal.service.operations.ConnectToRemoteBookmarksStoreOperation;
 import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.IRemoteBookmarksStore;
-import mesfavoris.remote.IRemoteBookmarksStoreDescriptor;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
+import mesfavoris.remote.IRemoteBookmarksStoreDescriptor;
 
 public class ConnectToRemoteBookmarksStoreAction extends Action implements IWorkbenchAction {
 	private final IRemoteBookmarksStore remoteBookmarksStore;
@@ -62,6 +63,7 @@ public class ConnectToRemoteBookmarksStoreAction extends Action implements IWork
 		public ConnectToBookmarksStoreJob(IRemoteBookmarksStoreDescriptor storeDescriptor) {
 			super("Connecting to " + storeDescriptor.getLabel());
 			this.storeDescriptor = storeDescriptor;
+			setProperty(IProgressConstants.ICON_PROPERTY, storeDescriptor.getImageDescriptor());
 		}
 
 		@Override
