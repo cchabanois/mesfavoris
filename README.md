@@ -25,6 +25,7 @@ The update site url is : https://dl.bintray.com/cchabanois/mesfavoris/updates
 ### Shortcuts
 All commands start with M1+B . M1 is the COMMAND key on MacOS X and the CTRL key on most other platforms.
 You can display all shortcuts by first pressing M1+B :
+
 ![Alt text](/docs/shortcuts.png?raw=true "Shortcuts")
 
 
