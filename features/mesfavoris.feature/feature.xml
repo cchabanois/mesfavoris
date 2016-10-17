@@ -38,9 +38,11 @@
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.9.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.9.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.filebuffers" version="3.5.400" match="greaterOrEqual"/>
-      <import plugin="org.jsoup" version="1.7.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.swt" version="3.103.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jface" version="3.10.1" match="greaterOrEqual"/>
+      <import plugin="com.google.gson" version="2.7.0" match="greaterOrEqual"/>
+      <import plugin="com.google.guava" version="19.0.0" match="greaterOrEqual"/>
+      <import plugin="org.jsoup" version="1.9.2" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -87,6 +89,13 @@
 
    <plugin
          id="mesfavoris.commons"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.jsoup"
          download-size="0"
          install-size="0"
          version="0.0.0"
