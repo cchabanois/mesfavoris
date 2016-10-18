@@ -53,6 +53,17 @@ public class GDriveConnectionManager {
 	private Drive drive;
 	private String applicationFolderId;
 
+	/**
+	 * 
+	 * @param dataStoreDir
+	 *            directory for credential store
+	 * @param applicationName
+	 *            the application name to be used in the UserAgent header of
+	 *            each request
+	 * @param applicationFolderName
+	 *            the folder name for the application on GDrive. It will be
+	 *            created after connection if it does not exist
+	 */
 	public GDriveConnectionManager(File dataStoreDir, String applicationName, String applicationFolderName) {
 		this(dataStoreDir, new AuthorizationCodeEclipseApp.Provider(), applicationName, applicationFolderName);
 	}
