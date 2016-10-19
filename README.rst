@@ -52,9 +52,33 @@ You can display all shortcuts by first pressing M1+B :
 .. image:: /docs/shortcuts.png?raw=true
     :alt: Shortcuts
 
---------------------
+----------------
+Adding bookmarks
+----------------
+
+Folders
+~~~~~~~
+
+bookmarks
+~~~~~~~~~
+properties
+Bitap
+bookmark types
+how it works
+
+placeholders
+~~~~~~~~~~~~
+
+numbered bookmarks
+~~~~~~~~~~~~~~~~~~
+
+---------------
+Share bookmarks
+---------------
+Use cases : laptop/desktop computer , share with team
+
 Connecting to GDrive
---------------------
+~~~~~~~~~~~~~~~~~~~~
 Click on the GDrive icon in the "Mes favoris" view.
 
 .. image:: /docs/connectToGdriveIcon.png?raw=true
@@ -62,7 +86,13 @@ Click on the GDrive icon in the "Mes favoris" view.
 
 The first time your click on it, this will open your browser and start the OAuth flow.
 
-.. note::  currently, you cannot connect to multiple accounts. However, you can share bookmarks between accounts. You can also delete your current credentials if you selected the wrong account during authentication (Preferences/Mes Favoris/GDrive : delete credentials).
+.. note::  Currently, you cannot connect to multiple accounts. However, you can share bookmarks between accounts. You can also delete your current credentials if you selected the wrong account during authentication (Preferences/Mes Favoris/GDrive : delete credentials).
+
+Add bookmark folder to GDrive
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Share with others
+~~~~~~~~~~~~~~~~~
 
 =======
 License
