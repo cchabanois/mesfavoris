@@ -26,6 +26,7 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 	private final String userName;
 	private final String password;
 	private final IProgressMonitor monitor;
+	private IAuthorizationListener authorizationListener;
 	
 	static {
 		java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.SEVERE); 
@@ -38,6 +39,10 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 		this.password = password;
 	}
 
+	public void setAuthorizationListener(IAuthorizationListener authorizationListener) {
+		this.authorizationListener = authorizationListener;
+	}
+	
 	@Override
 	protected void onAuthorization(AuthorizationCodeRequestUrl authorizationUrl) throws IOException {
 		monitor.subTask("Please open the following address in your browser:"
@@ -46,7 +51,10 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 		try (final WebClient webClient = new WebClient()) {
 			webClient.getOptions().setThrowExceptionOnScriptError(false);
 			HtmlPage allowAccessPage = signIn(webClient, authorizationUrl.build());
-			HtmlPage tokenPage = allowAccess(webClient, allowAccessPage);
+			allowAccess(webClient, allowAccessPage);
+		}
+		if (authorizationListener != null) {
+			authorizationListener.onAuthorization();
 		}
 	}
 	
@@ -81,16 +89,25 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 	public static class Provider implements IAuthorizationCodeInstalledAppProvider {
 		private final String userName;
 		private final String password;
+		private IAuthorizationListener authorizationListener;
 		
 		public Provider(String userName, String password) {
 			this.userName = userName;
 			this.password = password;
 		}
 		
+		public void setAuthorizationListener(IAuthorizationListener authorizationListener) {
+			this.authorizationListener = authorizationListener;
+		}
+		
 		@Override
 		public AuthorizationCodeInstalledApp get(AuthorizationCodeFlow flow, VerificationCodeReceiver receiver,
 				IProgressMonitor monitor) {
-			return new HtmlUnitAuthorizationCodeInstalledApp(flow, receiver, monitor, userName, password);
+			HtmlUnitAuthorizationCodeInstalledApp app = new HtmlUnitAuthorizationCodeInstalledApp(flow, receiver, monitor, userName, password);
+			if (authorizationListener != null) {
+				app.setAuthorizationListener(authorizationListener);
+			}
+			return app;
 		}
 		
 	}

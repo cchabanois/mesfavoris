@@ -48,7 +48,6 @@ public class GDriveConnectionManager {
 	private final File dataStoreDir;
 	private final IAuthorizationCodeInstalledAppProvider authorizationCodeInstalledAppProvider;
 	private final String applicationFolderName;
-	private FileDataStoreFactory dataStoreFactory;
 	private final AtomicReference<State> state = new AtomicReference<State>(State.disconnected);
 	private Drive drive;
 	private String applicationFolderId;
@@ -79,7 +78,6 @@ public class GDriveConnectionManager {
 
 	public void init() throws GeneralSecurityException, IOException {
 		httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-		dataStoreFactory = new FileDataStoreFactory(dataStoreDir);
 	}
 
 	public void close() throws IOException {
@@ -90,6 +88,10 @@ public class GDriveConnectionManager {
 		return applicationFolderName;
 	}
 
+	public File getDataStoreDir() {
+		return dataStoreDir;
+	}
+	
 	public void connect(IProgressMonitor monitor) throws IOException {
 		if (!state.compareAndSet(State.disconnected, State.connecting)) {
 			return;
@@ -192,6 +194,7 @@ public class GDriveConnectionManager {
 			GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
 					new InputStreamReader(GDriveConnectionManager.class.getResourceAsStream("client_secrets.json")));
 			// set up authorization code flow
+			FileDataStoreFactory dataStoreFactory = new FileDataStoreFactory(dataStoreDir);
 			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY,
 					clientSecrets, Collections.singleton(DriveScopes.DRIVE)).setDataStoreFactory(dataStoreFactory)
 							.build();

@@ -111,5 +111,14 @@
          </enablement>
       </decorator>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="mesfavoris.bookmarksPreferencePage"
+            class="mesfavoris.gdrive.preferences.GDriveBookmarksStorePreferencePage"
+            id="mesfavoris.gdrive.preferencePage"
+            name="GDrive">
+      </page>
+   </extension>
 
 </plugin>

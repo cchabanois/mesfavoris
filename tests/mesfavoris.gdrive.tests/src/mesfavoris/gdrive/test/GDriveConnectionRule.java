@@ -17,11 +17,12 @@ public class GDriveConnectionRule extends ExternalResource {
 	private GDriveConnectionManager gDriveConnectionManager;
 	private final TemporaryFolder temporaryFolder = new TemporaryFolder();
 	private final boolean connect;
-	private final GDriveTestUser user;
-
+	private final HtmlUnitAuthorizationCodeInstalledApp.Provider authorizationCodeProvider;
+	
 	public GDriveConnectionRule(GDriveTestUser user, boolean connect) {
-		this.user = user;
 		this.connect = connect;
+		this.authorizationCodeProvider = new HtmlUnitAuthorizationCodeInstalledApp.Provider(user.getUserName(),
+				user.getPassword());
 	}
 
 	@Override
@@ -29,15 +30,18 @@ public class GDriveConnectionRule extends ExternalResource {
 		temporaryFolder.create();
 		java.io.File dataStoreDir = temporaryFolder.newFolder();
 		String applicationFolderName = "gdriveConnectionManagerTest" + new Random().nextInt(1000);
-		gDriveConnectionManager = new GDriveConnectionManager(dataStoreDir,
-				new HtmlUnitAuthorizationCodeInstalledApp.Provider(user.getUserName(), user.getPassword()),
-				"mes favoris", applicationFolderName);
+		gDriveConnectionManager = new GDriveConnectionManager(dataStoreDir, authorizationCodeProvider, "mes favoris",
+				applicationFolderName);
 		gDriveConnectionManager.init();
 		if (connect) {
 			connect();
 		}
 	}
 
+	public void setAuthorizationListener(IAuthorizationListener authorizationListener) {
+		this.authorizationCodeProvider.setAuthorizationListener(authorizationListener);
+	}
+	
 	public String getApplicationFolderId() {
 		return gDriveConnectionManager.getApplicationFolderId();
 	}
