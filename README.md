@@ -41,7 +41,9 @@ Click on the GDrive icon in the "Mes favoris" view.
 
 ![Alt text](/docs/connectToGdriveIcon.png?raw=true "GDrive Icon")
 
-The first time your click on it, this will open your browser and start the OAuth flow
+The first time your click on it, this will open your browser and start the OAuth flow.
+
+> Note : currently, you cannot connect to multiple accounts. However, you can share bookmarks between accounts. You can also delete your current credentials if you selected the wrong account during authentication (Preferences/Mes Favoris/GDrive : delete credentials).
 
 ## License
 Licensed under the [EPL License](http://www.eclipse.org/legal/epl-v10.html).
