@@ -388,17 +388,6 @@
                </count>
             </visibleWhen>
          </command>
-         <command
-               commandId="mesfavoris.commands.setAsDefaultBookmarkFolder"
-               label="Set As Default Bookmark Folder"
-               style="push">
-            <visibleWhen
-                  checkEnabled="false">
-               <reference
-                     definitionId="mesfavoris.definitions.bookmarkFolder">
-               </reference>
-            </visibleWhen>
-         </command>
          <separator
                name="mesfavoris.separator.clipboard"
                visible="true">
