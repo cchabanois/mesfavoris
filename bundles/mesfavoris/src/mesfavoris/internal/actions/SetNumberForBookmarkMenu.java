@@ -86,6 +86,7 @@ public class SetNumberForBookmarkMenu extends ContributionItem implements IWorkb
 		final MenuItem menuItem = new MenuItem(menu, SWT.RADIO);
 		menuItem.setSelection(bookmarkId.isPresent() ? bookmarkId.get().equals(selectedBookmarkId) : false);
 		menuItem.setText(getText(bookmarkId));
+		menuItem.setAccelerator('0'+bookmarkNumber.getNumber());
 		Image image = getImage(bookmarkNumber, bookmarkId);
 		if (image != null) {
 			menuItem.setImage(image);
