@@ -1,5 +1,7 @@
 package mesfavoris.internal.service.operations;
 
+import java.util.Optional;
+
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;
 import mesfavoris.model.BookmarkId;
@@ -12,6 +14,10 @@ public class AddNumberedBookmarkOperation {
 	}
 	
 	public void addNumberedBookmark(BookmarkId bookmarkId, BookmarkNumber bookmarkNumber) {
+		Optional<BookmarkNumber> existingNumber = numberedBookmarks.getBookmarkNumber(bookmarkId);
+		if (existingNumber.isPresent()) {
+			numberedBookmarks.remove(existingNumber.get());
+		}
 		numberedBookmarks.set(bookmarkNumber, bookmarkId);
 	}
 	

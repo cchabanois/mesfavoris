@@ -438,6 +438,19 @@
                </with>
             </visibleWhen>
          </command>
+         <menu
+               label="Set number shortcut for bookmark">
+            <visibleWhen
+                  checkEnabled="false">
+               <count
+                     value="1">
+               </count>
+            </visibleWhen>
+            <dynamic
+                  class="mesfavoris.internal.actions.SetNumberForBookmarkMenu"
+                  id="mesfavoris.dynamicmenu.SetNumberForBookmark">
+            </dynamic>
+         </menu>
       </menuContribution>
       <menuContribution
             allPopups="false"
