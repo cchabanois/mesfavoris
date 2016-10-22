@@ -58,10 +58,12 @@ Adding bookmarks
 
 Folders
 ~~~~~~~
+Use bookmark folders to organize your bookmarks. In the view named "Mes Favoris", select an existing folder, right click and select "New/New Folder". To create a top level folder, do not select an existing folder or bookmark.
 
 bookmarks
 ~~~~~~~~~
-properties
+A bookmark is just a set of properties that are used to locate the resource pointed by the bookmark. You can view the properties associated with a bookmark in the Properties view :
+
 Bitap
 bookmark types
 how it works
