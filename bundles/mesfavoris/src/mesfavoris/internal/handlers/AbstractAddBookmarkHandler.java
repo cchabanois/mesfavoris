@@ -37,7 +37,7 @@ public abstract class AbstractAddBookmarkHandler extends AbstractBookmarkPartOpe
 		if (page == null) {
 			return;
 		}
-		bookmarksService.showInBookmarksView(page, bookmarkId);
+		bookmarksService.showInBookmarksView(page, bookmarkId, false);
 	}	
 	
 }

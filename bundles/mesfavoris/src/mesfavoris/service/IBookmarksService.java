@@ -55,7 +55,7 @@ public interface IBookmarksService {
 
 	void setComment(BookmarkId bookmarkId, String comment) throws BookmarksException;
 
-	void showInBookmarksView(IWorkbenchPage page, BookmarkId bookmarkId);
+	void showInBookmarksView(IWorkbenchPage page, BookmarkId bookmarkId, boolean activate);
 
 	void sortByName(BookmarkId bookmarkFolderId) throws BookmarksException;
 

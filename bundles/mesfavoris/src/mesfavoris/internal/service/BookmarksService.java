@@ -195,9 +195,9 @@ public class BookmarksService implements IBookmarksService {
 	}
 
 	@Override
-	public void showInBookmarksView(IWorkbenchPage page, BookmarkId bookmarkId) {
+	public void showInBookmarksView(IWorkbenchPage page, BookmarkId bookmarkId, boolean activate) {
 		ShowInBookmarksViewOperation operation = new ShowInBookmarksViewOperation(bookmarkDatabase);
-		operation.showInBookmarksView(page, bookmarkId);
+		operation.showInBookmarksView(page, bookmarkId, activate);
 	}
 
 	@Override
