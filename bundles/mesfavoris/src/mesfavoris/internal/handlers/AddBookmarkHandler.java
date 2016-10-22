@@ -11,7 +11,7 @@ public class AddBookmarkHandler extends AbstractAddBookmarkHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		BookmarkCreationOperationContext operationContext = getOperationContext(event);
+		BookmarkPartOperationContext operationContext = getOperationContext(event);
 		if (operationContext == null) {
 			return null;
 		}

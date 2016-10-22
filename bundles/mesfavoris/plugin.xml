@@ -93,6 +93,13 @@
             id="mesfavoris.command.gotoFavori"
             name="Goto Favori">
       </command>
+      <command
+            categoryId="mesfavoris.category"
+            defaultHandler="mesfavoris.internal.handlers.DeleteLinkedBookmarkHandler"
+            description="Delete a Bookmark"
+            id="mesfavoris.command.deleteLinkedFavori"
+            name="Delete Favori">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -107,6 +114,12 @@
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+B U">
+      </key>
+      <key
+            commandId="mesfavoris.command.deleteLinkedFavori"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+B D">
       </key>
 	<key
 		commandId="org.eclipse.ui.views.showView"

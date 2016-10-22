@@ -10,9 +10,9 @@ import org.eclipse.ui.progress.IProgressService;
 import mesfavoris.BookmarksException;
 import mesfavoris.model.BookmarkId;
 
-public abstract class AbstractAddBookmarkHandler extends AbstractBookmarkCreationHandler {
+public abstract class AbstractAddBookmarkHandler extends AbstractBookmarkPartOperationHandler {
 	
-	protected BookmarkId addBookmark(BookmarkCreationOperationContext operationContext) throws ExecutionException {
+	protected BookmarkId addBookmark(BookmarkPartOperationContext operationContext) throws ExecutionException {
 		BookmarkId[] bookmarkId = new BookmarkId[1];
 		IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
 		try {

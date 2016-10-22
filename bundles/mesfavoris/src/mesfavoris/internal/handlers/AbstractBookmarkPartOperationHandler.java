@@ -11,9 +11,9 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.handlers.AbstractBookmarkHandler;
 
-public abstract class AbstractBookmarkCreationHandler extends AbstractBookmarkHandler {
+public abstract class AbstractBookmarkPartOperationHandler extends AbstractBookmarkHandler {
 
-	protected BookmarkCreationOperationContext getOperationContext(ExecutionEvent event) {
+	protected BookmarkPartOperationContext getOperationContext(ExecutionEvent event) {
 		IWorkbenchPart part = HandlerUtil.getActivePart(event);
 		if (part == null) {
 			return null;
@@ -31,14 +31,14 @@ public abstract class AbstractBookmarkCreationHandler extends AbstractBookmarkHa
 		} else {
 			return null;
 		}
-		return new BookmarkCreationOperationContext(part, selection);
+		return new BookmarkPartOperationContext(part, selection);
 	}	
 	
-	protected static class BookmarkCreationOperationContext {
+	protected static class BookmarkPartOperationContext {
 		protected final IWorkbenchPart part;
 		protected final ISelection selection;
 
-		public BookmarkCreationOperationContext(IWorkbenchPart part, ISelection selection) {
+		public BookmarkPartOperationContext(IWorkbenchPart part, ISelection selection) {
 			this.part = part;
 			this.selection = selection;
 		}

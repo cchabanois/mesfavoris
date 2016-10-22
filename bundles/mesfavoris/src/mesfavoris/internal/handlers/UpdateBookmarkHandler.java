@@ -17,11 +17,11 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 
-public class UpdateBookmarkHandler extends AbstractBookmarkCreationHandler {
+public class UpdateBookmarkHandler extends AbstractBookmarkPartOperationHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		BookmarkCreationOperationContext operationContext = getOperationContext(event);
+		BookmarkPartOperationContext operationContext = getOperationContext(event);
 		if (operationContext == null) {
 			return null;
 		}
@@ -37,7 +37,7 @@ public class UpdateBookmarkHandler extends AbstractBookmarkCreationHandler {
 		return null;
 	}
 
-	private void updateBookmark(BookmarkId bookmarkId, BookmarkCreationOperationContext operationContext) throws ExecutionException {
+	private void updateBookmark(BookmarkId bookmarkId, BookmarkPartOperationContext operationContext) throws ExecutionException {
 		IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
 		try {
 			progressService.busyCursorWhile(monitor -> {
