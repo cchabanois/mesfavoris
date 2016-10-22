@@ -64,9 +64,21 @@ bookmarks
 ~~~~~~~~~
 A bookmark is just a set of properties that are used to locate the resource pointed by the bookmark. You can view the properties associated with a bookmark in the Properties view :
 
-Bitap
+.. image:: /docs/bookmarkProperties.png?raw=true
+    :alt: Bookmark Properties
+
+For bookmarks in text files, bookmark contains a path to the file and a line number. However this line number is only used as a hint. A bookmark can be shared, used for different branches and new text can be added before. This means that the line number can quickly become irrelevant. Instead, we mainly use the lineContent property instead. The content of the bookmarked line can change, of course, but less often and generally not completly (or anyway the bookmark becomes irrelevant).
+We use the  `Bitap algorithm <https://en.wikipedia.org/wiki/Bitap_algorithm>`_ for fuzzy string search.
+
+
+When adding a new bookmark on a text file, be careful to add this bookmark on a line :
+
+- that does not contain a password or any other confidential information
+- that contains text that is relevant and does not appear elsewhere around the line (do not put a bookmark on an empty line for example
+
 bookmark types
 how it works
+markers
 
 placeholders
 ~~~~~~~~~~~~
