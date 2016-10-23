@@ -76,12 +76,31 @@ When adding a new bookmark on a text file, be careful to add this bookmark on a 
 - that does not contain a password or any other confidential information
 - that contains text that is relevant and does not appear elsewhere around the line (do not put a bookmark on an empty line for example
 
-bookmark types
-how it works
-markers
 
-placeholders
+You can add a bookmark from the edit menu or using the shortcut : ``M1+B B``. If you are in a text editor, a marker will be added :
+
+.. image:: /docs/bookmarkMarker.png?raw=true
+    :alt: Bookmark Marker
+
+Placeholders
 ~~~~~~~~~~~~
+As you can see on the bookmark properties screenshot, bookmarks often have a *filePath* property with the absolute path to the file.
+This can be a problem if you want to share your bookmarks with your team or between your desktop computer and laptop computer.
+
+You can define placeholders in eclipse Preferences :
+
+.. image:: /docs/placeholdersPreferencePage.png?raw=true
+    :alt: Placeholders preference page
+
+And apply a placeholder to existing bookmarks : (replace absolute path with ${PLACEHOLDER_NAME}) :
+
+.. image:: /docs/placeholdersApply.png?raw=true
+    :alt: Placeholders preference page
+
+
+bookmark types
+~~~~~~~~~~~~~~
+
 
 numbered bookmarks
 ~~~~~~~~~~~~~~~~~~
