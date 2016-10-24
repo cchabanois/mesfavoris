@@ -27,6 +27,11 @@
                label="Share bookmarks file"
                style="push">
          </command>
+         <command
+               commandId="mesfavoris.gdrive.commands.ViewInGDrive"
+               label="View In GDrive"
+               style="push">
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -40,6 +45,11 @@
             description="Share bookmarks file"
             id="mesfavoris.gdrive.commands.ShareBookmarksFile"
             name="Share">
+      </command>
+      <command
+            description="View in GDrive"
+            id="mesfavoris.gdrive.commands.ViewInGDrive"
+            name="View in GDrive">
       </command>
    </extension>
    <extension
@@ -78,6 +88,26 @@
       <handler
             class="mesfavoris.gdrive.handlers.ShareBookmarksFileHandler"
             commandId="mesfavoris.gdrive.commands.ShareBookmarksFile">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <and>
+                  <count
+                        value="1">
+                  </count>
+                  <iterate
+                        operator="and">
+                     <reference
+                           definitionId="mesfavoris.definitions.bookmarkFolder">
+                     </reference>
+                  </iterate>
+               </and>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            class="mesfavoris.gdrive.handlers.ViewInGDriveHandler"
+            commandId="mesfavoris.gdrive.commands.ViewInGDrive">
          <activeWhen>
             <with
                   variable="selection">
