@@ -60,7 +60,7 @@ Folders
 ~~~~~~~
 Use bookmark folders to organize your bookmarks. In the view named "Mes Favoris", select an existing folder, right click and select "New/New Folder". To create a top level folder, do not select an existing folder or bookmark.
 
-bookmarks
+Bookmarks
 ~~~~~~~~~
 A bookmark is just a set of properties that are used to locate the resource pointed by the bookmark. You can view the properties associated with a bookmark in the Properties view :
 
@@ -98,12 +98,25 @@ And apply a placeholder to existing bookmarks : (replace absolute path with ${PL
     :alt: Placeholders preference page
 
 
-bookmark types
+Bookmark types
 ~~~~~~~~~~~~~~
+A bookmark can be of several types. For exemple, it can contain properties from a file bookmark, java bookmark and git bookmark. 
+The available bookmarks types are :
 
+- file bookmark : bookmark to a resource inside the eclipse workspace
+- text editor bookmark : bookmark to a specific line in a text file (file can be outside eclipse workspace)
+- java bookmark : either to a type member or to a specific line in a java file
+- url bookmark : bookmark to an url. You can copy an url from your browser and paste it into the *Mes Favoris* view
 
-numbered bookmarks
+.. image:: /docs/urlBookmarks.png?raw=true
+    :alt: Url bookmarks in the *Mes Favoris* view
+
+- git bookmark : will add information from the git project to the bookmark 
+- perforce bookmark : will add information from the perforce project to the bookmark
+
+Numbered bookmarks
 ~~~~~~~~~~~~~~~~~~
+
 
 ---------------
 Share bookmarks
