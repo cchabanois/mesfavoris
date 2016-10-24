@@ -116,7 +116,13 @@ The available bookmarks types are :
 
 Numbered bookmarks
 ~~~~~~~~~~~~~~~~~~
+Numbered bookmarks allows to set and recall bookmarks by number. Up to 10 bookmarks, from 0 to 9 are supported.
+You can set a number when you create a bookmark (``M1+B F1`` - ``M1+B F10``) or using the popup menu on a the bookmark in the view :
 
+.. image:: /docs/setNumberForBookmarkMenu.png?raw=true
+    :alt: Set Number Shortcut
+    
+A number can also be set on a bookmark folder so that you can quickly goto it.
 
 ---------------
 Share bookmarks
