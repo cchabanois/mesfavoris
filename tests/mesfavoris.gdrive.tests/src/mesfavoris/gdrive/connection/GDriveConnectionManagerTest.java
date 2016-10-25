@@ -63,6 +63,8 @@ public class GDriveConnectionManagerTest {
 		assertEquals(State.connected, gDriveConnectionManager.getState());
 		verify(connectionListener).connected();
 		assertNotNull(gDriveConnectionManager.getApplicationFolderId());
+		assertEquals(GDriveTestUser.USER1.getEmail(), gDriveConnectionManager.getUserInfo().getEmailAddress());
+		assertNotNull(gDriveConnectionManager.getUserInfo().getDisplayName());
 	}
 
 	@Test
@@ -76,6 +78,7 @@ public class GDriveConnectionManagerTest {
 		// Then
 		assertEquals(State.disconnected, gDriveConnectionManager.getState());
 		verify(connectionListener).disconnected();
+		assertNotNull(gDriveConnectionManager.getUserInfo());
 	}
 
 }

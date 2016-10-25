@@ -10,7 +10,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.SubMonitor;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -25,13 +27,16 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.Drive.Files;
 import com.google.api.services.drive.DriveScopes;
+import com.google.api.services.drive.model.About;
 import com.google.api.services.drive.model.FileList;
+import com.google.api.services.drive.model.User;
 
 import mesfavoris.gdrive.StatusHelper;
 import mesfavoris.gdrive.connection.auth.AuthorizationCodeEclipseApp;
 import mesfavoris.gdrive.connection.auth.CancellableLocalServerReceiver;
 import mesfavoris.gdrive.connection.auth.IAuthorizationCodeInstalledAppProvider;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
+import mesfavoris.remote.UserInfo;
 
 /**
  * Manages connection to GDrive. A folder is created for the application.
@@ -51,6 +56,7 @@ public class GDriveConnectionManager {
 	private final AtomicReference<State> state = new AtomicReference<State>(State.disconnected);
 	private Drive drive;
 	private String applicationFolderId;
+	private UserInfo userInfo;
 
 	/**
 	 * 
@@ -78,6 +84,10 @@ public class GDriveConnectionManager {
 
 	public void init() throws GeneralSecurityException, IOException {
 		httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+		UserInfo user = loadUserInfo();
+		synchronized (this) {
+			this.userInfo = user;
+		}
 	}
 
 	public void close() throws IOException {
@@ -91,19 +101,32 @@ public class GDriveConnectionManager {
 	public File getDataStoreDir() {
 		return dataStoreDir;
 	}
-	
+
+	/**
+	 * Get info about user currently associated to the manager
+	 * 
+	 * @return the user or null if unknown
+	 */
+	public synchronized UserInfo getUserInfo() {
+		return userInfo;
+	}
+
 	public void connect(IProgressMonitor monitor) throws IOException {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
 		if (!state.compareAndSet(State.disconnected, State.connecting)) {
 			return;
 		}
 		try {
-			Credential credential = authorize(monitor);
+			Credential credential = authorize(subMonitor.newChild(85));
 			Drive drive = new Drive.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(applicationName)
 					.build();
 			String bookmarkDirId = getApplicationFolderId(drive);
+			UserInfo authenticatedUser = getAuthenticatedUser(drive, subMonitor.newChild(10));
+			saveUser(authenticatedUser, subMonitor.newChild(5));
 			synchronized (this) {
 				this.drive = drive;
 				this.applicationFolderId = bookmarkDirId;
+				this.userInfo = authenticatedUser;
 			}
 			state.set(State.connected);
 			fireConnected(null);
@@ -208,6 +231,13 @@ public class GDriveConnectionManager {
 		}
 	}
 
+	private UserInfo getAuthenticatedUser(Drive drive, IProgressMonitor monitor) throws IOException {
+		SubMonitor subMonitor = SubMonitor.convert(monitor);
+		About about = drive.about().get().execute();
+		User user = about.getUser();
+		return new UserInfo(user.getEmailAddress(), user.getDisplayName());
+	}
+
 	public void disconnect(IProgressMonitor monitor) throws IOException {
 		if (!state.compareAndSet(State.connected, State.disconnected)) {
 			return;
@@ -227,4 +257,22 @@ public class GDriveConnectionManager {
 		connectionListenerList.remove(listener);
 	}
 
+	private UserInfo loadUserInfo() {
+		UserInfoPersister persister = new UserInfoPersister(new File(dataStoreDir, "user.json"));
+		try {
+			return persister.loadUser(new NullProgressMonitor());
+		} catch (IOException e) {
+			StatusHelper.logWarn("Could not load gdrive user info", e);
+			return null;
+		}
+	}
+
+	private void saveUser(UserInfo user, IProgressMonitor monitor) {
+		UserInfoPersister persister = new UserInfoPersister(new File(dataStoreDir, "user.json"));
+		try {
+			persister.saveUser(user, monitor);
+		} catch (IOException e) {
+			StatusHelper.logWarn("Could not save gdrive user info", e);
+		}
+	}
 }

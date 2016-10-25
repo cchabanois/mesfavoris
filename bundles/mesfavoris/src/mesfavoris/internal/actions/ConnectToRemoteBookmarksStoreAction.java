@@ -19,6 +19,7 @@ import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
 import mesfavoris.remote.IRemoteBookmarksStoreDescriptor;
+import mesfavoris.remote.UserInfo;
 
 public class ConnectToRemoteBookmarksStoreAction extends Action implements IWorkbenchAction {
 	private final IRemoteBookmarksStore remoteBookmarksStore;
@@ -31,10 +32,35 @@ public class ConnectToRemoteBookmarksStoreAction extends Action implements IWork
 		setImageDescriptor(store.getDescriptor().getImageDescriptor());
 		this.remoteBookmarksStore = store;
 		setChecked(remoteBookmarksStore.getState() == State.connected);
-		connectionEventHandler = event -> setChecked(remoteBookmarksStore.getState() == State.connected);
+		updateText();
+		connectionEventHandler = event -> {
+			setChecked(remoteBookmarksStore.getState() == State.connected);
+			updateText();
+		};
 		eventBroker.subscribe(
 				AbstractRemoteBookmarksStore.getConnectedTopic(remoteBookmarksStore.getDescriptor().getId()),
 				connectionEventHandler);
+	}
+
+	private void updateText() {
+		StringBuilder text = new StringBuilder(remoteBookmarksStore.getState() == State.connected
+				? "Disconnect from " + remoteBookmarksStore.getDescriptor().getLabel()
+				: "Connect to " + remoteBookmarksStore.getDescriptor().getLabel());
+		UserInfo userInfo = remoteBookmarksStore.getUserInfo();
+		if (userInfo != null) {
+			text.append(" (");
+			String displayName = userInfo.getDisplayName();
+			String emailAddress = userInfo.getEmailAddress();
+			if (displayName != null && emailAddress != null) {
+				text.append(displayName).append(" - ").append(emailAddress);
+			} else if (displayName != null) {
+				text.append(displayName);
+			} else if (emailAddress != null) {
+				text.append(emailAddress);
+			}
+			text.append(')');
+		}
+		setText(text.toString());
 	}
 
 	@Override

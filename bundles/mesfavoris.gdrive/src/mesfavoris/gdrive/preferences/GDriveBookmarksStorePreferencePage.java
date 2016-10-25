@@ -22,6 +22,7 @@ import mesfavoris.gdrive.StatusHelper;
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
 import mesfavoris.gdrive.mappings.IBookmarkMappings;
 import mesfavoris.gdrive.operations.DeleteFileDataStoreOperation;
+import mesfavoris.remote.UserInfo;
 
 public class GDriveBookmarksStorePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 	private Button deleteCredentialsButton;
@@ -65,7 +66,7 @@ public class GDriveBookmarksStorePreferencePage extends PreferencePage implement
 
 		deleteCredentialsButton = new Button(group, SWT.PUSH);
 		deleteCredentialsButton.setFont(parent.getFont());
-		deleteCredentialsButton.setText("Delete credentials");
+		deleteCredentialsButton.setText(getDeleteCredentialsText(gDriveConnectionManager.getUserInfo()));
 		gd = new GridData(SWT.BEGINNING);
 		deleteCredentialsButton.setLayoutData(gd);
 
@@ -79,6 +80,14 @@ public class GDriveBookmarksStorePreferencePage extends PreferencePage implement
 				deleteCredentials();
 			}
 		});
+	}
+
+	private String getDeleteCredentialsText(UserInfo user) {
+		if (user == null || user.getEmailAddress() == null) {
+			return "Delete credentials";
+		} else {
+			return "Delete credentials for " + user.getEmailAddress();
+		}
 	}
 
 	private void deleteCredentials() {

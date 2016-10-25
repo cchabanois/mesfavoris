@@ -20,31 +20,36 @@ public interface IRemoteBookmarksStore {
 	public static final String TOPIC_MAPPING_REMOVED = TOPIC_REMOTE_BOOKMARK_STORES + "/mappings/removed";
 	public static final String TOPIC_MAPPING_CHANGED = TOPIC_REMOTE_BOOKMARK_STORES + "/mappings/changed";
 	public static final String TOPIC_REMOTE_BOOKMARK_STORES_ALL = TOPIC_REMOTE_BOOKMARK_STORES + "/*";
-	
+
 	public static enum State {
 		disconnected, connecting, connected
 	}
 
+	/**
+	 * User info about the user associated to this remote bookmark store
+	 * 
+	 * @return the user info or null if unknown
+	 */
+	public UserInfo getUserInfo();
+
 	public IRemoteBookmarksStoreDescriptor getDescriptor();
-	
+
 	public void connect(IProgressMonitor monitor) throws IOException;
 
 	public void disconnect(IProgressMonitor monitor) throws IOException;
 
 	public State getState();
 
-	public RemoteBookmarksTree add(BookmarksTree bookmarksTree, BookmarkId bookmarkFolderId,
-			IProgressMonitor monitor) throws IOException;
-
-	public void remove(BookmarkId bookmarkFolderId, IProgressMonitor monitor)
+	public RemoteBookmarksTree add(BookmarksTree bookmarksTree, BookmarkId bookmarkFolderId, IProgressMonitor monitor)
 			throws IOException;
+
+	public void remove(BookmarkId bookmarkFolderId, IProgressMonitor monitor) throws IOException;
 
 	public Set<RemoteBookmarkFolder> getRemoteBookmarkFolders();
 
 	public Optional<RemoteBookmarkFolder> getRemoteBookmarkFolder(BookmarkId bookmarkFolderId);
-	
-	public RemoteBookmarksTree load(BookmarkId bookmarkFolderId,
-			IProgressMonitor monitor) throws IOException;
+
+	public RemoteBookmarksTree load(BookmarkId bookmarkFolderId, IProgressMonitor monitor) throws IOException;
 
 	public RemoteBookmarksTree save(BookmarksTree bookmarksTree, BookmarkId bookmarkFolderId, String etag,
 			IProgressMonitor monitor) throws IOException, ConflictException;

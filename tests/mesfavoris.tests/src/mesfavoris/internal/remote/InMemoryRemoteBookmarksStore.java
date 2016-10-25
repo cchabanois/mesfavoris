@@ -26,6 +26,7 @@ import mesfavoris.remote.ConflictException;
 import mesfavoris.remote.IRemoteBookmarksStoreDescriptor;
 import mesfavoris.remote.RemoteBookmarkFolder;
 import mesfavoris.remote.RemoteBookmarksTree;
+import mesfavoris.remote.UserInfo;
 
 public class InMemoryRemoteBookmarksStore extends AbstractRemoteBookmarksStore implements IBookmarksListener {
 	private AtomicReference<State> state = new AtomicReference<>(State.disconnected);
@@ -40,6 +41,11 @@ public class InMemoryRemoteBookmarksStore extends AbstractRemoteBookmarksStore i
 		init(new InMemoryRemoteBookmarksStoreDescriptor());
 	}
 
+	@Override
+	public UserInfo getUserInfo() {
+		return null;
+	}
+	
 	@Override
 	public void connect(IProgressMonitor monitor) throws IOException {
 		state.set(State.connected);

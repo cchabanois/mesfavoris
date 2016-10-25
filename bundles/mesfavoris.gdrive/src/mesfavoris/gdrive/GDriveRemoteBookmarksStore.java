@@ -41,6 +41,7 @@ import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.ConflictException;
 import mesfavoris.remote.RemoteBookmarkFolder;
 import mesfavoris.remote.RemoteBookmarksTree;
+import mesfavoris.remote.UserInfo;
 
 public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 	private final GDriveConnectionManager gDriveConnectionManager;
@@ -229,6 +230,11 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 		} finally {
 			monitor.done();
 		}
+	}
+	
+	@Override
+	public UserInfo getUserInfo() {
+		return gDriveConnectionManager.getUserInfo();
 	}
 
 }
