@@ -36,7 +36,7 @@ public class DeleteFileDataStoreOperationTest {
 	@Before
 	public void setUp() {
 		GDriveConnectionManager gdriveConnectionManager = gdriveConnectionRule.getGDriveConnectionManager();
-		operation = new DeleteFileDataStoreOperation(gdriveConnectionManager.getDataStoreDir(), gdriveConnectionManager,
+		operation = new DeleteFileDataStoreOperation(gdriveConnectionManager,
 				bookmarkMappings);
 	}
 
@@ -44,7 +44,7 @@ public class DeleteFileDataStoreOperationTest {
 	public void testCannotDeleteDataStoreIfConnected() throws IOException {
 		// When
 		Throwable thrown = catchThrowable(() -> {
-			operation.deleteDefaultFileDataStore();
+			operation.deleteFileDataStore();
 		});
 
 		// Then
@@ -60,7 +60,7 @@ public class DeleteFileDataStoreOperationTest {
 
 		// When
 		Throwable thrown = catchThrowable(() -> {
-			operation.deleteDefaultFileDataStore();
+			operation.deleteFileDataStore();
 		});
 
 		// Then
@@ -76,7 +76,7 @@ public class DeleteFileDataStoreOperationTest {
 		gdriveConnectionRule.setAuthorizationListener(authorizationListener);
 		
 		// When
-		operation.deleteDefaultFileDataStore();
+		operation.deleteFileDataStore();
 
 		// Then
 		assertThat(!dataStoreExists());

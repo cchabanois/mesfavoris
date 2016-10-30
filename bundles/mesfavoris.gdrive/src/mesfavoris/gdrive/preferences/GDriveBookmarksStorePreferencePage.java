@@ -91,14 +91,16 @@ public class GDriveBookmarksStorePreferencePage extends PreferencePage implement
 	}
 
 	private void deleteCredentials() {
-		DeleteFileDataStoreOperation operation = new DeleteFileDataStoreOperation(
-				gDriveConnectionManager.getDataStoreDir(), gDriveConnectionManager, bookmarkMappings);
+		DeleteFileDataStoreOperation operation = new DeleteFileDataStoreOperation(gDriveConnectionManager,
+				bookmarkMappings);
 		try {
-			operation.deleteDefaultFileDataStore();
+			operation.deleteFileDataStore();
 			MessageDialog.openInformation(getShell(), "Delete credentials",
 					"Credentials file has been successfully deleted.");
 		} catch (IOException e) {
 			StatusHelper.showError("Could not delete credentials", e, true);
+		} finally {
+			deleteCredentialsButton.setText(getDeleteCredentialsText(gDriveConnectionManager.getUserInfo()));
 		}
 	}
 

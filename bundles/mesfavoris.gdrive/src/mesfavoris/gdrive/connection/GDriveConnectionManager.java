@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.SubMonitor;
 
 import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.auth.oauth2.StoredCredential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
@@ -45,6 +46,8 @@ import mesfavoris.remote.UserInfo;
  *
  */
 public class GDriveConnectionManager {
+	public static final String USER_FILENAME = "user.json";
+
 	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
 	private final ListenerList connectionListenerList = new ListenerList();
@@ -258,7 +261,7 @@ public class GDriveConnectionManager {
 	}
 
 	private UserInfo loadUserInfo() {
-		UserInfoPersister persister = new UserInfoPersister(new File(dataStoreDir, "user.json"));
+		UserInfoPersister persister = new UserInfoPersister(new File(dataStoreDir, USER_FILENAME));
 		try {
 			return persister.loadUser(new NullProgressMonitor());
 		} catch (IOException e) {
@@ -268,11 +271,28 @@ public class GDriveConnectionManager {
 	}
 
 	private void saveUser(UserInfo user, IProgressMonitor monitor) {
-		UserInfoPersister persister = new UserInfoPersister(new File(dataStoreDir, "user.json"));
+		UserInfoPersister persister = new UserInfoPersister(new File(dataStoreDir, USER_FILENAME));
 		try {
 			persister.saveUser(user, monitor);
 		} catch (IOException e) {
 			StatusHelper.logWarn("Could not save gdrive user info", e);
 		}
+	}
+	
+	public void deleteCredentials() throws IOException {
+		if (getState() != State.disconnected) {
+			throw new IOException("Cannot delete file store while connected");
+		}
+		synchronized(this) {
+			this.userInfo = null;
+		}
+		File file = new File(dataStoreDir, StoredCredential.DEFAULT_DATA_STORE_ID);
+		if (file.exists()) {
+			java.nio.file.Files.delete(file.toPath());
+		}
+		File userInfoFile = new File(dataStoreDir, GDriveConnectionManager.USER_FILENAME);
+		if (userInfoFile.exists()) {
+			java.nio.file.Files.delete(userInfoFile.toPath());
+		}	
 	}
 }
