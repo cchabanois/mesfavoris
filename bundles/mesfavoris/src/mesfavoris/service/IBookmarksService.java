@@ -32,6 +32,8 @@ public interface IBookmarksService {
 
 	void connectToRemoteBookmarksStore(String storeId, IProgressMonitor monitor) throws BookmarksException;
 
+	void disconnectFromRemoteBookmarksStore(String storeId, IProgressMonitor monitor) throws BookmarksException;
+
 	void copyToClipboard(List<BookmarkId> selection);
 
 	void cutToClipboard(List<BookmarkId> selection) throws BookmarksException;

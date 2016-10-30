@@ -98,7 +98,7 @@ public class ConnectToRemoteBookmarksStoreAction extends Action implements IWork
 				ConnectToRemoteBookmarksStoreOperation operation = new ConnectToRemoteBookmarksStoreOperation(
 						BookmarksPlugin.getBookmarkDatabase(), BookmarksPlugin.getRemoteBookmarksStoreManager(),
 						BookmarksPlugin.getBookmarksDirtyStateTracker());
-				operation.connectToRemoteBookmarksStore(storeDescriptor.getId(), monitor);
+				operation.connect(storeDescriptor.getId(), monitor);
 				return Status.OK_STATUS;
 			} catch (BookmarksException e) {
 				return e.getStatus();

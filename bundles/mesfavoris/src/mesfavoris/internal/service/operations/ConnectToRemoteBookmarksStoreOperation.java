@@ -29,7 +29,7 @@ public class ConnectToRemoteBookmarksStoreOperation {
 				remoteBookmarksStoreManager, bookmarksDirtyStateTracker);
 	}
 
-	public void connectToRemoteBookmarksStore(String storeId, IProgressMonitor monitor) throws BookmarksException {
+	public void connect(String storeId, IProgressMonitor monitor) throws BookmarksException {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, "Connecting to remote bookmarks store", 100);
 		try {
 			IRemoteBookmarksStore store = remoteBookmarksStoreManager.getRemoteBookmarksStore(storeId);
@@ -43,4 +43,16 @@ public class ConnectToRemoteBookmarksStoreOperation {
 		}
 	}
 
+	public void disconnect(String storeId, IProgressMonitor monitor) throws BookmarksException {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, "Disconnecting from remote bookmarks store", 100);
+		try {
+			IRemoteBookmarksStore store = remoteBookmarksStoreManager.getRemoteBookmarksStore(storeId);
+			if (store == null) {
+				throw new BookmarksException("Unknown store id");
+			}
+			store.disconnect(subMonitor.newChild(50));
+		} catch (IOException e) {
+			throw new BookmarksException("Could not disconnect from remote bookmarks store", e);
+		}
+	}
 }

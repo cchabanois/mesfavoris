@@ -115,9 +115,16 @@ public class BookmarksService implements IBookmarksService {
 	public void connectToRemoteBookmarksStore(String storeId, IProgressMonitor monitor) throws BookmarksException {
 		ConnectToRemoteBookmarksStoreOperation operation = new ConnectToRemoteBookmarksStoreOperation(bookmarkDatabase,
 				remoteBookmarksStoreManager, bookmarksDirtyStateTracker);
-		operation.connectToRemoteBookmarksStore(storeId, monitor);
+		operation.connect(storeId, monitor);
 	}
 
+	@Override
+	public void disconnectFromRemoteBookmarksStore(String storeId, IProgressMonitor monitor) throws BookmarksException {
+		ConnectToRemoteBookmarksStoreOperation operation = new ConnectToRemoteBookmarksStoreOperation(bookmarkDatabase,
+				remoteBookmarksStoreManager, bookmarksDirtyStateTracker);
+		operation.disconnect(storeId, monitor);
+	}
+	
 	@Override
 	public void copyToClipboard(List<BookmarkId> selection) {
 		CopyBookmarkOperation operation = new CopyBookmarkOperation();
