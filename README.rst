@@ -127,7 +127,10 @@ A number can also be set on a bookmark folder so that you can quickly goto it.
 ---------------
 Share bookmarks
 ---------------
-Use cases : laptop/desktop computer , share with team
+You can save some of your bookmarks to gDrive. It can be useful
+
+- when you work on the same projects on both your laptop computer and desktop computer
+- if you want to share some bookmarks with your team
 
 Connecting to GDrive
 ~~~~~~~~~~~~~~~~~~~~
@@ -136,7 +139,11 @@ Click on the GDrive icon in the "Mes favoris" view.
 .. image:: /docs/connectToGdriveIcon.png?raw=true
     :alt: Connect to Gdrive
 
-The first time your click on it, this will open your browser and start the OAuth flow.
+The first time your click on it, this will open your browser and start the OAuth flow : 
+
+.. image:: /docs/gdriveOAuth.png?raw=true
+    :alt: Gdrive oauth flow
+
 
 .. note::  Currently, you cannot connect to multiple accounts. However, you can share bookmarks between accounts. You can also delete your current credentials if you selected the wrong account during authentication (Preferences/Mes Favoris/GDrive : delete credentials).
 
