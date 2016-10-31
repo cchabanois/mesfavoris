@@ -25,25 +25,30 @@ import mesfavoris.validation.IBookmarkModificationValidator;
  *
  */
 public class DefaultBookmarkFolderProvider {
+	public final static BookmarkId DEFAULT_BOOKMARKFOLDER_ID = new BookmarkId("default");
 	private final BookmarkDatabase bookmarkDatabase;
 	private final IBookmarkModificationValidator bookmarkModificationValidator;
-	private final BookmarkId defaultBookmarkId;
 
-	public DefaultBookmarkFolderProvider(BookmarkDatabase bookmarkDatabase, BookmarkId defaultBookmarkId,
+	public DefaultBookmarkFolderProvider(BookmarkDatabase bookmarkDatabase,
 			IBookmarkModificationValidator bookmarkModificationValidator) {
 		this.bookmarkDatabase = bookmarkDatabase;
-		this.defaultBookmarkId = defaultBookmarkId;
 		this.bookmarkModificationValidator = bookmarkModificationValidator;
 	}
 
+	public BookmarkId getDefaultBookmarkFolder() {
+		return DEFAULT_BOOKMARKFOLDER_ID;
+	}
+	
 	public BookmarkId getDefaultBookmarkFolder(IWorkbenchPage workbenchPage) {
 		BookmarkFolder bookmarkFolder = getCurrentBookmarkFolderFromBookmarksView(workbenchPage);
 		if (bookmarkFolder == null || !isModifiable(bookmarkFolder.getId())) {
-			bookmarkFolder = (BookmarkFolder) bookmarkDatabase.getBookmarksTree().getBookmark(defaultBookmarkId);
+			bookmarkFolder = (BookmarkFolder) bookmarkDatabase.getBookmarksTree()
+					.getBookmark(DEFAULT_BOOKMARKFOLDER_ID);
 		}
 		if (bookmarkFolder == null || !isModifiable(bookmarkFolder.getId())) {
 			createDefaultBookmarkFolder();
-			bookmarkFolder = (BookmarkFolder) bookmarkDatabase.getBookmarksTree().getBookmark(defaultBookmarkId);
+			bookmarkFolder = (BookmarkFolder) bookmarkDatabase.getBookmarksTree()
+					.getBookmark(DEFAULT_BOOKMARKFOLDER_ID);
 		}
 		if (bookmarkFolder == null || !isModifiable(bookmarkFolder.getId())) {
 			bookmarkFolder = bookmarkDatabase.getBookmarksTree().getRootFolder();
@@ -54,7 +59,7 @@ public class DefaultBookmarkFolderProvider {
 	private void createDefaultBookmarkFolder() {
 		try {
 			bookmarkDatabase.modify(bookmarksTreeModifier -> {
-				BookmarkFolder bookmarkFolder = new BookmarkFolder(defaultBookmarkId, "default");
+				BookmarkFolder bookmarkFolder = new BookmarkFolder(DEFAULT_BOOKMARKFOLDER_ID, "default");
 				bookmarksTreeModifier.addBookmarksAfter(bookmarksTreeModifier.getCurrentTree().getRootFolder().getId(),
 						null, Lists.newArrayList(bookmarkFolder));
 			});

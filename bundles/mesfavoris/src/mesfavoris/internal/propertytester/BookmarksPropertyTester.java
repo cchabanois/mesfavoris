@@ -4,6 +4,7 @@ import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.core.runtime.IStatus;
 
 import mesfavoris.BookmarksPlugin;
+import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
@@ -14,16 +15,20 @@ public class BookmarksPropertyTester extends PropertyTester {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IBookmarkModificationValidator bookmarkModificationValidator;
+	private final DefaultBookmarkFolderProvider defaultBookmarkFolderProvider;
 
 	public BookmarksPropertyTester() {
-		this(BookmarksPlugin.getBookmarkDatabase(), BookmarksPlugin.getRemoteBookmarksStoreManager());
+		this(BookmarksPlugin.getBookmarkDatabase(), BookmarksPlugin.getRemoteBookmarksStoreManager(),
+				BookmarksPlugin.getDefaultBookmarkFolderProvider());
 	}
 
 	public BookmarksPropertyTester(BookmarkDatabase bookmarkDatabase,
-			RemoteBookmarksStoreManager remoteBookmarksStoreManager) {
+			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
+			DefaultBookmarkFolderProvider defaultBookmarkFolderProvider) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
 		this.bookmarkModificationValidator = new BookmarkModificationValidator(remoteBookmarksStoreManager);
+		this.defaultBookmarkFolderProvider = defaultBookmarkFolderProvider;
 	}
 
 	public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
@@ -37,7 +42,14 @@ public class BookmarksPropertyTester extends PropertyTester {
 		if ("isUnderRemoteBookmarkFolder".equals(property)) {
 			return isUnderRemoteBookmarkFolder(bookmark);
 		}
+		if ("isDefaultBookmarkFolder".equals(property)) {
+			return isDefaultBookmarkFolder(bookmark);
+		}
 		return false;
+	}
+
+	private boolean isDefaultBookmarkFolder(Bookmark bookmark) {
+		return defaultBookmarkFolderProvider.getDefaultBookmarkFolder().equals(bookmark.getId());
 	}
 
 	private boolean isUnderRemoteBookmarkFolder(Bookmark bookmark) {

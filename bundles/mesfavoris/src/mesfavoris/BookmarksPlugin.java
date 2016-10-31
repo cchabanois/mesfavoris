@@ -42,7 +42,6 @@ import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
-import mesfavoris.model.BookmarkId;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
 import mesfavoris.persistence.json.BookmarksTreeJsonSerializer;
@@ -110,7 +109,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		bookmarksSaver = new BookmarksAutoSaver(bookmarkDatabase, localBookmarksSaver, remoteBookmarksSaver);
 		bookmarksSaver.init();
 		IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode(PLUGIN_ID);
-		defaultBookmarkFolderProvider = new DefaultBookmarkFolderProvider(bookmarkDatabase, new BookmarkId("default"),
+		defaultBookmarkFolderProvider = new DefaultBookmarkFolderProvider(bookmarkDatabase,
 				new BookmarkModificationValidator(remoteBookmarksStoreManager));
 		File mostVisitedBookmarksFile = new File(getStateLocation().toFile(), "mostVisitedBookmarks.json");
 		IEventBroker eventBroker = (IEventBroker) getWorkbench().getService(IEventBroker.class);
