@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -15,18 +16,22 @@ import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
+import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class AddBookmarkOperation {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final DefaultBookmarkFolderProvider defaultBookmarkFolderProvider;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
+	private final IBookmarkModificationValidator bookmarkModificationValidator;
 
 	public AddBookmarkOperation(BookmarkDatabase bookmarkDatabase,
 			IBookmarkPropertiesProvider bookmarkPropertiesProvider,
-			DefaultBookmarkFolderProvider defaultBookmarkFolderProvider) {
+			DefaultBookmarkFolderProvider defaultBookmarkFolderProvider,
+			IBookmarkModificationValidator bookmarkModificationValidator) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.defaultBookmarkFolderProvider = defaultBookmarkFolderProvider;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
+		this.bookmarkModificationValidator = bookmarkModificationValidator;
 	}
 
 	public BookmarkId addBookmark(IWorkbenchPart part, ISelection selection, IProgressMonitor monitor)
@@ -45,6 +50,11 @@ public class AddBookmarkOperation {
 	private void addBookmark(final IWorkbenchPage page, final Bookmark bookmark) throws BookmarksException {
 		BookmarkId folderId = defaultBookmarkFolderProvider.getDefaultBookmarkFolder(page);
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
+			IStatus status = bookmarkModificationValidator.validateModification(bookmarksTreeModifier.getCurrentTree(),
+					folderId);
+			if (!status.isOK()) {
+				throw new BookmarksException(status);
+			}
 			bookmarksTreeModifier.addBookmarks(folderId, Arrays.asList(bookmark));
 		});
 	}

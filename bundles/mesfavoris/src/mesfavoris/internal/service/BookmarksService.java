@@ -91,7 +91,7 @@ public class BookmarksService implements IBookmarksService {
 	public BookmarkId addBookmark(IWorkbenchPart part, ISelection selection, IProgressMonitor monitor)
 			throws BookmarksException {
 		AddBookmarkOperation operation = new AddBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider,
-				defaultBookmarkFolderProvider);
+				defaultBookmarkFolderProvider, bookmarkModificationValidator);
 		return operation.addBookmark(part, selection, monitor);
 	}
 
