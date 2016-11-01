@@ -149,9 +149,22 @@ The first time your click on it, this will open your browser and start the OAuth
 
 Add bookmark folder to GDrive
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Select the bookmark folder you want to add to gDrive and click on "Add to GDrive" :
+
+.. image:: /docs/gdriveMenu.png?raw=true
+    :alt: Gdrive Menu
+
+.. note::  The bookmarks you added to gDrive are still available when you are not connected but are read-only.
+
+Bookmark files are available in the *eclipse-bookmarks* folder in your google drive :
+
+.. image:: /docs/eclipse-bookmarks-gdrive.png?raw=true
+    :alt: eclipse-bookmarks folder in your google drive
 
 Share with others
 ~~~~~~~~~~~~~~~~~
+You can share the 
+
 
 =======
 License
