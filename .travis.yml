@@ -7,7 +7,10 @@ cache:
   directories:
   - $HOME/.m2
 
-env: DISPLAY=:99.0
+env: 
+  global:
+  - DISPLAY=:99.0
+  - bintray.package=development
 
 addons:
   apt:
