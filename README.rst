@@ -134,7 +134,7 @@ You can save some of your bookmarks to gDrive. It can be useful
 
 Connecting to GDrive
 ~~~~~~~~~~~~~~~~~~~~
-Click on the GDrive icon in the "Mes favoris" view.
+Click on the GDrive icon in the *Mes favoris* view.
 
 .. image:: /docs/connectToGdriveIcon.png?raw=true
     :alt: Connect to Gdrive
@@ -149,7 +149,7 @@ The first time your click on it, this will open your browser and start the OAuth
 
 Add bookmark folder to GDrive
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Select the bookmark folder you want to add to gDrive and click on "Add to GDrive" :
+Select the bookmark folder you want to add to gDrive and click on *Add to GDrive* :
 
 .. image:: /docs/gdriveMenu.png?raw=true
     :alt: Gdrive Menu
@@ -163,8 +163,14 @@ Bookmark files are available in the *eclipse-bookmarks* folder in your google dr
 
 Share with others
 ~~~~~~~~~~~~~~~~~
-You can share the 
+You can share your bookmark files from the google drive web app or directly from eclipse (*Gdrive/Share bookmarks file*)
 
+Import bookmarks file
+~~~~~~~~~~~~~~~~~~~~~
+You can import bookmarks files that are already on your gDrive or that are shared with you. It is also possible to add a link when a bookmarks file is shared by link.
+
+.. image:: /docs/importBookmarksFile.png?raw=true
+    :alt: import bookmarks file
 
 =======
 License
