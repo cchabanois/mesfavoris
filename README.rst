@@ -82,6 +82,8 @@ You can add a bookmark from the edit menu or using the shortcut : ``M1+B B``. If
 .. image:: /docs/bookmarkMarker.png?raw=true
     :alt: Bookmark Marker
 
+The bookmark will be added in the bookmark folder that is selected in the *Mes Favoris* view.
+
 Placeholders
 ~~~~~~~~~~~~
 As you can see on the bookmark properties screenshot, bookmarks often have a *filePath* property with the absolute path to the file.
