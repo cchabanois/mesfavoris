@@ -41,7 +41,7 @@ deploy:
    script: mvn clean verify -P release-mesfavoris -DskipTests
    on:
      branch: master
-     condition: test "${TRAVIS_TAG}" == ""
+     condition: "$TRAVIS_TAG" = ""
 
 notifications:
   webhooks:
