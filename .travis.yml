@@ -33,7 +33,15 @@ before_script:
 
 script:
  - export
- - mvn clean verify -P release-mesfavoris
+ - mvn clean verify
+
+# pull request builds skip the deployment step
+deploy:
+ - provider: script
+   script: mvn clean verify -P release-mesfavoris -DskipTests
+   on:
+     branch: master
+     condition: test "${TRAVIS_TAG}" == ""
 
 notifications:
   webhooks:
