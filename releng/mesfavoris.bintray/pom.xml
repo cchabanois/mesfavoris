@@ -14,7 +14,7 @@
 
 	<properties>
 		<!-- The name of your own Bintray repository -->
-		<bintray.repo>mesfavoris</bintray.repo>
+		<bintray.repo>mesfavoris-development</bintray.repo>
 		<!-- The name of your own Bintray repository's package for releases -->
 		<bintray.package>development</bintray.package>
 		<!-- The label for the Composite sites -->
@@ -38,9 +38,20 @@
 	</properties>
 
 	<profiles>
+	    <profile>
+	        <!-- Activate this profile to perform deployment to mesfavoris repository instead of mesfavoris-development repository -->
+	    	<id>release</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<bintray.repo>mesfavoris</bintray.repo>
+				<bintray.package>releases</bintray.package>  			
+			</properties>	
+	    </profile>
 		<profile>
-			<!-- Activate this profile to perform the release to Bintray -->
-			<id>release-mesfavoris</id>
+			<!-- Activate this profile to perform the deployment to Bintray -->
+			<id>deploy</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
