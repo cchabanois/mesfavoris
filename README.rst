@@ -179,6 +179,7 @@ License
 =======
 Licensed under the `EPL License <http://www.eclipse.org/legal/epl-v10.html>`_
 
+Some icons by Yusuke Kamiyamane. Licensed under a Creative Commons Attribution 3.0 License.
 
 .. |build| image:: https://travis-ci.org/cchabanois/mesfavoris.svg?branch=master
     :target: https://travis-ci.org/cchabanois/mesfavoris
