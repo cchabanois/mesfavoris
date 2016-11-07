@@ -27,7 +27,7 @@ Installation
 ============
 Currently, only a development version is available. The update site is updated for each successful build.
 
-The update site url is : https://dl.bintray.com/cchabanois/mesfavoris/updates
+The development update site url is : https://dl.bintray.com/cchabanois/mesfavoris-development/updates
 
 .. image:: /docs/install.png?raw=true
     :alt: Install Mesfavoris
