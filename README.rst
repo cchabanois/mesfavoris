@@ -1,16 +1,15 @@
-|build| |gitter|
 
 ########################################
 mesfavoris : a bookmarks eclipse plugin
 ########################################
 
 
-.. image:: /docs/mesfavoris-300x356.png?raw=true
-    :width: 100%
-    :align: left
-    :alt: Logo
 
+.. image:: /docs/mesfavoris-300x356.png?raw=true
+    :alt: Logo
 Mesfavoris is an **eclipse plugin** that allows you to **bookmark** your files and share them with your team using GDrive.
+
+|build| |gitter|
 
 
 .. contents::
@@ -25,7 +24,6 @@ Features
 - numbered bookmarks
 
 .. image:: /docs/screenshot.png?raw=true
-    :width: 100%
     :align: center
     :alt: Screenshot
 
