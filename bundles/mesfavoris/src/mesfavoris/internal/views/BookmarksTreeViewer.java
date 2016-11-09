@@ -5,8 +5,6 @@ import java.util.function.Predicate;
 
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.util.LocalSelectionTransfer;
-import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
-import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -71,8 +69,7 @@ public class BookmarksTreeViewer extends TreeViewer {
 		this.dirtyBookmarkPredicate = new DirtyBookmarkPredicate(bookmarksDirtyStateTracker);
 		BookmarksLabelProvider bookmarksLabelProvider = getBookmarksLabelProvider();
 		bookmarksLabelProvider.addListener(event -> refresh());		
-		ILabelDecorator decorator = PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator();
-		setLabelProvider(new DecoratingStyledCellLabelProvider(bookmarksLabelProvider, decorator, null));
+		setLabelProvider(bookmarksLabelProvider);
 		setInput(bookmarkDatabase.getBookmarksTree().getRootFolder());
 		installDragAndDropSupport();
 		bookmarkDatabase.addListener(bookmarksListener);

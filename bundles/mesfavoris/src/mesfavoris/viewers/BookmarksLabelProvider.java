@@ -12,8 +12,9 @@ import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -28,7 +29,7 @@ import mesfavoris.internal.views.virtual.BookmarkLink;
 import mesfavoris.internal.views.virtual.VirtualBookmarkFolder;
 import mesfavoris.model.Bookmark;
 
-public class BookmarksLabelProvider extends LabelProvider implements ILabelProvider, IStyledLabelProvider {
+public class BookmarksLabelProvider extends StyledCellLabelProvider implements ILabelProvider, IStyledLabelProvider {
 	private static final String ICON_VIRTUAL_BOOKMARK_FOLDER = "icons/ovr16/virt_ovr.png";
 	private static final String ICON_BOOKMARK_LINK = "icons/ovr16/link_ovr.png";
 	private final IBookmarkLabelProvider bookmarkLabelProvider;
@@ -54,6 +55,15 @@ public class BookmarksLabelProvider extends LabelProvider implements ILabelProvi
 		this.commentColor = new Color(PlatformUI.getWorkbench().getDisplay(), 63, 127, 95);
 	}
 
+	@Override
+	public void update(ViewerCell cell) {
+		StyledString styledText = getStyledText(cell.getElement());
+		cell.setText(styledText.toString());
+		cell.setStyleRanges(styledText.getStyleRanges());
+		cell.setImage(getImage(cell.getElement()));
+		super.update(cell);
+	}	
+	
 	public StyledString getStyledText(final Object element) {
 		Bookmark bookmark = (Bookmark) AdapterUtils.getAdapter(element, Bookmark.class);
 		String comment = bookmarkCommentProvider.apply(bookmark);
