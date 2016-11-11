@@ -9,10 +9,15 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -24,11 +29,18 @@ import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
 public class BookmarkDatabaseTest {
 	private BookmarkDatabase bookmarkDatabase;
 	private IBookmarksListener bookmarksListener = mock(IBookmarksListener.class);
+	private ExecutorService executorService;
 
 	@Before
 	public void setUp() {
 		bookmarkDatabase = new BookmarkDatabase("test", createBookmarksTree());
 		bookmarkDatabase.addListener(bookmarksListener);
+		executorService = Executors.newCachedThreadPool();
+	}
+
+	@After
+	public void tearDown() {
+		executorService.shutdown();
 	}
 
 	private BookmarksTree createBookmarksTree() {
@@ -74,6 +86,74 @@ public class BookmarkDatabaseTest {
 		// Then
 		assertThat(thrown).isInstanceOf(BookmarksException.class)
 				.hasMessageContaining("BookmarksDatabase.modify is not reentrant");
+	}
+
+	@Test
+	public void testModifyWithPessimisticLocking() throws Exception {
+		// Given
+		int bookmarksCount = bookmarkDatabase.getBookmarksTree().size();
+
+		// When
+		Callable<Void> callable = () -> {
+			for (int j = 0; j < 100; j++) {
+				try {
+					bookmarkDatabase.modify(LockMode.PESSIMISTIC, (bookmarksTreeModifier) -> {
+						bookmarksTreeModifier.addBookmarks(new BookmarkId("root"),
+								Lists.newArrayList(new Bookmark(new BookmarkId())));
+					});
+					Thread.sleep(10);
+				} catch (BookmarksException | InterruptedException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			return null;
+		};
+		List<Callable<Void>> list = new ArrayList<>();
+		for (int i = 0; i < 10; i++) {
+			list.add(callable);
+		}
+		executorService.invokeAll(list);
+
+		// Then
+		assertEquals(bookmarksCount + 1000, bookmarkDatabase.getBookmarksTree().size());
+	}
+
+	@Test
+	public void testModifyWithOptimisticLocking() throws Exception {
+		// Given
+		int bookmarksCount = bookmarkDatabase.getBookmarksTree().size();
+
+		// When
+		Callable<Void> callable = () -> {
+			for (int j = 0; j < 100; j++) {
+				try {
+					Bookmark bookmark = new Bookmark(new BookmarkId());
+					while (true) {
+						try {
+							bookmarkDatabase.modify(LockMode.OPTIMISTIC, (bookmarksTreeModifier) -> {
+								bookmarksTreeModifier.addBookmarks(new BookmarkId("root"),
+										Lists.newArrayList(bookmark));
+							});
+							break;
+						} catch (OptimisticLockException e) {
+							Thread.sleep(10);
+						}
+					}
+					Thread.sleep(10);
+				} catch (BookmarksException | InterruptedException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			return null;
+		};
+		List<Callable<Void>> list = new ArrayList<>();
+		for (int i = 0; i < 10; i++) {
+			list.add(callable);
+		}
+		executorService.invokeAll(list);
+
+		// Then
+		assertEquals(bookmarksCount + 1000, bookmarkDatabase.getBookmarksTree().size());
 	}
 
 	private void createFolder(BookmarkId parentId, BookmarkId bookmarkId, String name) throws BookmarksException {

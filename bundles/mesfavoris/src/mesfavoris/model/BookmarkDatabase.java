@@ -31,12 +31,64 @@ public class BookmarkDatabase {
 	public String getId() {
 		return id;
 	}
-	
+
 	public void modify(IBookmarksOperation operation) throws BookmarksException {
-		modify(operation, (bookmarksTree)->{});
+		modify(operation, (bookmarksTree) -> {
+		});
 	}
-	
+
 	public void modify(IBookmarksOperation operation, Consumer<BookmarksTree> afterCommit) throws BookmarksException {
+		modify(LockMode.PESSIMISTIC, operation, afterCommit);
+	}
+
+	public void modify(LockMode lockMode, IBookmarksOperation operation) throws BookmarksException {
+		modify(lockMode, operation, (bookmarksTree) -> {
+		});
+	}
+
+	public void modify(LockMode lockMode, IBookmarksOperation operation, Consumer<BookmarksTree> afterCommit)
+			throws BookmarksException {
+		switch (lockMode) {
+		case OPTIMISTIC:
+			modifyWithOptimisticLocking(operation, afterCommit);
+			break;
+		case PESSIMISTIC:
+			modifyWithPessimisticLocking(operation, afterCommit);
+			break;
+		}
+	}
+
+	private void modifyWithOptimisticLocking(IBookmarksOperation operation, Consumer<BookmarksTree> afterCommit)
+			throws BookmarksException {
+		List<BookmarksModification> modifications = Collections.emptyList();
+		BookmarksTreeModifier bookmarksTreeModifier = new BookmarksTreeModifier(bookmarksTree);
+		operation.exec(bookmarksTreeModifier);
+		try {
+			writeLock.lock();
+			if (bookmarksTree != bookmarksTreeModifier.getOriginalTree()) {
+				// tree has been modified ...
+				throw new OptimisticLockException();
+			}
+			this.bookmarksTree = bookmarksTreeModifier.getCurrentTree();
+			modifications = bookmarksTreeModifier.getModifications();
+			afterCommit.accept(this.bookmarksTree);
+		} finally {
+			try {
+				// downgrade lock to read lock
+				readLock.lock();
+				writeLock.unlock();
+				// notify
+				if (!modifications.isEmpty()) {
+					fireBookmarksModified(modifications);
+				}
+			} finally {
+				readLock.unlock();
+			}
+		}
+	}
+
+	private void modifyWithPessimisticLocking(IBookmarksOperation operation, Consumer<BookmarksTree> afterCommit)
+			throws BookmarksException {
 		List<BookmarksModification> modifications = Collections.emptyList();
 		try {
 			writeLock.lock();
@@ -71,7 +123,7 @@ public class BookmarkDatabase {
 			readLock.unlock();
 		}
 	}
-	
+
 	public void addListener(IBookmarksListener listener) {
 		listenerList.add(listener);
 	}
@@ -79,7 +131,7 @@ public class BookmarkDatabase {
 	public void removeListener(IBookmarksListener listener) {
 		listenerList.remove(listener);
 	}
-	
+
 	private void fireBookmarksModified(final List<BookmarksModification> events) {
 		Object[] listeners = listenerList.getListeners();
 		for (int i = 0; i < listeners.length; i++) {
@@ -91,12 +143,10 @@ public class BookmarkDatabase {
 				}
 
 				public void handleException(Throwable exception) {
-					StatusHelper.logError(
-							"Error while firing BookmarkModified event",
-							exception);
+					StatusHelper.logError("Error while firing BookmarkModified event", exception);
 				}
 			});
 		}
-	}	
-	
+	}
+
 }
