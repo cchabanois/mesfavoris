@@ -14,6 +14,8 @@ import mesfavoris.BookmarksException;
 import mesfavoris.internal.model.merge.BookmarksTreeMerger;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
+import mesfavoris.model.LockMode;
+import mesfavoris.model.OptimisticLockException;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
@@ -103,10 +105,22 @@ public class RefreshRemoteFolderOperation {
 		IRemoteBookmarksStore store = remoteBookmarksStoreManager.getRemoteBookmarksStore(storeId);
 		do {
 			try {
-				RemoteBookmarksTree remoteBookmarksTree = store.load(bookmarkFolderId, monitor);
-				replaceBookmark(remoteBookmarksTree);
+				bookmarkDatabase.modify(LockMode.OPTIMISTIC, (bookmarksTreeModifier) -> {
+					if (bookmarksDirtyStateTracker.isDirty()) {
+						throw new DirtyBookmarksDatabaseException();
+					}
+					try {
+						RemoteBookmarksTree remoteBookmarksTree = store.load(bookmarkFolderId, monitor);
+						// replace existing bookmark folder with remote one
+						BookmarksTreeMerger bookmarksTreeMerger = new BookmarksTreeMerger(
+								remoteBookmarksTree.getBookmarksTree());
+						bookmarksTreeMerger.merge(bookmarksTreeModifier);
+					} catch (IOException e) {
+						throw new BookmarksException("Could not load remote bookmark folder", e);
+					}
+				});
 				return;
-			} catch (DirtyBookmarksDatabaseException e) {
+			} catch (OptimisticLockException|DirtyBookmarksDatabaseException e) {
 				try {
 					// sleep and retry later
 					Thread.sleep(200);
@@ -116,30 +130,17 @@ public class RefreshRemoteFolderOperation {
 				if (monitor.isCanceled()) {
 					throw new OperationCanceledException();
 				}
-			} catch (IOException e) {
-				throw new BookmarksException("Could not load remote bookmark folder", e);
 			}
 		} while (true);
-	}
-
-	private void replaceBookmark(final RemoteBookmarksTree remoteBookmarksTree) throws BookmarksException {
-		bookmarkDatabase.modify(bookmarksTreeModifier -> {
-			if (bookmarksDirtyStateTracker.isDirty()) {
-				throw new DirtyBookmarksDatabaseException("Bookmark database is dirty");
-			}
-			BookmarksTreeMerger bookmarksTreeMerger = new BookmarksTreeMerger(remoteBookmarksTree.getBookmarksTree());
-			bookmarksTreeMerger.merge(bookmarksTreeModifier);
-		});
-
 	}
 
 	private static class DirtyBookmarksDatabaseException extends BookmarksException {
 		private static final long serialVersionUID = 6024826805648888249L;
 
-		public DirtyBookmarksDatabaseException(String message) {
-			super(message);
+		public DirtyBookmarksDatabaseException() {
+			super("Bookmark database is dirty");
 		}
 
 	}
-
+	
 }
