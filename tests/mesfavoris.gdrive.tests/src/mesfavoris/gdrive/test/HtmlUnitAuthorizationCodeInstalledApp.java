@@ -2,6 +2,8 @@ package mesfavoris.gdrive.test;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -50,12 +52,33 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 
 		try (final WebClient webClient = new WebClient()) {
 			webClient.getOptions().setThrowExceptionOnScriptError(false);
-			HtmlPage allowAccessPage = signIn(webClient, authorizationUrl.build());
-			allowAccess(webClient, allowAccessPage);
+			HtmlPage nextPage = signIn(webClient, authorizationUrl.build());
+			if (isSignInChallenge(nextPage)) {
+				resolveSignInChallenge(webClient, nextPage);
+			} else {
+				allowAccess(webClient, nextPage);
+			}
 		}
 		if (authorizationListener != null) {
 			authorizationListener.onAuthorization();
 		}
+	}
+	
+	private boolean isSignInChallenge(HtmlPage htmlPage) {
+		return htmlPage.getElementById("challengePickerList") != null;
+	}
+	
+	private HtmlPage resolveSignInChallenge(WebClient webClient, HtmlPage signInChallengePage) throws IOException {
+		List<HtmlForm> forms = signInChallengePage.getForms();
+		Optional<HtmlForm> kpeForm = forms.stream().filter(form->"/signin/challenge/kpe/2".equals(form.getActionAttribute())).findFirst();
+		if (!kpeForm.isPresent()) {
+			throw new RuntimeException("Cannot find recovery by email form in html page :\n"+signInChallengePage.asXml());
+		}
+		HtmlSubmitInput signInButton = (HtmlSubmitInput) kpeForm.get().getElementsByTagName("button").get(0);
+		HtmlPage htmlPage = signInButton.click();
+		webClient.waitForBackgroundJavaScriptStartingBefore(8000);
+		throw new RuntimeException("Next page is :\n"+htmlPage.asXml());
+//		return htmlPage;
 	}
 	
 	private HtmlPage signIn(WebClient webClient, String authorizationUrl) throws FailingHttpStatusCodeException, MalformedURLException, IOException {
