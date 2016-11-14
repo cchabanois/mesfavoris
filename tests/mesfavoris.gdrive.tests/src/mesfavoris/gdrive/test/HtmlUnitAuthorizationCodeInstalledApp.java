@@ -59,7 +59,8 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 			if (isSignInChallenge(nextPage)) {
 				resolveSignInChallenge(webClient, nextPage);
 			} else if (isConfirmRecoveryEmailPage(nextPage)) {
-				confirmRecoveryEmail(webClient, nextPage);
+				nextPage = confirmRecoveryEmail(webClient, nextPage);
+				allowAccess(webClient, nextPage);
 			} else {
 				allowAccess(webClient, nextPage);
 			}
