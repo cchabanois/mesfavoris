@@ -103,7 +103,7 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 			throw new RuntimeException(
 					"Cannot find recovery by email form in html page :\n" + signInChallengePage.asXml());
 		}
-		HtmlSubmitInput signInButton = (HtmlSubmitInput) kpeForm.get().getElementsByTagName("button").get(0);
+		HtmlButton signInButton = (HtmlButton) kpeForm.get().getElementsByTagName("button").get(0);
 		HtmlPage htmlPage = signInButton.click();
 		webClient.waitForBackgroundJavaScriptStartingBefore(8000);
 		throw new RuntimeException("Next page is :\n" + htmlPage.asXml());
