@@ -12,6 +12,7 @@ import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
@@ -27,34 +28,38 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 	private static final int WAIT_DELAY_MS = 8000;
 	private final String userName;
 	private final String password;
+	private final Optional<String> recoveryEmail;
 	private final IProgressMonitor monitor;
 	private IAuthorizationListener authorizationListener;
-	
+
 	static {
-		java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.SEVERE); 
+		java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.SEVERE);
 	}
-	
-	public HtmlUnitAuthorizationCodeInstalledApp(AuthorizationCodeFlow flow, VerificationCodeReceiver receiver, IProgressMonitor monitor, String userName, String password) {
+
+	public HtmlUnitAuthorizationCodeInstalledApp(AuthorizationCodeFlow flow, VerificationCodeReceiver receiver,
+			IProgressMonitor monitor, String userName, String password, Optional<String> recoveryEmail) {
 		super(flow, receiver);
 		this.monitor = monitor;
 		this.userName = userName;
 		this.password = password;
+		this.recoveryEmail = recoveryEmail;
 	}
 
 	public void setAuthorizationListener(IAuthorizationListener authorizationListener) {
 		this.authorizationListener = authorizationListener;
 	}
-	
+
 	@Override
 	protected void onAuthorization(AuthorizationCodeRequestUrl authorizationUrl) throws IOException {
-		monitor.subTask("Please open the following address in your browser:"
-				+ authorizationUrl);
+		monitor.subTask("Please open the following address in your browser:" + authorizationUrl);
 
 		try (final WebClient webClient = new WebClient()) {
 			webClient.getOptions().setThrowExceptionOnScriptError(false);
 			HtmlPage nextPage = signIn(webClient, authorizationUrl.build());
 			if (isSignInChallenge(nextPage)) {
 				resolveSignInChallenge(webClient, nextPage);
+			} else if (isConfirmRecoveryEmailPage(nextPage)) {
+				confirmRecoveryEmail(webClient, nextPage);
 			} else {
 				allowAccess(webClient, nextPage);
 			}
@@ -63,25 +68,49 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 			authorizationListener.onAuthorization();
 		}
 	}
-	
+
+	private HtmlPage confirmRecoveryEmail(WebClient webClient, HtmlPage htmlPage) throws IOException {
+		List<HtmlForm> forms = htmlPage.getForms();
+		HtmlForm challengeForm = forms.stream().filter(
+				form -> "challenge".equals(form.getId()) && "/signin/challenge/kpe/2".equals(form.getActionAttribute()))
+				.findFirst().get();
+		HtmlInput htmlInput = challengeForm.getInputByName("email");
+		htmlInput.setValueAttribute(recoveryEmail.get());
+		HtmlSubmitInput signInButton = (HtmlSubmitInput) challengeForm.getInputByValue("Done");
+		HtmlPage nextPage = signInButton.click();
+		webClient.waitForBackgroundJavaScriptStartingBefore(8000);
+		throw new RuntimeException("Next page is :\n" + nextPage.asXml());
+	}
+
+	private boolean isConfirmRecoveryEmailPage(HtmlPage htmlPage) {
+		List<HtmlForm> forms = htmlPage.getForms();
+		Optional<HtmlForm> challengeForm = forms.stream().filter(
+				form -> "challenge".equals(form.getId()) && "/signin/challenge/kpe/2".equals(form.getActionAttribute()))
+				.findFirst();
+		return challengeForm.isPresent();
+	}
+
 	private boolean isSignInChallenge(HtmlPage htmlPage) {
 		return htmlPage.getElementById("challengePickerList") != null;
 	}
-	
+
 	private HtmlPage resolveSignInChallenge(WebClient webClient, HtmlPage signInChallengePage) throws IOException {
 		List<HtmlForm> forms = signInChallengePage.getForms();
-		Optional<HtmlForm> kpeForm = forms.stream().filter(form->"/signin/challenge/kpe/2".equals(form.getActionAttribute())).findFirst();
+		Optional<HtmlForm> kpeForm = forms.stream()
+				.filter(form -> "/signin/challenge/kpe/2".equals(form.getActionAttribute())).findFirst();
 		if (!kpeForm.isPresent()) {
-			throw new RuntimeException("Cannot find recovery by email form in html page :\n"+signInChallengePage.asXml());
+			throw new RuntimeException(
+					"Cannot find recovery by email form in html page :\n" + signInChallengePage.asXml());
 		}
 		HtmlSubmitInput signInButton = (HtmlSubmitInput) kpeForm.get().getElementsByTagName("button").get(0);
 		HtmlPage htmlPage = signInButton.click();
 		webClient.waitForBackgroundJavaScriptStartingBefore(8000);
-		throw new RuntimeException("Next page is :\n"+htmlPage.asXml());
-//		return htmlPage;
+		throw new RuntimeException("Next page is :\n" + htmlPage.asXml());
+		// return htmlPage;
 	}
-	
-	private HtmlPage signIn(WebClient webClient, String authorizationUrl) throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+
+	private HtmlPage signIn(WebClient webClient, String authorizationUrl)
+			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 		HtmlPage page = webClient.getPage(authorizationUrl);
 		webClient.waitForBackgroundJavaScriptStartingBefore(8000);
 		HtmlForm form = (HtmlForm) page.getElementById("gaia_loginform");
@@ -98,41 +127,50 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 		webClient.waitForBackgroundJavaScriptStartingBefore(8000);
 		return allowAccessPage;
 	}
-	
+
 	private HtmlPage allowAccess(WebClient webClient, HtmlPage allowAccessPage) throws IOException {
 		HtmlButton allowAccessButton = (HtmlButton) allowAccessPage.getElementById("submit_approve_access");
 		if (allowAccessButton == null) {
-			throw new RuntimeException("Cannot find allow access button in html page :\n"+allowAccessPage.asXml());
+			throw new RuntimeException("Cannot find allow access button in html page :\n" + allowAccessPage.asXml());
 		}
 		webClient.waitForBackgroundJavaScriptStartingBefore(WAIT_DELAY_MS);
 		HtmlPage tokenPage = allowAccessButton.click();
 		return tokenPage;
 	}
-	
+
 	public static class Provider implements IAuthorizationCodeInstalledAppProvider {
 		private final String userName;
 		private final String password;
+		private final Optional<String> recoveryEmail;
 		private IAuthorizationListener authorizationListener;
-		
+
 		public Provider(String userName, String password) {
 			this.userName = userName;
 			this.password = password;
+			this.recoveryEmail = Optional.empty();
+		}
+
+		public Provider(String userName, String password, Optional<String> recoveryEmail) {
+			this.userName = userName;
+			this.password = password;
+			this.recoveryEmail = recoveryEmail;
 		}
 		
 		public void setAuthorizationListener(IAuthorizationListener authorizationListener) {
 			this.authorizationListener = authorizationListener;
 		}
-		
+
 		@Override
 		public AuthorizationCodeInstalledApp get(AuthorizationCodeFlow flow, VerificationCodeReceiver receiver,
 				IProgressMonitor monitor) {
-			HtmlUnitAuthorizationCodeInstalledApp app = new HtmlUnitAuthorizationCodeInstalledApp(flow, receiver, monitor, userName, password);
+			HtmlUnitAuthorizationCodeInstalledApp app = new HtmlUnitAuthorizationCodeInstalledApp(flow, receiver,
+					monitor, userName, password, recoveryEmail);
 			if (authorizationListener != null) {
 				app.setAuthorizationListener(authorizationListener);
 			}
 			return app;
 		}
-		
+
 	}
 
 }

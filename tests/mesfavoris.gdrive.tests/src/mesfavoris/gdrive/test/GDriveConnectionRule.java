@@ -22,7 +22,7 @@ public class GDriveConnectionRule extends ExternalResource {
 	public GDriveConnectionRule(GDriveTestUser user, boolean connect) {
 		this.connect = connect;
 		this.authorizationCodeProvider = new HtmlUnitAuthorizationCodeInstalledApp.Provider(user.getUserName(),
-				user.getPassword());
+				user.getPassword(), user.getRecoveryEmail());
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package mesfavoris.gdrive;
 
+import java.util.Optional;
+
 public enum GDriveTestUser {
 
 	USER1("mesfavoris.test"),
@@ -25,6 +27,11 @@ public enum GDriveTestUser {
 			throw new IllegalStateException("Could not get test password from env for "+getEmail());
 		}
 		return password;
+	}
+	
+	public Optional<String> getRecoveryEmail() {
+		String recoveryEmail = System.getenv(name() +"_RECOVERY_EMAIL");
+		return Optional.ofNullable(recoveryEmail);
 	}
 	
 }
