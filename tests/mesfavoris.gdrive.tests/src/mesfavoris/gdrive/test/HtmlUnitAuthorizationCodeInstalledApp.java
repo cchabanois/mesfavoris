@@ -80,7 +80,7 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 		HtmlSubmitInput signInButton = (HtmlSubmitInput) challengeForm.getInputByValue("Done");
 		HtmlPage nextPage = signInButton.click();
 		webClient.waitForBackgroundJavaScriptStartingBefore(8000);
-		throw new RuntimeException("Next page is :\n" + nextPage.asXml());
+		return nextPage;
 	}
 
 	private boolean isConfirmRecoveryEmailPage(HtmlPage htmlPage) {
