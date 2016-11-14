@@ -56,9 +56,10 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 		try (final WebClient webClient = new WebClient()) {
 			webClient.getOptions().setThrowExceptionOnScriptError(false);
 			HtmlPage nextPage = signIn(webClient, authorizationUrl.build());
-			if (isConfirmRecoveryEmailPage(nextPage)) {
+			if (isSignInChallenge(nextPage)) {
+				resolveSignInChallenge(webClient, nextPage);
+			} else if (isConfirmRecoveryEmailPage(nextPage)) {
 				nextPage = confirmRecoveryEmail(webClient, nextPage);
-				System.out.println("Used recovery email to confirm it's us");
 				allowAccess(webClient, nextPage);
 			} else {
 				allowAccess(webClient, nextPage);
@@ -88,6 +89,25 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 				form -> "challenge".equals(form.getId()) && "/signin/challenge/kpe/2".equals(form.getActionAttribute()))
 				.findFirst();
 		return challengeForm.isPresent();
+	}
+
+	private boolean isSignInChallenge(HtmlPage htmlPage) {
+		return htmlPage.getElementById("challengePickerList") != null;
+	}
+
+	private HtmlPage resolveSignInChallenge(WebClient webClient, HtmlPage signInChallengePage) throws IOException {
+		List<HtmlForm> forms = signInChallengePage.getForms();
+		Optional<HtmlForm> kpeForm = forms.stream()
+				.filter(form -> "/signin/challenge/kpe/2".equals(form.getActionAttribute())).findFirst();
+		if (!kpeForm.isPresent()) {
+			throw new RuntimeException(
+					"Cannot find recovery by email form in html page :\n" + signInChallengePage.asXml());
+		}
+		HtmlSubmitInput signInButton = (HtmlSubmitInput) kpeForm.get().getInputByValue("Done");
+		HtmlPage htmlPage = signInButton.click();
+		webClient.waitForBackgroundJavaScriptStartingBefore(8000);
+		throw new RuntimeException("Next page is :\n" + htmlPage.asXml());
+		// return htmlPage;
 	}
 
 	private HtmlPage signIn(WebClient webClient, String authorizationUrl)
