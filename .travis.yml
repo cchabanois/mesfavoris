@@ -10,7 +10,6 @@ cache:
 env: 
   global:
   - DISPLAY=:99.0
-  - bintray.package=development
 
 addons:
   apt:
