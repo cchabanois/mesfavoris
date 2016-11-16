@@ -32,7 +32,8 @@ public class UpdateFileOperationTest {
 		UpdateFileOperation updateFileOperation = new UpdateFileOperation(gdriveConnectionRule.getDrive());
 
 		// When
-		updateFileOperation.updateFile(file.getId(), "the new contents".getBytes(Charsets.UTF_8), file.getEtag(),
+		// do not set etag. Otherwise it sometimes fails. Looks like the file is "modified" by gdrive after creation.
+		updateFileOperation.updateFile(file.getId(), "the new contents".getBytes(Charsets.UTF_8), null,
 				new NullProgressMonitor());
 
 		// Then
