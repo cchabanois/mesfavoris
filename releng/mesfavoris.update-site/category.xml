@@ -12,5 +12,9 @@
    <feature url="features/mesfavoris.java.feature_1.0.0.qualifier.jar" id="mesfavoris.java.feature" version="1.0.0.qualifier">
       <category name="mesfavoris"/>
    </feature>
-   <category-def name="mesfavoris" label="mesfavoris"/>
+   <category-def name="mesfavoris" label="mesfavoris">
+      <description>
+         Create bookmarks to your files in eclipse
+      </description>
+   </category-def>
 </site>

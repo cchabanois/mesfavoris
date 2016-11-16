@@ -5,6 +5,10 @@
       version="1.0.0.qualifier"
       plugin="mesfavoris">
 
+   <description>
+      %description
+   </description>
+
    <copyright>
       %copyright
    </copyright>
