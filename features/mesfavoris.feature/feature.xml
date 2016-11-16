@@ -2,7 +2,8 @@
 <feature
       id="mesfavoris.feature"
       label="mesfavoris"
-      version="1.0.0.qualifier">
+      version="1.0.0.qualifier"
+      plugin="mesfavoris">
 
    <copyright>
       %copyright
