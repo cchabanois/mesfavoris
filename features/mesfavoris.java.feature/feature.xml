@@ -4,8 +4,8 @@
       label="mesfavoris for Java"
       version="1.0.0.qualifier">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description>
+      %description
    </description>
 
    <copyright>
