@@ -476,6 +476,10 @@
                commandId="mesfavoris.command.updateFavori"
                style="push">
          </command>
+         <command
+               commandId="mesfavoris.command.deleteLinkedFavori"
+               style="push">
+         </command>
       </menuContribution>
    </extension>
    <extension

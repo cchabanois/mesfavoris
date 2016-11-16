@@ -20,6 +20,9 @@ public class DeleteLinkedBookmarkHandler extends AbstractBookmarkPartOperationHa
 			return null;
 		}
 		List<Bookmark> linkedBookmarks = bookmarksService.getLinkedBookmarks(operationContext.part, operationContext.selection);
+		if (linkedBookmarks.isEmpty()) {
+			return null;
+		}
 		try {
 			bookmarksService.deleteBookmarks(Lists.newArrayList(linkedBookmarks.get(0).getId()));
 		} catch (BookmarksException e) {
