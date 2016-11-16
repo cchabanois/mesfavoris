@@ -2,16 +2,16 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Gdrive
 Bundle-SymbolicName: mesfavoris.gdrive;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: mesfavoris.gdrive.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- mesfavoris;bundle-version="1.0.0",
+ mesfavoris;bundle-version="1.1.0",
  org.eclipse.core.expressions,
  com.google.gson;bundle-version="2.7.0",
  com.google.guava;bundle-version="19.0.0",
  org.eclipse.e4.core.services,
- mesfavoris.commons;bundle-version="1.0.0"
+ mesfavoris.commons;bundle-version="1.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,

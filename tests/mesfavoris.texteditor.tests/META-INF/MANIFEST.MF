@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test
 Bundle-SymbolicName: mesfavoris.texteditor.tests
-Bundle-Version: 1.0.0.qualifier
-Fragment-Host: mesfavoris.texteditor;bundle-version="1.0.0"
+Bundle-Version: 1.1.0.qualifier
+Fragment-Host: mesfavoris.texteditor;bundle-version="1.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit;bundle-version="4.11.0",
  org.mockito.mockito-all;bundle-version="1.10.19",
  org.assertj.core;bundle-version="3.5.2",
- mesfavoris.tests.commons;bundle-version="1.0.0"
+ mesfavoris.tests.commons;bundle-version="1.1.0"
