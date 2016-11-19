@@ -1,6 +1,8 @@
 package mesfavoris.gdrive.changes;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +12,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
@@ -17,7 +20,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.Change;
 
-import mesfavoris.BookmarksException;
 import mesfavoris.gdrive.StatusHelper;
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
 import mesfavoris.gdrive.connection.IConnectionListener;
@@ -136,8 +138,13 @@ public class BookmarksFileChangeManager {
 					startChangeId = changes.get(changes.size() - 1).getId() + 1;
 				}
 				return Status.OK_STATUS;
+			} catch (UnknownHostException|SocketTimeoutException e) {
+				gdriveConnectionManager.disconnect(new NullProgressMonitor());
+				return Status.OK_STATUS;
 			} catch (IOException e) {
-				return new BookmarksException("Could not get remote bookmark changes", e).getStatus();
+				StatusHelper.logWarn("Could not get remote bookmark changes",e);
+				// Do not display a dialog
+				return Status.OK_STATUS;
 			} finally {
 				schedule(pollDelay.toMillis());
 			}

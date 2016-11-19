@@ -241,7 +241,7 @@ public class GDriveConnectionManager {
 		return new UserInfo(user.getEmailAddress(), user.getDisplayName());
 	}
 
-	public void disconnect(IProgressMonitor monitor) throws IOException {
+	public void disconnect(IProgressMonitor monitor) {
 		if (!state.compareAndSet(State.connected, State.disconnected)) {
 			return;
 		}
