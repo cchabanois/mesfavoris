@@ -1,10 +1,7 @@
 package mesfavoris.texteditor.internal.placeholders.usage;
 
-import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FILE_PATH;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -30,6 +27,7 @@ import org.eclipse.swt.widgets.Table;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.BookmarksPlugin;
+import mesfavoris.bookmarktype.IBookmarkLabelProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
@@ -41,10 +39,6 @@ import mesfavoris.texteditor.internal.operations.ExpandBookmarksOperation;
 import mesfavoris.texteditor.placeholders.IPathPlaceholders;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 import mesfavoris.validation.IBookmarkModificationValidator;
-import mesfavoris.viewers.BookmarksLabelProvider;
-import mesfavoris.viewers.IBookmarkDecorationProvider;
-import mesfavoris.viewers.UnderDisconnectedRemoteBookmarkFolderPredicate;
-import mesfavoris.viewers.UnderRemoteBookmarkFolderDecorationProvider;
 
 public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 	private final BookmarkDatabase bookmarkDatabase;
@@ -52,6 +46,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 	private final IPathPlaceholders pathPlaceholders;
 	private final String pathPlaceholderName;
 	private final IBookmarkModificationValidator bookmarkModificationValidator;
+	private final IBookmarkLabelProvider bookmarkLabelProvider;
 	private TableViewer collapsableBookmarksViewer;
 	private TableViewer collapsedBookmarksViewer;
 	private Button addButton;
@@ -69,6 +64,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 		this.pathPlaceholders = pathPlaceholders;
 		this.pathPlaceholderName = pathPlaceholderName;
 		this.bookmarkModificationValidator = bookmarkModificationValidator;
+		this.bookmarkLabelProvider = BookmarksPlugin.getBookmarkLabelProvider();
 	}
 
 	@Override
@@ -115,24 +111,14 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 		table.setLayoutData(gd);
 
 		collapsableBookmarksViewer = new TableViewer(table);
-		collapsableBookmarksViewer.setLabelProvider(getBookmarksLabelProvider());
+		BookmarksPathLabelProvider bookmarksLabelProvider = new BookmarksPathLabelProvider(bookmarkDatabase,
+				remoteBookmarksStoreManager, bookmarkLabelProvider);
+		collapsableBookmarksViewer.setLabelProvider(bookmarksLabelProvider);
 		collapsableBookmarksViewer.setContentProvider(new CollapsableBookmarksContentProvider());
 		collapsableBookmarksViewer.setInput(bookmarkDatabase);
 		collapsableBookmarksViewer.addSelectionChangedListener(event -> updateButtonEnablement());
 
 		return container;
-	}
-
-	private BookmarksLabelProvider getBookmarksLabelProvider() {
-		Predicate<Bookmark> disabledBookmarkPredicate = new UnderDisconnectedRemoteBookmarkFolderPredicate(
-				bookmarkDatabase, remoteBookmarksStoreManager);
-		Predicate<Bookmark> dirtyBookmarkPredicate = bookmark -> false;
-		IBookmarkDecorationProvider bookmarkDecorationProvider = new UnderRemoteBookmarkFolderDecorationProvider(
-				bookmarkDatabase, remoteBookmarksStoreManager);
-		BookmarksLabelProvider bookmarksLabelProvider = new BookmarksLabelProvider(disabledBookmarkPredicate,
-				dirtyBookmarkPredicate, bookmarkDecorationProvider, BookmarksPlugin.getBookmarkLabelProvider(),
-				bookmark -> bookmark.getPropertyValue(PROP_FILE_PATH));
-		return bookmarksLabelProvider;
 	}
 
 	private Composite createButtonArea(Composite parent) {
@@ -297,7 +283,9 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 		table.setLayoutData(gd);
 
 		collapsedBookmarksViewer = new TableViewer(table);
-		collapsedBookmarksViewer.setLabelProvider(getBookmarksLabelProvider());
+		BookmarksPathLabelProvider bookmarksLabelProvider = new BookmarksPathLabelProvider(bookmarkDatabase,
+				remoteBookmarksStoreManager, bookmarkLabelProvider);
+		collapsedBookmarksViewer.setLabelProvider(bookmarksLabelProvider);
 		collapsedBookmarksViewer.setContentProvider(new CollapsedBookmarksContentProvider());
 		collapsedBookmarksViewer.setInput(bookmarkDatabase);
 		collapsedBookmarksViewer.addSelectionChangedListener(event -> updateButtonEnablement());
