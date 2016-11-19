@@ -7,6 +7,7 @@ import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
+import mesfavoris.commons.ui.viewers.StylerProvider;
 import mesfavoris.gdrive.Activator;
 import mesfavoris.gdrive.mappings.BookmarkMapping;
 import mesfavoris.gdrive.mappings.IBookmarkMappings;
@@ -14,7 +15,6 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.viewers.BookmarkFolderLabelProvider;
-import mesfavoris.viewers.StylerProvider;
 
 public class GDriveBookmarkFolderLabelProvider extends BookmarkFolderLabelProvider {
 	private final IBookmarkMappings bookmarkMappings;

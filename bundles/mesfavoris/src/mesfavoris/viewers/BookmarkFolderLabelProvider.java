@@ -9,6 +9,7 @@ import org.eclipse.ui.PlatformUI;
 
 import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.AbstractBookmarkLabelProvider;
+import mesfavoris.commons.ui.viewers.StylerProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.remote.IRemoteBookmarksStore;

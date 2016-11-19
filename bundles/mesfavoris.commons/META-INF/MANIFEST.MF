@@ -13,4 +13,5 @@ Bundle-ActivationPolicy: lazy
 Export-Package: mesfavoris.commons.core,
  mesfavoris.commons.core.jobs,
  mesfavoris.commons.ui.statushandlers,
+ mesfavoris.commons.ui.viewers,
  mesfavoris.commons.ui.wizards.datatransfer

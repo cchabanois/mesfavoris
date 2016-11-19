@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Display;
 import com.google.api.services.drive.model.File;
 
 import mesfavoris.BookmarksPlugin;
-import mesfavoris.viewers.StylerProvider;
+import mesfavoris.commons.ui.viewers.StylerProvider;
 
 /**
  * Viewer for a set of {@link com.google.api.services.drive.model.File}s

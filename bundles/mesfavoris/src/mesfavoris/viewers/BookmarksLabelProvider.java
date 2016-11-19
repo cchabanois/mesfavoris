@@ -25,6 +25,7 @@ import org.eclipse.ui.PlatformUI;
 import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
 import mesfavoris.commons.core.AdapterUtils;
+import mesfavoris.commons.ui.viewers.StylerProvider;
 import mesfavoris.internal.views.virtual.BookmarkLink;
 import mesfavoris.internal.views.virtual.VirtualBookmarkFolder;
 import mesfavoris.model.Bookmark;
