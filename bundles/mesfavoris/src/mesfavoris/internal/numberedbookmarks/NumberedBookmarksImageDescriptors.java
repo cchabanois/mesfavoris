@@ -1,31 +1,10 @@
 package mesfavoris.internal.numberedbookmarks;
 
-import java.util.Optional;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.IDecoration;
 
 import mesfavoris.BookmarksPlugin;
-import mesfavoris.model.Bookmark;
-import mesfavoris.viewers.IBookmarkDecorationProvider;
 
-public class NumberedBookmarkDecorationProvider implements IBookmarkDecorationProvider {
-	private final NumberedBookmarks numberedBookmarks;
-
-	public NumberedBookmarkDecorationProvider(NumberedBookmarks numberedBookmarks) {
-		this.numberedBookmarks = numberedBookmarks;
-	}
-
-	@Override
-	public ImageDescriptor[] apply(Bookmark bookmark) {
-		ImageDescriptor[] overlayImages = new ImageDescriptor[5];
-		Optional<BookmarkNumber> bookmarkNumber = numberedBookmarks.getBookmarkNumber(bookmark.getId());
-
-		if (bookmarkNumber.isPresent()) {
-			overlayImages[IDecoration.TOP_LEFT] = getImageDescriptor(bookmarkNumber.get());
-		}
-		return overlayImages;
-	}
+public class NumberedBookmarksImageDescriptors{
 
 	public static ImageDescriptor getImageDescriptor(BookmarkNumber bookmarkNumber) {
 		switch (bookmarkNumber) {

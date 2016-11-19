@@ -9,7 +9,7 @@ import org.eclipse.swt.graphics.Point;
 
 import mesfavoris.BookmarksPlugin;
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
-import mesfavoris.internal.numberedbookmarks.NumberedBookmarkDecorationProvider;
+import mesfavoris.internal.numberedbookmarks.NumberedBookmarksImageDescriptors;
 
 /**
  * Image descriptor for bookmark annotation image
@@ -26,7 +26,7 @@ public class BookmarkAnnotationImageDescriptor extends CompositeImageDescriptor 
 		this.bookmarkNumber = bookmarkNumber;
 		this.base = BookmarksPlugin.getImageDescriptor("icons/bookmark-16.png");
 		this.bookmarkNumberImageDescriptor = bookmarkNumber
-				.map(number -> NumberedBookmarkDecorationProvider.getImageDescriptor(number));
+				.map(number -> NumberedBookmarksImageDescriptors.getImageDescriptor(number));
 	}
 
 	/**

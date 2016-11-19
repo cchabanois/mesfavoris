@@ -23,7 +23,7 @@ import org.eclipse.ui.services.IServiceLocator;
 import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
-import mesfavoris.internal.numberedbookmarks.NumberedBookmarkDecorationProvider;
+import mesfavoris.internal.numberedbookmarks.NumberedBookmarksImageDescriptors;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
@@ -118,7 +118,7 @@ public class SetNumberForBookmarkMenu extends ContributionItem implements IWorkb
 	}
 
 	private Image getImage(BookmarkNumber bookmarkNumber, Optional<BookmarkId> bookmarkId) {
-		ImageDescriptor numberImageDescriptor = NumberedBookmarkDecorationProvider.getImageDescriptor(bookmarkNumber);
+		ImageDescriptor numberImageDescriptor = NumberedBookmarksImageDescriptors.getImageDescriptor(bookmarkNumber);
 		if (!bookmarkId.isPresent()) {
 			return (Image) this.resourceManager.get(numberImageDescriptor);
 		}

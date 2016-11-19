@@ -1,8 +1,8 @@
 package mesfavoris.viewers;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Scanner;
-import java.util.function.Predicate;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
@@ -26,31 +26,42 @@ import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
 import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.commons.ui.viewers.StylerProvider;
+import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
+import mesfavoris.internal.numberedbookmarks.NumberedBookmarksImageDescriptors;
+import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;
 import mesfavoris.internal.views.virtual.BookmarkLink;
 import mesfavoris.internal.views.virtual.VirtualBookmarkFolder;
 import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarkDatabase;
+import mesfavoris.model.BookmarkFolder;
+import mesfavoris.model.BookmarkId;
+import mesfavoris.persistence.IDirtyBookmarksProvider;
+import mesfavoris.remote.IRemoteBookmarksStore;
+import mesfavoris.remote.IRemoteBookmarksStore.State;
+import mesfavoris.remote.RemoteBookmarkFolder;
+import mesfavoris.remote.RemoteBookmarksStoreManager;
 
 public class BookmarksLabelProvider extends StyledCellLabelProvider implements ILabelProvider, IStyledLabelProvider {
 	private static final String ICON_VIRTUAL_BOOKMARK_FOLDER = "icons/ovr16/virt_ovr.png";
 	private static final String ICON_BOOKMARK_LINK = "icons/ovr16/link_ovr.png";
+	private final BookmarkDatabase bookmarkDatabase;
+	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IBookmarkLabelProvider bookmarkLabelProvider;
+	private final NumberedBookmarks numberedBookmarks;
 	private final ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
 	private final Color commentColor;
 	private final StylerProvider stylerProvider = new StylerProvider();
 	private final Color disabledColor;
-	private final Predicate<Bookmark> disabledBookmarkPredicate;
-	private final Predicate<Bookmark> dirtyBookmarkPredicate;
-	private final IBookmarkDecorationProvider bookmarkDecorationProvider;
-	private final IBookmarkCommentProvider bookmarkCommentProvider;
+	private final IDirtyBookmarksProvider dirtyBookmarksProvider;
 
-	public BookmarksLabelProvider(Predicate<Bookmark> disabledBookmarkPredicate,
-			Predicate<Bookmark> dirtyBookmarkPredicate, IBookmarkDecorationProvider bookmarkDecorationProvider,
-			IBookmarkLabelProvider bookmarkLabelProvider, IBookmarkCommentProvider bookmarkCommentProvider) {
+	public BookmarksLabelProvider(BookmarkDatabase bookmarkDatabase,
+			RemoteBookmarksStoreManager remoteBookmarksStoreManager, IDirtyBookmarksProvider dirtyBookmarksProvider,
+			IBookmarkLabelProvider bookmarkLabelProvider, NumberedBookmarks numberedBookmarks) {
+		this.bookmarkDatabase = bookmarkDatabase;
+		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
 		this.bookmarkLabelProvider = bookmarkLabelProvider;
-		this.disabledBookmarkPredicate = disabledBookmarkPredicate;
-		this.dirtyBookmarkPredicate = dirtyBookmarkPredicate;
-		this.bookmarkDecorationProvider = bookmarkDecorationProvider;
-		this.bookmarkCommentProvider = bookmarkCommentProvider;
+		this.dirtyBookmarksProvider = dirtyBookmarksProvider;
+		this.numberedBookmarks = numberedBookmarks;
 		this.disabledColor = PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_GRAY);
 
 		this.commentColor = new Color(PlatformUI.getWorkbench().getDisplay(), 63, 127, 95);
@@ -63,15 +74,15 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 		cell.setStyleRanges(styledText.getStyleRanges());
 		cell.setImage(getImage(cell.getElement()));
 		super.update(cell);
-	}	
-	
+	}
+
 	public StyledString getStyledText(final Object element) {
 		Bookmark bookmark = (Bookmark) AdapterUtils.getAdapter(element, Bookmark.class);
-		String comment = bookmarkCommentProvider.apply(bookmark);
+		String comment = getFirstCommentLine(bookmark);
 		boolean hasComment = comment != null && comment.trim().length() > 0;
-		boolean isDisabled = disabledBookmarkPredicate.test(bookmark);
+		boolean isDisabled = isUnderDisconnectedRemoteBookmarkFolder(bookmark);
 		StyledString styledString = new StyledString();
-		if (dirtyBookmarkPredicate.test(bookmark)) {
+		if (dirtyBookmarksProvider.getDirtyBookmarks().contains(bookmark.getId())) {
 			styledString.append("> ");
 		}
 		styledString.append(bookmarkLabelProvider.getStyledText(bookmark));
@@ -93,6 +104,21 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 			styledString.append(" - " + comment, stylerProvider.getStyler(font, color, null));
 		}
 		return styledString;
+	}
+
+	private boolean isUnderDisconnectedRemoteBookmarkFolder(Bookmark bookmark) {
+		RemoteBookmarkFolder remoteBookmarkFolder = remoteBookmarksStoreManager
+				.getRemoteBookmarkFolderContaining(bookmarkDatabase.getBookmarksTree(), bookmark.getId());
+		if (remoteBookmarkFolder == null) {
+			return false;
+		}
+		IRemoteBookmarksStore remoteBookmarksStore = remoteBookmarksStoreManager
+				.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId());
+		if (remoteBookmarksStore.getState() != State.connected) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -118,33 +144,47 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 
 	private ImageDescriptor[] getOverlayImages(final Object element) {
 		Bookmark bookmark = (Bookmark) AdapterUtils.getAdapter(element, Bookmark.class);
-		ImageDescriptor[] overlayImages = bookmarkDecorationProvider.apply(bookmark);
+		ImageDescriptor[] overlayImages = new ImageDescriptor[5];
+		if (bookmark instanceof BookmarkFolder) {
+			IRemoteBookmarksStore store = getRemoteBookmarkStore(bookmark.getId());
+			if (store != null && store.getDescriptor() != null) {
+				overlayImages[IDecoration.TOP_RIGHT] = store.getDescriptor().getImageOverlayDescriptor();
+			}
+		}
+		Optional<BookmarkNumber> bookmarkNumber = numberedBookmarks.getBookmarkNumber(bookmark.getId());
+		if (bookmarkNumber.isPresent()) {
+			overlayImages[IDecoration.TOP_LEFT] = NumberedBookmarksImageDescriptors
+					.getImageDescriptor(bookmarkNumber.get());
+		}
 		if (element instanceof BookmarkLink) {
 			ImageDescriptor imageDescriptor = BookmarksPlugin.getImageDescriptor(ICON_BOOKMARK_LINK);
 			overlayImages[IDecoration.BOTTOM_RIGHT] = imageDescriptor;
-		}
-		if (element instanceof VirtualBookmarkFolder) {
+		} else if (element instanceof VirtualBookmarkFolder) {
 			ImageDescriptor imageDescriptor = BookmarksPlugin.getImageDescriptor(ICON_VIRTUAL_BOOKMARK_FOLDER);
 			overlayImages[IDecoration.BOTTOM_RIGHT] = imageDescriptor;
 		}
 		return overlayImages;
 	}
 
-	public static class DefaultBookmarkCommentProvider implements IBookmarkCommentProvider {
-
-		@Override
-		public String apply(Bookmark bookmark) {
-			String comment = bookmark.getPropertyValue(Bookmark.PROPERTY_COMMENT);
-			if (comment == null) {
-				return null;
-			}
-			try (Scanner scanner = new Scanner(comment)) {
-				return scanner.nextLine();
-			} catch (NoSuchElementException e) {
-				return null;
+	private IRemoteBookmarksStore getRemoteBookmarkStore(BookmarkId bookmarkFolderId) {
+		for (IRemoteBookmarksStore store : remoteBookmarksStoreManager.getRemoteBookmarksStores()) {
+			if (store.getRemoteBookmarkFolder(bookmarkFolderId).isPresent()) {
+				return store;
 			}
 		}
+		return null;
+	}
 
+	private String getFirstCommentLine(Bookmark bookmark) {
+		String comment = bookmark.getPropertyValue(Bookmark.PROPERTY_COMMENT);
+		if (comment == null) {
+			return null;
+		}
+		try (Scanner scanner = new Scanner(comment)) {
+			return scanner.nextLine();
+		} catch (NoSuchElementException e) {
+			return null;
+		}
 	}
 
 	@Override

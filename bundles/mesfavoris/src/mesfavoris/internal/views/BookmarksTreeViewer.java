@@ -1,7 +1,6 @@
 package mesfavoris.internal.views;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -21,7 +20,6 @@ import org.osgi.service.event.EventHandler;
 import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.commons.core.AdapterUtils;
-import mesfavoris.internal.numberedbookmarks.NumberedBookmarkDecorationProvider;
 import mesfavoris.internal.views.dnd.BookmarksViewerDragListener;
 import mesfavoris.internal.views.dnd.BookmarksViewerDropListener;
 import mesfavoris.internal.views.virtual.ExtendedBookmarksTreeContentProvider;
@@ -34,13 +32,7 @@ import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.validation.BookmarkModificationValidator;
-import mesfavoris.viewers.BookmarkDecorationProvider;
 import mesfavoris.viewers.BookmarksLabelProvider;
-import mesfavoris.viewers.BookmarksLabelProvider.DefaultBookmarkCommentProvider;
-import mesfavoris.viewers.DirtyBookmarkPredicate;
-import mesfavoris.viewers.IBookmarkDecorationProvider;
-import mesfavoris.viewers.RemoteBookmarkFolderDecorationProvider;
-import mesfavoris.viewers.UnderDisconnectedRemoteBookmarkFolderPredicate;
 
 public class BookmarksTreeViewer extends TreeViewer {
 	private final IEventBroker eventBroker;
@@ -50,9 +42,8 @@ public class BookmarksTreeViewer extends TreeViewer {
 	private final IBookmarksListener bookmarksListener = (modifications) -> refreshInUIThread();
 	private final IBookmarksDirtyStateListener dirtyListener = (dirtyBookmarks) -> refreshInUIThread();
 	private final EventHandler bookmarkStoresEventHandler = (event) -> refresh();
-	private final DirtyBookmarkPredicate dirtyBookmarkPredicate;
 	private final IBookmarksDirtyStateTracker bookmarksDirtyStateTracker;
-	
+
 	public BookmarksTreeViewer(Composite parent, BookmarkDatabase bookmarkDatabase,
 			IBookmarksDirtyStateTracker bookmarksDirtyStateTracker,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
@@ -66,9 +57,8 @@ public class BookmarksTreeViewer extends TreeViewer {
 		this.bookmarksDirtyStateTracker = bookmarksDirtyStateTracker;
 		setContentProvider(new ExtendedBookmarksTreeContentProvider(bookmarkDatabase, virtualBookmarkFolders));
 		setUseHashlookup(true);
-		this.dirtyBookmarkPredicate = new DirtyBookmarkPredicate(bookmarksDirtyStateTracker);
 		BookmarksLabelProvider bookmarksLabelProvider = getBookmarksLabelProvider();
-		bookmarksLabelProvider.addListener(event -> refresh());		
+		bookmarksLabelProvider.addListener(event -> refresh());
 		setLabelProvider(bookmarksLabelProvider);
 		setInput(bookmarkDatabase.getBookmarksTree().getRootFolder());
 		installDragAndDropSupport();
@@ -77,16 +67,11 @@ public class BookmarksTreeViewer extends TreeViewer {
 				bookmarkStoresEventHandler);
 		bookmarksDirtyStateTracker.addListener(dirtyListener);
 	}
-	
+
 	private BookmarksLabelProvider getBookmarksLabelProvider() {
-		Predicate<Bookmark> disabledBookmarkPredicate = new UnderDisconnectedRemoteBookmarkFolderPredicate(
-				bookmarkDatabase, remoteBookmarksStoreManager);
-		IBookmarkDecorationProvider bookmarkDecorationProvider = new BookmarkDecorationProvider(
-				new RemoteBookmarkFolderDecorationProvider(remoteBookmarksStoreManager),
-				new NumberedBookmarkDecorationProvider(BookmarksPlugin.getNumberedBookmarks()));
-		BookmarksLabelProvider bookmarksLabelProvider = new BookmarksLabelProvider(disabledBookmarkPredicate,
-				dirtyBookmarkPredicate, bookmarkDecorationProvider, BookmarksPlugin.getBookmarkLabelProvider(),
-				new DefaultBookmarkCommentProvider());
+		BookmarksLabelProvider bookmarksLabelProvider = new BookmarksLabelProvider(bookmarkDatabase,
+				remoteBookmarksStoreManager, bookmarksDirtyStateTracker, BookmarksPlugin.getBookmarkLabelProvider(),
+				BookmarksPlugin.getNumberedBookmarks());
 		return bookmarksLabelProvider;
 	}
 
@@ -127,5 +112,5 @@ public class BookmarksTreeViewer extends TreeViewer {
 	public BookmarkDatabase getBookmarkDatabase() {
 		return bookmarkDatabase;
 	}
-	
+
 }
