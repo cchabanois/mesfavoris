@@ -31,7 +31,10 @@ Features
 ============
 Installation
 ============
-Currently, only a development version is available. The update site is updated for each successful build.
+
+The release update site url is : https://dl.bintray.com/cchabanois/mesfavoris/updates
+
+There is also a development update site that is updated for each successful build.
 
 The development update site url is : https://dl.bintray.com/cchabanois/mesfavoris-development/updates
 
