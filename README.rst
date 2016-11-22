@@ -32,7 +32,12 @@ Features
 Installation
 ============
 
-The release update site url is : https://dl.bintray.com/cchabanois/mesfavoris/updates
+.. image:: https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png
+   :target: http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=3176231
+   :alt: Drag to your running Eclipse workspace to install mesfavoris
+Drag this image to your running Eclipse workspace to install mesfavoris
+
+You can also add the release update site url to your eclipse installation : https://dl.bintray.com/cchabanois/mesfavoris/updates
 
 There is also a development update site that is updated for each successful build.
 
