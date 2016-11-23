@@ -3,6 +3,7 @@ package mesfavoris;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.Duration;
 
 import org.eclipse.core.runtime.IAdapterManager;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -31,6 +32,7 @@ import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;
 import mesfavoris.internal.persistence.BookmarksAutoSaver;
 import mesfavoris.internal.persistence.LocalBookmarksSaver;
 import mesfavoris.internal.persistence.RemoteBookmarksSaver;
+import mesfavoris.internal.recent.RecentBookmarksDatabase;
 import mesfavoris.internal.remote.RemoteBookmarksStoreLoader;
 import mesfavoris.internal.remote.RemoteBookmarksTreeChangeEventHandler;
 import mesfavoris.internal.service.BookmarksService;
@@ -73,6 +75,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 	private static IBookmarksService bookmarksService;
 	private static VisitedBookmarksDatabase mostVisitedBookmarks;
 	private static NumberedBookmarks numberedBookmarks;
+	private static RecentBookmarksDatabase recentBookmarks;
 
 	private final BookmarkAdapterFactory bookmarkAdapterFactory = new BookmarkAdapterFactory();
 	private RemoteBookmarksTreeChangeEventHandler remoteBookmarksTreeChangeEventHandler;
@@ -121,6 +124,9 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		numberedBookmarks = new NumberedBookmarks((IEclipsePreferences) preferences.node("numberedBookmarks"),
 				eventBroker);
 		numberedBookmarks.init();
+		File recentBookmarksFile = new File(getStateLocation().toFile(), "recentBookmarks.json");
+		recentBookmarks = new RecentBookmarksDatabase(eventBroker, bookmarkDatabase, recentBookmarksFile, Duration.ofDays(5));
+		recentBookmarks.init();
 		bookmarksService = new BookmarksService(bookmarkDatabase,
 				new BookmarkModificationValidator(remoteBookmarksStoreManager), bookmarkPropertiesProvider,
 				defaultBookmarkFolderProvider, remoteBookmarksStoreManager, bookmarksSaver, bookmarkLocationProvider,
@@ -153,7 +159,8 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		bookmarksMarkers.close();
 		mostVisitedBookmarks.close();
 		numberedBookmarks.close();
-
+		recentBookmarks.close();
+		
 		plugin = null;
 		bookmarkDatabase = null;
 		bookmarksSaver = null;
@@ -225,6 +232,10 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		return mostVisitedBookmarks;
 	}
 
+	public static RecentBookmarksDatabase getRecentBookmarks() {
+		return recentBookmarks;
+	}
+	
 	public static IBookmarksDirtyStateTracker getBookmarksDirtyStateTracker() {
 		return bookmarksSaver;
 	}

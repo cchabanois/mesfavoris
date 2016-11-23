@@ -9,7 +9,8 @@ import com.google.common.base.Preconditions;
 public class Bookmark {
 	public static final String PROPERTY_NAME = "name";
 	public static final String PROPERTY_COMMENT = "comment";
-
+	public static final String PROPERTY_CREATED = "created";
+	
 	protected final BookmarkId id;	
 	protected final JImmutableTreeMap<String, String> properties;
 	

@@ -62,6 +62,7 @@ import mesfavoris.internal.actions.RemoveFromRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.ToggleLinkAction;
 import mesfavoris.internal.jobs.ImportTeamProjectFromBookmarkJob;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarksVirtualFolder;
+import mesfavoris.internal.recent.RecentBookmarksVirtualFolder;
 import mesfavoris.internal.views.comment.BookmarkCommentArea;
 import mesfavoris.internal.visited.LatestVisitedBookmarksVirtualFolder;
 import mesfavoris.internal.visited.MostVisitedBookmarksVirtualFolder;
@@ -203,6 +204,8 @@ public class BookmarksView extends ViewPart {
 				eventBroker, bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(), rootId, 10);
 		LatestVisitedBookmarksVirtualFolder latestVisitedBookmarksVirtualFolder = new LatestVisitedBookmarksVirtualFolder(
 				eventBroker, bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(), rootId, 10);
+		RecentBookmarksVirtualFolder recentBookmarksVirtualFolder = new RecentBookmarksVirtualFolder(eventBroker,
+				bookmarkDatabase, BookmarksPlugin.getRecentBookmarks(), rootId, 20);
 		NumberedBookmarksVirtualFolder numberedBookmarksVirtualFolder = new NumberedBookmarksVirtualFolder(eventBroker,
 				bookmarkDatabase, rootId, BookmarksPlugin.getNumberedBookmarks());
 		IBookmarksDirtyStateTracker bookmarksDirtyStateTracker = BookmarksPlugin.getBookmarksDirtyStateTracker();
@@ -216,7 +219,7 @@ public class BookmarksView extends ViewPart {
 				return new BookmarksTreeViewer(parent, bookmarkDatabase, bookmarksDirtyStateTracker,
 						remoteBookmarksStoreManager, bookmarkPropertiesProvider,
 						Lists.newArrayList(mostVisitedBookmarksVirtualFolder, latestVisitedBookmarksVirtualFolder,
-								numberedBookmarksVirtualFolder));
+								recentBookmarksVirtualFolder, numberedBookmarksVirtualFolder));
 			};
 
 		};
@@ -329,7 +332,7 @@ public class BookmarksView extends ViewPart {
 		BookmarksTreeViewerStateManager manager = new BookmarksTreeViewerStateManager(bookmarksTreeViewer);
 		manager.restoreState(memento);
 	}
-	
+
 	private void hookDoubleClickAction() {
 		bookmarksTreeViewer.addDoubleClickListener(event -> {
 			ISelection selection = bookmarksTreeViewer.getSelection();
@@ -338,8 +341,7 @@ public class BookmarksView extends ViewPart {
 			if (bookmark instanceof BookmarkFolder) {
 				bookmarksTreeViewer.setExpandedState(firstElement, !bookmarksTreeViewer.getExpandedState(firstElement));
 			} else {
-				IHandlerService handlerService = (IHandlerService) getSite()
-					    .getService(IHandlerService.class);
+				IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
 				try {
 					handlerService.executeCommand(COMMAND_ID_GOTO_FAVORI, null);
 				} catch (ExecutionException | NotDefinedException | NotEnabledException | NotHandledException e) {

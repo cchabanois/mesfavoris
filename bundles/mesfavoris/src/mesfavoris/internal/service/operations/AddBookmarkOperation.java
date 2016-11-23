@@ -1,5 +1,6 @@
 package mesfavoris.internal.service.operations;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +42,7 @@ public class AddBookmarkOperation {
 		if (bookmarkProperties.isEmpty()) {
 			throw new BookmarksException("Could not create bookmark from current selection");
 		}
+		bookmarkProperties.put(Bookmark.PROPERTY_CREATED, Instant.now().toString());
 		BookmarkId bookmarkId = new BookmarkId();
 		Bookmark bookmark = new Bookmark(bookmarkId, bookmarkProperties);
 		addBookmark(part.getSite().getPage(), bookmark);

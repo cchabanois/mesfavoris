@@ -1,5 +1,6 @@
 package mesfavoris.tests.commons.bookmarks;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +26,12 @@ public abstract class BookmarkBuilder<T extends Bookmark>  {
 		return this;
 	}
  	
-	public abstract Bookmark build();
+	public BookmarkBuilder<T> created(Instant created) {
+		properties.put(Bookmark.PROPERTY_CREATED, created.toString());
+		return this;
+	}
+	
+	public abstract T build();
 	
 	public static BookmarkBuilder<Bookmark> bookmark(String name) {
 		return bookmark(new BookmarkId(name), name);
