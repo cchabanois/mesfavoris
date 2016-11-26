@@ -32,7 +32,9 @@ import org.eclipse.jdt.core.search.SearchParticipant;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.SearchRequestor;
 import org.eclipse.jdt.core.search.TypeDeclarationMatch;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 
@@ -51,36 +53,51 @@ public class JavaTypeMemberBookmarkLocationProvider implements IBookmarkLocation
 		SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
 		List<IMember> memberCandidates = getMemberCandidates(bookmark, subMonitor.newChild(30));
 		for (IMember member : memberCandidates) {
-			Integer lineNumber = getLineNumber(member, bookmark, subMonitor.newChild(70));
-			if (lineNumber != null) {
-				return new JavaTypeMemberBookmarkLocation(member, lineNumber);
+			LinePosition linePosition = getLineNumber(member, bookmark, subMonitor.newChild(70));
+			if (linePosition != null) {
+				return new JavaTypeMemberBookmarkLocation(member, linePosition.lineNumber, linePosition.lineOffset);
 			}
 		}
 		if (memberCandidates.isEmpty()) {
 			return null;
 		} else {
-			return new JavaTypeMemberBookmarkLocation(memberCandidates.get(0), null);
+			return new JavaTypeMemberBookmarkLocation(memberCandidates.get(0), null, null);
 		}
 	}
 
-	private Integer getLineNumber(IMember member, Bookmark bookmark, IProgressMonitor monitor) {
+	private LinePosition getLineNumber(IMember member, Bookmark bookmark, IProgressMonitor monitor) {
 		Integer estimatedLineNumber = getEstimatedLineNumber(member, bookmark);
+		Integer lineNumber = estimatedLineNumber;
+		Integer lineOffset = null;
 		String lineContent = bookmark.getPropertyValue(TextEditorBookmarkProperties.PROP_LINE_CONTENT);
-		if (lineContent == null) {
-			return estimatedLineNumber;
-		}
 		try {
 			ITypeRoot typeRoot = member.getTypeRoot();
 			if (typeRoot.getBuffer() == null) {
 				return null;
 			}
 			Document document = new Document(typeRoot.getBuffer().getContents());
-			DocumentFuzzySearcher searcher = new DocumentFuzzySearcher(document);
+			if (lineContent != null) {
+				DocumentFuzzySearcher searcher = new DocumentFuzzySearcher(document);
 
-			int lineNumber = searcher.findLineNumber(getRegion(member.getSourceRange()),
-					estimatedLineNumber == null ? -1 : estimatedLineNumber, lineContent, monitor);
-			return lineNumber == -1 ? null : lineNumber;
+				int foundLineNumber = searcher.findLineNumber(getRegion(member.getSourceRange()),
+						estimatedLineNumber == null ? -1 : estimatedLineNumber, lineContent, monitor);
+				lineNumber = foundLineNumber == -1 ? estimatedLineNumber : foundLineNumber;
+			}
+			if (lineNumber == null) {
+				return null;
+			} else {
+				lineOffset = getLineOffset(document, lineNumber);
+				return new LinePosition(lineNumber, lineOffset);
+			}
 		} catch (JavaModelException e) {
+			return null;
+		}
+	}
+
+	private Integer getLineOffset(IDocument document, int lineNumber) {
+		try {
+			return document.getLineOffset(lineNumber);
+		} catch (BadLocationException e) {
 			return null;
 		}
 	}
@@ -205,5 +222,16 @@ public class JavaTypeMemberBookmarkLocationProvider implements IBookmarkLocation
 		return types;
 	}
 
+	private static class LinePosition {
+		public final int lineNumber;
+		public final int lineOffset;
+
+		public LinePosition(int lineNumber, int lineOffset) {
+			super();
+			this.lineNumber = lineNumber;
+			this.lineOffset = lineOffset;
+		}
+
+	}
 
 }

@@ -11,6 +11,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IGotoBookmark;
+import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.model.Bookmark;
 import mesfavoris.texteditor.TextEditorUtils;
 
@@ -24,13 +25,10 @@ public class GotoWorkspaceFileBookmark implements IGotoBookmark {
 		WorkspaceFileBookmarkLocation workspaceFileBookmarkLocation = (WorkspaceFileBookmarkLocation) bookmarkLocation;
 		IFile file = workspaceFileBookmarkLocation.getWorkspaceFile();
 		IEditorPart editorPart = openEditor(window, file);
-		if (editorPart == null) {
-			return false;
+		ITextEditor textEditor = AdapterUtils.getAdapter(editorPart, ITextEditor.class);
+		if (textEditor == null) {
+			return false;		
 		}
-		if (!(editorPart instanceof ITextEditor)) {
-			return false;
-		}
-		ITextEditor textEditor = (ITextEditor) editorPart;
 		if (workspaceFileBookmarkLocation.getLineNumber() != null) {
 			return gotoLine(textEditor, workspaceFileBookmarkLocation.getLineNumber());
 		}

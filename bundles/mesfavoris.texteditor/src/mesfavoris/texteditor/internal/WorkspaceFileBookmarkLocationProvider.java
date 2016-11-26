@@ -6,13 +6,17 @@ import java.util.Optional;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 
 import mesfavoris.model.Bookmark;
 import mesfavoris.texteditor.TextEditorBookmarkProperties;
 import mesfavoris.texteditor.resource.FuzzyResourceFinder;
+import mesfavoris.texteditor.text.DocumentUtils;
 
 public class WorkspaceFileBookmarkLocationProvider extends AbstractFileBookmarkLocationProvider {
 
@@ -22,13 +26,35 @@ public class WorkspaceFileBookmarkLocationProvider extends AbstractFileBookmarkL
 		if (!workspaceFile.isPresent()) {
 			return null;
 		}
-		IPath filePath = workspaceFile.get().getLocation();
 		String lineContent = bookmark.getPropertyValue(TextEditorBookmarkProperties.PROP_LINE_CONTENT);
 		Integer lineNumber = getExpectedLineNumber(bookmark);
-		if (lineContent != null && filePath != null) {
-			lineNumber = getLineNumber(filePath, lineNumber, lineContent, monitor);
+		Integer lineOffset = null;
+		Optional<IDocument> document = getDocument(workspaceFile.get());
+		if (lineContent != null && document.isPresent()) {
+			lineNumber = getLineNumber(document.get(), lineNumber, lineContent, monitor);
 		}
-		return new WorkspaceFileBookmarkLocation(workspaceFile.get(), lineNumber);
+		if (document.isPresent() && lineNumber != null) {
+			lineOffset = getLineOffset(document.get(), lineNumber);
+		}
+		return new WorkspaceFileBookmarkLocation(workspaceFile.get(), lineNumber, lineOffset);
+	}
+
+	private Optional<IDocument> getDocument(IFile workspaceFile) {
+		try {
+			IPath filePath = workspaceFile.getLocation();
+			return Optional.of(DocumentUtils.getDocument(filePath));
+		} catch (CoreException e) {
+			StatusHelper.logWarn("Could not get document", e);
+			return Optional.empty();
+		}
+	}
+
+	private Integer getLineOffset(IDocument document, int lineNumber) {
+		try {
+			return document.getLineOffset(lineNumber);
+		} catch (BadLocationException e) {
+			return null;
+		}
 	}
 
 	private Optional<IFile> getWorkspaceFile(Bookmark bookmark) {

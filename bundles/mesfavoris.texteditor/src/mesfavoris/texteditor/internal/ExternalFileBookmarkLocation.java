@@ -7,10 +7,12 @@ import mesfavoris.bookmarktype.IBookmarkLocation;
 public class ExternalFileBookmarkLocation implements IBookmarkLocation {
 	private final IPath fileSystemPath;
 	private final Integer lineNumber;
-
-	public ExternalFileBookmarkLocation(IPath fileSystemPath, Integer lineNumber) {
+	private final Integer lineOffset;
+	
+	public ExternalFileBookmarkLocation(IPath fileSystemPath, Integer lineNumber, Integer lineOffset) {
 		this.fileSystemPath = fileSystemPath;
 		this.lineNumber = lineNumber;
+		this.lineOffset = lineOffset;
 	}
 
 	public IPath getFileSystemPath() {
@@ -21,5 +23,7 @@ public class ExternalFileBookmarkLocation implements IBookmarkLocation {
 		return lineNumber;
 	}
 	
-	
+	public Integer getLineOffset() {
+		return lineOffset;
+	}
 }

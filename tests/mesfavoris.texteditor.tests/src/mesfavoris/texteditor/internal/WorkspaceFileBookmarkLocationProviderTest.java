@@ -3,6 +3,7 @@ package mesfavoris.texteditor.internal;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.*;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_WORKSPACE_PATH;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.lang.reflect.InvocationTargetException;
@@ -50,6 +51,7 @@ public class WorkspaceFileBookmarkLocationProviderTest {
 		assertEquals("/textEditorBookmarkLocationProviderTest/src/main/java/org/apache/commons/cli/DefaultParser.java",
 				location.getWorkspaceFile().getFullPath().toString());
 		assertEquals(146, location.getLineNumber().intValue());
+		assertNotNull(location.getLineOffset());
 	}
 
 	@Test

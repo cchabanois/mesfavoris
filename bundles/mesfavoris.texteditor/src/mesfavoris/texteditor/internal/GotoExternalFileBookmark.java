@@ -14,6 +14,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IGotoBookmark;
+import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.model.Bookmark;
 import mesfavoris.texteditor.TextEditorUtils;
 
@@ -26,13 +27,10 @@ public class GotoExternalFileBookmark implements IGotoBookmark {
 		}
 		ExternalFileBookmarkLocation externalFileBookmarkLocation = (ExternalFileBookmarkLocation) bookmarkLocation;
 		IEditorPart editorPart = openEditor(window, externalFileBookmarkLocation.getFileSystemPath());
-		if (editorPart == null) {
+		ITextEditor textEditor = AdapterUtils.getAdapter(editorPart, ITextEditor.class);
+		if (textEditor == null) {
 			return false;
 		}
-		if (!(editorPart instanceof ITextEditor)) {
-			return false;
-		}
-		ITextEditor textEditor = (ITextEditor) editorPart;
 		if (externalFileBookmarkLocation.getLineNumber() != null) {
 			return gotoLine(textEditor, externalFileBookmarkLocation.getLineNumber());
 		}

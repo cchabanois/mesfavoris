@@ -2,8 +2,6 @@ package mesfavoris.texteditor.internal;
 
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_NUMBER;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -12,7 +10,6 @@ import org.eclipse.jface.text.Region;
 
 import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.model.Bookmark;
-import mesfavoris.texteditor.text.DocumentUtils;
 import mesfavoris.texteditor.text.matching.DocumentFuzzySearcher;
 
 public abstract class AbstractFileBookmarkLocationProvider implements IBookmarkLocationProvider {
@@ -25,10 +22,9 @@ public abstract class AbstractFileBookmarkLocationProvider implements IBookmarkL
 		return Integer.parseInt(expectedLineNumberAsString);
 	}	
 	
-	protected Integer getLineNumber(IPath fileSystemPath, Integer expectedLineNumber, String lineContent,
+	protected Integer getLineNumber(IDocument document, Integer expectedLineNumber, String lineContent,
 			IProgressMonitor monitor) {
 		try {
-			IDocument document = DocumentUtils.getDocument(fileSystemPath);
 			DocumentFuzzySearcher searcher = new DocumentFuzzySearcher(document);
 			IRegion region;
 			if (expectedLineNumber == null) {
@@ -43,9 +39,6 @@ public abstract class AbstractFileBookmarkLocationProvider implements IBookmarkL
 			}
 			return lineNumber;
 		} catch (BadLocationException e) {
-			return null;
-		} catch (CoreException e) {
-			StatusHelper.logWarn("Could not get line number", e);
 			return null;
 		}
 	}

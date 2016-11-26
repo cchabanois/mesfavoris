@@ -12,10 +12,10 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.java.element.JavaTypeMemberBookmarkPropertiesProvider;
 
 public class JavaEditorBookmarkPropertiesProvider extends JavaTypeMemberBookmarkPropertiesProvider {
@@ -23,10 +23,10 @@ public class JavaEditorBookmarkPropertiesProvider extends JavaTypeMemberBookmark
 	@Override
 	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part, ISelection selection,
 			IProgressMonitor monitor) {
-		if (!(part instanceof ITextEditor) || !(selection instanceof ITextSelection)) {
+		ITextEditor editor = AdapterUtils.getAdapter(part, ITextEditor.class);
+		if (editor == null || !(selection instanceof ITextSelection)) {
 			return;
 		}
-		ITextEditor editor = (ITextEditor) part;
 		ITextSelection textSelection = (ITextSelection) selection;
 		IJavaElement editorJavaElement = JavaUI.getEditorInputJavaElement(editor.getEditorInput());
 		if (editorJavaElement == null) {

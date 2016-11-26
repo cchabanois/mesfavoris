@@ -31,6 +31,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
+import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.texteditor.Activator;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 
@@ -47,8 +48,8 @@ public class TextEditorBookmarkPropertiesProvider extends AbstractBookmarkProper
 
 	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part, ISelection selection,
 			IProgressMonitor monitor) {
-		if (part instanceof ITextEditor && selection instanceof ITextSelection) {
-			ITextEditor textEditor = (ITextEditor) part;
+		ITextEditor textEditor = AdapterUtils.getAdapter(part, ITextEditor.class);
+		if (textEditor != null && selection instanceof ITextSelection) {
 			ITextSelection textSelection = (ITextSelection) selection;
 			addBookmarkProperties(bookmarkProperties, textEditor, textSelection);
 		}

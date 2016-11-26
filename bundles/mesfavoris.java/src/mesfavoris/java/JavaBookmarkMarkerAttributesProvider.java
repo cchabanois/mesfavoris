@@ -39,6 +39,10 @@ public class JavaBookmarkMarkerAttributesProvider extends AbstractBookmarkMarker
 		Map attributes = new HashMap();
 		JavaCore.addJavaElementMarkerAttributes(attributes, location.getMember());
 		attributes.put(IMarker.LINE_NUMBER, new Integer(location.getLineNumber() + 1));
+		if (location.getLineOffset() != null) {
+			attributes.put(IMarker.CHAR_START, Integer.valueOf(location.getLineOffset()));
+			attributes.put(IMarker.CHAR_END, Integer.valueOf(location.getLineOffset()));
+		}
 		getMessage(bookmark).ifPresent(message->attributes.put(IMarker.MESSAGE, message));
 		IResource resource = getMarkerResource(location.getMember());
 		return new BookmarkMarkerDescriptor(resource, attributes);
