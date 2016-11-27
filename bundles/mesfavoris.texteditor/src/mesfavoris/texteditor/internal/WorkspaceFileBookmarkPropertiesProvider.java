@@ -21,14 +21,14 @@ import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.texteditor.Activator;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 
-public class FileBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {
+public class WorkspaceFileBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {
 	private final PathPlaceholderResolver pathPlaceholderResolver;
 
-	public FileBookmarkPropertiesProvider() {
+	public WorkspaceFileBookmarkPropertiesProvider() {
 		this(new PathPlaceholderResolver(Activator.getPathPlaceholdersStore()));
 	}
 
-	public FileBookmarkPropertiesProvider(PathPlaceholderResolver pathPlaceholders) {
+	public WorkspaceFileBookmarkPropertiesProvider(PathPlaceholderResolver pathPlaceholders) {
 		this.pathPlaceholderResolver = pathPlaceholders;
 	}
 	

@@ -24,7 +24,7 @@
             priority="10">
       </labelProvider>
       <propertiesProvider
-            class="mesfavoris.texteditor.internal.FileBookmarkPropertiesProvider"
+            class="mesfavoris.texteditor.internal.WorkspaceFileBookmarkPropertiesProvider"
             priority="10">
       </propertiesProvider>
       <locationProvider
