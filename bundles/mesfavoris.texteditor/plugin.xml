@@ -51,6 +51,10 @@
             class="mesfavoris.texteditor.internal.ExternalFolderBookmarkLocationProvider"
             priority="10">
       </locationProvider>
+      <labelProvider
+            class="mesfavoris.texteditor.internal.FolderBookmarkLabelProvider"
+            priority="10">
+      </labelProvider>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">

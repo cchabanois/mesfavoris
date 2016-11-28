@@ -2,7 +2,6 @@ package mesfavoris.texteditor.internal;
 
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FILE_PATH;
 
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -13,7 +12,6 @@ import org.eclipse.ui.PlatformUI;
 
 import mesfavoris.bookmarktype.AbstractBookmarkLabelProvider;
 import mesfavoris.model.Bookmark;
-import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
 
 public class TextEditorBookmarkLabelProvider extends AbstractBookmarkLabelProvider {
 	private final IEditorRegistry editorRegistry;
