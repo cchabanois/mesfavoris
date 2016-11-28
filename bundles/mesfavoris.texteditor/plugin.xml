@@ -39,6 +39,18 @@
             class="mesfavoris.texteditor.internal.ExternalFileBookmarkPropertiesProvider"
             priority="100">
       </propertiesProvider>
+      <propertiesProvider
+            class="mesfavoris.texteditor.internal.ExternalFolderBookmarkPropertiesProvider"
+            priority="10">
+      </propertiesProvider>
+      <gotoBookmark
+            class="mesfavoris.texteditor.internal.GotoExternalFolderBookmark"
+            priority="10">
+      </gotoBookmark>
+      <locationProvider
+            class="mesfavoris.texteditor.internal.ExternalFolderBookmarkLocationProvider"
+            priority="10">
+      </locationProvider>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
