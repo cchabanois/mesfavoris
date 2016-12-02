@@ -87,6 +87,22 @@ public class JavadocCommentProviderTest {
 		
 	}
 	
+	// javadoc tags are not ignored but this should probably be the case though
+	@Test
+	public void testJavadocTagNotIgnored() throws Exception {
+		// Given
+		String javadoc = 
+				  "/**\n "
+				+ " * @author me\n"
+			    + " */";
+	
+		// When
+		String shortDescription = shortDescription(javadoc);
+
+		// Then
+		assertEquals("Author:me", shortDescription);			
+	}
+	
 	private String shortDescription(String javadoc) throws Exception {
 		IMember member = mock(IMember.class);
 		IOpenable openable = (IOpenable)mock(JavaElement.class, withSettings().extraInterfaces(IOpenable.class));
