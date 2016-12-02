@@ -35,7 +35,13 @@ public class UrlBookmarkLabelProvider extends AbstractBookmarkLabelProvider {
 		Bookmark bookmark = (Bookmark) element;
 		String favIconAsBase64 = bookmark.getPropertyValue(PROP_FAVICON);
 		if (favIconAsBase64 == null) {
-			return null;
+			if (bookmark.getPropertyValue(PROP_URL) != null) {
+				// taken from http://www.famfamfam.com/lab/icons/mini/icons/page_tag_blue.gif
+				ImageDescriptor imageDescriptor = Activator.getImageDescriptor("icons/obj16/page_tag_blue.gif");
+				return resourceManager.createImage(imageDescriptor);
+			} else {
+				return null;
+			}
 		}
 		byte[] favIconBytes = Base64.getDecoder().decode(favIconAsBase64);
 		Optional<ImageData> imageData = getImageData(favIconBytes);
