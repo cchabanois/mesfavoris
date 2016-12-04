@@ -4,13 +4,10 @@ import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookma
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
@@ -23,7 +20,6 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
-import mesfavoris.internal.views.dnd.BookmarksViewerDropListener;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
@@ -33,11 +29,9 @@ import mesfavoris.model.modification.BookmarksMovedModification;
 import mesfavoris.tests.commons.bookmarks.BookmarksListener;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeGenerator;
 import mesfavoris.tests.commons.bookmarks.IncrementalIDGenerator;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class BookmarksViewerDropListenerTest {
 	private BookmarkDatabase bookmarkDatabase;
-	private IBookmarkModificationValidator bookmarkModificationValidator = mock(IBookmarkModificationValidator.class);
 	private Viewer viewer = mock(Viewer.class);
 	private IBookmarkPropertiesProvider bookmarkPropertiesProvider = mock(IBookmarkPropertiesProvider.class);
 	private BookmarksListener bookmarksListener = new BookmarksListener();
@@ -47,8 +41,6 @@ public class BookmarksViewerDropListenerTest {
 		BookmarksTree bookmarksTree = new BookmarksTreeGenerator(new IncrementalIDGenerator(), 5, 3, 2).build();
 		bookmarkDatabase = new BookmarkDatabase("main", bookmarksTree);
 		bookmarkDatabase.addListener(bookmarksListener);
-		when(bookmarkModificationValidator.validateModification(any(BookmarksTree.class), any(BookmarkId.class)))
-				.thenReturn(Status.OK_STATUS);
 	}
 
 	@Test
@@ -87,7 +79,7 @@ public class BookmarksViewerDropListenerTest {
 
 	private BookmarksViewerDropListener getBookmarksViewerDropListener(final int currentLocation,
 			final Object currentTarget) {
-		return new BookmarksViewerDropListener(viewer, bookmarkDatabase, bookmarkModificationValidator,
+		return new BookmarksViewerDropListener(viewer, bookmarkDatabase,
 				bookmarkPropertiesProvider) {
 			@Override
 			protected int getCurrentLocation() {

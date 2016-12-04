@@ -31,7 +31,6 @@ import mesfavoris.persistence.IBookmarksDirtyStateListener;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
-import mesfavoris.validation.BookmarkModificationValidator;
 import mesfavoris.viewers.BookmarksLabelProvider;
 
 public class BookmarksTreeViewer extends TreeViewer {
@@ -90,8 +89,7 @@ public class BookmarksTreeViewer extends TreeViewer {
 		addDropSupport(DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK,
 				new Transfer[] { LocalSelectionTransfer.getTransfer(), FileTransfer.getInstance(),
 						URLTransfer.getInstance() },
-				new BookmarksViewerDropListener(this, bookmarkDatabase,
-						new BookmarkModificationValidator(remoteBookmarksStoreManager), bookmarkPropertiesProvider));
+				new BookmarksViewerDropListener(this, bookmarkDatabase, bookmarkPropertiesProvider));
 	}
 
 	private void refreshInUIThread() {

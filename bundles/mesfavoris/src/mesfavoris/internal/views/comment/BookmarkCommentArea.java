@@ -8,18 +8,14 @@ import mesfavoris.BookmarksException;
 import mesfavoris.internal.service.operations.SetBookmarkCommentOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class BookmarkCommentArea extends SpellcheckableMessageArea {
 	private final BookmarkDatabase bookmarkDatabase;
-	private final IBookmarkModificationValidator bookmarkModificationValidator;
 	private Bookmark bookmark = null;
 
-	public BookmarkCommentArea(Composite parent, int styles, BookmarkDatabase bookmarkDatabase,
-			IBookmarkModificationValidator bookmarkModificationValidator) {
+	public BookmarkCommentArea(Composite parent, int styles, BookmarkDatabase bookmarkDatabase) {
 		super(parent, null, styles);
 		this.bookmarkDatabase = bookmarkDatabase;
-		this.bookmarkModificationValidator = bookmarkModificationValidator;
 
 		getSourceViewer().addTextListener(getTextListener());
 	}
@@ -34,8 +30,7 @@ public class BookmarkCommentArea extends SpellcheckableMessageArea {
 				}
 				final String newComment = getDocument().get();
 				try {
-					SetBookmarkCommentOperation operation = new SetBookmarkCommentOperation(bookmarkDatabase,
-							bookmarkModificationValidator);
+					SetBookmarkCommentOperation operation = new SetBookmarkCommentOperation(bookmarkDatabase);
 					operation.setComment(bookmark.getId(), newComment);
 				} catch (BookmarksException e) {
 					// never happen
@@ -56,7 +51,7 @@ public class BookmarkCommentArea extends SpellcheckableMessageArea {
 			comment = "";
 		}
 		setText(comment);
-		getSourceViewer().setEditable(bookmarkModificationValidator
+		getSourceViewer().setEditable(bookmarkDatabase.getBookmarksModificationValidator()
 				.validateModification(bookmarkDatabase.getBookmarksTree(), bookmark.getId()).isOK());
 	}
 

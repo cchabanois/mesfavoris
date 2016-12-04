@@ -13,18 +13,21 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
+import mesfavoris.model.modification.IBookmarksModificationValidator;
 import mesfavoris.persistence.IBookmarksTreeDeserializer;
 
 public class BookmarksWorkspaceFactory {
 	private final IBookmarksTreeDeserializer bookmarksDeserializer;
-
-	public BookmarksWorkspaceFactory(IBookmarksTreeDeserializer bookmarksDeserializer) {
+	private final IBookmarksModificationValidator bookmarksModificationValidator;
+	
+	public BookmarksWorkspaceFactory(IBookmarksTreeDeserializer bookmarksDeserializer, IBookmarksModificationValidator bookmarksModificationValidator) {
 		this.bookmarksDeserializer = bookmarksDeserializer;
+		this.bookmarksModificationValidator = bookmarksModificationValidator;
 	}
 
 	public BookmarkDatabase load(File file, IProgressMonitor monitor) throws FileNotFoundException, IOException {
 		BookmarksTree bookmarksTree = bookmarksDeserializer.deserialize(new FileReader(file), monitor);
-		return new BookmarkDatabase("main", bookmarksTree);
+		return new BookmarkDatabase("main", bookmarksTree, bookmarksModificationValidator);
 	}
 
 	public BookmarkDatabase create() {
@@ -32,7 +35,7 @@ public class BookmarksWorkspaceFactory {
 		BookmarksTree bookmarksTree = new BookmarksTree(rootFolder);
 		BookmarkFolder defaultFolder = new BookmarkFolder(new BookmarkId("default"), "default");
 		bookmarksTree = bookmarksTree.addBookmarks(rootFolder.getId(), Lists.newArrayList(defaultFolder));
-		return new BookmarkDatabase("main", bookmarksTree);
+		return new BookmarkDatabase("main", bookmarksTree, bookmarksModificationValidator);
 	}
 
 }

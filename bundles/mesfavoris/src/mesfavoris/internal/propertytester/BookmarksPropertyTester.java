@@ -8,13 +8,10 @@ import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
-import mesfavoris.validation.BookmarkModificationValidator;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class BookmarksPropertyTester extends PropertyTester {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
-	private final IBookmarkModificationValidator bookmarkModificationValidator;
 	private final DefaultBookmarkFolderProvider defaultBookmarkFolderProvider;
 
 	public BookmarksPropertyTester() {
@@ -27,7 +24,6 @@ public class BookmarksPropertyTester extends PropertyTester {
 			DefaultBookmarkFolderProvider defaultBookmarkFolderProvider) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
-		this.bookmarkModificationValidator = new BookmarkModificationValidator(remoteBookmarksStoreManager);
 		this.defaultBookmarkFolderProvider = defaultBookmarkFolderProvider;
 	}
 
@@ -58,8 +54,8 @@ public class BookmarksPropertyTester extends PropertyTester {
 	}
 
 	private boolean canBeModified(final Bookmark bookmark) {
-		IStatus status = bookmarkModificationValidator.validateModification(bookmarkDatabase.getBookmarksTree(),
-				bookmark.getId());
+		IStatus status = bookmarkDatabase.getBookmarksModificationValidator()
+				.validateModification(bookmarkDatabase.getBookmarksTree(), bookmark.getId());
 		return status.isOK();
 	}
 

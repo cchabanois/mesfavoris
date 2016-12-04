@@ -2,14 +2,10 @@ package mesfavoris.texteditor.internal.operations;
 
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FILE_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,23 +18,18 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
-import mesfavoris.texteditor.internal.operations.ExpandBookmarksOperation;
 import mesfavoris.texteditor.placeholders.PathPlaceholder;
 import mesfavoris.texteditor.placeholders.PathPlaceholdersMap;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class ExpandBookmarksOperationTest {
 
 	private final PathPlaceholdersMap pathPlaceholders = new PathPlaceholdersMap();
 	private ExpandBookmarksOperation expandBookmarksOperation;
-	private IBookmarkModificationValidator bookmarkModificationValidator = mock(IBookmarkModificationValidator.class);
 
 	@Before
 	public void setUp() {
 		pathPlaceholders.add(new PathPlaceholder("HOME", new Path("/home/cchabanois")));
 		pathPlaceholders.add(new PathPlaceholder("BLT", new Path("/home/cchabanois/blt")));
-		when(bookmarkModificationValidator.validateModification(any(BookmarksTree.class), any(BookmarkId.class)))
-				.thenReturn(Status.OK_STATUS);
 	}
 
 	private BookmarkDatabase getBookmarkDatabase(Bookmark... bookmarks) {
@@ -54,8 +45,7 @@ public class ExpandBookmarksOperationTest {
 		// Given
 		Bookmark bookmark = bookmark("bookmark", "${BLT}/myfile.txt");
 		BookmarkDatabase bookmarkDatabase = getBookmarkDatabase(bookmark);
-		expandBookmarksOperation = new ExpandBookmarksOperation(bookmarkDatabase, pathPlaceholders,
-				bookmarkModificationValidator);
+		expandBookmarksOperation = new ExpandBookmarksOperation(bookmarkDatabase, pathPlaceholders);
 
 		// When
 		expandBookmarksOperation.expand(Lists.newArrayList(bookmark.getId()));

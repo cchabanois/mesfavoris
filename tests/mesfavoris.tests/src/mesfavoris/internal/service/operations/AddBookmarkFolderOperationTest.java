@@ -1,40 +1,31 @@
 package mesfavoris.internal.service.operations;
 
-import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.*;
+import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmark;
+import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmarkFolder;
 import static mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder.bookmarksTree;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.Status;
 import org.junit.Before;
 import org.junit.Test;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.internal.service.operations.AddBookmarkFolderOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
-import mesfavoris.model.BookmarksTree;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class AddBookmarkFolderOperationTest {
-	private IBookmarkModificationValidator bookmarkModificationValidator = mock(IBookmarkModificationValidator.class);
 	private BookmarkDatabase bookmarkDatabase;
 	private BookmarkId rootFolderId;
 	private AddBookmarkFolderOperation operation;
 
 	@Before
 	public void setUp() {
-		when(bookmarkModificationValidator.validateModification(any(BookmarksTree.class), any(BookmarkId.class)))
-				.thenReturn(Status.OK_STATUS);
 		this.bookmarkDatabase = new BookmarkDatabase("testId", bookmarksTree("rootFolder").build());
 		rootFolderId = bookmarkDatabase.getBookmarksTree().getRootFolder().getId();
-		operation = new AddBookmarkFolderOperation(bookmarkDatabase, bookmarkModificationValidator);
+		operation = new AddBookmarkFolderOperation(bookmarkDatabase);
 	}
 
 	@Test

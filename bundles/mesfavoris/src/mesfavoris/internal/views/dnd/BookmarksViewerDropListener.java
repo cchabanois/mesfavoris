@@ -34,22 +34,18 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class BookmarksViewerDropListener extends ViewerDropAdapter {
 
 	private final Viewer viewer;
 	private final BookmarkDatabase bookmarkDatabase;
-	private final IBookmarkModificationValidator bookmarkModificationValidator;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
 
 	public BookmarksViewerDropListener(Viewer viewer, BookmarkDatabase bookmarkDatabase,
-			IBookmarkModificationValidator bookmarkModificationValidator,
 			IBookmarkPropertiesProvider bookmarkPropertiesProvider) {
 		super(viewer);
 		this.viewer = viewer;
 		this.bookmarkDatabase = bookmarkDatabase;
-		this.bookmarkModificationValidator = bookmarkModificationValidator;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 	}
 
@@ -158,7 +154,7 @@ public class BookmarksViewerDropListener extends ViewerDropAdapter {
 			return false;
 		}
 	}
-	
+
 	private List<Bookmark> getBookmarks(IStructuredSelection selection) {
 		List<Bookmark> bookmarks = new ArrayList<>();
 		IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
@@ -166,12 +162,12 @@ public class BookmarksViewerDropListener extends ViewerDropAdapter {
 			progressService.busyCursorWhile(monitor -> {
 				bookmarks.addAll(getBookmarks(selection, monitor));
 			});
-		} catch (InvocationTargetException|InterruptedException e) {
+		} catch (InvocationTargetException | InterruptedException e) {
 			// ignore
 		}
-		return bookmarks;		
+		return bookmarks;
 	}
-	
+
 	private List<Bookmark> getBookmarks(IStructuredSelection selection, IProgressMonitor monitor) {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, selection.size());
 		List<Bookmark> bookmarks = Lists.newArrayList();
@@ -228,14 +224,15 @@ public class BookmarksViewerDropListener extends ViewerDropAdapter {
 		case LOCATION_BEFORE:
 		case LOCATION_AFTER:
 			BookmarkFolder parent = bookmarksTree.getParentBookmark(targetBookmark.getId());
-			return parent != null
-					&& bookmarkModificationValidator.validateModification(bookmarksTree, parent.getId()).isOK();
+			return parent != null && bookmarkDatabase.getBookmarksModificationValidator()
+					.validateModification(bookmarksTree, parent.getId()).isOK();
 		case LOCATION_ON:
 			if (!(target instanceof BookmarkFolder)) {
 				return false;
 			}
 			BookmarkFolder bookmarkFolder = (BookmarkFolder) target;
-			return bookmarkModificationValidator.validateModification(bookmarksTree, bookmarkFolder.getId()).isOK();
+			return bookmarkDatabase.getBookmarksModificationValidator()
+					.validateModification(bookmarksTree, bookmarkFolder.getId()).isOK();
 		case LOCATION_NONE:
 			return false;
 		default:

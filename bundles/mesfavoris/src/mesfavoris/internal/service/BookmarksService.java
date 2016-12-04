@@ -43,11 +43,9 @@ import mesfavoris.model.BookmarksTree;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.service.IBookmarksService;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class BookmarksService implements IBookmarksService {
 	private final BookmarkDatabase bookmarkDatabase;
-	private final IBookmarkModificationValidator bookmarkModificationValidator;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
 	private final DefaultBookmarkFolderProvider defaultBookmarkFolderProvider;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
@@ -56,16 +54,12 @@ public class BookmarksService implements IBookmarksService {
 	private final IGotoBookmark gotoBookmark;
 	private final NumberedBookmarks numberedBookmarks;
 
-	public BookmarksService(BookmarkDatabase bookmarkDatabase,
-			IBookmarkModificationValidator bookmarkModificationValidator,
-			IBookmarkPropertiesProvider bookmarkPropertiesProvider,
+	public BookmarksService(BookmarkDatabase bookmarkDatabase, IBookmarkPropertiesProvider bookmarkPropertiesProvider,
 			DefaultBookmarkFolderProvider defaultBookmarkFolderProvider,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
-			IBookmarksDirtyStateTracker bookmarksDirtyStateTracker,
-			IBookmarkLocationProvider bookmarkLocationProvider, IGotoBookmark gotoBookmark,
-			NumberedBookmarks numberedBookmarks) {
+			IBookmarksDirtyStateTracker bookmarksDirtyStateTracker, IBookmarkLocationProvider bookmarkLocationProvider,
+			IGotoBookmark gotoBookmark, NumberedBookmarks numberedBookmarks) {
 		this.bookmarkDatabase = bookmarkDatabase;
-		this.bookmarkModificationValidator = bookmarkModificationValidator;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 		this.defaultBookmarkFolderProvider = defaultBookmarkFolderProvider;
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
@@ -82,8 +76,7 @@ public class BookmarksService implements IBookmarksService {
 
 	@Override
 	public void addBookmarkFolder(BookmarkId parentFolderId, String folderName) throws BookmarksException {
-		AddBookmarkFolderOperation operation = new AddBookmarkFolderOperation(bookmarkDatabase,
-				bookmarkModificationValidator);
+		AddBookmarkFolderOperation operation = new AddBookmarkFolderOperation(bookmarkDatabase);
 		operation.addBookmarkFolder(parentFolderId, folderName);
 	}
 
@@ -91,15 +84,14 @@ public class BookmarksService implements IBookmarksService {
 	public BookmarkId addBookmark(IWorkbenchPart part, ISelection selection, IProgressMonitor monitor)
 			throws BookmarksException {
 		AddBookmarkOperation operation = new AddBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider,
-				defaultBookmarkFolderProvider, bookmarkModificationValidator);
+				defaultBookmarkFolderProvider);
 		return operation.addBookmark(part, selection, monitor);
 	}
 
 	@Override
 	public void addBookmarksTree(BookmarkId parentBookmarkId, BookmarksTree sourceBookmarksTree,
 			Consumer<BookmarksTree> afterCommit) throws BookmarksException {
-		AddBookmarksTreeOperation operation = new AddBookmarksTreeOperation(bookmarkDatabase,
-				bookmarkModificationValidator);
+		AddBookmarksTreeOperation operation = new AddBookmarksTreeOperation(bookmarkDatabase);
 		operation.addBookmarksTree(parentBookmarkId, sourceBookmarksTree, afterCommit);
 	}
 
@@ -124,7 +116,7 @@ public class BookmarksService implements IBookmarksService {
 				remoteBookmarksStoreManager, bookmarksDirtyStateTracker);
 		operation.disconnect(storeId, monitor);
 	}
-	
+
 	@Override
 	public void copyToClipboard(List<BookmarkId> selection) {
 		CopyBookmarkOperation operation = new CopyBookmarkOperation();
@@ -133,14 +125,13 @@ public class BookmarksService implements IBookmarksService {
 
 	@Override
 	public void cutToClipboard(List<BookmarkId> selection) throws BookmarksException {
-		CutBookmarkOperation operation = new CutBookmarkOperation(bookmarkDatabase, bookmarkModificationValidator);
+		CutBookmarkOperation operation = new CutBookmarkOperation(bookmarkDatabase);
 		operation.cutToClipboard(selection);
 	}
 
 	@Override
 	public void deleteBookmarks(final List<BookmarkId> selection) throws BookmarksException {
-		DeleteBookmarksOperation operation = new DeleteBookmarksOperation(bookmarkDatabase,
-				bookmarkModificationValidator);
+		DeleteBookmarksOperation operation = new DeleteBookmarksOperation(bookmarkDatabase);
 		operation.deleteBookmarks(selection);
 	}
 
@@ -153,8 +144,7 @@ public class BookmarksService implements IBookmarksService {
 	@Override
 	public void paste(Display display, BookmarkId parentBookmarkId, IProgressMonitor monitor)
 			throws BookmarksException {
-		PasteBookmarkOperation operation = new PasteBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider,
-				bookmarkModificationValidator);
+		PasteBookmarkOperation operation = new PasteBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider);
 		operation.paste(display, parentBookmarkId, monitor);
 	}
 
@@ -189,15 +179,13 @@ public class BookmarksService implements IBookmarksService {
 
 	@Override
 	public void renameBookmark(BookmarkId bookmarkId, String newName) throws BookmarksException {
-		RenameBookmarkOperation operation = new RenameBookmarkOperation(bookmarkDatabase,
-				bookmarkModificationValidator);
+		RenameBookmarkOperation operation = new RenameBookmarkOperation(bookmarkDatabase);
 		operation.renameBookmark(bookmarkId, newName);
 	}
 
 	@Override
 	public void setComment(final BookmarkId bookmarkId, final String comment) throws BookmarksException {
-		SetBookmarkCommentOperation operation = new SetBookmarkCommentOperation(bookmarkDatabase,
-				bookmarkModificationValidator);
+		SetBookmarkCommentOperation operation = new SetBookmarkCommentOperation(bookmarkDatabase);
 		operation.setComment(bookmarkId, comment);
 	}
 
@@ -209,7 +197,7 @@ public class BookmarksService implements IBookmarksService {
 
 	@Override
 	public void sortByName(BookmarkId bookmarkFolderId) throws BookmarksException {
-		SortByNameOperation operation = new SortByNameOperation(bookmarkDatabase, bookmarkModificationValidator);
+		SortByNameOperation operation = new SortByNameOperation(bookmarkDatabase);
 		operation.sortByName(bookmarkFolderId);
 	}
 

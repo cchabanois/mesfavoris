@@ -37,6 +37,7 @@ import mesfavoris.internal.remote.RemoteBookmarksStoreLoader;
 import mesfavoris.internal.remote.RemoteBookmarksTreeChangeEventHandler;
 import mesfavoris.internal.service.BookmarksService;
 import mesfavoris.internal.service.operations.RefreshRemoteFolderOperation;
+import mesfavoris.internal.validation.BookmarksModificationValidator;
 import mesfavoris.internal.views.virtual.BookmarkLink;
 import mesfavoris.internal.visited.VisitedBookmarksDatabase;
 import mesfavoris.internal.workspace.BookmarksWorkspaceFactory;
@@ -44,12 +45,12 @@ import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
+import mesfavoris.model.modification.IBookmarksModificationValidator;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
 import mesfavoris.persistence.json.BookmarksTreeJsonSerializer;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.service.IBookmarksService;
-import mesfavoris.validation.BookmarkModificationValidator;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -94,10 +95,12 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		adapterManager.registerAdapters(bookmarkAdapterFactory, Bookmark.class);
 		adapterManager.registerAdapters(bookmarkAdapterFactory, BookmarkLink.class);
 
-		File bookmarksFile = new File(getStateLocation().toFile(), "bookmarks.json");
-		bookmarkDatabase = loadBookmarkDatabase(bookmarksFile);
 		RemoteBookmarksStoreLoader remoteBookmarksStoreLoader = new RemoteBookmarksStoreLoader();
 		remoteBookmarksStoreManager = new RemoteBookmarksStoreManager(remoteBookmarksStoreLoader);
+		File bookmarksFile = new File(getStateLocation().toFile(), "bookmarks.json");
+		BookmarksModificationValidator bookmarksModificationValidator = new BookmarksModificationValidator(
+				remoteBookmarksStoreManager);
+		bookmarkDatabase = loadBookmarkDatabase(bookmarksFile, bookmarksModificationValidator);
 		bookmarkLabelProvider = new PluginBookmarkLabelProvider();
 		bookmarkMarkerAttributesProvider = new PluginBookmarkMarkerAttributesProvider();
 		bookmarkPropertiesProvider = new PluginBookmarkPropertiesProvider();
@@ -112,8 +115,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		bookmarksSaver = new BookmarksAutoSaver(bookmarkDatabase, localBookmarksSaver, remoteBookmarksSaver);
 		bookmarksSaver.init();
 		IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode(PLUGIN_ID);
-		defaultBookmarkFolderProvider = new DefaultBookmarkFolderProvider(bookmarkDatabase,
-				new BookmarkModificationValidator(remoteBookmarksStoreManager));
+		defaultBookmarkFolderProvider = new DefaultBookmarkFolderProvider(bookmarkDatabase);
 		File mostVisitedBookmarksFile = new File(getStateLocation().toFile(), "mostVisitedBookmarks.json");
 		IEventBroker eventBroker = (IEventBroker) getWorkbench().getService(IEventBroker.class);
 		mostVisitedBookmarks = new VisitedBookmarksDatabase(eventBroker, bookmarkDatabase, mostVisitedBookmarksFile);
@@ -125,17 +127,18 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 				eventBroker);
 		numberedBookmarks.init();
 		File recentBookmarksFile = new File(getStateLocation().toFile(), "recentBookmarks.json");
-		recentBookmarks = new RecentBookmarksDatabase(eventBroker, bookmarkDatabase, recentBookmarksFile, Duration.ofDays(5));
+		recentBookmarks = new RecentBookmarksDatabase(eventBroker, bookmarkDatabase, recentBookmarksFile,
+				Duration.ofDays(5));
 		recentBookmarks.init();
-		bookmarksService = new BookmarksService(bookmarkDatabase,
-				new BookmarkModificationValidator(remoteBookmarksStoreManager), bookmarkPropertiesProvider,
+		bookmarksService = new BookmarksService(bookmarkDatabase, bookmarkPropertiesProvider,
 				defaultBookmarkFolderProvider, remoteBookmarksStoreManager, bookmarksSaver, bookmarkLocationProvider,
 				gotoBookmark, numberedBookmarks);
 	}
 
-	private BookmarkDatabase loadBookmarkDatabase(File bookmarksFile) {
+	private BookmarkDatabase loadBookmarkDatabase(File bookmarksFile,
+			IBookmarksModificationValidator bookmarksModificationValidator) {
 		BookmarksWorkspaceFactory bookmarksWorkspaceFactory = new BookmarksWorkspaceFactory(
-				new BookmarksTreeJsonDeserializer());
+				new BookmarksTreeJsonDeserializer(), bookmarksModificationValidator);
 		if (bookmarksFile.exists()) {
 			try {
 				return bookmarksWorkspaceFactory.load(bookmarksFile, new NullProgressMonitor());
@@ -160,7 +163,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		mostVisitedBookmarks.close();
 		numberedBookmarks.close();
 		recentBookmarks.close();
-		
+
 		plugin = null;
 		bookmarkDatabase = null;
 		bookmarksSaver = null;
@@ -235,7 +238,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 	public static RecentBookmarksDatabase getRecentBookmarks() {
 		return recentBookmarks;
 	}
-	
+
 	public static IBookmarksDirtyStateTracker getBookmarksDirtyStateTracker() {
 		return bookmarksSaver;
 	}

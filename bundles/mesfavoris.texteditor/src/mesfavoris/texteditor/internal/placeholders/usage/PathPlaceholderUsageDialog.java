@@ -38,14 +38,12 @@ import mesfavoris.texteditor.internal.operations.CollapseBookmarksOperation;
 import mesfavoris.texteditor.internal.operations.ExpandBookmarksOperation;
 import mesfavoris.texteditor.placeholders.IPathPlaceholders;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IPathPlaceholders pathPlaceholders;
 	private final String pathPlaceholderName;
-	private final IBookmarkModificationValidator bookmarkModificationValidator;
 	private final IBookmarkLabelProvider bookmarkLabelProvider;
 	private TableViewer collapsableBookmarksViewer;
 	private TableViewer collapsedBookmarksViewer;
@@ -56,14 +54,13 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 
 	public PathPlaceholderUsageDialog(Shell parentShell, BookmarkDatabase bookmarkDatabase,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager, IPathPlaceholders pathPlaceholders,
-			String pathPlaceholderName, IBookmarkModificationValidator bookmarkModificationValidator) {
+			String pathPlaceholderName) {
 		super(parentShell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
 		this.pathPlaceholders = pathPlaceholders;
 		this.pathPlaceholderName = pathPlaceholderName;
-		this.bookmarkModificationValidator = bookmarkModificationValidator;
 		this.bookmarkLabelProvider = BookmarksPlugin.getBookmarkLabelProvider();
 	}
 
@@ -199,7 +196,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 
 	private List<BookmarkId> getModifiableBookmarks(List<BookmarkId> bookmarkIds) {
 		return bookmarkIds.stream()
-				.filter(bookmarkId -> bookmarkModificationValidator
+				.filter(bookmarkId -> bookmarkDatabase.getBookmarksModificationValidator()
 						.validateModification(bookmarkDatabase.getBookmarksTree(), bookmarkId).isOK())
 				.collect(Collectors.toList());
 	}
@@ -215,8 +212,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 	}
 
 	private void handleAddButtonSelected() {
-		CollapseBookmarksOperation operation = new CollapseBookmarksOperation(bookmarkDatabase, pathPlaceholders,
-				bookmarkModificationValidator);
+		CollapseBookmarksOperation operation = new CollapseBookmarksOperation(bookmarkDatabase, pathPlaceholders);
 		try {
 			operation.collapse(getSelectedCollapsableBookmarks(), pathPlaceholderName);
 			refresh();
@@ -226,8 +222,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 	}
 
 	private void handleAddAllButtonSelected() {
-		CollapseBookmarksOperation operation = new CollapseBookmarksOperation(bookmarkDatabase, pathPlaceholders,
-				bookmarkModificationValidator);
+		CollapseBookmarksOperation operation = new CollapseBookmarksOperation(bookmarkDatabase, pathPlaceholders);
 		List<BookmarkId> allBookmarkIds = getAllBookmarksFromTable(collapsableBookmarksViewer);
 		try {
 			operation.collapse(allBookmarkIds, pathPlaceholderName);
@@ -243,8 +238,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 	}
 
 	private void handleRemoveButtonSelected() {
-		ExpandBookmarksOperation operation = new ExpandBookmarksOperation(bookmarkDatabase, pathPlaceholders,
-				bookmarkModificationValidator);
+		ExpandBookmarksOperation operation = new ExpandBookmarksOperation(bookmarkDatabase, pathPlaceholders);
 		try {
 			operation.expand(getSelectedCollapsedBookmarks());
 			refresh();
@@ -254,8 +248,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 	}
 
 	private void handleRemoveAllButtonSelected() {
-		ExpandBookmarksOperation operation = new ExpandBookmarksOperation(bookmarkDatabase, pathPlaceholders,
-				bookmarkModificationValidator);
+		ExpandBookmarksOperation operation = new ExpandBookmarksOperation(bookmarkDatabase, pathPlaceholders);
 		List<BookmarkId> allBookmarkIds = getAllBookmarksFromTable(collapsedBookmarksViewer);
 		try {
 			operation.expand(allBookmarkIds);

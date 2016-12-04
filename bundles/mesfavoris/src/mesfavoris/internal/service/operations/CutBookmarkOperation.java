@@ -7,22 +7,19 @@ import mesfavoris.internal.model.utils.BookmarksTreeUtils;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class CutBookmarkOperation {
 	private final BookmarkDatabase bookmarkDatabase;
-	private final IBookmarkModificationValidator bookmarkModificationValidator;
 	
-	public CutBookmarkOperation(BookmarkDatabase bookmarkDatabase, IBookmarkModificationValidator bookmarkModificationValidator) {
+	public CutBookmarkOperation(BookmarkDatabase bookmarkDatabase) {
 		this.bookmarkDatabase = bookmarkDatabase;
-		this.bookmarkModificationValidator = bookmarkModificationValidator;
 	}
 
 	public void cutToClipboard(List<BookmarkId> selection)
 			throws BookmarksException {
 		CopyBookmarkOperation copyBookmarkOperation = new CopyBookmarkOperation();
 		copyBookmarkOperation.copyToClipboard(bookmarkDatabase.getBookmarksTree(),selection);
-		DeleteBookmarksOperation deleteBookmarksOperation = new DeleteBookmarksOperation(bookmarkDatabase, bookmarkModificationValidator);
+		DeleteBookmarksOperation deleteBookmarksOperation = new DeleteBookmarksOperation(bookmarkDatabase);
 		deleteBookmarksOperation.deleteBookmarks(selection);
 	}
 

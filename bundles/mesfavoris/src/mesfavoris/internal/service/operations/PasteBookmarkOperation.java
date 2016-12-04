@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubMonitor;
@@ -35,19 +34,15 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class PasteBookmarkOperation {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
-	private final IBookmarkModificationValidator bookmarkModificationValidator;
 
 	public PasteBookmarkOperation(BookmarkDatabase bookmarkDatabase,
-			IBookmarkPropertiesProvider bookmarkPropertiesProvider,
-			IBookmarkModificationValidator bookmarkModificationValidator) {
+			IBookmarkPropertiesProvider bookmarkPropertiesProvider) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
-		this.bookmarkModificationValidator = bookmarkModificationValidator;
 	}
 
 	public void paste(Display display, BookmarkId parentBookmarkId, IProgressMonitor monitor)
@@ -129,11 +124,6 @@ public class PasteBookmarkOperation {
 			throws BookmarksException {
 		SubMonitor.convert(monitor, "Pasting bookmarks", 100);
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
-			IStatus status = bookmarkModificationValidator.validateModification(bookmarksTreeModifier.getCurrentTree(),
-					parentBookmarkId);
-			if (!status.isOK()) {
-				throw new BookmarksException(status);
-			}
 			BookmarksCopier bookmarksCopier = new BookmarksCopier(sourceBookmarksTree,
 					new NonExistingBookmarkIdProvider(bookmarksTreeModifier.getCurrentTree()));
 			List<BookmarkId> bookmarkIds = sourceBookmarksTree.getChildren(sourceBookmarksTree.getRootFolder().getId())
@@ -146,11 +136,6 @@ public class PasteBookmarkOperation {
 			throws BookmarksException {
 		List<Bookmark> bookmarks = getBookmarks(selection, monitor);
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
-			IStatus status = bookmarkModificationValidator.validateModification(bookmarksTreeModifier.getCurrentTree(),
-					parentBookmarkId);
-			if (!status.isOK()) {
-				throw new BookmarksException(status);
-			}
 			bookmarksTreeModifier.addBookmarks(parentBookmarkId, bookmarks);
 		});
 	}

@@ -29,7 +29,6 @@ import mesfavoris.texteditor.Activator;
 import mesfavoris.texteditor.internal.placeholders.usage.PathPlaceholderUsageDialog;
 import mesfavoris.texteditor.placeholders.PathPlaceholder;
 import mesfavoris.texteditor.placeholders.PathPlaceholdersStore;
-import mesfavoris.validation.BookmarkModificationValidator;
 
 public class PathPlaceholdersPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 	private TableViewer placeholdersTableViewer;
@@ -204,7 +203,7 @@ public class PathPlaceholdersPreferencePage extends PreferencePage implements IW
 	private void handleApplyButtonSelected() {
 		PathPlaceholderUsageDialog pathPlaceholderUsageDialog = new PathPlaceholderUsageDialog(getShell(),
 				bookmarkDatabase, remoteBookmarksStoreManager, pathPlaceholdersStore,
-				getSelectedPathPlaceholder().getName(), new BookmarkModificationValidator(remoteBookmarksStoreManager));
+				getSelectedPathPlaceholder().getName());
 		pathPlaceholderUsageDialog.open();
 		refresh();
 	}

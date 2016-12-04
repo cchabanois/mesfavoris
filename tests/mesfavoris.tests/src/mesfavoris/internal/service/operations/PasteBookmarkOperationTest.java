@@ -3,16 +3,12 @@ package mesfavoris.internal.service.operations;
 import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookmark;
 import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookmarkFolder;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.net.URL;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
@@ -27,30 +23,23 @@ import com.google.common.collect.Lists;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
-import mesfavoris.internal.service.operations.CopyBookmarkOperation;
-import mesfavoris.internal.service.operations.PasteBookmarkOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeGenerator;
 import mesfavoris.tests.commons.bookmarks.IncrementalIDGenerator;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class PasteBookmarkOperationTest {
 	private BookmarkDatabase bookmarkDatabase;
 	private PasteBookmarkOperation pasteBookmarkOperation;
-	private IBookmarkModificationValidator bookmarkModificationValidator = mock(IBookmarkModificationValidator.class);
 	private IBookmarkPropertiesProvider bookmarkPropertiesProvider = new TestBookmarkPropertiesProvider();
 
 	@Before
 	public void setUp() {
 		BookmarksTree bookmarksTree = new BookmarksTreeGenerator(new IncrementalIDGenerator(), 5, 3, 2).build();
 		bookmarkDatabase = new BookmarkDatabase("main", bookmarksTree);
-		pasteBookmarkOperation = new PasteBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider,
-				bookmarkModificationValidator);
-		when(bookmarkModificationValidator.validateModification(any(BookmarksTree.class), any(BookmarkId.class)))
-				.thenReturn(Status.OK_STATUS);
+		pasteBookmarkOperation = new PasteBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider);
 	}
 
 	@Test

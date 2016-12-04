@@ -10,13 +10,11 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.time.Clock;
 import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -30,21 +28,18 @@ import org.mockito.stubbing.Answer;
 import com.google.common.collect.ImmutableMap;
 
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
-import mesfavoris.internal.service.operations.AddBookmarkOperation;
 import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class AddBookmarkOperationTest {
 	private AddBookmarkOperation operation;
 	private BookmarkDatabase bookmarkDatabase;
 	private IBookmarkPropertiesProvider bookmarkPropertiesProvider = mock(IBookmarkPropertiesProvider.class);
 	private DefaultBookmarkFolderProvider defaultBookmarkFolderProvider = mock(DefaultBookmarkFolderProvider.class);
-	private IBookmarkModificationValidator bookmarkModificationValidator = mock(IBookmarkModificationValidator.class);
 	private IWorkbenchPart workbenchPart = mock(IWorkbenchPart.class);
 	private IWorkbenchPage workbenchPage = mock(IWorkbenchPage.class);
 
@@ -52,12 +47,10 @@ public class AddBookmarkOperationTest {
 	public void setUp() {
 		bookmarkDatabase = new BookmarkDatabase("test", createBookmarksTree());
 		operation = new AddBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider,
-				defaultBookmarkFolderProvider, bookmarkModificationValidator);
+				defaultBookmarkFolderProvider);
 		IWorkbenchPartSite workbenchPartSite = mock(IWorkbenchPartSite.class);
 		when(workbenchPart.getSite()).thenReturn(workbenchPartSite);
 		when(workbenchPartSite.getPage()).thenReturn(workbenchPage);
-		when(bookmarkModificationValidator.validateModification(any(BookmarksTree.class), any(BookmarkId.class)))
-				.thenReturn(Status.OK_STATUS);
 	}
 
 	@Test

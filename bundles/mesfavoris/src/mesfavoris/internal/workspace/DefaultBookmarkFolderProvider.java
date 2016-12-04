@@ -13,7 +13,6 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 /**
  * Provides the default bookmark folder where to add a new bookmark.
@@ -27,18 +26,15 @@ import mesfavoris.validation.IBookmarkModificationValidator;
 public class DefaultBookmarkFolderProvider {
 	public final static BookmarkId DEFAULT_BOOKMARKFOLDER_ID = new BookmarkId("default");
 	private final BookmarkDatabase bookmarkDatabase;
-	private final IBookmarkModificationValidator bookmarkModificationValidator;
 
-	public DefaultBookmarkFolderProvider(BookmarkDatabase bookmarkDatabase,
-			IBookmarkModificationValidator bookmarkModificationValidator) {
+	public DefaultBookmarkFolderProvider(BookmarkDatabase bookmarkDatabase) {
 		this.bookmarkDatabase = bookmarkDatabase;
-		this.bookmarkModificationValidator = bookmarkModificationValidator;
 	}
 
 	public BookmarkId getDefaultBookmarkFolder() {
 		return DEFAULT_BOOKMARKFOLDER_ID;
 	}
-	
+
 	public BookmarkId getDefaultBookmarkFolder(IWorkbenchPage workbenchPage) {
 		BookmarkFolder bookmarkFolder = getCurrentBookmarkFolderFromBookmarksView(workbenchPage);
 		if (bookmarkFolder == null || !isModifiable(bookmarkFolder.getId())) {
@@ -69,8 +65,8 @@ public class DefaultBookmarkFolderProvider {
 	}
 
 	private boolean isModifiable(BookmarkId bookmarkId) {
-		return bookmarkModificationValidator.validateModification(bookmarkDatabase.getBookmarksTree(), bookmarkId)
-				.isOK();
+		return bookmarkDatabase.getBookmarksModificationValidator()
+				.validateModification(bookmarkDatabase.getBookmarksTree(), bookmarkId).isOK();
 	}
 
 	private BookmarkFolder getCurrentBookmarkFolderFromBookmarksView(IWorkbenchPage page) {

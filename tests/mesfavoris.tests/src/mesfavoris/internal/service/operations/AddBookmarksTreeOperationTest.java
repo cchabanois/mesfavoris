@@ -5,11 +5,7 @@ import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmarkFolder;
 import static mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder.bookmarksTree;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.Status;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +16,6 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class AddBookmarksTreeOperationTest {
 	private BookmarkDatabase bookmarkDatabase;
@@ -29,10 +24,7 @@ public class AddBookmarksTreeOperationTest {
 	@Before
 	public void setUp() {
 		this.bookmarkDatabase = new BookmarkDatabase("test", createBookmarksTree());
-		IBookmarkModificationValidator bookmarkModificationValidator = mock(IBookmarkModificationValidator.class);
-		when(bookmarkModificationValidator.validateModification(any(BookmarksTree.class), any(BookmarkId.class)))
-				.thenReturn(Status.OK_STATUS);
-		this.operation = new AddBookmarksTreeOperation(bookmarkDatabase, bookmarkModificationValidator);
+		this.operation = new AddBookmarksTreeOperation(bookmarkDatabase);
 	}
 
 	@Test

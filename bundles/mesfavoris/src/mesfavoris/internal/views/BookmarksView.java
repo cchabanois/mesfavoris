@@ -73,8 +73,6 @@ import mesfavoris.model.BookmarkId;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
-import mesfavoris.validation.BookmarkModificationValidator;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class BookmarksView extends ViewPart {
 	private static final String COMMAND_ID_GOTO_FAVORI = "mesfavoris.command.gotoFavori";
@@ -132,11 +130,8 @@ public class BookmarksView extends ViewPart {
 		toolkit.paintBordersFor(commentsComposite);
 		commentsSection.setClient(commentsComposite);
 		GridLayoutFactory.fillDefaults().extendedMargins(2, 2, 2, 2).applyTo(commentsComposite);
-		IBookmarkModificationValidator bookmarkModificationValidator = new BookmarkModificationValidator(
-				BookmarksPlugin.getRemoteBookmarksStoreManager());
 		bookmarkCommentViewer = new BookmarkCommentArea(commentsComposite,
-				SWT.MULTI | SWT.V_SCROLL | SWT.WRAP | toolkit.getBorderStyle(), bookmarkDatabase,
-				bookmarkModificationValidator);
+				SWT.MULTI | SWT.V_SCROLL | SWT.WRAP | toolkit.getBorderStyle(), bookmarkDatabase);
 		bookmarkCommentViewer.getTextWidget().setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(bookmarkCommentViewer);
 		addBulbDecorator(bookmarkCommentViewer.getTextWidget(), "Content assist available");

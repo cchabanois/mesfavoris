@@ -7,13 +7,16 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Consumer;
 
 import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.StatusHelper;
+import mesfavoris.internal.validation.AcceptAllBookmarksModificationValidator;
 import mesfavoris.model.modification.BookmarksModification;
 import mesfavoris.model.modification.BookmarksTreeModifier;
+import mesfavoris.model.modification.IBookmarksModificationValidator;
 
 public class BookmarkDatabase {
 	private final String id;
@@ -21,13 +24,24 @@ public class BookmarkDatabase {
 	private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
 	private final Lock writeLock = rwLock.writeLock();
 	private final Lock readLock = rwLock.readLock();
+	private final IBookmarksModificationValidator bookmarksModificationValidator;
 	private BookmarksTree bookmarksTree;
 
 	public BookmarkDatabase(String id, BookmarksTree bookmarksTree) {
+		this(id, bookmarksTree, new AcceptAllBookmarksModificationValidator());
+	}
+	
+	public BookmarkDatabase(String id, BookmarksTree bookmarksTree,
+			IBookmarksModificationValidator bookmarksModificationValidator) {
 		this.id = id;
 		this.bookmarksTree = bookmarksTree;
+		this.bookmarksModificationValidator = bookmarksModificationValidator;
 	}
 
+	public IBookmarksModificationValidator getBookmarksModificationValidator() {
+		return bookmarksModificationValidator;
+	}
+	
 	public String getId() {
 		return id;
 	}
@@ -63,6 +77,7 @@ public class BookmarkDatabase {
 		List<BookmarksModification> modifications = Collections.emptyList();
 		BookmarksTreeModifier bookmarksTreeModifier = new BookmarksTreeModifier(bookmarksTree);
 		operation.exec(bookmarksTreeModifier);
+		validateModifications(bookmarksTreeModifier.getModifications());
 		try {
 			writeLock.lock();
 			if (bookmarksTree != bookmarksTreeModifier.getOriginalTree()) {
@@ -97,8 +112,9 @@ public class BookmarkDatabase {
 			if (bookmarksTree != bookmarksTreeModifier.getOriginalTree()) {
 				throw new BookmarksException("BookmarksDatabase.modify is not reentrant");
 			}
-			this.bookmarksTree = bookmarksTreeModifier.getCurrentTree();
 			modifications = bookmarksTreeModifier.getModifications();
+			validateModifications(modifications);
+			this.bookmarksTree = bookmarksTreeModifier.getCurrentTree();
 			afterCommit.accept(this.bookmarksTree);
 		} finally {
 			try {
@@ -115,6 +131,15 @@ public class BookmarkDatabase {
 		}
 	}
 
+	private void validateModifications(List<BookmarksModification> modifications) throws BookmarksException {
+		for (BookmarksModification modification : modifications) {
+			IStatus status = bookmarksModificationValidator.validateModification(modification);
+			if (!status.isOK()) {
+				throw new BookmarksException(status);
+			}
+		}
+	}
+	
 	public BookmarksTree getBookmarksTree() {
 		try {
 			readLock.lock();

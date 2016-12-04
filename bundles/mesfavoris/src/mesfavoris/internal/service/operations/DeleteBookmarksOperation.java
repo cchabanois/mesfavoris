@@ -6,16 +6,12 @@ import mesfavoris.BookmarksException;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class DeleteBookmarksOperation {
 	private final BookmarkDatabase bookmarkDatabase;
-	private final IBookmarkModificationValidator bookmarkModificationValidator;
 
-	public DeleteBookmarksOperation(BookmarkDatabase bookmarkDatabase,
-			IBookmarkModificationValidator bookmarkModificationValidator) {
+	public DeleteBookmarksOperation(BookmarkDatabase bookmarkDatabase) {
 		this.bookmarkDatabase = bookmarkDatabase;
-		this.bookmarkModificationValidator = bookmarkModificationValidator;
 	}
 
 	public void deleteBookmarks(final List<BookmarkId> selection) throws BookmarksException {
@@ -25,10 +21,7 @@ public class DeleteBookmarksOperation {
 				if (bookmarkFolder == null) {
 					return;
 				}
-				if (bookmarkModificationValidator
-						.validateModification(bookmarksTreeModifier.getCurrentTree(), bookmarkFolder.getId()).isOK()) {
-					bookmarksTreeModifier.deleteBookmark(bookmarkId, true);
-				}
+				bookmarksTreeModifier.deleteBookmark(bookmarkId, true);
 			}
 		});
 	}

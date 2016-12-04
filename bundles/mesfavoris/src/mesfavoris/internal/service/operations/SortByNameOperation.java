@@ -5,31 +5,21 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.eclipse.core.runtime.IStatus;
-
 import mesfavoris.BookmarksException;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class SortByNameOperation {
 	private final BookmarkDatabase bookmarkDatabase;
-	private final IBookmarkModificationValidator bookmarkModificationValidator;
 
-	public SortByNameOperation(BookmarkDatabase bookmarkDatabase, IBookmarkModificationValidator bookmarkModificationValidator) {
+	public SortByNameOperation(BookmarkDatabase bookmarkDatabase) {
 		this.bookmarkDatabase = bookmarkDatabase;
-		this.bookmarkModificationValidator = bookmarkModificationValidator;
 	}
-	
+
 	public void sortByName(BookmarkId bookmarkFolderId) throws BookmarksException {
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
-			IStatus status = bookmarkModificationValidator.validateModification(bookmarksTreeModifier.getCurrentTree(),
-					bookmarkFolderId);
-			if (!status.isOK()) {
-				throw new BookmarksException(status);
-			}
 			List<Bookmark> children = new ArrayList<>(
 					bookmarksTreeModifier.getCurrentTree().getChildren(bookmarkFolderId));
 			List<BookmarkId> bookmarkIds = children.stream().sorted(new BookmarkComparator())

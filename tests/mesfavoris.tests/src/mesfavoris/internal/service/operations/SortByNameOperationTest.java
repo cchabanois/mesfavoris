@@ -4,33 +4,23 @@ import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmark;
 import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmarkFolder;
 import static mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder.bookmarksTree;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.Status;
 import org.junit.Before;
 import org.junit.Test;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.internal.service.operations.SortByNameOperation;
 import mesfavoris.model.BookmarkDatabase;
-import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class SortByNameOperationTest {
 	private BookmarkDatabase bookmarkDatabase;
-	private IBookmarkModificationValidator bookmarkModificationValidator = mock(IBookmarkModificationValidator.class);
 	private SortByNameOperation operation;
 
 	@Before
 	public void setUp() {
 		bookmarkDatabase = new BookmarkDatabase("testId", getInitialTree());
-		when(bookmarkModificationValidator.validateModification(any(BookmarksTree.class), any(BookmarkId.class)))
-				.thenReturn(Status.OK_STATUS);
-		operation = new SortByNameOperation(bookmarkDatabase, bookmarkModificationValidator);
+		operation = new SortByNameOperation(bookmarkDatabase);
 	}
 
 	@Test

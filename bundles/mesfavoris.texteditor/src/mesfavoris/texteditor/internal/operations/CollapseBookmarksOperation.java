@@ -13,18 +13,14 @@ import mesfavoris.model.BookmarkId;
 import mesfavoris.model.modification.IBookmarksTreeModifier;
 import mesfavoris.texteditor.placeholders.IPathPlaceholders;
 import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
-import mesfavoris.validation.IBookmarkModificationValidator;
 
 public class CollapseBookmarksOperation {
 	private final PathPlaceholderResolver pathPlaceholderResolver;
 	private final BookmarkDatabase bookmarkDatabase;
-	private final IBookmarkModificationValidator bookmarkModificationValidator;
 
-	public CollapseBookmarksOperation(BookmarkDatabase bookmarkDatabase, IPathPlaceholders pathPlaceholders,
-			IBookmarkModificationValidator bookmarkModificationValidator) {
+	public CollapseBookmarksOperation(BookmarkDatabase bookmarkDatabase, IPathPlaceholders pathPlaceholders) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.pathPlaceholderResolver = new PathPlaceholderResolver(pathPlaceholders);
-		this.bookmarkModificationValidator = bookmarkModificationValidator;
 	}
 
 	public void collapse(List<BookmarkId> bookmarkIds, String... placeholderNames) throws BookmarksException {
@@ -33,10 +29,6 @@ public class CollapseBookmarksOperation {
 	}
 
 	private void collapse(IBookmarksTreeModifier bookmarksTreeModifier, BookmarkId bookmarkId, String... placeholderNames) {
-		if (!bookmarkModificationValidator.validateModification(bookmarksTreeModifier.getCurrentTree(), bookmarkId)
-				.isOK()) {
-			return;
-		}
 		Bookmark bookmark = bookmarksTreeModifier.getCurrentTree().getBookmark(bookmarkId);
 		String filePath = bookmark.getPropertyValue(PROP_FILE_PATH);
 		if (filePath == null) {
