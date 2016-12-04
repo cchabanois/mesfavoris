@@ -118,7 +118,7 @@ public class RefreshRemoteFolderOperation {
 					} catch (IOException e) {
 						throw new BookmarksException("Could not load remote bookmark folder", e);
 					}
-				});
+				}, /* validateModifications */ false);
 				return;
 			} catch (OptimisticLockException|DirtyBookmarksDatabaseException e) {
 				try {

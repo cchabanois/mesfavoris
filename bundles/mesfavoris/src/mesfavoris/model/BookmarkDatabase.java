@@ -52,32 +52,39 @@ public class BookmarkDatabase {
 	}
 
 	public void modify(IBookmarksOperation operation, Consumer<BookmarksTree> afterCommit) throws BookmarksException {
-		modify(LockMode.PESSIMISTIC, operation, afterCommit);
+		modify(LockMode.PESSIMISTIC, operation, true, afterCommit);
 	}
 
 	public void modify(LockMode lockMode, IBookmarksOperation operation) throws BookmarksException {
-		modify(lockMode, operation, (bookmarksTree) -> {
+		modify(lockMode, operation, true, (bookmarksTree) -> {
 		});
 	}
 
-	public void modify(LockMode lockMode, IBookmarksOperation operation, Consumer<BookmarksTree> afterCommit)
+	public void modify(LockMode lockMode, IBookmarksOperation operation, boolean validateModifications) throws BookmarksException {
+		modify(lockMode, operation, validateModifications, (bookmarksTree) -> {
+		});
+	}
+	
+	public void modify(LockMode lockMode, IBookmarksOperation operation, boolean validateModifications, Consumer<BookmarksTree> afterCommit)
 			throws BookmarksException {
 		switch (lockMode) {
 		case OPTIMISTIC:
-			modifyWithOptimisticLocking(operation, afterCommit);
+			modifyWithOptimisticLocking(operation, validateModifications, afterCommit);
 			break;
 		case PESSIMISTIC:
-			modifyWithPessimisticLocking(operation, afterCommit);
+			modifyWithPessimisticLocking(operation, validateModifications, afterCommit);
 			break;
 		}
 	}
 
-	private void modifyWithOptimisticLocking(IBookmarksOperation operation, Consumer<BookmarksTree> afterCommit)
+	private void modifyWithOptimisticLocking(IBookmarksOperation operation, boolean validateModifications, Consumer<BookmarksTree> afterCommit)
 			throws BookmarksException {
 		List<BookmarksModification> modifications = Collections.emptyList();
 		BookmarksTreeModifier bookmarksTreeModifier = new BookmarksTreeModifier(bookmarksTree);
 		operation.exec(bookmarksTreeModifier);
-		validateModifications(bookmarksTreeModifier.getModifications());
+		if (validateModifications) {
+			validateModifications(bookmarksTreeModifier.getModifications());
+		}
 		try {
 			writeLock.lock();
 			if (bookmarksTree != bookmarksTreeModifier.getOriginalTree()) {
@@ -102,7 +109,7 @@ public class BookmarkDatabase {
 		}
 	}
 
-	private void modifyWithPessimisticLocking(IBookmarksOperation operation, Consumer<BookmarksTree> afterCommit)
+	private void modifyWithPessimisticLocking(IBookmarksOperation operation, boolean validateModifications, Consumer<BookmarksTree> afterCommit)
 			throws BookmarksException {
 		List<BookmarksModification> modifications = Collections.emptyList();
 		try {
@@ -112,8 +119,10 @@ public class BookmarkDatabase {
 			if (bookmarksTree != bookmarksTreeModifier.getOriginalTree()) {
 				throw new BookmarksException("BookmarksDatabase.modify is not reentrant");
 			}
+			if (validateModifications) {
+				validateModifications(bookmarksTreeModifier.getModifications());
+			}
 			modifications = bookmarksTreeModifier.getModifications();
-			validateModifications(modifications);
 			this.bookmarksTree = bookmarksTreeModifier.getCurrentTree();
 			afterCommit.accept(this.bookmarksTree);
 		} finally {
