@@ -25,7 +25,7 @@ public class BookmarkCommentArea extends SpellcheckableMessageArea {
 
 			@Override
 			public void textChanged(final TextEvent event) {
-				if (bookmark == null) {
+				if (bookmark == null || !getSourceViewer().isEditable()) {
 					return;
 				}
 				final String newComment = getDocument().get();
