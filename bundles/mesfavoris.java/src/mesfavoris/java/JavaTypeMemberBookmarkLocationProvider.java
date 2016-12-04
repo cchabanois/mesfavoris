@@ -85,10 +85,12 @@ public class JavaTypeMemberBookmarkLocationProvider implements IBookmarkLocation
 			}
 			if (lineNumber == null) {
 				return null;
-			} else {
-				lineOffset = getLineOffset(document, lineNumber);
-				return new LinePosition(lineNumber, lineOffset);
 			}
+			lineOffset = getLineOffset(document, lineNumber);
+			if (lineOffset == null) {
+				return null;
+			}
+			return new LinePosition(lineNumber, lineOffset);
 		} catch (JavaModelException e) {
 			return null;
 		}
