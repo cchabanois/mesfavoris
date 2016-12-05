@@ -39,6 +39,6 @@ public class CutBookmarkHandler extends AbstractBookmarkHandler {
 	public boolean isEnabled() {
 		List<BookmarkId> bookmarkIds = getAsBookmarkIds(getSelection());
 		CutBookmarkOperation operation = new CutBookmarkOperation(bookmarkDatabase);
-		return operation.hasDuplicatedBookmarksInSelection(bookmarkDatabase.getBookmarksTree(), bookmarkIds);
+		return !operation.hasDuplicatedBookmarksInSelection(bookmarkDatabase.getBookmarksTree(), bookmarkIds);
 	}
 }
