@@ -49,10 +49,17 @@ public class TextEditorBookmarkPropertiesProvider extends AbstractBookmarkProper
 	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part, ISelection selection,
 			IProgressMonitor monitor) {
 		ITextEditor textEditor = AdapterUtils.getAdapter(part, ITextEditor.class);
-		if (textEditor != null && selection instanceof ITextSelection) {
-			ITextSelection textSelection = (ITextSelection) selection;
-			addBookmarkProperties(bookmarkProperties, textEditor, textSelection);
+		if (textEditor == null) {
+			return;
 		}
+		if (textEditor != part) {
+			selection = getSelection(textEditor);
+		}
+		if (!(selection instanceof ITextSelection)) {
+			return;
+		}
+		ITextSelection textSelection = (ITextSelection) selection;
+		addBookmarkProperties(bookmarkProperties, textEditor, textSelection);
 	}
 
 	private void addBookmarkProperties(Map<String, String> properties, ITextEditor textEditor,

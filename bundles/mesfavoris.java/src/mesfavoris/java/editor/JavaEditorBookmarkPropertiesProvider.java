@@ -24,7 +24,13 @@ public class JavaEditorBookmarkPropertiesProvider extends JavaTypeMemberBookmark
 	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part, ISelection selection,
 			IProgressMonitor monitor) {
 		ITextEditor editor = AdapterUtils.getAdapter(part, ITextEditor.class);
-		if (editor == null || !(selection instanceof ITextSelection)) {
+		if (editor == null) {
+			return;
+		}
+		if (editor != part) {
+			selection = getSelection(editor);
+		}
+		if (!(selection instanceof ITextSelection)) {
 			return;
 		}
 		ITextSelection textSelection = (ITextSelection) selection;

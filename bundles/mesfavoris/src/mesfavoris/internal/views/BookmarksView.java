@@ -34,8 +34,10 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FilteredTree;
@@ -92,7 +94,8 @@ public class BookmarksView extends ViewPart {
 	private FormToolkit toolkit;
 	private ToolBarManager commentsToolBarManager;
 	private IMemento memento;
-
+	private PreviousActivePartListener previousActivePartListener = new PreviousActivePartListener();
+	
 	public BookmarksView() {
 		this.bookmarkDatabase = BookmarksPlugin.getBookmarkDatabase();
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
@@ -187,6 +190,7 @@ public class BookmarksView extends ViewPart {
 
 	@Override
 	public void dispose() {
+		getSite().getPage().removePartListener(previousActivePartListener);
 		toggleLinkAction.dispose();
 		toolkit.dispose();
 		super.dispose();
@@ -315,6 +319,7 @@ public class BookmarksView extends ViewPart {
 	public void init(IViewSite site, IMemento memento) throws PartInitException {
 		this.memento = memento;
 		super.init(site, memento);
+		getSite().getPage().addPartListener(previousActivePartListener);
 	}
 
 	@Override
@@ -346,4 +351,43 @@ public class BookmarksView extends ViewPart {
 		});
 	}
 
+	public IWorkbenchPart getPreviousActivePart() {
+		return previousActivePartListener.getPreviousActivePart();
+	}
+	
+	private static class PreviousActivePartListener implements IPartListener {
+		private IWorkbenchPart previousActivePart;
+		
+		@Override
+		public void partActivated(IWorkbenchPart part) {
+			if (!(part instanceof BookmarksView)) {
+				this.previousActivePart = part;
+			}
+		}
+
+		public IWorkbenchPart getPreviousActivePart() {
+			return previousActivePart;
+		}
+		
+		@Override
+		public void partBroughtToTop(IWorkbenchPart part) {
+		}
+
+		@Override
+		public void partClosed(IWorkbenchPart part) {
+			if (previousActivePart == part) {
+				previousActivePart = null;
+			}
+		}
+
+		@Override
+		public void partDeactivated(IWorkbenchPart part) {			
+		}
+
+		@Override
+		public void partOpened(IWorkbenchPart part) {			
+		}
+		
+	}
+	
 }
