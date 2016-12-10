@@ -11,6 +11,22 @@
             class="mesfavoris.perforce.ImportPerforceProject"
             icon="icons/p4.png">
       </importTeamProject>
+      <locationProvider
+            class="mesfavoris.perforce.ChangelistBookmarkLocationProvider"
+            priority="10">
+      </locationProvider>
+      <propertiesProvider
+            class="mesfavoris.perforce.ChangelistEditorBookmarkPropertiesProvider"
+            priority="10">
+      </propertiesProvider>
+      <labelProvider
+            class="mesfavoris.perforce.ChangelistBookmarkLabelProvider"
+            priority="10">
+      </labelProvider>
+      <gotoBookmark
+            class="mesfavoris.perforce.GotoChangelistBookmark"
+            priority="10">
+      </gotoBookmark>
    </extension>
 
 </plugin>
