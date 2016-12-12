@@ -1,7 +1,7 @@
 package mesfavoris.perforce;
 
-import static mesfavoris.perforce.PerforceProjectProperties.PROP_CHANGELIST;
-import static mesfavoris.perforce.PerforceProjectProperties.PROP_PORT;
+import static mesfavoris.perforce.PerforceBookmarkProperties.PROP_CHANGELIST;
+import static mesfavoris.perforce.PerforceBookmarkProperties.PROP_PORT;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 

@@ -14,7 +14,7 @@ import com.perforce.team.ui.changelists.IChangelistEditorInput;
 import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
 import mesfavoris.model.Bookmark;
 
-import static mesfavoris.perforce.PerforceProjectProperties.*;
+import static mesfavoris.perforce.PerforceBookmarkProperties.*;
 
 public class ChangelistEditorBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {
 

@@ -1,7 +1,7 @@
 package mesfavoris.perforce;
 
-import static mesfavoris.perforce.PerforceProjectProperties.PROP_PATH;
-import static mesfavoris.perforce.PerforceProjectProperties.PROP_PORT;
+import static mesfavoris.perforce.PerforceBookmarkProperties.PROP_PATH;
+import static mesfavoris.perforce.PerforceBookmarkProperties.PROP_PORT;
 
 import java.text.MessageFormat;
 

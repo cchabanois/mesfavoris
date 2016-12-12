@@ -1,6 +1,6 @@
 package mesfavoris.perforce;
 
-import static mesfavoris.perforce.PerforceProjectProperties.PROP_CHANGELIST;
+import static mesfavoris.perforce.PerforceBookmarkProperties.PROP_CHANGELIST;
 
 import org.eclipse.swt.graphics.Image;
 
