@@ -39,7 +39,7 @@ public class RecentBookmarks {
 		this.recentDuration = recentDuration;
 	}
 
-	RecentBookmarks add(RecentBookmark recentBookmark) {
+	public RecentBookmarks add(RecentBookmark recentBookmark) {
 		JImmutableMap<BookmarkId, RecentBookmark> newMap = map;
 		JImmutableSet<RecentBookmark> newByCreationDateSet = byCreationDateSet;
 		RecentBookmark oldValue = newMap.get(recentBookmark.getBookmarkId());
@@ -48,10 +48,14 @@ public class RecentBookmarks {
 			newByCreationDateSet = newByCreationDateSet.delete(oldValue);
 		}
 		newByCreationDateSet = newByCreationDateSet.insert(recentBookmark);
-		return newRecentBookmarks(newByCreationDateSet, newMap);
+		return newRecentBookmarks(newByCreationDateSet, newMap, true);
 	}
 
-	RecentBookmarks delete(BookmarkId bookmarkId) {
+	public RecentBookmarks delete(BookmarkId bookmarkId) {
+		return delete(bookmarkId, true);
+	}
+
+	public RecentBookmarks delete(BookmarkId bookmarkId, boolean deleteNoMoreRecent) {
 		RecentBookmark recentBookmark = get(bookmarkId);
 		if (recentBookmark == null) {
 			return this;
@@ -60,7 +64,7 @@ public class RecentBookmarks {
 		JImmutableSet<RecentBookmark> newByCreationDateSet = byCreationDateSet;
 		newMap = newMap.delete(bookmarkId);
 		newByCreationDateSet = newByCreationDateSet.delete(recentBookmark);
-		return newRecentBookmarks(newByCreationDateSet, newMap);
+		return newRecentBookmarks(newByCreationDateSet, newMap, deleteNoMoreRecent);
 	}
 
 	public RecentBookmark get(BookmarkId bookmarkId) {
@@ -68,7 +72,7 @@ public class RecentBookmarks {
 	}
 
 	private RecentBookmarks newRecentBookmarks(JImmutableSet<RecentBookmark> newByCreationDateSet,
-			JImmutableMap<BookmarkId, RecentBookmark> newMap) {
+			JImmutableMap<BookmarkId, RecentBookmark> newMap, boolean deleteNoMoreRecent) {
 		if (newMap == map && newByCreationDateSet == byCreationDateSet) {
 			return this;
 		} else {
@@ -81,7 +85,7 @@ public class RecentBookmarks {
 		Instant noMoreRecentInstant = Instant.now().minus(recentDuration);
 		RecentBookmarks[] recentBookmarks = { this };
 		getSet().stream().filter(recentBookmark -> recentBookmark.getInstantAdded().isBefore(noMoreRecentInstant))
-				.forEach(recentBookmark -> recentBookmarks[0] = delete(recentBookmark.getBookmarkId()));
+				.forEach(recentBookmark -> recentBookmarks[0] = delete(recentBookmark.getBookmarkId(), false));
 		return recentBookmarks[0];
 	}
 
@@ -101,5 +105,5 @@ public class RecentBookmarks {
 	public Duration getRecentDuration() {
 		return recentDuration;
 	}
-	
+
 }
