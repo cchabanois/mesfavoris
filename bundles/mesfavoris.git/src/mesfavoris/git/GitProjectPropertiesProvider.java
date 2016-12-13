@@ -1,8 +1,8 @@
 package mesfavoris.git;
 
-import static mesfavoris.git.GitProjectProperties.PROP_BRANCH;
-import static mesfavoris.git.GitProjectProperties.PROP_PROJECT_PATH;
-import static mesfavoris.git.GitProjectProperties.PROP_URL;
+import static mesfavoris.git.GitBookmarkProperties.PROP_BRANCH;
+import static mesfavoris.git.GitBookmarkProperties.PROP_PROJECT_PATH;
+import static mesfavoris.git.GitBookmarkProperties.PROP_URL;
 
 import java.io.IOException;
 import java.util.Map;

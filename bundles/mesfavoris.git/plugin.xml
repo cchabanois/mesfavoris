@@ -11,6 +11,26 @@
             class="mesfavoris.git.ImportGitProject"
             icon="icons/import_obj.gif">
       </importTeamProject>
+      <propertiesProvider
+            class="mesfavoris.git.CommitEditorBookmarkPropertiesProvider"
+            priority="10">
+      </propertiesProvider>
+      <propertiesProvider
+            class="mesfavoris.git.CommitEditorBookmarkPropertiesProvider"
+            priority="10">
+      </propertiesProvider>
+      <locationProvider
+            class="mesfavoris.git.RepositoryCommitBookmarkLocationProvider"
+            priority="10">
+      </locationProvider>
+      <labelProvider
+            class="mesfavoris.git.RepositoryCommitBookmarkLabelProvider"
+            priority="10">
+      </labelProvider>
+      <gotoBookmark
+            class="mesfavoris.git.GotoRepositoryCommitBookmark"
+            priority="10">
+      </gotoBookmark>
    </extension>
 
 </plugin>

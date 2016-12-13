@@ -1,8 +1,8 @@
 package mesfavoris.git;
 
-import static mesfavoris.git.GitProjectProperties.PROP_BRANCH;
-import static mesfavoris.git.GitProjectProperties.PROP_PROJECT_PATH;
-import static mesfavoris.git.GitProjectProperties.PROP_URL;
+import static mesfavoris.git.GitBookmarkProperties.PROP_BRANCH;
+import static mesfavoris.git.GitBookmarkProperties.PROP_PROJECT_PATH;
+import static mesfavoris.git.GitBookmarkProperties.PROP_URL;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.egit.core.GitProjectSetCapability;
