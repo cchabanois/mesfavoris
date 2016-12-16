@@ -54,9 +54,7 @@ public class JavaBookmarkMarkerAttributesProvider extends AbstractBookmarkMarker
 			member = (IMember) member.getPrimaryElement();
 		}
 		IResource res = member.getResource();
-		if (res == null) {
-			res = ResourcesPlugin.getWorkspace().getRoot();
-		} else if (!res.getProject().exists()) {
+		if (res == null || !res.getProject().exists()) {
 			res = ResourcesPlugin.getWorkspace().getRoot();
 		}
 		return res;

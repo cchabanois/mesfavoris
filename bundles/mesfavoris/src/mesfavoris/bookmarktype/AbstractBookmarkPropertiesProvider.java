@@ -5,7 +5,10 @@ import java.util.function.Supplier;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import mesfavoris.commons.core.AdapterUtils;
 
 public abstract class AbstractBookmarkPropertiesProvider implements IBookmarkPropertiesProvider {
 
@@ -26,6 +29,20 @@ public abstract class AbstractBookmarkPropertiesProvider implements IBookmarkPro
 		}
 		IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 		return structuredSelection.getFirstElement();
+	}
+
+	/**
+	 * Get current text editor for given {@link IWorkbenchPart}
+	 * 
+	 * @param part
+	 * @return the current text editor or null if none
+	 */
+	protected ITextEditor getTextEditor(IWorkbenchPart part) {
+		ITextEditor[] textEditor = new ITextEditor[1];
+		part.getSite().getWorkbenchWindow().getShell().getDisplay().syncExec(() -> {
+			textEditor[0] = AdapterUtils.getAdapter(part, ITextEditor.class);
+		});
+		return textEditor[0];
 	}
 
 	protected ISelection getSelection(ITextEditor textEditor) {

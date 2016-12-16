@@ -15,7 +15,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.java.element.JavaTypeMemberBookmarkPropertiesProvider;
 
 public class JavaEditorBookmarkPropertiesProvider extends JavaTypeMemberBookmarkPropertiesProvider {
@@ -23,7 +22,7 @@ public class JavaEditorBookmarkPropertiesProvider extends JavaTypeMemberBookmark
 	@Override
 	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part, ISelection selection,
 			IProgressMonitor monitor) {
-		ITextEditor editor = AdapterUtils.getAdapter(part, ITextEditor.class);
+		ITextEditor editor = getTextEditor(part);
 		if (editor == null) {
 			return;
 		}
