@@ -24,7 +24,7 @@ import mesfavoris.commons.ui.wizards.datatransfer.BundleProjectImportOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
 
-public class JavaBookmarkLocationProviderTest {
+public class JavaTypeBookmarkLocationProviderTest {
 	private final JavaTypeMemberBookmarkLocationProvider javaBookmarkLocationProvider = new JavaTypeMemberBookmarkLocationProvider();
 
 	@BeforeClass
