@@ -2,6 +2,7 @@ package mesfavoris.texteditor;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -21,4 +22,15 @@ public class TextEditorUtils {
 
 	}
 
+	public static String getLineContent(ITextEditor textEditor, int lineNumber) {
+		try {
+			IDocumentProvider provider = textEditor.getDocumentProvider();
+			IDocument document = provider.getDocument(textEditor.getEditorInput());
+			IRegion region = document.getLineInformation(lineNumber);
+			return document.get(region.getOffset(), region.getLength());
+		} catch (BadLocationException e) {
+			return null;
+		}
+	}	
+	
 }

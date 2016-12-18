@@ -1,6 +1,7 @@
 package mesfavoris.java.editor;
 
 import static mesfavoris.java.JavaBookmarkProperties.PROP_LINE_NUMBER_INSIDE_ELEMENT;
+import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_CONTENT;
 
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import mesfavoris.java.element.JavaTypeMemberBookmarkPropertiesProvider;
+import mesfavoris.texteditor.TextEditorUtils;
 
 public class JavaEditorBookmarkPropertiesProvider extends JavaTypeMemberBookmarkPropertiesProvider {
 
@@ -46,6 +48,7 @@ public class JavaEditorBookmarkPropertiesProvider extends JavaTypeMemberBookmark
 		super.addMemberBookmarkProperties(bookmarkProperties, member);
 		addLineNumberInsideMemberProperty(bookmarkProperties, member, textSelection);
 		addJavadocComment(bookmarkProperties, member, textSelection);
+		addLineContent(bookmarkProperties, editor, textSelection.getStartLine());
 	}
 
 	private void addLineNumberInsideMemberProperty(Map<String, String> bookmarkProperties, IMember member,
@@ -85,4 +88,11 @@ public class JavaEditorBookmarkPropertiesProvider extends JavaTypeMemberBookmark
 		}
 	}
 
+	private void addLineContent(Map<String, String> properties, ITextEditor textEditor, int lineNumber) {
+		putIfAbsent(properties, PROP_LINE_CONTENT, () -> {
+			String content = TextEditorUtils.getLineContent(textEditor, lineNumber);
+			return content == null ? null : content.trim();
+		});
+	}	
+	
 }

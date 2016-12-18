@@ -20,7 +20,10 @@ public abstract class AbstractBookmarkPropertiesProvider implements IBookmarkPro
 		if (bookmarkProperties.containsKey(name)) {
 			return;
 		}
-		bookmarkProperties.put(name, valueProvider.get());
+		String value = valueProvider.get();
+		if (value != null) {
+			bookmarkProperties.put(name, value);
+		}
 	}
 
 	protected Object getFirstElement(ISelection selection) {
