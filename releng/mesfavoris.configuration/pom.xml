@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mesfavoris</groupId>
 	<artifactId>mesfavoris.configuration</artifactId>
-	<version>1.1.0-SNAPSHOT</version>
+	<version>1.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -40,7 +40,7 @@
 						<artifact>
 							<groupId>mesfavoris</groupId>
 							<artifactId>mesfavoris.target</artifactId>
-							<version>1.1.0-SNAPSHOT</version>
+							<version>1.2.0-SNAPSHOT</version>
 						</artifact>
 					</target>
 					<environments>
