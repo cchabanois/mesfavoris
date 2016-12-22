@@ -127,8 +127,17 @@ The available bookmarks types are :
 .. image:: /docs/urlBookmarks.png?raw=true
     :alt: Url bookmarks in the *Mes Favoris* view
 
-- git bookmark : will add information from the git project to the bookmark 
+- git bookmark : will add information from the git project to the bookmark
+- git commit bookmark : bookmark to a git commit. To add a bookmark to a commit, open it in the commit viewer and add your favori as usual
+
+.. image:: /docs/gitCommitBookmarks.png?raw=true
+    :alt: Git commit bookmarks in the *Mes Favoris* view
+
 - perforce bookmark : will add information from the perforce project to the bookmark
+- perforce changelist bookmark
+
+.. image:: /docs/perforceChangeListBookmarks.png?raw=true
+    :alt: Perforce changelist bookmarks in the *Mes Favoris* view
 
 Numbered bookmarks
 ~~~~~~~~~~~~~~~~~~
