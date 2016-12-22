@@ -7,7 +7,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import com.google.common.collect.Lists;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.StatusHelper;
+import mesfavoris.internal.StatusHelper;
 import mesfavoris.internal.views.BookmarksView;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
@@ -29,10 +29,6 @@ public class DefaultBookmarkFolderProvider {
 
 	public DefaultBookmarkFolderProvider(BookmarkDatabase bookmarkDatabase) {
 		this.bookmarkDatabase = bookmarkDatabase;
-	}
-
-	public BookmarkId getDefaultBookmarkFolder() {
-		return DEFAULT_BOOKMARKFOLDER_ID;
 	}
 
 	public BookmarkId getDefaultBookmarkFolder(IWorkbenchPage workbenchPage) {

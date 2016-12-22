@@ -8,8 +8,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.StatusHelper;
 import mesfavoris.handlers.AbstractBookmarkHandler;
+import mesfavoris.internal.StatusHelper;
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
 
 public class GotoNumberedBookmarkHandler extends AbstractBookmarkHandler {

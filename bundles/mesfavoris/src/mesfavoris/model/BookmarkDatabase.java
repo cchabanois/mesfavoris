@@ -12,7 +12,7 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.StatusHelper;
+import mesfavoris.internal.StatusHelper;
 import mesfavoris.internal.validation.AcceptAllBookmarksModificationValidator;
 import mesfavoris.model.modification.BookmarksModification;
 import mesfavoris.model.modification.BookmarksTreeModifier;

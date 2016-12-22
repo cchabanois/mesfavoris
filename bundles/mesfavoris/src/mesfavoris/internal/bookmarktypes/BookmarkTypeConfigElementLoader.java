@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.Platform;
 
 import com.google.common.collect.Lists;
 
-import mesfavoris.StatusHelper;
+import mesfavoris.internal.StatusHelper;
 
 public class BookmarkTypeConfigElementLoader {
 	private final static String EXTENSION_POINT = "mesfavoris.bookmarkType";

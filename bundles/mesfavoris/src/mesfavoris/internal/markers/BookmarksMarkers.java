@@ -25,9 +25,9 @@ import org.eclipse.core.runtime.jobs.Job;
 import com.google.common.collect.Lists;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.StatusHelper;
 import mesfavoris.bookmarktype.BookmarkMarkerDescriptor;
 import mesfavoris.bookmarktype.IBookmarkMarkerAttributesProvider;
+import mesfavoris.internal.StatusHelper;
 import mesfavoris.internal.jobs.BackgroundBookmarksModificationsHandler;
 import mesfavoris.internal.jobs.BackgroundBookmarksModificationsHandler.IBookmarksModificationsHandler;
 import mesfavoris.markers.IBookmarksMarkers;

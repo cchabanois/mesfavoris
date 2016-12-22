@@ -19,8 +19,8 @@ import com.google.api.services.drive.model.File;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.BookmarksPlugin;
-import mesfavoris.StatusHelper;
 import mesfavoris.gdrive.Activator;
+import mesfavoris.gdrive.StatusHelper;
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
 import mesfavoris.gdrive.dialogs.ImportBookmarksFileDialog;
 import mesfavoris.gdrive.mappings.BookmarkMappingsStore;

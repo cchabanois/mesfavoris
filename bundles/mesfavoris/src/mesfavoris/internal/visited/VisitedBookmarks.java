@@ -59,15 +59,15 @@ public class VisitedBookmarks {
 		this.map = map;
 	}
 
-	public VisitedBookmark get(BookmarkId bookmarkId) {
+	VisitedBookmark get(BookmarkId bookmarkId) {
 		return map.get(bookmarkId);
 	}
 
-	public Set<VisitedBookmark> getSet() {
+	Set<VisitedBookmark> getSet() {
 		return byVisitCountSet.getSet();
 	}
 
-	public int size() {
+	int size() {
 		return byVisitCountSet.size();
 	}
 

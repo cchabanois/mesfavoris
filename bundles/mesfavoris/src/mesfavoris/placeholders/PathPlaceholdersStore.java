@@ -20,7 +20,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import mesfavoris.BookmarksPlugin;
-import mesfavoris.StatusHelper;
+import mesfavoris.internal.StatusHelper;
 
 public class PathPlaceholdersStore implements IPathPlaceholders {
 	private final Map<String, PathPlaceholder> mappings = new ConcurrentHashMap<>();

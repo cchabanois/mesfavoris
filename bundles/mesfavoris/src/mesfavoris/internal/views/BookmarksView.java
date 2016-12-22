@@ -52,10 +52,10 @@ import org.eclipse.ui.part.ViewPart;
 import com.google.common.collect.Lists;
 
 import mesfavoris.BookmarksPlugin;
-import mesfavoris.StatusHelper;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IImportTeamProject;
 import mesfavoris.commons.core.AdapterUtils;
+import mesfavoris.internal.StatusHelper;
 import mesfavoris.internal.actions.AddToRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.CollapseAllAction;
 import mesfavoris.internal.actions.ConnectToRemoteBookmarksStoreAction;

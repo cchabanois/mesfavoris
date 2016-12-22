@@ -29,8 +29,8 @@ import org.eclipse.swt.widgets.Table;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.BookmarksPlugin;
-import mesfavoris.StatusHelper;
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
+import mesfavoris.internal.StatusHelper;
 import mesfavoris.internal.service.operations.CollapseBookmarksOperation;
 import mesfavoris.internal.service.operations.ExpandBookmarksOperation;
 import mesfavoris.model.Bookmark;

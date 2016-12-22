@@ -12,19 +12,15 @@ import mesfavoris.remote.RemoteBookmarksStoreManager;
 public class BookmarksPropertyTester extends PropertyTester {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
-	private final DefaultBookmarkFolderProvider defaultBookmarkFolderProvider;
 
 	public BookmarksPropertyTester() {
-		this(BookmarksPlugin.getBookmarkDatabase(), BookmarksPlugin.getRemoteBookmarksStoreManager(),
-				BookmarksPlugin.getDefaultBookmarkFolderProvider());
+		this(BookmarksPlugin.getBookmarkDatabase(), BookmarksPlugin.getRemoteBookmarksStoreManager());
 	}
 
 	public BookmarksPropertyTester(BookmarkDatabase bookmarkDatabase,
-			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
-			DefaultBookmarkFolderProvider defaultBookmarkFolderProvider) {
+			RemoteBookmarksStoreManager remoteBookmarksStoreManager) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
-		this.defaultBookmarkFolderProvider = defaultBookmarkFolderProvider;
 	}
 
 	public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
@@ -45,7 +41,7 @@ public class BookmarksPropertyTester extends PropertyTester {
 	}
 
 	private boolean isDefaultBookmarkFolder(Bookmark bookmark) {
-		return defaultBookmarkFolderProvider.getDefaultBookmarkFolder().equals(bookmark.getId());
+		return DefaultBookmarkFolderProvider.DEFAULT_BOOKMARKFOLDER_ID.equals(bookmark.getId());
 	}
 
 	private boolean isUnderRemoteBookmarkFolder(Bookmark bookmark) {

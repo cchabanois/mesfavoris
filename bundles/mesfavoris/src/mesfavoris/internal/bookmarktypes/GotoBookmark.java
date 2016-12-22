@@ -16,9 +16,9 @@ import org.eclipse.ui.PlatformUI;
 import com.google.common.collect.ImmutableMap;
 
 import mesfavoris.BookmarksPlugin;
-import mesfavoris.StatusHelper;
 import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IGotoBookmark;
+import mesfavoris.internal.StatusHelper;
 import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;

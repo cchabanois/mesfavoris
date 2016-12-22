@@ -8,7 +8,7 @@ import org.eclipse.core.commands.ExecutionException;
 import com.google.common.collect.Lists;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.StatusHelper;
+import mesfavoris.internal.StatusHelper;
 import mesfavoris.model.Bookmark;
 
 public class DeleteLinkedBookmarkHandler extends AbstractBookmarkPartOperationHandler {

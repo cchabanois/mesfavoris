@@ -11,8 +11,8 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 
-import mesfavoris.StatusHelper;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
+import mesfavoris.internal.StatusHelper;
 
 public class BookmarkPropertiesProvider implements IBookmarkPropertiesProvider {
 	private final List<IBookmarkPropertiesProvider> providers;

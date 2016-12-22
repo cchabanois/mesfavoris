@@ -24,7 +24,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import mesfavoris.BookmarksPlugin;
-import mesfavoris.StatusHelper;
+import mesfavoris.internal.StatusHelper;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;

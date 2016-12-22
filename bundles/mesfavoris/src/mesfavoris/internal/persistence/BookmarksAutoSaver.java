@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import com.google.common.collect.ImmutableSet;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.StatusHelper;
+import mesfavoris.internal.StatusHelper;
 import mesfavoris.internal.jobs.BackgroundBookmarksModificationsHandler;
 import mesfavoris.internal.jobs.BackgroundBookmarksModificationsHandler.IBookmarksModificationsHandler;
 import mesfavoris.model.BookmarkDatabase;

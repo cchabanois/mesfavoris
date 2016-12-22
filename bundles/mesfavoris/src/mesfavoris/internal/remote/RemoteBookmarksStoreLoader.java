@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.spi.RegistryContributor;
 
-import mesfavoris.StatusHelper;
+import mesfavoris.internal.StatusHelper;
 import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.IRemoteBookmarksStore;
 

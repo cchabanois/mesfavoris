@@ -10,9 +10,9 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.progress.IProgressService;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.StatusHelper;
 import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.handlers.AbstractBookmarkHandler;
+import mesfavoris.internal.StatusHelper;
 import mesfavoris.model.Bookmark;
 
 public class GotoBookmarkHandler extends AbstractBookmarkHandler {

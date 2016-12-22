@@ -21,7 +21,6 @@ import org.osgi.framework.BundleContext;
 
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
 import mesfavoris.bookmarktype.IBookmarkLocationProvider;
-import mesfavoris.bookmarktype.IBookmarkMarkerAttributesProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.internal.adapters.BookmarkAdapterFactory;
@@ -71,9 +70,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 	private static BookmarkDatabase bookmarkDatabase;
 	private static BookmarksMarkers bookmarksMarkers;
 	private static BookmarksAutoSaver bookmarksSaver;
-	private static DefaultBookmarkFolderProvider defaultBookmarkFolderProvider;
 	private static IBookmarkLabelProvider bookmarkLabelProvider;
-	private static IBookmarkMarkerAttributesProvider bookmarkMarkerAttributesProvider;
 	private static IBookmarkPropertiesProvider bookmarkPropertiesProvider;
 	private static IBookmarkLocationProvider bookmarkLocationProvider;
 	private static IGotoBookmark gotoBookmark;
@@ -83,8 +80,8 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 	private static VisitedBookmarksDatabase mostVisitedBookmarks;
 	private static NumberedBookmarks numberedBookmarks;
 	private static RecentBookmarksDatabase recentBookmarks;
-	private static PathPlaceholdersStore pathPlaceholdersStore;	
-	
+	private static PathPlaceholdersStore pathPlaceholdersStore;
+
 	private final BookmarkAdapterFactory bookmarkAdapterFactory = new BookmarkAdapterFactory();
 	private RemoteBookmarksTreeChangeEventHandler remoteBookmarksTreeChangeEventHandler;
 
@@ -109,7 +106,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 				remoteBookmarksStoreManager);
 		bookmarkDatabase = loadBookmarkDatabase(bookmarksFile, bookmarksModificationValidator);
 		bookmarkLabelProvider = new PluginBookmarkLabelProvider();
-		bookmarkMarkerAttributesProvider = new PluginBookmarkMarkerAttributesProvider();
+		PluginBookmarkMarkerAttributesProvider bookmarkMarkerAttributesProvider = new PluginBookmarkMarkerAttributesProvider();
 		bookmarkPropertiesProvider = new PluginBookmarkPropertiesProvider();
 		bookmarkLocationProvider = new PluginBookmarkLocationProvider();
 		gotoBookmark = new PluginGotoBookmark();
@@ -122,7 +119,8 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		bookmarksSaver = new BookmarksAutoSaver(bookmarkDatabase, localBookmarksSaver, remoteBookmarksSaver);
 		bookmarksSaver.init();
 		IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode(PLUGIN_ID);
-		defaultBookmarkFolderProvider = new DefaultBookmarkFolderProvider(bookmarkDatabase);
+		DefaultBookmarkFolderProvider defaultBookmarkFolderProvider = new DefaultBookmarkFolderProvider(
+				bookmarkDatabase);
 		File mostVisitedBookmarksFile = new File(getStateLocation().toFile(), "mostVisitedBookmarks.json");
 		IEventBroker eventBroker = (IEventBroker) getWorkbench().getService(IEventBroker.class);
 		mostVisitedBookmarks = new VisitedBookmarksDatabase(eventBroker, bookmarkDatabase, mostVisitedBookmarksFile);
@@ -174,8 +172,8 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 			return null;
 		}
 		return new Path(userHome);
-	}		
-	
+	}
+
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		remoteBookmarksTreeChangeEventHandler.unsubscribe();
@@ -193,7 +191,6 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		bookmarkDatabase = null;
 		bookmarksSaver = null;
 		bookmarkLabelProvider = null;
-		bookmarkMarkerAttributesProvider = null;
 		bookmarkPropertiesProvider = null;
 		bookmarkLocationProvider = null;
 		gotoBookmark = null;
@@ -217,10 +214,6 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		return bookmarkDatabase;
 	}
 
-	public static DefaultBookmarkFolderProvider getDefaultBookmarkFolderProvider() {
-		return defaultBookmarkFolderProvider;
-	}
-
 	public static IBookmarksMarkers getBookmarksMarkers() {
 		return bookmarksMarkers;
 	}
@@ -231,10 +224,6 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 
 	public static IBookmarkLabelProvider getBookmarkLabelProvider() {
 		return bookmarkLabelProvider;
-	}
-
-	public static IBookmarkMarkerAttributesProvider getBookmarkMarkerAttributesProvider() {
-		return bookmarkMarkerAttributesProvider;
 	}
 
 	public static IBookmarkLocationProvider getBookmarkLocationProvider() {
@@ -272,10 +261,10 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 	public static NumberedBookmarks getNumberedBookmarks() {
 		return numberedBookmarks;
 	}
-	
+
 	public static PathPlaceholdersStore getPathPlaceholdersStore() {
 		return pathPlaceholdersStore;
-	}	
+	}
 
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in
