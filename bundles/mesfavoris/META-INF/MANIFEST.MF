@@ -39,6 +39,7 @@ Export-Package: mesfavoris;
  mesfavoris.model.modification;uses:="mesfavoris.model,org.eclipse.core.runtime",
  mesfavoris.persistence;uses:="mesfavoris.model,org.eclipse.core.runtime",
  mesfavoris.persistence.json;uses:="mesfavoris.model,org.eclipse.core.runtime,mesfavoris.persistence",
+ mesfavoris.placeholders,
  mesfavoris.remote;
   uses:="mesfavoris.model,
    org.eclipse.core.runtime,
@@ -52,6 +53,7 @@ Export-Package: mesfavoris;
    mesfavoris.internal.numberedbookmarks,
    org.eclipse.swt.widgets,
    org.eclipse.jface.viewers",
+ mesfavoris.topics,
  mesfavoris.viewers;
   uses:="mesfavoris.model,
    mesfavoris.remote,

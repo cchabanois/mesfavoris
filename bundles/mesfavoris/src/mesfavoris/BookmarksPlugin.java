@@ -1,12 +1,16 @@
 package mesfavoris;
 
+import static mesfavoris.internal.Constants.PLACEHOLDER_HOME_NAME;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Duration;
 
 import org.eclipse.core.runtime.IAdapterManager;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -49,6 +53,8 @@ import mesfavoris.model.modification.IBookmarksModificationValidator;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
 import mesfavoris.persistence.json.BookmarksTreeJsonSerializer;
+import mesfavoris.placeholders.PathPlaceholder;
+import mesfavoris.placeholders.PathPlaceholdersStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.service.IBookmarksService;
 
@@ -77,7 +83,8 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 	private static VisitedBookmarksDatabase mostVisitedBookmarks;
 	private static NumberedBookmarks numberedBookmarks;
 	private static RecentBookmarksDatabase recentBookmarks;
-
+	private static PathPlaceholdersStore pathPlaceholdersStore;	
+	
 	private final BookmarkAdapterFactory bookmarkAdapterFactory = new BookmarkAdapterFactory();
 	private RemoteBookmarksTreeChangeEventHandler remoteBookmarksTreeChangeEventHandler;
 
@@ -133,6 +140,15 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		bookmarksService = new BookmarksService(bookmarkDatabase, bookmarkPropertiesProvider,
 				defaultBookmarkFolderProvider, remoteBookmarksStoreManager, bookmarksSaver, bookmarkLocationProvider,
 				gotoBookmark, numberedBookmarks);
+		File storeFile = new File(getStateLocation().toFile(), "placeholders.json");
+		pathPlaceholdersStore = new PathPlaceholdersStore(storeFile);
+		pathPlaceholdersStore.init();
+		if (pathPlaceholdersStore.get(PLACEHOLDER_HOME_NAME) == null) {
+			IPath userHome = getUserHome();
+			if (userHome != null) {
+				pathPlaceholdersStore.add(new PathPlaceholder(PLACEHOLDER_HOME_NAME, userHome));
+			}
+		}
 	}
 
 	private BookmarkDatabase loadBookmarkDatabase(File bookmarksFile,
@@ -152,6 +168,14 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		}
 	}
 
+	private IPath getUserHome() {
+		String userHome = System.getProperty("user.home");
+		if (userHome == null) {
+			return null;
+		}
+		return new Path(userHome);
+	}		
+	
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		remoteBookmarksTreeChangeEventHandler.unsubscribe();
@@ -159,6 +183,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		IAdapterManager adapterManager = Platform.getAdapterManager();
 		adapterManager.unregisterAdapters(bookmarkAdapterFactory);
 
+		pathPlaceholdersStore.close();
 		bookmarksMarkers.close();
 		mostVisitedBookmarks.close();
 		numberedBookmarks.close();
@@ -175,6 +200,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		importTeamProjectProvider = null;
 		bookmarksMarkers = null;
 		mostVisitedBookmarks = null;
+		pathPlaceholdersStore = null;
 		super.stop(context);
 	}
 
@@ -246,6 +272,10 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 	public static NumberedBookmarks getNumberedBookmarks() {
 		return numberedBookmarks;
 	}
+	
+	public static PathPlaceholdersStore getPathPlaceholdersStore() {
+		return pathPlaceholdersStore;
+	}	
 
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in

@@ -20,6 +20,5 @@ Require-Bundle: mesfavoris;bundle-version="1.2.0",
 Bundle-Activator: mesfavoris.texteditor.Activator
 Bundle-ActivationPolicy: lazy
 Export-Package: mesfavoris.texteditor,
- mesfavoris.texteditor.placeholders,
  mesfavoris.texteditor.text,
  mesfavoris.texteditor.text.matching

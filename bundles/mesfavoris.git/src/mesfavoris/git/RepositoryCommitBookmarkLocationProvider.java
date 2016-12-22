@@ -23,10 +23,11 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
 
+import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.model.Bookmark;
-import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
+import mesfavoris.placeholders.PathPlaceholderResolver;
 
 public class RepositoryCommitBookmarkLocationProvider implements IBookmarkLocationProvider {
 	private final PathPlaceholderResolver pathPlaceholderResolver;
@@ -34,7 +35,7 @@ public class RepositoryCommitBookmarkLocationProvider implements IBookmarkLocati
 
 	public RepositoryCommitBookmarkLocationProvider() {
 		this(Activator.getDefault().getRepositoryCache(),
-				new PathPlaceholderResolver(mesfavoris.texteditor.Activator.getPathPlaceholdersStore()));
+				new PathPlaceholderResolver(BookmarksPlugin.getPathPlaceholdersStore()));
 	}
 
 	public RepositoryCommitBookmarkLocationProvider(RepositoryCache repositoryCache,

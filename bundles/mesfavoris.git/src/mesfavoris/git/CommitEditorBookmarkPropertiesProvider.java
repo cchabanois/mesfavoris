@@ -1,6 +1,8 @@
 package mesfavoris.git;
 
-import static mesfavoris.git.GitBookmarkProperties.*;
+import static mesfavoris.git.GitBookmarkProperties.PROP_COMMIT_ID;
+import static mesfavoris.git.GitBookmarkProperties.PROP_REMOTE_URLS;
+import static mesfavoris.git.GitBookmarkProperties.PROP_REPOSITORY_DIR;
 
 import java.io.File;
 import java.util.HashSet;
@@ -20,16 +22,16 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import com.google.common.base.Joiner;
 
+import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
 import mesfavoris.model.Bookmark;
-import mesfavoris.texteditor.Activator;
-import mesfavoris.texteditor.placeholders.PathPlaceholderResolver;
+import mesfavoris.placeholders.PathPlaceholderResolver;
 
 public class CommitEditorBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {
 	private final PathPlaceholderResolver pathPlaceholderResolver;
 
 	public CommitEditorBookmarkPropertiesProvider() {
-		this(new PathPlaceholderResolver(Activator.getPathPlaceholdersStore()));
+		this(new PathPlaceholderResolver(BookmarksPlugin.getPathPlaceholdersStore()));
 	}
 
 	public CommitEditorBookmarkPropertiesProvider(PathPlaceholderResolver pathPlaceholderResolver) {

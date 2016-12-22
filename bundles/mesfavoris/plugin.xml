@@ -100,6 +100,11 @@
             id="mesfavoris.command.deleteLinkedFavori"
             name="Delete Favori">
       </command>
+      <command
+            defaultHandler="mesfavoris.internal.handlers.ViewPlaceholdersHandler"
+            id="mesfavoris.command.ViewPlaceholders"
+            name="View Placeholders...">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -481,6 +486,14 @@
                style="push">
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:mesfavoris.views.BookmarksView?after=additions">
+         <command
+               commandId="mesfavoris.command.ViewPlaceholders"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -628,6 +641,12 @@
             class="mesfavoris.internal.preferences.BookmarksPreferencePage"
             id="mesfavoris.bookmarksPreferencePage"
             name="Mes favoris">
+      </page>
+      <page
+            category="mesfavoris.bookmarksPreferencePage"
+            class="mesfavoris.internal.preferences.placeholders.PathPlaceholdersPreferencePage"
+            id="mesfavoris.texteditor.placeholdersPage"
+            name="Placeholders">
       </page>
    </extension>
    <extension
