@@ -26,19 +26,19 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.MesFavoris;
 import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
-import mesfavoris.placeholders.PathPlaceholderResolver;
+import mesfavoris.placeholders.IPathPlaceholderResolver;
 import mesfavoris.texteditor.TextEditorUtils;
 
 public class TextEditorBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {
-	private final PathPlaceholderResolver pathPlaceholderResolver;
+	private final IPathPlaceholderResolver pathPlaceholderResolver;
 
 	public TextEditorBookmarkPropertiesProvider() {
-		this(new PathPlaceholderResolver(BookmarksPlugin.getPathPlaceholdersStore()));
+		this(MesFavoris.getPathPlaceholderResolver());
 	}
 
-	public TextEditorBookmarkPropertiesProvider(PathPlaceholderResolver pathPlaceholders) {
+	public TextEditorBookmarkPropertiesProvider(IPathPlaceholderResolver pathPlaceholders) {
 		this.pathPlaceholderResolver = pathPlaceholders;
 	}
 

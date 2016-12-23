@@ -7,7 +7,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarksImageDescriptors;
 

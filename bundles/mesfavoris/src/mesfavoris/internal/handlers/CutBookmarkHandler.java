@@ -8,8 +8,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.BookmarksPlugin;
 import mesfavoris.handlers.AbstractBookmarkHandler;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.service.operations.CutBookmarkOperation;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
@@ -18,7 +18,7 @@ public class CutBookmarkHandler extends AbstractBookmarkHandler {
 	private final BookmarkDatabase bookmarkDatabase;
 
 	public CutBookmarkHandler() {
-		this.bookmarkDatabase = BookmarksPlugin.getBookmarkDatabase();
+		this.bookmarkDatabase = BookmarksPlugin.getDefault().getBookmarkDatabase();
 	}
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {

@@ -3,7 +3,7 @@ package mesfavoris.java;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.MesFavoris;
 import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.markers.IBookmarksMarkers;
@@ -13,7 +13,7 @@ public class JavaMarkerBookmarkLocationProvider implements IBookmarkLocationProv
 	private final IBookmarksMarkers bookmarksMarkers;
 	
 	public JavaMarkerBookmarkLocationProvider() {
-		bookmarksMarkers = BookmarksPlugin.getBookmarksMarkers();
+		bookmarksMarkers = MesFavoris.getBookmarksMarkers();
 	}
 	
 	@Override

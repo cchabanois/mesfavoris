@@ -11,11 +11,12 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.modification.IBookmarksTreeModifier;
+import mesfavoris.placeholders.IPathPlaceholderResolver;
 import mesfavoris.placeholders.IPathPlaceholders;
 import mesfavoris.placeholders.PathPlaceholderResolver;
 
 public class CollapseBookmarksOperation {
-	private final PathPlaceholderResolver pathPlaceholderResolver;
+	private final IPathPlaceholderResolver pathPlaceholderResolver;
 	private final BookmarkDatabase bookmarkDatabase;
 
 	public CollapseBookmarksOperation(BookmarkDatabase bookmarkDatabase, IPathPlaceholders pathPlaceholders) {

@@ -9,8 +9,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.BookmarksPlugin;
 import mesfavoris.handlers.AbstractBookmarkHandler;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.model.Bookmark;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
@@ -21,7 +21,7 @@ public class RenameBookmarkHandler extends AbstractBookmarkHandler {
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 
 	public RenameBookmarkHandler() {
-		this.remoteBookmarksStoreManager = BookmarksPlugin.getRemoteBookmarksStoreManager();
+		this.remoteBookmarksStoreManager = BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager();
 	}
 
 	@Override

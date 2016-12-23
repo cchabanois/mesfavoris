@@ -9,6 +9,7 @@ import java.util.stream.StreamSupport;
 import org.eclipse.core.runtime.IPath;
 
 import mesfavoris.model.Bookmark;
+import mesfavoris.placeholders.IPathPlaceholderResolver;
 import mesfavoris.placeholders.PathPlaceholderResolver;
 
 /**
@@ -19,9 +20,9 @@ import mesfavoris.placeholders.PathPlaceholderResolver;
  */
 public class CollapsableBookmarksProvider {
 	private final String pathPlaceholderName;
-	private final PathPlaceholderResolver pathPlaceholderResolver;
+	private final IPathPlaceholderResolver pathPlaceholderResolver;
 
-	public CollapsableBookmarksProvider(PathPlaceholderResolver pathPlaceholderResolver, String pathPlaceholderName) {
+	public CollapsableBookmarksProvider(IPathPlaceholderResolver pathPlaceholderResolver, String pathPlaceholderName) {
 		this.pathPlaceholderName = pathPlaceholderName;
 		this.pathPlaceholderResolver = pathPlaceholderResolver;
 	}

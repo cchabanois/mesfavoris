@@ -3,7 +3,7 @@ package mesfavoris.internal.propertytester;
 import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.core.runtime.IStatus;
 
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
@@ -14,7 +14,8 @@ public class BookmarksPropertyTester extends PropertyTester {
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 
 	public BookmarksPropertyTester() {
-		this(BookmarksPlugin.getBookmarkDatabase(), BookmarksPlugin.getRemoteBookmarksStoreManager());
+		this(BookmarksPlugin.getDefault().getBookmarkDatabase(),
+				BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager());
 	}
 
 	public BookmarksPropertyTester(BookmarkDatabase bookmarkDatabase,

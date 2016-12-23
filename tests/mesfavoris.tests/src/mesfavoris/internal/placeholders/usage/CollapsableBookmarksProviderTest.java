@@ -13,6 +13,7 @@ import com.google.common.collect.Maps;
 
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
+import mesfavoris.placeholders.IPathPlaceholderResolver;
 import mesfavoris.placeholders.PathPlaceholder;
 import mesfavoris.placeholders.PathPlaceholderResolver;
 import mesfavoris.placeholders.PathPlaceholdersMap;
@@ -20,7 +21,7 @@ import mesfavoris.texteditor.TextEditorBookmarkProperties;
 
 public class CollapsableBookmarksProviderTest {
 	private final PathPlaceholdersMap mappings = new PathPlaceholdersMap();
-	private final PathPlaceholderResolver pathPlaceholderResolver = new PathPlaceholderResolver(mappings);
+	private final IPathPlaceholderResolver pathPlaceholderResolver = new PathPlaceholderResolver(mappings);
 
 	@Test
 	public void testCollapsableBookmarks() {

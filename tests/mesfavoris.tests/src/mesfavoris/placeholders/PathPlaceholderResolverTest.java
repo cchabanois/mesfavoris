@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class PathPlaceholderResolverTest {
 	private final PathPlaceholdersMap mappings = new PathPlaceholdersMap();
-	private final PathPlaceholderResolver pathPlaceholderResolver = new PathPlaceholderResolver(mappings);
+	private final IPathPlaceholderResolver pathPlaceholderResolver = new PathPlaceholderResolver(mappings);
 
 	@Test
 	public void testCollapse() {

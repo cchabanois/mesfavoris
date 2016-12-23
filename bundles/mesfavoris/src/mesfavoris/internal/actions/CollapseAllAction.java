@@ -4,7 +4,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TreeViewer;
 
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.internal.BookmarksPlugin;
 
 /**
  * An {@link Action} that will collapse all nodes in a given {@link TreeViewer}.

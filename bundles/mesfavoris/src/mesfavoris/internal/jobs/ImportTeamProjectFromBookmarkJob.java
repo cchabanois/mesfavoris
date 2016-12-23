@@ -6,7 +6,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.service.operations.ImportTeamProjectOperation;
 import mesfavoris.model.Bookmark;
 
@@ -21,7 +21,7 @@ public class ImportTeamProjectFromBookmarkJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		ImportTeamProjectOperation importTeamProjectOperation = new ImportTeamProjectOperation(
-				BookmarksPlugin.getImportTeamProjectProvider());
+				BookmarksPlugin.getDefault().getImportTeamProjectProvider());
 		try {
 			importTeamProjectOperation.importTeamProject(bookmark, monitor);
 		} catch (BookmarksException e) {

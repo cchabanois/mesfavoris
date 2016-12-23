@@ -15,9 +15,9 @@ import org.eclipse.ui.PlatformUI;
 
 import com.google.common.collect.ImmutableMap;
 
-import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IGotoBookmark;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.StatusHelper;
 import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.Bookmark;
@@ -33,7 +33,7 @@ public class GotoBookmark implements IGotoBookmark {
 	public GotoBookmark(List<IGotoBookmark> gotoBookmarks) {
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
 		this.gotoBookmarks = new ArrayList<IGotoBookmark>(gotoBookmarks);
-		this.bookmarksMarkers = BookmarksPlugin.getBookmarksMarkers();
+		this.bookmarksMarkers = BookmarksPlugin.getDefault().getBookmarksMarkers();
 	}
 
 	public GotoBookmark(IEventBroker eventBroker, List<IGotoBookmark> gotoBookmarks,
@@ -55,7 +55,8 @@ public class GotoBookmark implements IGotoBookmark {
 		return false;
 	}
 
-	private boolean gotoBookmark(IGotoBookmark gotoBookmark, IWorkbenchWindow window, Bookmark bookmark, IBookmarkLocation bookmarkLocation) {
+	private boolean gotoBookmark(IGotoBookmark gotoBookmark, IWorkbenchWindow window, Bookmark bookmark,
+			IBookmarkLocation bookmarkLocation) {
 		final boolean[] result = new boolean[] { false };
 		SafeRunner.run(new ISafeRunnable() {
 
@@ -76,7 +77,7 @@ public class GotoBookmark implements IGotoBookmark {
 
 	private void refreshMarker(Bookmark bookmark) {
 		new Job("Refreshing marker") {
-			
+
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				bookmarksMarkers.refreshMarker(bookmark.getId(), monitor);

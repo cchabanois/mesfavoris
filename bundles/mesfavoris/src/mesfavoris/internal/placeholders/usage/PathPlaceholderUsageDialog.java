@@ -28,8 +28,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.StatusHelper;
 import mesfavoris.internal.service.operations.CollapseBookmarksOperation;
 import mesfavoris.internal.service.operations.ExpandBookmarksOperation;
@@ -62,7 +62,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
 		this.pathPlaceholders = pathPlaceholders;
 		this.pathPlaceholderName = pathPlaceholderName;
-		this.bookmarkLabelProvider = BookmarksPlugin.getBookmarkLabelProvider();
+		this.bookmarkLabelProvider = BookmarksPlugin.getDefault().getBookmarkLabelProvider();
 	}
 
 	@Override

@@ -20,8 +20,8 @@ import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.menus.IWorkbenchContribution;
 import org.eclipse.ui.services.IServiceLocator;
 
-import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarksImageDescriptors;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;
@@ -38,9 +38,9 @@ public class SetNumberForBookmarkMenu extends ContributionItem implements IWorkb
 	private IServiceLocator serviceLocator;
 
 	public SetNumberForBookmarkMenu() {
-		this.numberedBookmarks = BookmarksPlugin.getNumberedBookmarks();
-		this.bookmarkLabelProvider = BookmarksPlugin.getBookmarkLabelProvider();
-		this.bookmarksService = BookmarksPlugin.getBookmarksService();
+		this.numberedBookmarks = BookmarksPlugin.getDefault().getNumberedBookmarks();
+		this.bookmarkLabelProvider = BookmarksPlugin.getDefault().getBookmarkLabelProvider();
+		this.bookmarksService = BookmarksPlugin.getDefault().getBookmarksService();
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public class SetNumberForBookmarkMenu extends ContributionItem implements IWorkb
 		final MenuItem menuItem = new MenuItem(menu, SWT.RADIO);
 		menuItem.setSelection(bookmarkId.isPresent() ? bookmarkId.get().equals(selectedBookmarkId) : false);
 		menuItem.setText(getText(bookmarkId));
-		menuItem.setAccelerator('0'+bookmarkNumber.getNumber());
+		menuItem.setAccelerator('0' + bookmarkNumber.getNumber());
 		Image image = getImage(bookmarkNumber, bookmarkId);
 		if (image != null) {
 			menuItem.setImage(image);

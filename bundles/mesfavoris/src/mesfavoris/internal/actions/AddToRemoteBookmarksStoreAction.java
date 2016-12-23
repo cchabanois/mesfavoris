@@ -12,7 +12,7 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 import org.osgi.service.event.EventHandler;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.service.operations.AddToRemoteBookmarksStoreOperation;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.remote.AbstractRemoteBookmarksStore;
@@ -33,8 +33,8 @@ public class AddToRemoteBookmarksStoreAction extends SelectionProviderAction imp
 		connectionEventHandler = event -> updateEnablement();
 		eventBroker.subscribe(AbstractRemoteBookmarksStore.getConnectedTopic(store.getDescriptor().getId()), connectionEventHandler);
 		operation = new AddToRemoteBookmarksStoreOperation(
-				BookmarksPlugin.getBookmarkDatabase(),
-				BookmarksPlugin.getRemoteBookmarksStoreManager());
+				BookmarksPlugin.getDefault().getBookmarkDatabase(),
+				BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager());
 		updateEnablement();
 	}
 

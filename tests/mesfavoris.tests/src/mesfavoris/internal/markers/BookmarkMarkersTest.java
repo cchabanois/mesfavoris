@@ -20,7 +20,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.MesFavoris;
 import mesfavoris.commons.ui.wizards.datatransfer.BundleProjectImportOperation;
 import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.Bookmark;
@@ -37,8 +37,8 @@ public class BookmarkMarkersTest {
 
 	@Before
 	public void setUp() {
-		bookmarksMarkers = BookmarksPlugin.getBookmarksMarkers();
-		bookmarkDatabase = BookmarksPlugin.getBookmarkDatabase();
+		bookmarksMarkers = MesFavoris.getBookmarksMarkers();
+		bookmarkDatabase = MesFavoris.getBookmarkDatabase();
 		rootFolderId = bookmarkDatabase.getBookmarksTree().getRootFolder().getId();
 	}
 

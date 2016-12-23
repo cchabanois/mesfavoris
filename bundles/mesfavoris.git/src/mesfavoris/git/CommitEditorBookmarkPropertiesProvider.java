@@ -22,19 +22,19 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import com.google.common.base.Joiner;
 
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.MesFavoris;
 import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
 import mesfavoris.model.Bookmark;
-import mesfavoris.placeholders.PathPlaceholderResolver;
+import mesfavoris.placeholders.IPathPlaceholderResolver;
 
 public class CommitEditorBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {
-	private final PathPlaceholderResolver pathPlaceholderResolver;
+	private final IPathPlaceholderResolver pathPlaceholderResolver;
 
 	public CommitEditorBookmarkPropertiesProvider() {
-		this(new PathPlaceholderResolver(BookmarksPlugin.getPathPlaceholdersStore()));
+		this(MesFavoris.getPathPlaceholderResolver());
 	}
 
-	public CommitEditorBookmarkPropertiesProvider(PathPlaceholderResolver pathPlaceholderResolver) {
+	public CommitEditorBookmarkPropertiesProvider(IPathPlaceholderResolver pathPlaceholderResolver) {
 		this.pathPlaceholderResolver = pathPlaceholderResolver;
 	}
 

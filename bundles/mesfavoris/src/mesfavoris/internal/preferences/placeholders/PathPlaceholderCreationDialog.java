@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.IUIConstants;
 import mesfavoris.placeholders.IPathPlaceholders;
 import mesfavoris.placeholders.PathPlaceholder;

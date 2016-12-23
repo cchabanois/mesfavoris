@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.StatusHelper;
 
 public class PathPlaceholdersStore implements IPathPlaceholders {

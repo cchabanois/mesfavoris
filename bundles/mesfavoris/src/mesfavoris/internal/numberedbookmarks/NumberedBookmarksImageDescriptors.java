@@ -2,7 +2,7 @@ package mesfavoris.internal.numberedbookmarks;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.internal.BookmarksPlugin;
 
 public class NumberedBookmarksImageDescriptors{
 

@@ -13,7 +13,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.texteditor.IAnnotationImageProvider;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
 
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;
 import mesfavoris.model.BookmarkId;
@@ -29,7 +29,7 @@ public class BookmarkAnnotationImageProvider implements IAnnotationImageProvider
 	private final NumberedBookmarks numberedBookmarks;
 
 	public BookmarkAnnotationImageProvider() {
-		this.numberedBookmarks = BookmarksPlugin.getNumberedBookmarks();
+		this.numberedBookmarks = BookmarksPlugin.getDefault().getNumberedBookmarks();
 	}
 
 	@Override

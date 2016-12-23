@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
-public class PathPlaceholderResolver {
+public class PathPlaceholderResolver implements IPathPlaceholderResolver {
 	private final IPathPlaceholders mappings;
 
 	public PathPlaceholderResolver(IPathPlaceholders mappings) {
@@ -21,6 +21,7 @@ public class PathPlaceholderResolver {
 	 * @param pathWithPlaceholder
 	 * @return
 	 */
+	@Override
 	public IPath expand(String pathWithPlaceholder) {
 		String variableName = getPlaceholderName(pathWithPlaceholder);
 		if (variableName == null) {
@@ -48,6 +49,7 @@ public class PathPlaceholderResolver {
 		return variableName;
 	}
 
+	@Override
 	public String collapse(IPath path, String... placeholderNames) {
 		path = path.makeAbsolute();
 		String bestCollapsedPath = null;

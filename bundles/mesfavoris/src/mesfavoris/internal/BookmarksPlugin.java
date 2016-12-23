@@ -1,4 +1,4 @@
-package mesfavoris;
+package mesfavoris.internal;
 
 import static mesfavoris.internal.Constants.PLACEHOLDER_HOME_NAME;
 
@@ -67,20 +67,20 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 
 	// The shared instance
 	private static BookmarksPlugin plugin;
-	private static BookmarkDatabase bookmarkDatabase;
-	private static BookmarksMarkers bookmarksMarkers;
-	private static BookmarksAutoSaver bookmarksSaver;
-	private static IBookmarkLabelProvider bookmarkLabelProvider;
-	private static IBookmarkPropertiesProvider bookmarkPropertiesProvider;
-	private static IBookmarkLocationProvider bookmarkLocationProvider;
-	private static IGotoBookmark gotoBookmark;
-	private static ImportTeamProjectProvider importTeamProjectProvider;
-	private static RemoteBookmarksStoreManager remoteBookmarksStoreManager;
-	private static IBookmarksService bookmarksService;
-	private static VisitedBookmarksDatabase mostVisitedBookmarks;
-	private static NumberedBookmarks numberedBookmarks;
-	private static RecentBookmarksDatabase recentBookmarks;
-	private static PathPlaceholdersStore pathPlaceholdersStore;
+	private BookmarkDatabase bookmarkDatabase;
+	private BookmarksMarkers bookmarksMarkers;
+	private BookmarksAutoSaver bookmarksSaver;
+	private IBookmarkLabelProvider bookmarkLabelProvider;
+	private IBookmarkPropertiesProvider bookmarkPropertiesProvider;
+	private IBookmarkLocationProvider bookmarkLocationProvider;
+	private IGotoBookmark gotoBookmark;
+	private ImportTeamProjectProvider importTeamProjectProvider;
+	private RemoteBookmarksStoreManager remoteBookmarksStoreManager;
+	private IBookmarksService bookmarksService;
+	private VisitedBookmarksDatabase mostVisitedBookmarks;
+	private NumberedBookmarks numberedBookmarks;
+	private RecentBookmarksDatabase recentBookmarks;
+	private PathPlaceholdersStore pathPlaceholdersStore;
 
 	private final BookmarkAdapterFactory bookmarkAdapterFactory = new BookmarkAdapterFactory();
 	private RemoteBookmarksTreeChangeEventHandler remoteBookmarksTreeChangeEventHandler;
@@ -188,16 +188,6 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		recentBookmarks.close();
 
 		plugin = null;
-		bookmarkDatabase = null;
-		bookmarksSaver = null;
-		bookmarkLabelProvider = null;
-		bookmarkPropertiesProvider = null;
-		bookmarkLocationProvider = null;
-		gotoBookmark = null;
-		importTeamProjectProvider = null;
-		bookmarksMarkers = null;
-		mostVisitedBookmarks = null;
-		pathPlaceholdersStore = null;
 		super.stop(context);
 	}
 
@@ -210,59 +200,59 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
-	public static BookmarkDatabase getBookmarkDatabase() {
+	public BookmarkDatabase getBookmarkDatabase() {
 		return bookmarkDatabase;
 	}
 
-	public static IBookmarksMarkers getBookmarksMarkers() {
+	public IBookmarksMarkers getBookmarksMarkers() {
 		return bookmarksMarkers;
 	}
 
-	public static IBookmarksService getBookmarksService() {
+	public IBookmarksService getBookmarksService() {
 		return bookmarksService;
 	}
 
-	public static IBookmarkLabelProvider getBookmarkLabelProvider() {
+	public IBookmarkLabelProvider getBookmarkLabelProvider() {
 		return bookmarkLabelProvider;
 	}
 
-	public static IBookmarkLocationProvider getBookmarkLocationProvider() {
+	public IBookmarkLocationProvider getBookmarkLocationProvider() {
 		return bookmarkLocationProvider;
 	}
 
-	public static IGotoBookmark getGotoBookmark() {
+	public IGotoBookmark getGotoBookmark() {
 		return gotoBookmark;
 	}
 
-	public static IBookmarkPropertiesProvider getBookmarkPropertiesProvider() {
+	public IBookmarkPropertiesProvider getBookmarkPropertiesProvider() {
 		return bookmarkPropertiesProvider;
 	}
 
-	public static ImportTeamProjectProvider getImportTeamProjectProvider() {
+	public ImportTeamProjectProvider getImportTeamProjectProvider() {
 		return importTeamProjectProvider;
 	}
 
-	public static RemoteBookmarksStoreManager getRemoteBookmarksStoreManager() {
+	public RemoteBookmarksStoreManager getRemoteBookmarksStoreManager() {
 		return remoteBookmarksStoreManager;
 	}
 
-	public static VisitedBookmarksDatabase getMostVisitedBookmarks() {
+	public VisitedBookmarksDatabase getMostVisitedBookmarks() {
 		return mostVisitedBookmarks;
 	}
 
-	public static RecentBookmarksDatabase getRecentBookmarks() {
+	public RecentBookmarksDatabase getRecentBookmarks() {
 		return recentBookmarks;
 	}
 
-	public static IBookmarksDirtyStateTracker getBookmarksDirtyStateTracker() {
+	public IBookmarksDirtyStateTracker getBookmarksDirtyStateTracker() {
 		return bookmarksSaver;
 	}
 
-	public static NumberedBookmarks getNumberedBookmarks() {
+	public NumberedBookmarks getNumberedBookmarks() {
 		return numberedBookmarks;
 	}
 
-	public static PathPlaceholdersStore getPathPlaceholdersStore() {
+	public PathPlaceholdersStore getPathPlaceholdersStore() {
 		return pathPlaceholdersStore;
 	}
 

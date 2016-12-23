@@ -22,10 +22,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
-import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
 import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.commons.ui.viewers.StylerProvider;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarksImageDescriptors;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;

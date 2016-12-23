@@ -10,21 +10,21 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.MesFavoris;
 import mesfavoris.model.Bookmark;
-import mesfavoris.placeholders.PathPlaceholderResolver;
+import mesfavoris.placeholders.IPathPlaceholderResolver;
 import mesfavoris.texteditor.TextEditorBookmarkProperties;
 import mesfavoris.texteditor.text.DocumentUtils;
 
 public class ExternalFileBookmarkLocationProvider extends AbstractFileBookmarkLocationProvider {
 
-	private final PathPlaceholderResolver pathPlaceholderResolver;
+	private final IPathPlaceholderResolver pathPlaceholderResolver;
 
 	public ExternalFileBookmarkLocationProvider() {
-		this(new PathPlaceholderResolver(BookmarksPlugin.getPathPlaceholdersStore()));
+		this(MesFavoris.getPathPlaceholderResolver());
 	}
 
-	public ExternalFileBookmarkLocationProvider(PathPlaceholderResolver pathPlaceholderResolver) {
+	public ExternalFileBookmarkLocationProvider(IPathPlaceholderResolver pathPlaceholderResolver) {
 		this.pathPlaceholderResolver = pathPlaceholderResolver;
 	}
 

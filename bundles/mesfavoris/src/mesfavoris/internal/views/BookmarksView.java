@@ -51,10 +51,10 @@ import org.eclipse.ui.part.ViewPart;
 
 import com.google.common.collect.Lists;
 
-import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IImportTeamProject;
 import mesfavoris.commons.core.AdapterUtils;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.StatusHelper;
 import mesfavoris.internal.actions.AddToRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.CollapseAllAction;
@@ -95,12 +95,12 @@ public class BookmarksView extends ViewPart {
 	private ToolBarManager commentsToolBarManager;
 	private IMemento memento;
 	private PreviousActivePartListener previousActivePartListener = new PreviousActivePartListener();
-	
+
 	public BookmarksView() {
-		this.bookmarkDatabase = BookmarksPlugin.getBookmarkDatabase();
+		this.bookmarkDatabase = BookmarksPlugin.getDefault().getBookmarkDatabase();
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
-		this.remoteBookmarksStoreManager = BookmarksPlugin.getRemoteBookmarksStoreManager();
-		this.bookmarksDirtyStateTracker = BookmarksPlugin.getBookmarksDirtyStateTracker();
+		this.remoteBookmarksStoreManager = BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager();
+		this.bookmarksDirtyStateTracker = BookmarksPlugin.getDefault().getBookmarksDirtyStateTracker();
 	}
 
 	public void createPartControl(Composite parent) {
@@ -160,7 +160,7 @@ public class BookmarksView extends ViewPart {
 			commentsToolBarManager.update(false);
 			return;
 		}
-		Optional<IImportTeamProject> importTeamProject = BookmarksPlugin.getImportTeamProjectProvider()
+		Optional<IImportTeamProject> importTeamProject = BookmarksPlugin.getDefault().getImportTeamProjectProvider()
 				.getHandler(bookmark);
 		if (importTeamProject.isPresent()) {
 			Action importProjectAction = new Action("Import project", IAction.AS_PUSH_BUTTON) {
@@ -197,17 +197,19 @@ public class BookmarksView extends ViewPart {
 	}
 
 	private void createTreeControl(Composite parent) {
-		IBookmarkPropertiesProvider bookmarkPropertiesProvider = BookmarksPlugin.getBookmarkPropertiesProvider();
+		IBookmarkPropertiesProvider bookmarkPropertiesProvider = BookmarksPlugin.getDefault()
+				.getBookmarkPropertiesProvider();
 		BookmarkId rootId = bookmarkDatabase.getBookmarksTree().getRootFolder().getId();
 		MostVisitedBookmarksVirtualFolder mostVisitedBookmarksVirtualFolder = new MostVisitedBookmarksVirtualFolder(
-				eventBroker, bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(), rootId, 10);
+				eventBroker, bookmarkDatabase, BookmarksPlugin.getDefault().getMostVisitedBookmarks(), rootId, 10);
 		LatestVisitedBookmarksVirtualFolder latestVisitedBookmarksVirtualFolder = new LatestVisitedBookmarksVirtualFolder(
-				eventBroker, bookmarkDatabase, BookmarksPlugin.getMostVisitedBookmarks(), rootId, 10);
+				eventBroker, bookmarkDatabase, BookmarksPlugin.getDefault().getMostVisitedBookmarks(), rootId, 10);
 		RecentBookmarksVirtualFolder recentBookmarksVirtualFolder = new RecentBookmarksVirtualFolder(eventBroker,
-				bookmarkDatabase, BookmarksPlugin.getRecentBookmarks(), rootId, 20);
+				bookmarkDatabase, BookmarksPlugin.getDefault().getRecentBookmarks(), rootId, 20);
 		NumberedBookmarksVirtualFolder numberedBookmarksVirtualFolder = new NumberedBookmarksVirtualFolder(eventBroker,
-				bookmarkDatabase, rootId, BookmarksPlugin.getNumberedBookmarks());
-		IBookmarksDirtyStateTracker bookmarksDirtyStateTracker = BookmarksPlugin.getBookmarksDirtyStateTracker();
+				bookmarkDatabase, rootId, BookmarksPlugin.getDefault().getNumberedBookmarks());
+		IBookmarksDirtyStateTracker bookmarksDirtyStateTracker = BookmarksPlugin.getDefault()
+				.getBookmarksDirtyStateTracker();
 
 		PatternFilter patternFilter = new BookmarkPatternFilter();
 		patternFilter.setIncludeLeadingWildcard(true);
@@ -270,7 +272,7 @@ public class BookmarksView extends ViewPart {
 	}
 
 	private void addRemoteBookmarksStoreActions(IMenuManager manager) {
-		for (IRemoteBookmarksStore store : BookmarksPlugin.getRemoteBookmarksStoreManager()
+		for (IRemoteBookmarksStore store : BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager()
 				.getRemoteBookmarksStores()) {
 			MenuManager subMenu = new MenuManager(store.getDescriptor().getLabel(),
 					ID + "." + store.getDescriptor().getId());
@@ -296,7 +298,7 @@ public class BookmarksView extends ViewPart {
 	}
 
 	private void addConnectToRemoteBookmarksStoreActions(IContributionManager manager) {
-		for (IRemoteBookmarksStore store : BookmarksPlugin.getRemoteBookmarksStoreManager()
+		for (IRemoteBookmarksStore store : BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager()
 				.getRemoteBookmarksStores()) {
 			ConnectToRemoteBookmarksStoreAction connectAction = new ConnectToRemoteBookmarksStoreAction(eventBroker,
 					store);
@@ -354,10 +356,10 @@ public class BookmarksView extends ViewPart {
 	public IWorkbenchPart getPreviousActivePart() {
 		return previousActivePartListener.getPreviousActivePart();
 	}
-	
+
 	private static class PreviousActivePartListener implements IPartListener {
 		private IWorkbenchPart previousActivePart;
-		
+
 		@Override
 		public void partActivated(IWorkbenchPart part) {
 			if (!(part instanceof BookmarksView)) {
@@ -368,7 +370,7 @@ public class BookmarksView extends ViewPart {
 		public IWorkbenchPart getPreviousActivePart() {
 			return previousActivePart;
 		}
-		
+
 		@Override
 		public void partBroughtToTop(IWorkbenchPart part) {
 		}
@@ -381,13 +383,13 @@ public class BookmarksView extends ViewPart {
 		}
 
 		@Override
-		public void partDeactivated(IWorkbenchPart part) {			
+		public void partDeactivated(IWorkbenchPart part) {
 		}
 
 		@Override
-		public void partOpened(IWorkbenchPart part) {			
+		public void partOpened(IWorkbenchPart part) {
 		}
-		
+
 	}
-	
+
 }

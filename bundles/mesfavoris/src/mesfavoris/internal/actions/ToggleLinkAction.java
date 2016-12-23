@@ -15,7 +15,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchPartSite;
 
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.service.operations.GetLinkedBookmarksOperation;
 import mesfavoris.internal.views.BookmarksTreeViewer;
 import mesfavoris.model.Bookmark;

@@ -4,6 +4,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
+import mesfavoris.internal.BookmarksPlugin;
+
 public class BookmarksException extends CoreException {
 	private static final long serialVersionUID = 7786165398262067509L;
 

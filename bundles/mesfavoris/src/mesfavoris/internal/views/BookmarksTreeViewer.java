@@ -17,9 +17,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.service.event.EventHandler;
 
-import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.commons.core.AdapterUtils;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.views.dnd.BookmarksViewerDragListener;
 import mesfavoris.internal.views.dnd.BookmarksViewerDropListener;
 import mesfavoris.internal.views.virtual.ExtendedBookmarksTreeContentProvider;
@@ -69,8 +69,9 @@ public class BookmarksTreeViewer extends TreeViewer {
 
 	private BookmarksLabelProvider getBookmarksLabelProvider() {
 		BookmarksLabelProvider bookmarksLabelProvider = new BookmarksLabelProvider(bookmarkDatabase,
-				remoteBookmarksStoreManager, bookmarksDirtyStateTracker, BookmarksPlugin.getBookmarkLabelProvider(),
-				BookmarksPlugin.getNumberedBookmarks());
+				remoteBookmarksStoreManager, bookmarksDirtyStateTracker,
+				BookmarksPlugin.getDefault().getBookmarkLabelProvider(),
+				BookmarksPlugin.getDefault().getNumberedBookmarks());
 		return bookmarksLabelProvider;
 	}
 

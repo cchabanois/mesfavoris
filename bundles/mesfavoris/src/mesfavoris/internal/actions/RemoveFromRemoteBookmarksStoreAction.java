@@ -12,7 +12,7 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 import org.osgi.service.event.EventHandler;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.service.operations.RemoveFromRemoteBookmarksStoreOperation;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.remote.AbstractRemoteBookmarksStore;
@@ -100,7 +100,8 @@ public class RemoveFromRemoteBookmarksStoreAction extends SelectionProviderActio
 		protected IStatus run(IProgressMonitor monitor) {
 			try {
 				RemoveFromRemoteBookmarksStoreOperation operation = new RemoveFromRemoteBookmarksStoreOperation(
-						BookmarksPlugin.getBookmarkDatabase(), BookmarksPlugin.getRemoteBookmarksStoreManager());
+						BookmarksPlugin.getDefault().getBookmarkDatabase(),
+						BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager());
 				operation.removeFromRemoteBookmarksStore(storeDescriptor.getId(), bookmarkFolder.getId(), monitor);
 				return Status.OK_STATUS;
 			} catch (BookmarksException e) {

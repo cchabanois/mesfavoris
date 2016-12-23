@@ -19,8 +19,8 @@ import org.eclipse.swt.widgets.Display;
 
 import com.google.api.services.drive.model.File;
 
-import mesfavoris.BookmarksPlugin;
 import mesfavoris.commons.ui.viewers.StylerProvider;
+import mesfavoris.gdrive.Activator;
 
 /**
  * Viewer for a set of {@link com.google.api.services.drive.model.File}s
@@ -43,7 +43,7 @@ public class FileTableViewer extends TableViewer {
 
 	private class FileLabelProvider extends LabelProvider implements IStyledLabelProvider {
 		private final ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
-		private final ImageDescriptor imageDescriptor = BookmarksPlugin.getImageDescriptor("icons/bookmarks-16.png");
+		private final ImageDescriptor imageDescriptor = Activator.getImageDescriptor("icons/bookmarks-16.png");
 		private final StylerProvider stylerProvider = new StylerProvider();
 
 		@Override

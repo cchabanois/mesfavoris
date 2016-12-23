@@ -16,19 +16,19 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.MesFavoris;
 import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
 import mesfavoris.commons.core.AdapterUtils;
-import mesfavoris.placeholders.PathPlaceholderResolver;
+import mesfavoris.placeholders.IPathPlaceholderResolver;
 
 public class WorkspaceFileBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {
-	private final PathPlaceholderResolver pathPlaceholderResolver;
+	private final IPathPlaceholderResolver pathPlaceholderResolver;
 
 	public WorkspaceFileBookmarkPropertiesProvider() {
-		this(new PathPlaceholderResolver(BookmarksPlugin.getPathPlaceholdersStore()));
+		this(MesFavoris.getPathPlaceholderResolver());
 	}
 
-	public WorkspaceFileBookmarkPropertiesProvider(PathPlaceholderResolver pathPlaceholders) {
+	public WorkspaceFileBookmarkPropertiesProvider(IPathPlaceholderResolver pathPlaceholders) {
 		this.pathPlaceholderResolver = pathPlaceholders;
 	}
 	

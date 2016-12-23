@@ -5,7 +5,7 @@ import java.util.stream.StreamSupport;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.model.merge.BookmarksTreeIterable;
 import mesfavoris.internal.model.merge.BookmarksTreeIterable.Algorithm;
 import mesfavoris.model.Bookmark;

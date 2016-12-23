@@ -5,7 +5,7 @@ Bundle-SymbolicName: mesfavoris;singleton:=true
 Bundle-Version: 1.2.0.qualifier
 Bundle-ClassPath: .,
  libs/javimmutable-collections-1.8.jar
-Bundle-Activator: mesfavoris.BookmarksPlugin
+Bundle-Activator: mesfavoris.internal.BookmarksPlugin
 Export-Package: mesfavoris;
   uses:="mesfavoris.model,
    mesfavoris.markers,

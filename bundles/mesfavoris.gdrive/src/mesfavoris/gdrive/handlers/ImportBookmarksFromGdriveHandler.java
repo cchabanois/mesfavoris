@@ -18,7 +18,7 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.MesFavoris;
 import mesfavoris.gdrive.Activator;
 import mesfavoris.gdrive.StatusHelper;
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
@@ -38,7 +38,7 @@ public class ImportBookmarksFromGdriveHandler extends AbstractHandler {
 	public ImportBookmarksFromGdriveHandler() {
 		this.gDriveConnectionManager = Activator.getGDriveConnectionManager();
 		this.bookmarkMappingsStore = Activator.getBookmarkMappingsStore();
-		this.bookmarksService = BookmarksPlugin.getBookmarksService();
+		this.bookmarksService = MesFavoris.getBookmarksService();
 		this.bookmarkMappings = Activator.getBookmarkMappingsStore();
 	}
 

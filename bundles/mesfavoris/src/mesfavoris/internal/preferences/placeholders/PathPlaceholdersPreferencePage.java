@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.placeholders.usage.PathPlaceholderUsageDialog;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.placeholders.PathPlaceholder;
@@ -42,9 +42,9 @@ public class PathPlaceholdersPreferencePage extends PreferencePage implements IW
 	
 	@Override
 	public void init(IWorkbench workbench) {
-		pathPlaceholdersStore = BookmarksPlugin.getPathPlaceholdersStore();
-		bookmarkDatabase = BookmarksPlugin.getBookmarkDatabase();
-		remoteBookmarksStoreManager = BookmarksPlugin.getRemoteBookmarksStoreManager();
+		pathPlaceholdersStore = BookmarksPlugin.getDefault().getPathPlaceholdersStore();
+		bookmarkDatabase = BookmarksPlugin.getDefault().getBookmarkDatabase();
+		remoteBookmarksStoreManager = BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager();
 	}
 
 	@Override

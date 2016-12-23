@@ -13,7 +13,7 @@ import org.eclipse.ui.progress.IProgressConstants;
 import org.osgi.service.event.EventHandler;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.service.operations.ConnectToRemoteBookmarksStoreOperation;
 import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.IRemoteBookmarksStore;
@@ -96,8 +96,9 @@ public class ConnectToRemoteBookmarksStoreAction extends Action implements IWork
 		protected IStatus run(IProgressMonitor monitor) {
 			try {
 				ConnectToRemoteBookmarksStoreOperation operation = new ConnectToRemoteBookmarksStoreOperation(
-						BookmarksPlugin.getBookmarkDatabase(), BookmarksPlugin.getRemoteBookmarksStoreManager(),
-						BookmarksPlugin.getBookmarksDirtyStateTracker());
+						BookmarksPlugin.getDefault().getBookmarkDatabase(),
+						BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager(),
+						BookmarksPlugin.getDefault().getBookmarksDirtyStateTracker());
 				operation.connect(storeDescriptor.getId(), monitor);
 				return Status.OK_STATUS;
 			} catch (BookmarksException e) {

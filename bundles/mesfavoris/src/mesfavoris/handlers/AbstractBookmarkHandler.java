@@ -9,7 +9,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.ISources;
 
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.service.IBookmarksService;
@@ -19,7 +19,7 @@ public abstract class AbstractBookmarkHandler extends AbstractHandler{
 	protected final IBookmarksService bookmarksService;
 	
 	public AbstractBookmarkHandler() {
-		this.bookmarksService = BookmarksPlugin.getBookmarksService();
+		this.bookmarksService = BookmarksPlugin.getDefault().getBookmarksService();
 	}
 	
 	protected List<BookmarkId> getAsBookmarkIds(IStructuredSelection selection) {

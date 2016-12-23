@@ -7,9 +7,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
-import mesfavoris.BookmarksPlugin;
 import mesfavoris.bookmarktype.AbstractBookmarkLabelProvider;
 import mesfavoris.commons.ui.viewers.StylerProvider;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.remote.IRemoteBookmarksStore;
@@ -22,7 +22,7 @@ public class BookmarkFolderLabelProvider extends AbstractBookmarkLabelProvider {
 	private final StylerProvider stylerProvider = new StylerProvider();
 
 	public BookmarkFolderLabelProvider() {
-		this.remoteBookmarksStoreManager = BookmarksPlugin.getRemoteBookmarksStoreManager();
+		this.remoteBookmarksStoreManager = BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager();
 	}
 
 	@Override

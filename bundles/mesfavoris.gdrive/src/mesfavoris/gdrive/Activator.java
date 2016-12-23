@@ -6,7 +6,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.MesFavoris;
 import mesfavoris.gdrive.changes.BookmarksFileChangeManager;
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
 import mesfavoris.gdrive.mappings.BookmarkMappingsPersister;
@@ -41,14 +41,14 @@ public class Activator extends AbstractUIPlugin {
 		File storeFile = new File(getStateLocation().toFile(), "bookmarksStore.json");
 		bookmarkMappingsStore = new BookmarkMappingsStore(new BookmarkMappingsPersister(storeFile));
 		bookmarkMappingsStore.init();
-		BookmarksPlugin.getBookmarkDatabase().addListener(bookmarkMappingsStore);
+		MesFavoris.getBookmarkDatabase().addListener(bookmarkMappingsStore);
 		bookmarksFileChangeManager = new BookmarksFileChangeManager(gDriveConnectionManager, bookmarkMappingsStore);
 		bookmarksFileChangeManager.init();
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		BookmarksPlugin.getBookmarkDatabase().removeListener(bookmarkMappingsStore);
+		MesFavoris.getBookmarkDatabase().removeListener(bookmarkMappingsStore);
 		bookmarkMappingsStore.close();
 		try {
 			gDriveConnectionManager.close();

@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.BookmarksPlugin;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.service.operations.RefreshRemoteFolderOperation;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;

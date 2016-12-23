@@ -3,7 +3,6 @@ package mesfavoris.internal;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.statushandlers.StatusManager;
 
-import mesfavoris.BookmarksPlugin;
 import mesfavoris.commons.ui.statushandlers.PluginStatusManager;
 
 /**
