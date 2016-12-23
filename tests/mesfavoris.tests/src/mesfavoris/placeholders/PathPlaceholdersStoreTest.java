@@ -11,6 +11,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import mesfavoris.internal.placeholders.PathPlaceholdersStore;
+
 public class PathPlaceholdersStoreTest {
 	private PathPlaceholdersStore pathPlaceholdersStore;
 	private File file;

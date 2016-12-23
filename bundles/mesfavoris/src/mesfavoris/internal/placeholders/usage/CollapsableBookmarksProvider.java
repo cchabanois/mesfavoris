@@ -8,9 +8,9 @@ import java.util.stream.StreamSupport;
 
 import org.eclipse.core.runtime.IPath;
 
+import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.model.Bookmark;
 import mesfavoris.placeholders.IPathPlaceholderResolver;
-import mesfavoris.placeholders.PathPlaceholderResolver;
 
 /**
  * Get the bookmarks for which path is collapsable using given placeholder

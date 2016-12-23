@@ -1,8 +1,11 @@
-package mesfavoris.placeholders;
+package mesfavoris.internal.placeholders;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import mesfavoris.placeholders.IPathPlaceholders;
+import mesfavoris.placeholders.PathPlaceholder;
 
 public class PathPlaceholdersMap implements IPathPlaceholders {
 	private final Map<String, PathPlaceholder> map = new HashMap<>();

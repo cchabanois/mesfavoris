@@ -11,12 +11,12 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import mesfavoris.internal.placeholders.PathPlaceholderResolver;
+import mesfavoris.internal.placeholders.PathPlaceholdersMap;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.placeholders.IPathPlaceholderResolver;
 import mesfavoris.placeholders.PathPlaceholder;
-import mesfavoris.placeholders.PathPlaceholderResolver;
-import mesfavoris.placeholders.PathPlaceholdersMap;
 import mesfavoris.texteditor.TextEditorBookmarkProperties;
 
 public class CollapsableBookmarksProviderTest {

@@ -1,4 +1,4 @@
-package mesfavoris.placeholders;
+package mesfavoris.internal.placeholders;
 
 import java.io.File;
 import java.io.FileReader;
@@ -21,6 +21,8 @@ import com.google.gson.stream.JsonWriter;
 
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.StatusHelper;
+import mesfavoris.placeholders.IPathPlaceholders;
+import mesfavoris.placeholders.PathPlaceholder;
 
 public class PathPlaceholdersStore implements IPathPlaceholders {
 	private final Map<String, PathPlaceholder> mappings = new ConcurrentHashMap<>();

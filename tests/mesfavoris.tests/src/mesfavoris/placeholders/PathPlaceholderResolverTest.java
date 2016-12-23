@@ -7,6 +7,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.junit.Test;
 
+import mesfavoris.internal.placeholders.PathPlaceholderResolver;
+import mesfavoris.internal.placeholders.PathPlaceholdersMap;
+
 public class PathPlaceholderResolverTest {
 	private final PathPlaceholdersMap mappings = new PathPlaceholdersMap();
 	private final IPathPlaceholderResolver pathPlaceholderResolver = new PathPlaceholderResolver(mappings);

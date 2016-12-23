@@ -6,9 +6,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Provider;
 
 import mesfavoris.PathBookmarkProperties;
+import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarksTree;
-import mesfavoris.placeholders.PathPlaceholderResolver;
 
 public class PathPlaceholderStats {
 	private Map<String, Integer> stats = new ConcurrentHashMap<>();

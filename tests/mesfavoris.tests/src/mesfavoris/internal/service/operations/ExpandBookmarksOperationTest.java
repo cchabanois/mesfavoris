@@ -13,13 +13,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import mesfavoris.BookmarksException;
+import mesfavoris.internal.placeholders.PathPlaceholdersMap;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.placeholders.PathPlaceholder;
-import mesfavoris.placeholders.PathPlaceholdersMap;
 
 public class ExpandBookmarksOperationTest {
 

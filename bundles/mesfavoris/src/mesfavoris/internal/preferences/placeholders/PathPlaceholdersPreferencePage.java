@@ -23,10 +23,10 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import mesfavoris.internal.BookmarksPlugin;
+import mesfavoris.internal.placeholders.PathPlaceholdersStore;
 import mesfavoris.internal.placeholders.usage.PathPlaceholderUsageDialog;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.placeholders.PathPlaceholder;
-import mesfavoris.placeholders.PathPlaceholdersStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 
 public class PathPlaceholdersPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {

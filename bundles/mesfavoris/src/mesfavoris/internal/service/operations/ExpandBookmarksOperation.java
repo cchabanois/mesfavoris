@@ -7,13 +7,13 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 
 import mesfavoris.BookmarksException;
+import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.modification.IBookmarksTreeModifier;
 import mesfavoris.placeholders.IPathPlaceholderResolver;
 import mesfavoris.placeholders.IPathPlaceholders;
-import mesfavoris.placeholders.PathPlaceholderResolver;
 
 public class ExpandBookmarksOperation {
 	private final IPathPlaceholderResolver pathPlaceholderResolver;

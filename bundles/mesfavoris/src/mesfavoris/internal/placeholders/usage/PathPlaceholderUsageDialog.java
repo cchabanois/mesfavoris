@@ -31,13 +31,13 @@ import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.StatusHelper;
+import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.internal.service.operations.CollapseBookmarksOperation;
 import mesfavoris.internal.service.operations.ExpandBookmarksOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.placeholders.IPathPlaceholders;
-import mesfavoris.placeholders.PathPlaceholderResolver;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 
 public class PathPlaceholderUsageDialog extends TitleAreaDialog {

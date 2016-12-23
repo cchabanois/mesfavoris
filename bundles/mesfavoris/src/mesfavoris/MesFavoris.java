@@ -1,10 +1,10 @@
 package mesfavoris;
 
 import mesfavoris.internal.BookmarksPlugin;
+import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.placeholders.IPathPlaceholderResolver;
-import mesfavoris.placeholders.PathPlaceholderResolver;
 import mesfavoris.service.IBookmarksService;
 
 /**
