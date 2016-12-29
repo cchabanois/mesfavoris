@@ -3,7 +3,7 @@
 <schema targetNamespace="mesfavoris" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="mesfavoris" id="bookmarkType" name="Defines a bookmark type"/>
+         <meta.schema plugin="mesfavoris" id="bookmarkTypes" name="Bookmark Types"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -18,12 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="propertiesProvider" minOccurs="0" maxOccurs="unbounded"/>
-            <element ref="gotoBookmark" minOccurs="0" maxOccurs="unbounded"/>
-            <element ref="labelProvider" minOccurs="0" maxOccurs="unbounded"/>
-            <element ref="markerAttributesProvider" minOccurs="0" maxOccurs="unbounded"/>
-            <element ref="importTeamProject" minOccurs="0" maxOccurs="unbounded"/>
-            <element ref="locationProvider" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="bookmarkType" minOccurs="1" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -52,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="propertiesProvider">
+   <element name="locationProvider">
       <complexType>
          <attribute name="class" type="string" use="required">
             <annotation>
@@ -60,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":mesfavoris.bookmarktype.IBookmarkPropertiesProvider"/>
+                  <meta.attribute kind="java" basedOn=":mesfavoris.bookmarktype.IBookmarkLocationProvider"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -74,7 +69,7 @@
       </complexType>
    </element>
 
-   <element name="gotoBookmark">
+   <element name="importTeamProject">
       <complexType>
          <attribute name="class" type="string" use="required">
             <annotation>
@@ -82,29 +77,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":mesfavoris.bookmarktype.IGotoBookmark"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="priority" type="string" use="default" value="10">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="markerAttributesProvider">
-      <complexType>
-         <attribute name="class" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="java" basedOn=":mesfavoris.bookmarktype.IBookmarkMarkerAttributesProvider"/>
+                  <meta.attribute kind="java" basedOn=":mesfavoris.bookmarktype.IImportTeamProject"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -140,7 +113,7 @@
       </complexType>
    </element>
 
-   <element name="importTeamProject">
+   <element name="markerAttributesProvider">
       <complexType>
          <attribute name="class" type="string" use="required">
             <annotation>
@@ -148,11 +121,83 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":mesfavoris.bookmarktype.IImportTeamProject"/>
+                  <meta.attribute kind="java" basedOn=":mesfavoris.bookmarktype.IBookmarkMarkerAttributesProvider"/>
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="icon" type="string" use="required">
+         <attribute name="priority" type="string" use="default" value="10">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="gotoBookmark">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":mesfavoris.bookmarktype.IGotoBookmark"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="priority" type="string" use="default" value="10">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="propertiesProvider">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":mesfavoris.bookmarktype.IBookmarkPropertiesProvider"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="priority" type="string" use="default" value="10">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="bookmarkType">
+      <complexType>
+         <sequence>
+            <element ref="properties" minOccurs="0" maxOccurs="1"/>
+            <element ref="propertiesProvider" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="markerAttributesProvider" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="labelProvider" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="locationProvider" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="gotoBookmark" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="importTeamProject" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string">
             <annotation>
                <documentation>
                   
@@ -165,25 +210,49 @@
       </complexType>
    </element>
 
-   <element name="locationProvider">
+   <element name="property">
       <complexType>
-         <attribute name="class" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="java" basedOn=":mesfavoris.bookmarktype.IBookmarkLocationProvider"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="priority" type="string" use="default" value="10">
+         <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="type" use="default" value="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="path">
+                  </enumeration>
+                  <enumeration value="string">
+                  </enumeration>
+                  <enumeration value="int">
+                  </enumeration>
+                  <enumeration value="instant">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="updatable" type="boolean" use="default" value="true">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="properties">
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="property"/>
+         </sequence>
       </complexType>
    </element>
 

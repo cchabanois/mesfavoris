@@ -29,6 +29,7 @@ import mesfavoris.internal.bookmarktypes.PluginBookmarkLabelProvider;
 import mesfavoris.internal.bookmarktypes.PluginBookmarkLocationProvider;
 import mesfavoris.internal.bookmarktypes.PluginBookmarkMarkerAttributesProvider;
 import mesfavoris.internal.bookmarktypes.PluginBookmarkPropertiesProvider;
+import mesfavoris.internal.bookmarktypes.PluginBookmarkTypes;
 import mesfavoris.internal.bookmarktypes.PluginGotoBookmark;
 import mesfavoris.internal.markers.BookmarksMarkers;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;
@@ -105,13 +106,14 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		BookmarksModificationValidator bookmarksModificationValidator = new BookmarksModificationValidator(
 				remoteBookmarksStoreManager);
 		bookmarkDatabase = loadBookmarkDatabase(bookmarksFile, bookmarksModificationValidator);
-		bookmarkLabelProvider = new PluginBookmarkLabelProvider();
-		PluginBookmarkMarkerAttributesProvider bookmarkMarkerAttributesProvider = new PluginBookmarkMarkerAttributesProvider();
-		bookmarkPropertiesProvider = new PluginBookmarkPropertiesProvider();
-		bookmarkLocationProvider = new PluginBookmarkLocationProvider();
-		gotoBookmark = new PluginGotoBookmark();
+		PluginBookmarkTypes pluginBookmarkTypes = new PluginBookmarkTypes();
+		bookmarkLabelProvider = new PluginBookmarkLabelProvider(pluginBookmarkTypes);
+		PluginBookmarkMarkerAttributesProvider bookmarkMarkerAttributesProvider = new PluginBookmarkMarkerAttributesProvider(pluginBookmarkTypes);
+		bookmarkPropertiesProvider = new PluginBookmarkPropertiesProvider(pluginBookmarkTypes);
+		bookmarkLocationProvider = new PluginBookmarkLocationProvider(pluginBookmarkTypes);
+		gotoBookmark = new PluginGotoBookmark(pluginBookmarkTypes);
 		bookmarksMarkers = new BookmarksMarkers(bookmarkDatabase, bookmarkMarkerAttributesProvider);
-		importTeamProjectProvider = new ImportTeamProjectProvider();
+		importTeamProjectProvider = new ImportTeamProjectProvider(pluginBookmarkTypes);
 		bookmarksMarkers.init();
 		LocalBookmarksSaver localBookmarksSaver = new LocalBookmarksSaver(bookmarksFile,
 				new BookmarksTreeJsonSerializer(true));

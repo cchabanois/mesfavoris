@@ -10,14 +10,18 @@ import org.eclipse.ui.IWorkbenchPart;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 
 public class PluginBookmarkPropertiesProvider implements IBookmarkPropertiesProvider {
-	private final BookmarkTypeConfigElementLoader loader = new BookmarkTypeConfigElementLoader();
+	private final PluginBookmarkTypes pluginBookmarkTypes;
 	private BookmarkPropertiesProvider bookmarkPropertiesProvider;
+
+	public PluginBookmarkPropertiesProvider(PluginBookmarkTypes pluginBookmarkTypes) {
+		this.pluginBookmarkTypes = pluginBookmarkTypes;
+	}
 
 	private synchronized BookmarkPropertiesProvider getBookmarkPropertiesProvider() {
 		if (bookmarkPropertiesProvider != null) {
 			return bookmarkPropertiesProvider;
 		}
-		List<IBookmarkPropertiesProvider> providers = loader.load("propertiesProvider");
+		List<IBookmarkPropertiesProvider> providers = pluginBookmarkTypes.getPropertiesProviders();
 		this.bookmarkPropertiesProvider = new BookmarkPropertiesProvider(providers);
 		return bookmarkPropertiesProvider;
 	}

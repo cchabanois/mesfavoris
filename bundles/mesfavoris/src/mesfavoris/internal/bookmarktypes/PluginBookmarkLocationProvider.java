@@ -9,14 +9,18 @@ import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.model.Bookmark;
 
 public class PluginBookmarkLocationProvider implements IBookmarkLocationProvider {
-	private final BookmarkTypeConfigElementLoader loader = new BookmarkTypeConfigElementLoader();
+	private final PluginBookmarkTypes pluginBookmarkTypes;
 	private BookmarkLocationProvider bookmarkPropertiesProvider;
+
+	public PluginBookmarkLocationProvider(PluginBookmarkTypes pluginBookmarkTypes) {
+		this.pluginBookmarkTypes = pluginBookmarkTypes;
+	}
 
 	private synchronized BookmarkLocationProvider getBookmarkPropertiesProvider() {
 		if (bookmarkPropertiesProvider != null) {
 			return bookmarkPropertiesProvider;
 		}
-		List<IBookmarkLocationProvider> providers = loader.load("locationProvider");
+		List<IBookmarkLocationProvider> providers = pluginBookmarkTypes.getLocationsProviders();
 		this.bookmarkPropertiesProvider = new BookmarkLocationProvider(providers);
 		return bookmarkPropertiesProvider;
 	}

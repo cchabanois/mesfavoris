@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.TextSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -35,8 +34,8 @@ import com.google.common.collect.Lists;
 import mesfavoris.BookmarksException;
 import mesfavoris.commons.ui.wizards.datatransfer.BundleProjectImportOperation;
 import mesfavoris.internal.bookmarktypes.PluginBookmarkMarkerAttributesProvider;
+import mesfavoris.internal.bookmarktypes.PluginBookmarkTypes;
 import mesfavoris.internal.markers.BookmarksMarkers;
-import mesfavoris.internal.service.operations.GetLinkedBookmarksOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
@@ -55,7 +54,9 @@ public class GetLinkedBookmarksOperationTest {
 		this.bookmarkDatabase = new BookmarkDatabase("testId", getInitialTree());
 		this.rootFolderId = bookmarkDatabase.getBookmarksTree().getRootFolder().getId();
 		this.operation = new GetLinkedBookmarksOperation(bookmarkDatabase);
-		this.bookmarksMarkers = new BookmarksMarkers(bookmarkDatabase, new PluginBookmarkMarkerAttributesProvider());
+		PluginBookmarkTypes pluginBookmarkTypes = new PluginBookmarkTypes();
+		this.bookmarksMarkers = new BookmarksMarkers(bookmarkDatabase,
+				new PluginBookmarkMarkerAttributesProvider(pluginBookmarkTypes));
 		this.bookmarksMarkers.init();
 	}
 
@@ -77,7 +78,8 @@ public class GetLinkedBookmarksOperationTest {
 		// When
 		ITextEditor textEditor = openTextEditor(new Path("/testGetLinkedBookmarks/LICENSE.txt"));
 		textEditor.selectAndReveal(getOffset(textEditor, 10), 0);
-		List<Bookmark> bookmarks = operation.getLinkedBookmarks(textEditor, textEditor.getSelectionProvider().getSelection());
+		List<Bookmark> bookmarks = operation.getLinkedBookmarks(textEditor,
+				textEditor.getSelectionProvider().getSelection());
 
 		// Then
 		assertEquals(1, bookmarks.size());
@@ -106,7 +108,7 @@ public class GetLinkedBookmarksOperationTest {
 		bookmarkDatabase.modify(
 				bookmarksTreeModifier -> bookmarksTreeModifier.addBookmarks(parentId, Lists.newArrayList(bookmark)));
 	}
-	
+
 	private int getOffset(ITextEditor editor, int lineNumber) throws BadLocationException {
 		IDocumentProvider provider = editor.getDocumentProvider();
 		IDocument document = provider.getDocument(editor.getEditorInput());

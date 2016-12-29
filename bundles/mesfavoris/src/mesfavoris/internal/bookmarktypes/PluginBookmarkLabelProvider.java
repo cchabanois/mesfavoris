@@ -11,15 +11,18 @@ import mesfavoris.model.Bookmark;
 
 public class PluginBookmarkLabelProvider extends LabelProvider implements
 		IBookmarkLabelProvider {
-	private final BookmarkTypeConfigElementLoader loader = new BookmarkTypeConfigElementLoader();
+	private final PluginBookmarkTypes pluginBookmarkTypes;
 	private BookmarkLabelProvider bookmarkLabelProvider;
+
+	public PluginBookmarkLabelProvider(PluginBookmarkTypes pluginBookmarkTypes) {
+		this.pluginBookmarkTypes = pluginBookmarkTypes;
+	}
 
 	private synchronized BookmarkLabelProvider getBookmarkLabelProvider() {
 		if (bookmarkLabelProvider != null) {
 			return bookmarkLabelProvider;
 		}
-		List<IBookmarkLabelProvider> labelProviders = loader
-				.load("labelProvider");
+		List<IBookmarkLabelProvider> labelProviders = pluginBookmarkTypes.getLabelProviders();
 		this.bookmarkLabelProvider = new BookmarkLabelProvider(labelProviders);
 		return bookmarkLabelProvider;
 	}

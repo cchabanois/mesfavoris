@@ -136,11 +136,14 @@
       </page>
    </extension>
    <extension
-         point="mesfavoris.bookmarkType">
-      <labelProvider
-            class="mesfavoris.gdrive.decoration.GDriveBookmarkFolderLabelProvider"
-            priority="8">
-      </labelProvider>
+         point="mesfavoris.bookmarkTypes">
+      <bookmarkType
+            name="gdrive">
+         <labelProvider
+               class="mesfavoris.gdrive.decoration.GDriveBookmarkFolderLabelProvider"
+               priority="8">
+         </labelProvider>
+      </bookmarkType>
    </extension>
 
 </plugin>

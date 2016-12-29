@@ -7,14 +7,18 @@ import mesfavoris.bookmarktype.IImportTeamProject;
 import mesfavoris.model.Bookmark;
 
 public class ImportTeamProjectProvider {
-	private final BookmarkTypeConfigElementLoader loader = new BookmarkTypeConfigElementLoader();
+	private final PluginBookmarkTypes pluginBookmarkTypes;
 	private List<IImportTeamProject> importers;
+
+	public ImportTeamProjectProvider(PluginBookmarkTypes pluginBookmarkTypes) {
+		this.pluginBookmarkTypes = pluginBookmarkTypes;
+	}
 
 	private synchronized List<IImportTeamProject> getProjectImporters() {
 		if (importers != null) {
 			return importers;
 		}
-		this.importers = loader.load("importTeamProject");
+		this.importers = pluginBookmarkTypes.getImportTeamProjects();
 		return importers;
 	}
 

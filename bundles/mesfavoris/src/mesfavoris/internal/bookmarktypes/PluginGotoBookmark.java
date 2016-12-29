@@ -9,14 +9,18 @@ import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.model.Bookmark;
 
 public class PluginGotoBookmark implements IGotoBookmark {
-	private final BookmarkTypeConfigElementLoader loader = new BookmarkTypeConfigElementLoader();
+	private final PluginBookmarkTypes pluginBookmarkTypes;
 	private GotoBookmark gotoBookmark;
 	
+	public PluginGotoBookmark(PluginBookmarkTypes pluginBookmarkTypes) {
+		this.pluginBookmarkTypes = pluginBookmarkTypes;
+	}
+
 	private synchronized GotoBookmark getGotoBookmark() {
 		if (gotoBookmark != null) {
 			return gotoBookmark;
 		}
-		List<IGotoBookmark> gotoBookmarks = loader.load("gotoBookmark");
+		List<IGotoBookmark> gotoBookmarks = pluginBookmarkTypes.getGotoBookmarks();
 		this.gotoBookmark = new GotoBookmark(gotoBookmarks);
 		return gotoBookmark;
 	}

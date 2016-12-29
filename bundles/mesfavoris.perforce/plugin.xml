@@ -2,31 +2,35 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="mesfavoris.bookmarkType">
-      <propertiesProvider
-            class="mesfavoris.perforce.PerforceProjectPropertiesProvider"
-            priority="100">
-      </propertiesProvider>
-      <importTeamProject
-            class="mesfavoris.perforce.ImportPerforceProject"
-            icon="icons/p4.png">
-      </importTeamProject>
-      <locationProvider
-            class="mesfavoris.perforce.ChangelistBookmarkLocationProvider"
-            priority="10">
-      </locationProvider>
-      <propertiesProvider
-            class="mesfavoris.perforce.ChangelistEditorBookmarkPropertiesProvider"
-            priority="10">
-      </propertiesProvider>
-      <labelProvider
-            class="mesfavoris.perforce.ChangelistBookmarkLabelProvider"
-            priority="10">
-      </labelProvider>
-      <gotoBookmark
-            class="mesfavoris.perforce.GotoChangelistBookmark"
-            priority="10">
-      </gotoBookmark>
+         point="mesfavoris.bookmarkTypes">
+      <bookmarkType
+            icon="icons/p4.png"
+            name="perforce">
+         <propertiesProvider
+               class="mesfavoris.perforce.PerforceProjectPropertiesProvider"
+               priority="100">
+         </propertiesProvider>
+         <importTeamProject
+               class="mesfavoris.perforce.ImportPerforceProject"
+               icon="icons/p4.png">
+         </importTeamProject>
+         <locationProvider
+               class="mesfavoris.perforce.ChangelistBookmarkLocationProvider"
+               priority="10">
+         </locationProvider>
+         <propertiesProvider
+               class="mesfavoris.perforce.ChangelistEditorBookmarkPropertiesProvider"
+               priority="10">
+         </propertiesProvider>
+         <labelProvider
+               class="mesfavoris.perforce.ChangelistBookmarkLabelProvider"
+               priority="10">
+         </labelProvider>
+         <gotoBookmark
+               class="mesfavoris.perforce.GotoChangelistBookmark"
+               priority="10">
+         </gotoBookmark>
+      </bookmarkType>
    </extension>
 
 </plugin>

@@ -9,9 +9,9 @@ import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.model.Bookmark;
 
-public class GotoBookmarkMarker implements IGotoBookmark {
+public class GotoFileMarkerBookmark implements IGotoBookmark {
 
-	public GotoBookmarkMarker() {
+	public GotoFileMarkerBookmark() {
 	}
 
 	@Override

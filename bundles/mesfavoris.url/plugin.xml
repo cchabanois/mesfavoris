@@ -2,23 +2,26 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="mesfavoris.bookmarkType">
-      <propertiesProvider
-            class="mesfavoris.url.UrlBookmarkPropertiesProvider"
-            priority="10">
-      </propertiesProvider>
-      <labelProvider
-            class="mesfavoris.url.UrlBookmarkLabelProvider"
-            priority="10">
-      </labelProvider>
-      <gotoBookmark
-            class="mesfavoris.url.GotoUrlBookmark"
-            priority="10">
-      </gotoBookmark>
-      <locationProvider
-            class="mesfavoris.url.UrlBookmarkLocationProvider"
-            priority="10">
-      </locationProvider>
+         point="mesfavoris.bookmarkTypes">
+      <bookmarkType
+            name="url">
+         <propertiesProvider
+               class="mesfavoris.url.UrlBookmarkPropertiesProvider"
+               priority="10">
+         </propertiesProvider>
+         <labelProvider
+               class="mesfavoris.url.UrlBookmarkLabelProvider"
+               priority="10">
+         </labelProvider>
+         <gotoBookmark
+               class="mesfavoris.url.GotoUrlBookmark"
+               priority="10">
+         </gotoBookmark>
+         <locationProvider
+               class="mesfavoris.url.UrlBookmarkLocationProvider"
+               priority="10">
+         </locationProvider>
+      </bookmarkType>
    </extension>
 
 </plugin>

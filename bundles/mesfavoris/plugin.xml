@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="remoteStorage" name="Remote Bookmarks Storage" schema="schema/remoteStorage.exsd"/>
-   <extension-point id="bookmarkType" name="Defines a bookmark type" schema="schema/bookmarkType.exsd"/>
+   <extension-point id="bookmarkTypes" name="Bookmark Types" schema="schema/bookmarkTypes.exsd"/>
 
    <extension
          point="org.eclipse.ui.views">
@@ -611,21 +611,6 @@
       </handler>
    </extension>
    <extension
-         point="mesfavoris.bookmarkType">
-      <gotoBookmark
-            class="mesfavoris.internal.markers.GotoBookmarkMarker"
-            priority="0">
-      </gotoBookmark>
-      <locationProvider
-            class="mesfavoris.internal.markers.FileMarkerBookmarkLocationProvider"
-            priority="0">
-      </locationProvider>
-      <labelProvider
-            class="mesfavoris.viewers.BookmarkFolderLabelProvider"
-            priority="10">
-      </labelProvider>
-   </extension>
-   <extension
          point="org.eclipse.core.expressions.propertyTesters">
       <propertyTester
             class="mesfavoris.internal.propertytester.BookmarksPropertyTester"
@@ -713,5 +698,40 @@
             commandId="mesfavoris.command.updateFavori"
             icon="icons/bookmark-update.png">
       </image>
+   </extension>
+   <extension
+         point="mesfavoris.bookmarkTypes">
+      <bookmarkType
+            name="default">
+         <gotoBookmark
+               class="mesfavoris.internal.markers.GotoFileMarkerBookmark"
+               priority="0">
+         </gotoBookmark>
+         <locationProvider
+               class="mesfavoris.internal.markers.FileMarkerBookmarkLocationProvider"
+               priority="0">
+         </locationProvider>
+         <labelProvider
+               class="mesfavoris.viewers.BookmarkFolderLabelProvider"
+               priority="10">
+         </labelProvider>
+         <properties>
+            <property
+                  name="name"
+                  type="string"
+                  updatable="false">
+            </property>
+            <property
+                  name="comment"
+                  type="string"
+                  updatable="false">
+            </property>
+            <property
+                  name="created"
+                  type="instant"
+                  updatable="false">
+            </property>
+         </properties>
+      </bookmarkType>
    </extension>
 </plugin>
