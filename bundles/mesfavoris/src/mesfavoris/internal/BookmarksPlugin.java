@@ -22,7 +22,7 @@ import org.osgi.framework.BundleContext;
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
 import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
-import mesfavoris.bookmarktype.IBookmarkPropertyDescriptorProvider;
+import mesfavoris.bookmarktype.IBookmarkPropertyDescriptors;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.internal.adapters.BookmarkAdapterFactory;
 import mesfavoris.internal.bookmarktypes.ImportTeamProjectProvider;
@@ -84,7 +84,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 	private RecentBookmarksDatabase recentBookmarks;
 	private PathPlaceholdersStore pathPlaceholdersStore;
 	private PluginBookmarkTypes pluginBookmarkTypes;
-	
+
 	private final BookmarkAdapterFactory bookmarkAdapterFactory = new BookmarkAdapterFactory();
 	private RemoteBookmarksTreeChangeEventHandler remoteBookmarksTreeChangeEventHandler;
 
@@ -110,7 +110,8 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		bookmarkDatabase = loadBookmarkDatabase(bookmarksFile, bookmarksModificationValidator);
 		pluginBookmarkTypes = new PluginBookmarkTypes();
 		bookmarkLabelProvider = new PluginBookmarkLabelProvider(pluginBookmarkTypes);
-		PluginBookmarkMarkerAttributesProvider bookmarkMarkerAttributesProvider = new PluginBookmarkMarkerAttributesProvider(pluginBookmarkTypes);
+		PluginBookmarkMarkerAttributesProvider bookmarkMarkerAttributesProvider = new PluginBookmarkMarkerAttributesProvider(
+				pluginBookmarkTypes);
 		bookmarkPropertiesProvider = new PluginBookmarkPropertiesProvider(pluginBookmarkTypes);
 		bookmarkLocationProvider = new PluginBookmarkLocationProvider(pluginBookmarkTypes);
 		gotoBookmark = new PluginGotoBookmark(pluginBookmarkTypes);
@@ -141,7 +142,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		recentBookmarks.init();
 		bookmarksService = new BookmarksService(bookmarkDatabase, bookmarkPropertiesProvider,
 				defaultBookmarkFolderProvider, remoteBookmarksStoreManager, bookmarksSaver, bookmarkLocationProvider,
-				gotoBookmark, numberedBookmarks);
+				gotoBookmark, numberedBookmarks, pluginBookmarkTypes);
 		File storeFile = new File(getStateLocation().toFile(), "placeholders.json");
 		pathPlaceholdersStore = new PathPlaceholdersStore(storeFile);
 		pathPlaceholdersStore.init();
@@ -260,10 +261,10 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		return pathPlaceholdersStore;
 	}
 
-	public IBookmarkPropertyDescriptorProvider getBookmarkPropertyDescriptorProvider() {
+	public IBookmarkPropertyDescriptors getBookmarkPropertyDescriptors() {
 		return pluginBookmarkTypes;
 	}
-	
+
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in
 	 * relative path

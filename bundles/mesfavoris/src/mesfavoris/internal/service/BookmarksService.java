@@ -1,7 +1,9 @@
 package mesfavoris.internal.service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
@@ -12,6 +14,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
+import mesfavoris.bookmarktype.IBookmarkPropertyDescriptors;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;
@@ -53,12 +56,14 @@ public class BookmarksService implements IBookmarksService {
 	private final IBookmarkLocationProvider bookmarkLocationProvider;
 	private final IGotoBookmark gotoBookmark;
 	private final NumberedBookmarks numberedBookmarks;
+	private final IBookmarkPropertyDescriptors bookmarkPropertyDescriptors;
 
 	public BookmarksService(BookmarkDatabase bookmarkDatabase, IBookmarkPropertiesProvider bookmarkPropertiesProvider,
 			DefaultBookmarkFolderProvider defaultBookmarkFolderProvider,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
 			IBookmarksDirtyStateTracker bookmarksDirtyStateTracker, IBookmarkLocationProvider bookmarkLocationProvider,
-			IGotoBookmark gotoBookmark, NumberedBookmarks numberedBookmarks) {
+			IGotoBookmark gotoBookmark, NumberedBookmarks numberedBookmarks,
+			IBookmarkPropertyDescriptors bookmarkPropertyDescriptors) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 		this.defaultBookmarkFolderProvider = defaultBookmarkFolderProvider;
@@ -67,6 +72,7 @@ public class BookmarksService implements IBookmarksService {
 		this.bookmarkLocationProvider = bookmarkLocationProvider;
 		this.gotoBookmark = gotoBookmark;
 		this.numberedBookmarks = numberedBookmarks;
+		this.bookmarkPropertyDescriptors = bookmarkPropertyDescriptors;
 	}
 
 	@Override
@@ -204,7 +210,10 @@ public class BookmarksService implements IBookmarksService {
 	@Override
 	public void updateBookmark(BookmarkId bookmarkId, IWorkbenchPart part, ISelection selection,
 			IProgressMonitor monitor) throws BookmarksException {
-		UpdateBookmarkOperation operation = new UpdateBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider);
+		Set<String> nonUpdatableProperties = bookmarkPropertyDescriptors.getPropertyDescriptors().stream()
+				.filter(descriptor -> !descriptor.isUpdatable()).map(descriptor -> descriptor.getName())
+				.collect(Collectors.toSet());
+		UpdateBookmarkOperation operation = new UpdateBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider, nonUpdatableProperties);
 		operation.updateBookmark(bookmarkId, part, selection, monitor);
 	}
 

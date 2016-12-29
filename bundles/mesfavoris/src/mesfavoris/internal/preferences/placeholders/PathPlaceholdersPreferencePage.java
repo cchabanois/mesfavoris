@@ -50,7 +50,7 @@ public class PathPlaceholdersPreferencePage extends PreferencePage implements IW
 		pathPlaceholdersStore = BookmarksPlugin.getDefault().getPathPlaceholdersStore();
 		bookmarkDatabase = BookmarksPlugin.getDefault().getBookmarkDatabase();
 		remoteBookmarksStoreManager = BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager();
-		pathPropertyNames = BookmarksPlugin.getDefault().getBookmarkPropertyDescriptorProvider()
+		pathPropertyNames = BookmarksPlugin.getDefault().getBookmarkPropertyDescriptors()
 				.getPropertyDescriptors().stream()
 				.filter(propertyDescriptor -> propertyDescriptor.getType() == BookmarkPropertyType.PATH)
 				.map(propertyDescriptor -> propertyDescriptor.getName()).collect(Collectors.toList());

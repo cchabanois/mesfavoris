@@ -2,6 +2,7 @@ package mesfavoris.internal.service.operations;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
@@ -9,18 +10,19 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
-import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 
 public class UpdateBookmarkOperation {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
+	private final Set<String> nonUpdatableProperties;
 
 	public UpdateBookmarkOperation(BookmarkDatabase bookmarkDatabase,
-			IBookmarkPropertiesProvider bookmarkPropertiesProvider) {
+			IBookmarkPropertiesProvider bookmarkPropertiesProvider, Set<String> nonUpdatableProperties) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
+		this.nonUpdatableProperties = nonUpdatableProperties;
 	}
 
 	public void updateBookmark(BookmarkId bookmarkId, IWorkbenchPart part, ISelection selection,
@@ -36,18 +38,11 @@ public class UpdateBookmarkOperation {
 	private void updateBookmark(final BookmarkId bookmarkId, Map<String, String> properties) throws BookmarksException {
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
 			properties.forEach((propertyName, propertyValue) -> {
-				if (!isUserEditableProperty(propertyName)) {
+				if (!nonUpdatableProperties.contains(propertyName)) {
 					bookmarksTreeModifier.setPropertyValue(bookmarkId, propertyName, propertyValue);
 				}
 			});
 		});
-	}
-
-	private boolean isUserEditableProperty(String propertyName) {
-		if (Bookmark.PROPERTY_NAME.equals(propertyName) || Bookmark.PROPERTY_COMMENT.equals(propertyName)) {
-			return true;
-		}
-		return false;
 	}
 
 }

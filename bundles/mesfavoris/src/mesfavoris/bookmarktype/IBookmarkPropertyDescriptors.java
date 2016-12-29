@@ -2,7 +2,7 @@ package mesfavoris.bookmarktype;
 
 import java.util.List;
 
-public interface IBookmarkPropertyDescriptorProvider {
+public interface IBookmarkPropertyDescriptors {
 
 	BookmarkPropertyDescriptor getPropertyDescriptor(String propertyName);
 	

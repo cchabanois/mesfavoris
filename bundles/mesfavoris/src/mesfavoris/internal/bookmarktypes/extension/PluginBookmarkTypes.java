@@ -19,12 +19,12 @@ import mesfavoris.bookmarktype.IBookmarkLabelProvider;
 import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.bookmarktype.IBookmarkMarkerAttributesProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
-import mesfavoris.bookmarktype.IBookmarkPropertyDescriptorProvider;
+import mesfavoris.bookmarktype.IBookmarkPropertyDescriptors;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.bookmarktype.IImportTeamProject;
 import mesfavoris.internal.StatusHelper;
 
-public class PluginBookmarkTypes implements IBookmarkPropertyDescriptorProvider {
+public class PluginBookmarkTypes implements IBookmarkPropertyDescriptors {
 	private final static String EXTENSION_POINT = "mesfavoris.bookmarkTypes";
 	private List<PluginBookmarkType> bookmarkTypes;
 

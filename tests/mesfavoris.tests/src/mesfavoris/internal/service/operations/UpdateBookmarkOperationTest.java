@@ -14,7 +14,6 @@ import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPart;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,9 +22,9 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
-import mesfavoris.internal.service.operations.UpdateBookmarkOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
@@ -40,7 +39,8 @@ public class UpdateBookmarkOperationTest {
 	@Before
 	public void setUp() {
 		bookmarkDatabase = new BookmarkDatabase("test", createBookmarksTree());
-		updateBookmarkOperation = new UpdateBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider);
+		updateBookmarkOperation = new UpdateBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider,
+				Sets.newHashSet(Bookmark.PROPERTY_COMMENT, Bookmark.PROPERTY_CREATED, Bookmark.PROPERTY_NAME));
 	}
 
 	@Test
@@ -50,13 +50,13 @@ public class UpdateBookmarkOperationTest {
 		IWorkbenchPart part = mock(IWorkbenchPart.class);
 		doPutPropertiesWhenAddBookmarkPropertiesCalled(bookmarkPropertiesProvider, selection,
 				ImmutableMap.of(Bookmark.PROPERTY_NAME, "bookmark12 renamed", Bookmark.PROPERTY_COMMENT,
-						"comment for bookmark12 modified",
-				"customProperty", "custom value modified", "newProperty", "newCustomValue"));
+						"comment for bookmark12 modified", "customProperty", "custom value modified", "newProperty",
+						"newCustomValue"));
 
 		// When
 		updateBookmarkOperation.updateBookmark(new BookmarkId("bookmark12"), part, selection,
 				new NullProgressMonitor());
-		
+
 		// Then
 		Bookmark bookmark = bookmarkDatabase.getBookmarksTree().getBookmark(new BookmarkId("bookmark12"));
 		assertEquals("bookmark12", bookmark.getPropertyValue(Bookmark.PROPERTY_NAME));
