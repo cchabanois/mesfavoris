@@ -1,4 +1,4 @@
-package mesfavoris.internal.bookmarktypes;
+package mesfavoris.internal.bookmarktypes.extension;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
+import mesfavoris.internal.bookmarktypes.BookmarkLabelProvider;
 import mesfavoris.model.Bookmark;
 
 public class PluginBookmarkLabelProvider extends LabelProvider implements

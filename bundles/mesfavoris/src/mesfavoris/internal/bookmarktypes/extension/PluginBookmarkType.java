@@ -1,19 +1,25 @@
-package mesfavoris.internal.bookmarktypes;
+package mesfavoris.internal.bookmarktypes.extension;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.resource.ImageDescriptor;
 
+import mesfavoris.bookmarktype.BookmarkPropertyDescriptor;
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
 import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.bookmarktype.IBookmarkMarkerAttributesProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.bookmarktype.IImportTeamProject;
+import mesfavoris.bookmarktype.BookmarkPropertyDescriptor.BookmarkPropertyType;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.StatusHelper;
 
@@ -27,6 +33,7 @@ public class PluginBookmarkType {
 	private final Set<IBookmarkLocationProvider> locationProviders = new HashSet<>();;
 	private final Set<IBookmarkMarkerAttributesProvider> markerAttributesProviders = new HashSet<>();
 	private final Set<IImportTeamProject> importTeamProjects = new HashSet<>();
+	private final Map<String, BookmarkPropertyDescriptor> properties = new HashMap<>();
 
 	public PluginBookmarkType(IConfigurationElement bookmarkTypeConfigurationElement) {
 		this.name = bookmarkTypeConfigurationElement.getAttribute("name");
@@ -43,6 +50,7 @@ public class PluginBookmarkType {
 		load(bookmarkTypeConfigurationElement, "locationProvider", locationProviders);
 		load(bookmarkTypeConfigurationElement, "markerAttributesProvider", markerAttributesProviders);
 		load(bookmarkTypeConfigurationElement, "importTeamProject", importTeamProjects);
+		loadAttributes(bookmarkTypeConfigurationElement);
 	}
 
 	private <T> void load(IConfigurationElement bookmarkTypeConfigurationElement, String elementName, Set<T> set) {
@@ -65,6 +73,21 @@ public class PluginBookmarkType {
 			return Integer.parseInt(configurationElement.getAttribute("priority"));
 		} catch (NumberFormatException e) {
 			return 100;
+		}
+	}
+
+	private void loadAttributes(IConfigurationElement bookmarkTypeConfigurationElement) {
+		IConfigurationElement[] propertiesElements = bookmarkTypeConfigurationElement.getChildren("properties");
+		for (IConfigurationElement propertiesElement : propertiesElements) {
+			IConfigurationElement[] propertyElements = propertiesElement.getChildren("property");
+			for (IConfigurationElement propertyElement : propertyElements) {
+				String name = propertyElement.getAttribute("name");
+				BookmarkPropertyType type = BookmarkPropertyType
+						.valueOf(propertyElement.getAttribute("type").toUpperCase());
+				Boolean updatable = Boolean.parseBoolean(propertyElement.getAttribute("updatable"));
+				String description = propertyElement.getAttribute("description");
+				properties.put(name, new BookmarkPropertyDescriptor(name, type, updatable, description));
+			}
 		}
 	}
 
@@ -109,4 +132,12 @@ public class PluginBookmarkType {
 		}
 	}
 
+	public List<BookmarkPropertyDescriptor> getPropertyDescriptors() {
+		return new ArrayList<>(properties.values());
+	}
+	
+	public BookmarkPropertyDescriptor getPropertyDescriptor(String propertyName) {
+		return properties.get(propertyName);
+	}
+	
 }

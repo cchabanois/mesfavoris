@@ -22,15 +22,16 @@ import org.osgi.framework.BundleContext;
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
 import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
+import mesfavoris.bookmarktype.IBookmarkPropertyDescriptorProvider;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.internal.adapters.BookmarkAdapterFactory;
 import mesfavoris.internal.bookmarktypes.ImportTeamProjectProvider;
-import mesfavoris.internal.bookmarktypes.PluginBookmarkLabelProvider;
-import mesfavoris.internal.bookmarktypes.PluginBookmarkLocationProvider;
-import mesfavoris.internal.bookmarktypes.PluginBookmarkMarkerAttributesProvider;
-import mesfavoris.internal.bookmarktypes.PluginBookmarkPropertiesProvider;
-import mesfavoris.internal.bookmarktypes.PluginBookmarkTypes;
-import mesfavoris.internal.bookmarktypes.PluginGotoBookmark;
+import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkLabelProvider;
+import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkLocationProvider;
+import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkMarkerAttributesProvider;
+import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkPropertiesProvider;
+import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkTypes;
+import mesfavoris.internal.bookmarktypes.extension.PluginGotoBookmark;
 import mesfavoris.internal.markers.BookmarksMarkers;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;
 import mesfavoris.internal.persistence.BookmarksAutoSaver;
@@ -82,7 +83,8 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 	private NumberedBookmarks numberedBookmarks;
 	private RecentBookmarksDatabase recentBookmarks;
 	private PathPlaceholdersStore pathPlaceholdersStore;
-
+	private PluginBookmarkTypes pluginBookmarkTypes;
+	
 	private final BookmarkAdapterFactory bookmarkAdapterFactory = new BookmarkAdapterFactory();
 	private RemoteBookmarksTreeChangeEventHandler remoteBookmarksTreeChangeEventHandler;
 
@@ -106,7 +108,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		BookmarksModificationValidator bookmarksModificationValidator = new BookmarksModificationValidator(
 				remoteBookmarksStoreManager);
 		bookmarkDatabase = loadBookmarkDatabase(bookmarksFile, bookmarksModificationValidator);
-		PluginBookmarkTypes pluginBookmarkTypes = new PluginBookmarkTypes();
+		pluginBookmarkTypes = new PluginBookmarkTypes();
 		bookmarkLabelProvider = new PluginBookmarkLabelProvider(pluginBookmarkTypes);
 		PluginBookmarkMarkerAttributesProvider bookmarkMarkerAttributesProvider = new PluginBookmarkMarkerAttributesProvider(pluginBookmarkTypes);
 		bookmarkPropertiesProvider = new PluginBookmarkPropertiesProvider(pluginBookmarkTypes);
@@ -258,6 +260,10 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		return pathPlaceholdersStore;
 	}
 
+	public IBookmarkPropertyDescriptorProvider getBookmarkPropertyDescriptorProvider() {
+		return pluginBookmarkTypes;
+	}
+	
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in
 	 * relative path

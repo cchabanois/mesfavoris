@@ -1,7 +1,5 @@
 package mesfavoris.internal.service.operations;
 
-import static mesfavoris.PathBookmarkProperties.PROP_FILE_PATH;
-
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
@@ -18,10 +16,13 @@ import mesfavoris.placeholders.IPathPlaceholders;
 public class ExpandBookmarksOperation {
 	private final IPathPlaceholderResolver pathPlaceholderResolver;
 	private final BookmarkDatabase bookmarkDatabase;
+	private final List<String> pathPropertyNames;
 
-	public ExpandBookmarksOperation(BookmarkDatabase bookmarkDatabase, IPathPlaceholders pathPlaceholders) {
+	public ExpandBookmarksOperation(BookmarkDatabase bookmarkDatabase, IPathPlaceholders pathPlaceholders,
+			List<String> pathPropertyNames) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.pathPlaceholderResolver = new PathPlaceholderResolver(pathPlaceholders);
+		this.pathPropertyNames = pathPropertyNames;
 	}
 
 	public void expand(List<BookmarkId> bookmarkIds) throws BookmarksException {
@@ -31,14 +32,14 @@ public class ExpandBookmarksOperation {
 
 	private void expand(IBookmarksTreeModifier bookmarksTreeModifier, BookmarkId bookmarkId) {
 		Bookmark bookmark = bookmarksTreeModifier.getCurrentTree().getBookmark(bookmarkId);
-		String filePath = bookmark.getPropertyValue(PROP_FILE_PATH);
-		if (filePath == null) {
-			return;
+		for (String pathPropertyName : pathPropertyNames) {
+			String filePath = bookmark.getPropertyValue(pathPropertyName);
+			if (filePath != null) {
+				IPath path = pathPlaceholderResolver.expand(filePath);
+				if (path != null && !path.toString().equals(filePath)) {
+					bookmarksTreeModifier.setPropertyValue(bookmarkId, pathPropertyName, path.toString());
+				}
+			}
 		}
-		IPath path = pathPlaceholderResolver.expand(filePath);
-		if (path == null || path.toString().equals(filePath)) {
-			return;
-		}
-		bookmarksTreeModifier.setPropertyValue(bookmarkId, PROP_FILE_PATH, path.toString());
 	}
 }

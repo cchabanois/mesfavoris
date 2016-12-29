@@ -2,6 +2,9 @@ package mesfavoris.internal.preferences.placeholders;
 
 import static mesfavoris.internal.Constants.PLACEHOLDER_HOME_NAME;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
@@ -22,6 +25,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+import mesfavoris.bookmarktype.BookmarkPropertyDescriptor.BookmarkPropertyType;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.placeholders.PathPlaceholdersStore;
 import mesfavoris.internal.placeholders.usage.PathPlaceholderUsageDialog;
@@ -39,12 +43,17 @@ public class PathPlaceholdersPreferencePage extends PreferencePage implements IW
 	private BookmarkDatabase bookmarkDatabase;
 	private RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private PathPlaceholderStats pathPlaceholderStats;
-	
+	private List<String> pathPropertyNames;
+
 	@Override
 	public void init(IWorkbench workbench) {
 		pathPlaceholdersStore = BookmarksPlugin.getDefault().getPathPlaceholdersStore();
 		bookmarkDatabase = BookmarksPlugin.getDefault().getBookmarkDatabase();
 		remoteBookmarksStoreManager = BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager();
+		pathPropertyNames = BookmarksPlugin.getDefault().getBookmarkPropertyDescriptorProvider()
+				.getPropertyDescriptors().stream()
+				.filter(propertyDescriptor -> propertyDescriptor.getType() == BookmarkPropertyType.PATH)
+				.map(propertyDescriptor -> propertyDescriptor.getName()).collect(Collectors.toList());
 	}
 
 	@Override
@@ -121,7 +130,7 @@ public class PathPlaceholdersPreferencePage extends PreferencePage implements IW
 		table.setLayoutData(new GridData(GridData.FILL_BOTH));
 		table.setFont(font);
 		placeholdersTableViewer.setContentProvider(new PathPlaceholderContentProvider());
-		pathPlaceholderStats = new PathPlaceholderStats(() -> bookmarkDatabase.getBookmarksTree());
+		pathPlaceholderStats = new PathPlaceholderStats(() -> bookmarkDatabase.getBookmarksTree(), pathPropertyNames);
 		PathPlaceholderTableLabelProvider pathPlaceholderTableLabelProvider = new PathPlaceholderTableLabelProvider(
 				pathPlaceholderStats);
 		placeholdersTableViewer
@@ -188,7 +197,7 @@ public class PathPlaceholdersPreferencePage extends PreferencePage implements IW
 		pathPlaceholderStats.refresh();
 		placeholdersTableViewer.refresh();
 	}
-	
+
 	protected void handleNewButtonSelected() {
 		PathPlaceholderCreationDialog dialog = new PathPlaceholderCreationDialog(getShell(), pathPlaceholdersStore,
 				null);
@@ -202,7 +211,7 @@ public class PathPlaceholdersPreferencePage extends PreferencePage implements IW
 	private void handleApplyButtonSelected() {
 		PathPlaceholderUsageDialog pathPlaceholderUsageDialog = new PathPlaceholderUsageDialog(getShell(),
 				bookmarkDatabase, remoteBookmarksStoreManager, pathPlaceholdersStore,
-				getSelectedPathPlaceholder().getName());
+				getSelectedPathPlaceholder().getName(), pathPropertyNames);
 		pathPlaceholderUsageDialog.open();
 		refresh();
 	}

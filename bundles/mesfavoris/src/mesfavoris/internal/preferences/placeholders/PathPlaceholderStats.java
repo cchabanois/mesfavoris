@@ -1,21 +1,23 @@
 package mesfavoris.internal.preferences.placeholders;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Provider;
 
-import mesfavoris.PathBookmarkProperties;
 import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarksTree;
 
 public class PathPlaceholderStats {
 	private Map<String, Integer> stats = new ConcurrentHashMap<>();
-	private Provider<BookmarksTree> bookmarksTreeProvider;
+	private final Provider<BookmarksTree> bookmarksTreeProvider;
+	private final List<String> pathPropertyNames;
 
-	public PathPlaceholderStats(Provider<BookmarksTree> bookmarksTreeProvider) {
+	public PathPlaceholderStats(Provider<BookmarksTree> bookmarksTreeProvider, List<String> pathPropertyNames) {
 		this.bookmarksTreeProvider = bookmarksTreeProvider;
+		this.pathPropertyNames = pathPropertyNames;
 		refresh();
 	}
 
@@ -27,11 +29,13 @@ public class PathPlaceholderStats {
 		BookmarksTree bookmarksTree = bookmarksTreeProvider.get();
 		stats.clear();
 		for (Bookmark bookmark : bookmarksTree) {
-			String filePath = bookmark.getPropertyValue(PathBookmarkProperties.PROP_FILE_PATH);
-			if (filePath != null) {
-				String placeholderName = PathPlaceholderResolver.getPlaceholderName(filePath);
-				if (placeholderName != null) {
-					incrementPlaceholderNameCount(placeholderName);
+			for (String pathPropertyName : pathPropertyNames) {
+				String path = bookmark.getPropertyValue(pathPropertyName);
+				if (path != null) {
+					String placeholderName = PathPlaceholderResolver.getPlaceholderName(path);
+					if (placeholderName != null) {
+						incrementPlaceholderNameCount(placeholderName);
+					}
 				}
 			}
 		}

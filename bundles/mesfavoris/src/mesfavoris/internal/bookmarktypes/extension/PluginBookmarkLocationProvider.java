@@ -1,4 +1,4 @@
-package mesfavoris.internal.bookmarktypes;
+package mesfavoris.internal.bookmarktypes.extension;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IBookmarkLocationProvider;
+import mesfavoris.internal.bookmarktypes.BookmarkLocationProvider;
 import mesfavoris.model.Bookmark;
 
 public class PluginBookmarkLocationProvider implements IBookmarkLocationProvider {

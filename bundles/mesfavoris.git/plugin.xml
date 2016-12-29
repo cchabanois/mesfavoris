@@ -34,6 +34,41 @@
                class="mesfavoris.git.GotoRepositoryCommitBookmark"
                priority="10">
          </gotoBookmark>
+         <properties>
+            <property
+                  description="name of the git branch"
+                  name="git.branch"
+                  type="string"
+                  updatable="true">
+            </property>
+            <property
+                  name="git.url"
+                  type="string"
+                  updatable="true">
+            </property>
+            <property
+                  name="git.projectPath"
+                  type="string"
+                  updatable="true">
+            </property>
+            <property
+                  name="git.repositoryDir"
+                  type="path"
+                  updatable="true">
+            </property>
+            <property
+                  description="the remote urls"
+                  name="git.remoteUrls"
+                  type="string"
+                  updatable="true">
+            </property>
+            <property
+                  description="the commit id of the commit"
+                  name="git.commitId"
+                  type="string"
+                  updatable="true">
+            </property>
+         </properties>
       </bookmarkType>
    </extension>
 

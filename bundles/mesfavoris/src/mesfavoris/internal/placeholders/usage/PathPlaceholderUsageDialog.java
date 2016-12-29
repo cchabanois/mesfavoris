@@ -1,7 +1,5 @@
 package mesfavoris.internal.placeholders.usage;
 
-import static mesfavoris.PathBookmarkProperties.*;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,6 +44,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 	private final IPathPlaceholders pathPlaceholders;
 	private final String pathPlaceholderName;
 	private final IBookmarkLabelProvider bookmarkLabelProvider;
+	private final List<String> pathPropertyNames;
 	private TableViewer collapsableBookmarksViewer;
 	private TableViewer collapsedBookmarksViewer;
 	private Button addButton;
@@ -55,7 +54,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 
 	public PathPlaceholderUsageDialog(Shell parentShell, BookmarkDatabase bookmarkDatabase,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager, IPathPlaceholders pathPlaceholders,
-			String pathPlaceholderName) {
+			String pathPlaceholderName, List<String> pathPropertyNames) {
 		super(parentShell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.bookmarkDatabase = bookmarkDatabase;
@@ -63,6 +62,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 		this.pathPlaceholders = pathPlaceholders;
 		this.pathPlaceholderName = pathPlaceholderName;
 		this.bookmarkLabelProvider = BookmarksPlugin.getDefault().getBookmarkLabelProvider();
+		this.pathPropertyNames = pathPropertyNames;
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 
 		collapsableBookmarksViewer = new TableViewer(table);
 		BookmarksPathLabelProvider bookmarksLabelProvider = new BookmarksPathLabelProvider(bookmarkDatabase,
-				remoteBookmarksStoreManager, bookmarkLabelProvider);
+				remoteBookmarksStoreManager, bookmarkLabelProvider, pathPropertyNames);
 		collapsableBookmarksViewer.setLabelProvider(bookmarksLabelProvider);
 		collapsableBookmarksViewer.setContentProvider(new CollapsableBookmarksContentProvider());
 		collapsableBookmarksViewer.setInput(bookmarkDatabase);
@@ -213,7 +213,8 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 	}
 
 	private void handleAddButtonSelected() {
-		CollapseBookmarksOperation operation = new CollapseBookmarksOperation(bookmarkDatabase, pathPlaceholders);
+		CollapseBookmarksOperation operation = new CollapseBookmarksOperation(bookmarkDatabase, pathPlaceholders,
+				pathPropertyNames);
 		try {
 			operation.collapse(getSelectedCollapsableBookmarks(), pathPlaceholderName);
 			refresh();
@@ -223,7 +224,8 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 	}
 
 	private void handleAddAllButtonSelected() {
-		CollapseBookmarksOperation operation = new CollapseBookmarksOperation(bookmarkDatabase, pathPlaceholders);
+		CollapseBookmarksOperation operation = new CollapseBookmarksOperation(bookmarkDatabase, pathPlaceholders,
+				pathPropertyNames);
 		List<BookmarkId> allBookmarkIds = getAllBookmarksFromTable(collapsableBookmarksViewer);
 		try {
 			operation.collapse(allBookmarkIds, pathPlaceholderName);
@@ -239,7 +241,8 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 	}
 
 	private void handleRemoveButtonSelected() {
-		ExpandBookmarksOperation operation = new ExpandBookmarksOperation(bookmarkDatabase, pathPlaceholders);
+		ExpandBookmarksOperation operation = new ExpandBookmarksOperation(bookmarkDatabase, pathPlaceholders,
+				pathPropertyNames);
 		try {
 			operation.expand(getSelectedCollapsedBookmarks());
 			refresh();
@@ -249,7 +252,8 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 	}
 
 	private void handleRemoveAllButtonSelected() {
-		ExpandBookmarksOperation operation = new ExpandBookmarksOperation(bookmarkDatabase, pathPlaceholders);
+		ExpandBookmarksOperation operation = new ExpandBookmarksOperation(bookmarkDatabase, pathPlaceholders,
+				pathPropertyNames);
 		List<BookmarkId> allBookmarkIds = getAllBookmarksFromTable(collapsedBookmarksViewer);
 		try {
 			operation.expand(allBookmarkIds);
@@ -278,7 +282,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 
 		collapsedBookmarksViewer = new TableViewer(table);
 		BookmarksPathLabelProvider bookmarksLabelProvider = new BookmarksPathLabelProvider(bookmarkDatabase,
-				remoteBookmarksStoreManager, bookmarkLabelProvider);
+				remoteBookmarksStoreManager, bookmarkLabelProvider, pathPropertyNames);
 		collapsedBookmarksViewer.setLabelProvider(bookmarksLabelProvider);
 		collapsedBookmarksViewer.setContentProvider(new CollapsedBookmarksContentProvider());
 		collapsedBookmarksViewer.setInput(bookmarkDatabase);
@@ -311,7 +315,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 		public Object[] getElements(Object inputElement) {
 			BookmarkDatabase bookmarkDatabase = (BookmarkDatabase) inputElement;
 			CollapsableBookmarksProvider collapsableBookmarksProvider = new CollapsableBookmarksProvider(
-					new PathPlaceholderResolver(pathPlaceholders), pathPlaceholderName);
+					new PathPlaceholderResolver(pathPlaceholders), pathPropertyNames, pathPlaceholderName);
 
 			return collapsableBookmarksProvider.getCollapsableBookmarks(bookmarkDatabase.getBookmarksTree()).toArray();
 		}
@@ -334,12 +338,21 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 
 			List<Bookmark> collapsedBookmarks = StreamSupport
 					.stream(bookmarkDatabase.getBookmarksTree().spliterator(), false)
-					.filter(bookmark -> bookmark.getPropertyValue(PROP_FILE_PATH) != null
-							&& pathPlaceholderName.equals(PathPlaceholderResolver.getPlaceholderName(
-									bookmark.getPropertyValue(PROP_FILE_PATH))))
+					.filter(bookmark -> hasCollapsedProperty(bookmark))
 					.collect(Collectors.toList());
 
 			return collapsedBookmarks.toArray();
+		}
+
+		private boolean hasCollapsedProperty(Bookmark bookmark) {
+			for (String pathPropertyName : pathPropertyNames) {
+				String propertyValue = bookmark.getPropertyValue(pathPropertyName);
+				if (propertyValue != null
+						&& pathPlaceholderName.equals(PathPlaceholderResolver.getPlaceholderName(propertyValue))) {
+					return true;
+				}
+			}
+			return false;
 		}
 
 	}

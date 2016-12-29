@@ -1,7 +1,5 @@
 package mesfavoris.internal.service.operations;
 
-import static mesfavoris.PathBookmarkProperties.PROP_FILE_PATH;
-
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
@@ -18,10 +16,13 @@ import mesfavoris.placeholders.IPathPlaceholders;
 public class CollapseBookmarksOperation {
 	private final IPathPlaceholderResolver pathPlaceholderResolver;
 	private final BookmarkDatabase bookmarkDatabase;
+	private final List<String> pathPropertyNames;
 
-	public CollapseBookmarksOperation(BookmarkDatabase bookmarkDatabase, IPathPlaceholders pathPlaceholders) {
+	public CollapseBookmarksOperation(BookmarkDatabase bookmarkDatabase, IPathPlaceholders pathPlaceholders,
+			List<String> pathPropertyNames) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.pathPlaceholderResolver = new PathPlaceholderResolver(pathPlaceholders);
+		this.pathPropertyNames = pathPropertyNames;
 	}
 
 	public void collapse(List<BookmarkId> bookmarkIds, String... placeholderNames) throws BookmarksException {
@@ -29,17 +30,19 @@ public class CollapseBookmarksOperation {
 				.forEach(bookmarkId -> collapse(bookmarksTreeModifier, bookmarkId, placeholderNames)));
 	}
 
-	private void collapse(IBookmarksTreeModifier bookmarksTreeModifier, BookmarkId bookmarkId, String... placeholderNames) {
+	private void collapse(IBookmarksTreeModifier bookmarksTreeModifier, BookmarkId bookmarkId,
+			String... placeholderNames) {
 		Bookmark bookmark = bookmarksTreeModifier.getCurrentTree().getBookmark(bookmarkId);
-		String filePath = bookmark.getPropertyValue(PROP_FILE_PATH);
-		if (filePath == null) {
-			return;
+		for (String pathPropertyName : pathPropertyNames) {
+			String path = bookmark.getPropertyValue(pathPropertyName);
+			if (path != null) {
+				IPath expandedPath = pathPlaceholderResolver.expand(path);
+				if (expandedPath != null) {
+					String collapsedPath = pathPlaceholderResolver.collapse(expandedPath, placeholderNames);
+					bookmarksTreeModifier.setPropertyValue(bookmarkId, pathPropertyName, collapsedPath);
+				}
+			}
 		}
-		IPath path = pathPlaceholderResolver.expand(filePath);
-		if (path == null) {
-			return;
-		}
-		String collapsedPath = pathPlaceholderResolver.collapse(path, placeholderNames);
-		bookmarksTreeModifier.setPropertyValue(bookmarkId, PROP_FILE_PATH, collapsedPath);
 	}
+
 }

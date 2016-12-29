@@ -3,6 +3,7 @@ package mesfavoris.internal.service.operations;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FILE_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Path;
@@ -20,11 +21,13 @@ import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.placeholders.PathPlaceholder;
+import mesfavoris.texteditor.TextEditorBookmarkProperties;
 
 public class ExpandBookmarksOperationTest {
 
 	private final PathPlaceholdersMap pathPlaceholders = new PathPlaceholdersMap();
 	private ExpandBookmarksOperation expandBookmarksOperation;
+	private final List<String> pathPropertyNames = Lists.newArrayList(TextEditorBookmarkProperties.PROP_FILE_PATH);
 
 	@Before
 	public void setUp() {
@@ -45,7 +48,7 @@ public class ExpandBookmarksOperationTest {
 		// Given
 		Bookmark bookmark = bookmark("bookmark", "${BLT}/myfile.txt");
 		BookmarkDatabase bookmarkDatabase = getBookmarkDatabase(bookmark);
-		expandBookmarksOperation = new ExpandBookmarksOperation(bookmarkDatabase, pathPlaceholders);
+		expandBookmarksOperation = new ExpandBookmarksOperation(bookmarkDatabase, pathPlaceholders, pathPropertyNames);
 
 		// When
 		expandBookmarksOperation.expand(Lists.newArrayList(bookmark.getId()));

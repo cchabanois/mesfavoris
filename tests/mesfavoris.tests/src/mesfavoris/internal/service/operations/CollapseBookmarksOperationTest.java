@@ -3,6 +3,7 @@ package mesfavoris.internal.service.operations;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FILE_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Path;
@@ -20,11 +21,14 @@ import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.placeholders.PathPlaceholder;
+import mesfavoris.texteditor.TextEditorBookmarkProperties;
 
 public class CollapseBookmarksOperationTest {
 	private final PathPlaceholdersMap pathPlaceholders = new PathPlaceholdersMap();
 	private CollapseBookmarksOperation collapseBookmarksOperation;
+	private final List<String> pathPropertyNames = Lists.newArrayList(TextEditorBookmarkProperties.PROP_FILE_PATH);
 
+	
 	@Before
 	public void setUp() {
 		pathPlaceholders.add(new PathPlaceholder("HOME", new Path("/home/cchabanois")));
@@ -44,7 +48,7 @@ public class CollapseBookmarksOperationTest {
 		// Given
 		Bookmark bookmark = bookmark("bookmark", "/home/cchabanois/blt/myfile.txt");
 		BookmarkDatabase bookmarkDatabase = getBookmarkDatabase(bookmark);
-		collapseBookmarksOperation = new CollapseBookmarksOperation(bookmarkDatabase, pathPlaceholders);
+		collapseBookmarksOperation = new CollapseBookmarksOperation(bookmarkDatabase, pathPlaceholders, pathPropertyNames);
 
 		// When
 		collapseBookmarksOperation.collapse(Lists.newArrayList(bookmark.getId()));
@@ -58,7 +62,7 @@ public class CollapseBookmarksOperationTest {
 		// Given
 		Bookmark bookmark = bookmark("bookmark", "${HOME}/blt/myfile.txt");
 		BookmarkDatabase bookmarkDatabase = getBookmarkDatabase(bookmark);
-		collapseBookmarksOperation = new CollapseBookmarksOperation(bookmarkDatabase, pathPlaceholders);
+		collapseBookmarksOperation = new CollapseBookmarksOperation(bookmarkDatabase, pathPlaceholders, pathPropertyNames);
 
 		// When
 		collapseBookmarksOperation.collapse(Lists.newArrayList(bookmark.getId()));

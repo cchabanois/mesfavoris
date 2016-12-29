@@ -22,6 +22,7 @@ import mesfavoris.texteditor.TextEditorBookmarkProperties;
 public class CollapsableBookmarksProviderTest {
 	private final PathPlaceholdersMap mappings = new PathPlaceholdersMap();
 	private final IPathPlaceholderResolver pathPlaceholderResolver = new PathPlaceholderResolver(mappings);
+	private final List<String> pathPropertyNames = Lists.newArrayList(TextEditorBookmarkProperties.PROP_FILE_PATH);
 
 	@Test
 	public void testCollapsableBookmarks() {
@@ -32,7 +33,7 @@ public class CollapsableBookmarksProviderTest {
 		Bookmark bookmark2 = bookmark("bookmark2", "${HOME}/blt/file2.txt");
 		Bookmark bookmark3 = bookmark("bookmark3", "${HOME}/file3.txt");
 		CollapsableBookmarksProvider collapsableBookmarksProvider = new CollapsableBookmarksProvider(
-				pathPlaceholderResolver, "BLT");
+				pathPlaceholderResolver, pathPropertyNames, "BLT");
 
 		// When
 		List<Bookmark> collapsableBookmarks = collapsableBookmarksProvider
@@ -48,7 +49,7 @@ public class CollapsableBookmarksProviderTest {
 		mappings.add(new PathPlaceholder("HOME", new Path("/home/cchabanois")));
 		Bookmark bookmark3 = bookmark("bookmark3", "${HOME}/file3.txt");
 		CollapsableBookmarksProvider collapsableBookmarksProvider = new CollapsableBookmarksProvider(
-				pathPlaceholderResolver, "HOME");
+				pathPlaceholderResolver, pathPropertyNames, "HOME");
 
 		// When
 		List<Bookmark> collapsableBookmarks = collapsableBookmarksProvider

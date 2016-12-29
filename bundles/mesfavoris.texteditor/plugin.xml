@@ -57,6 +57,38 @@
                class="mesfavoris.texteditor.internal.FolderBookmarkLabelProvider"
                priority="10">
          </labelProvider>
+         <properties>
+            <property
+                  name="filePath"
+                  type="path"
+                  updatable="true">
+            </property>
+            <property
+                  name="folderPath"
+                  type="path"
+                  updatable="true">
+            </property>
+            <property
+                  name="lineNumber"
+                  type="int"
+                  updatable="true">
+            </property>
+            <property
+                  name="workspacePath"
+                  type="string"
+                  updatable="true">
+            </property>
+            <property
+                  name="projectName"
+                  type="string"
+                  updatable="true">
+            </property>
+            <property
+                  name="lineContent"
+                  type="string"
+                  updatable="true">
+            </property>
+         </properties>
       </bookmarkType>
    </extension>
 

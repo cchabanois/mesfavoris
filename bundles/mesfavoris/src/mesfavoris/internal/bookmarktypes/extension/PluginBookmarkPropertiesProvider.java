@@ -1,4 +1,4 @@
-package mesfavoris.internal.bookmarktypes;
+package mesfavoris.internal.bookmarktypes.extension;
 
 import java.util.List;
 import java.util.Map;
@@ -8,6 +8,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
+import mesfavoris.internal.bookmarktypes.BookmarkPropertiesProvider;
 
 public class PluginBookmarkPropertiesProvider implements IBookmarkPropertiesProvider {
 	private final PluginBookmarkTypes pluginBookmarkTypes;

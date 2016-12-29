@@ -1,4 +1,4 @@
-package mesfavoris.internal.bookmarktypes;
+package mesfavoris.internal.bookmarktypes.extension;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 
 import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IGotoBookmark;
+import mesfavoris.internal.bookmarktypes.GotoBookmark;
 import mesfavoris.model.Bookmark;
 
 public class PluginGotoBookmark implements IGotoBookmark {

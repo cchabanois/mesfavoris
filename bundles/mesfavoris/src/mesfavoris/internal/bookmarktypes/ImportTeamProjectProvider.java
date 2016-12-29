@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import mesfavoris.bookmarktype.IImportTeamProject;
+import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkTypes;
 import mesfavoris.model.Bookmark;
 
 public class ImportTeamProjectProvider {

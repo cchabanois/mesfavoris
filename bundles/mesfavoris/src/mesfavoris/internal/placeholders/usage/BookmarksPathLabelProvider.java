@@ -1,6 +1,6 @@
 package mesfavoris.internal.placeholders.usage;
 
-import static mesfavoris.PathBookmarkProperties.PROP_FILE_PATH;
+import java.util.List;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
@@ -44,12 +44,14 @@ public class BookmarksPathLabelProvider extends StyledCellLabelProvider implemen
 	private final Color commentColor;
 	private final StylerProvider stylerProvider = new StylerProvider();
 	private final Color disabledColor;
-
+	private final List<String> pathPropertyNames;
+	
 	public BookmarksPathLabelProvider(BookmarkDatabase bookmarkDatabase,
-			RemoteBookmarksStoreManager remoteBookmarksStoreManager, IBookmarkLabelProvider bookmarkLabelProvider) {
+			RemoteBookmarksStoreManager remoteBookmarksStoreManager, IBookmarkLabelProvider bookmarkLabelProvider, List<String> pathPropertyNames) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
 		this.bookmarkLabelProvider = bookmarkLabelProvider;
+		this.pathPropertyNames = pathPropertyNames;
 		this.disabledColor = PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_GRAY);
 		this.commentColor = new Color(PlatformUI.getWorkbench().getDisplay(), 63, 127, 95);
 	}
@@ -65,7 +67,7 @@ public class BookmarksPathLabelProvider extends StyledCellLabelProvider implemen
 
 	public StyledString getStyledText(final Object element) {
 		Bookmark bookmark = (Bookmark) AdapterUtils.getAdapter(element, Bookmark.class);
-		String filePath = bookmark.getPropertyValue(PROP_FILE_PATH);
+		String path = getPath(bookmark);
 		boolean isDisabled = isUnderDisconnectedRemoteBookmarkFolder(bookmark);
 		StyledString styledString = new StyledString();
 		styledString.append(bookmarkLabelProvider.getStyledText(bookmark));
@@ -78,17 +80,27 @@ public class BookmarksPathLabelProvider extends StyledCellLabelProvider implemen
 			styledString.setStyle(0, styledString.length(), stylerProvider.getStyler(font, color, null));
 		}
 
-		if (filePath != null) {
+		if (path != null) {
 			Color color = commentColor;
 			Font font = null;
 			if (isDisabled) {
 				color = disabledColor;
 			}
-			styledString.append(" - " + filePath, stylerProvider.getStyler(font, color, null));
+			styledString.append(" - " + path, stylerProvider.getStyler(font, color, null));
 		}
 		return styledString;
 	}
 
+	private String getPath(Bookmark bookmark) {
+		for (String pathPropertyName : pathPropertyNames) {
+			String path = bookmark.getPropertyValue(pathPropertyName);
+			if (path != null) {
+				return path;
+			}
+		}
+		return null;
+	}
+	
 	private boolean isUnderDisconnectedRemoteBookmarkFolder(Bookmark bookmark) {
 		RemoteBookmarkFolder remoteBookmarkFolder = remoteBookmarksStoreManager
 				.getRemoteBookmarkFolderContaining(bookmarkDatabase.getBookmarksTree(), bookmark.getId());

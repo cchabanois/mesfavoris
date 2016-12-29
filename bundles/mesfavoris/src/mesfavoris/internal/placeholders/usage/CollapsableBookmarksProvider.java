@@ -1,7 +1,5 @@
 package mesfavoris.internal.placeholders.usage;
 
-import static mesfavoris.PathBookmarkProperties.PROP_FILE_PATH;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -21,10 +19,12 @@ import mesfavoris.placeholders.IPathPlaceholderResolver;
 public class CollapsableBookmarksProvider {
 	private final String pathPlaceholderName;
 	private final IPathPlaceholderResolver pathPlaceholderResolver;
-
-	public CollapsableBookmarksProvider(IPathPlaceholderResolver pathPlaceholderResolver, String pathPlaceholderName) {
+	private final List<String> pathPropertyNames;
+	
+	public CollapsableBookmarksProvider(IPathPlaceholderResolver pathPlaceholderResolver, List<String> pathPropertyNames, String pathPlaceholderName) {
 		this.pathPlaceholderName = pathPlaceholderName;
 		this.pathPlaceholderResolver = pathPlaceholderResolver;
+		this.pathPropertyNames = pathPropertyNames;
 	}
 
 	public List<Bookmark> getCollapsableBookmarks(Iterable<Bookmark> bookmarks) {
@@ -33,7 +33,16 @@ public class CollapsableBookmarksProvider {
 	}
 
 	private boolean isCollapsable(Bookmark bookmark) {
-		String filePath = bookmark.getPropertyValue(PROP_FILE_PATH);
+		for (String pathPropertyName : pathPropertyNames) {
+			if (isCollapsable(bookmark, pathPropertyName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean isCollapsable(Bookmark bookmark, String propertyName) {
+		String filePath = bookmark.getPropertyValue(propertyName);
 		if (filePath == null) {
 			return false;
 		}

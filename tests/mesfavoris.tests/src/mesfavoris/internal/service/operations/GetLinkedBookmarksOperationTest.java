@@ -33,8 +33,8 @@ import com.google.common.collect.Lists;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.commons.ui.wizards.datatransfer.BundleProjectImportOperation;
-import mesfavoris.internal.bookmarktypes.PluginBookmarkMarkerAttributesProvider;
-import mesfavoris.internal.bookmarktypes.PluginBookmarkTypes;
+import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkMarkerAttributesProvider;
+import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkTypes;
 import mesfavoris.internal.markers.BookmarksMarkers;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
