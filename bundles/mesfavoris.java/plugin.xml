@@ -37,6 +37,33 @@
                class="mesfavoris.java.GotoJavaBookmarkMarker"
                priority="10">
          </gotoBookmark>
+         <properties>
+            <property
+                  name="java.lineNumberInsideElement"
+                  type="string"
+                  updatable="true">
+            </property>
+            <property
+                  name="java.elementName"
+                  type="string"
+                  updatable="true">
+            </property>
+            <property
+                  name="java.declaringType"
+                  type="string"
+                  updatable="true">
+            </property>
+            <property
+                  name="java.elementKind"
+                  type="string"
+                  updatable="true">
+            </property>
+            <property
+                  name="java.methodSignature"
+                  type="string"
+                  updatable="true">
+            </property>
+         </properties>
       </bookmarkType>
    </extension>
 

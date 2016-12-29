@@ -30,6 +30,23 @@
                class="mesfavoris.perforce.GotoChangelistBookmark"
                priority="10">
          </gotoBookmark>
+         <properties>
+            <property
+                  name="p4.port"
+                  type="string"
+                  updatable="true">
+            </property>
+            <property
+                  name="p4.path"
+                  type="string"
+                  updatable="true">
+            </property>
+            <property
+                  name="p4.changelist"
+                  type="string"
+                  updatable="true">
+            </property>
+         </properties>
       </bookmarkType>
    </extension>
 

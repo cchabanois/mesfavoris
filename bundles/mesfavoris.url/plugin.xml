@@ -21,6 +21,18 @@
                class="mesfavoris.url.UrlBookmarkLocationProvider"
                priority="10">
          </locationProvider>
+         <properties>
+            <property
+                  name="url"
+                  type="string"
+                  updatable="true">
+            </property>
+            <property
+                  name="favIcon"
+                  type="string"
+                  updatable="true">
+            </property>
+         </properties>
       </bookmarkType>
    </extension>
 
