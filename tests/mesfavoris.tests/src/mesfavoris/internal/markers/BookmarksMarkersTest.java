@@ -28,7 +28,7 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 
-public class BookmarkMarkersTest {
+public class BookmarksMarkersTest {
 	public static final String PROP_LINE_NUMBER = "lineNumber";
 	public static final String PROP_WORKSPACE_PATH = "workspacePath";
 	private IBookmarksMarkers bookmarksMarkers;

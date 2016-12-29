@@ -1,4 +1,4 @@
-package mesfavoris.placeholders;
+package mesfavoris.internal.placeholders;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -9,6 +9,8 @@ import org.junit.Test;
 
 import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.internal.placeholders.PathPlaceholdersMap;
+import mesfavoris.placeholders.IPathPlaceholderResolver;
+import mesfavoris.placeholders.PathPlaceholder;
 
 public class PathPlaceholderResolverTest {
 	private final PathPlaceholdersMap mappings = new PathPlaceholdersMap();

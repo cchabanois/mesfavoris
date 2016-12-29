@@ -1,4 +1,4 @@
-package mesfavoris.internal.bookmarktypes;
+package mesfavoris.internal.bookmarktypes.extension;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

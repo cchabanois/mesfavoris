@@ -1,4 +1,4 @@
-package mesfavoris.placeholders;
+package mesfavoris.internal.placeholders;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import mesfavoris.internal.placeholders.PathPlaceholdersStore;
+import mesfavoris.placeholders.PathPlaceholder;
 
 public class PathPlaceholdersStoreTest {
 	private PathPlaceholdersStore pathPlaceholdersStore;
