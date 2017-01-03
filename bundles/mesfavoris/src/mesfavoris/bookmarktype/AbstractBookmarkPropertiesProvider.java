@@ -41,6 +41,9 @@ public abstract class AbstractBookmarkPropertiesProvider implements IBookmarkPro
 	 * @return the current text editor or null if none
 	 */
 	protected ITextEditor getTextEditor(IWorkbenchPart part) {
+		if (part == null) {
+			return null;
+		}
 		ITextEditor[] textEditor = new ITextEditor[1];
 		part.getSite().getWorkbenchWindow().getShell().getDisplay().syncExec(() -> {
 			textEditor[0] = AdapterUtils.getAdapter(part, ITextEditor.class);
