@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="mesfavoris.bookmarkTypes">
+      <bookmarkType
+            name="path">
+         <labelProvider
+               class="mesfavoris.texteditor.internal.FolderBookmarkLabelProvider"
+               priority="10">
+         </labelProvider>
+         <locationProvider
+               class="mesfavoris.texteditor.internal.ExternalFolderBookmarkLocationProvider"
+               priority="10">
+         </locationProvider>
+         <propertiesProvider
+               class="mesfavoris.texteditor.internal.ExternalFolderBookmarkPropertiesProvider"
+               priority="10">
+         </propertiesProvider>
+         <gotoBookmark
+               class="mesfavoris.texteditor.internal.GotoExternalFolderBookmark"
+               priority="10">
+         </gotoBookmark>
+         <properties>
+            <property
+                  name="filePath"
+                  type="path"
+                  updatable="true">
+            </property>
+            <property
+                  name="folderPath"
+                  type="path"
+                  updatable="true">
+            </property>
+         </properties>
+      </bookmarkType>
+   </extension>
+
+</plugin>

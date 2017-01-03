@@ -1,4 +1,4 @@
-package mesfavoris.texteditor.internal;
+package mesfavoris.path.internal;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.statushandlers.StatusManager;

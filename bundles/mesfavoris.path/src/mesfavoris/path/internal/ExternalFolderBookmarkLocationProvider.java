@@ -1,15 +1,16 @@
-package mesfavoris.texteditor.internal;
+package mesfavoris.path.internal;
 
-import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FOLDER_PATH;
+import static mesfavoris.path.PathBookmarkProperties.PROP_FOLDER_PATH;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import mesfavoris.MesFavoris;
+import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.placeholders.IPathPlaceholderResolver;
 
-public class ExternalFolderBookmarkLocationProvider extends AbstractFileBookmarkLocationProvider {
+public class ExternalFolderBookmarkLocationProvider implements IBookmarkLocationProvider {
 
 	private final IPathPlaceholderResolver pathPlaceholderResolver;
 

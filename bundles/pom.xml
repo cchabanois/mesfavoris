@@ -19,6 +19,7 @@
 		<module>mesfavoris.git</module>
 		<module>mesfavoris.java</module>
 		<module>mesfavoris.perforce</module>
+		<module>mesfavoris.path</module>
 		<module>mesfavoris.texteditor</module>
 		<module>mesfavoris.url</module>
 		<module>mesfavoris.commons</module>

@@ -1,4 +1,4 @@
-package mesfavoris.texteditor.internal;
+package mesfavoris.path.internal;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

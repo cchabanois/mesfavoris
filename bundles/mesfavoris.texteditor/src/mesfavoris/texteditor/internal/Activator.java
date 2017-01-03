@@ -1,4 +1,4 @@
-package mesfavoris.texteditor;
+package mesfavoris.texteditor.internal;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;

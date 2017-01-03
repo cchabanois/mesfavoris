@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Path
+Bundle-SymbolicName: mesfavoris.path;singleton:=true
+Bundle-Version: 1.2.0.qualifier
+Bundle-Activator: mesfavoris.path.internal.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ mesfavoris;bundle-version="1.2.0",
+ mesfavoris.commons;bundle-version="1.2.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: mesfavoris.path

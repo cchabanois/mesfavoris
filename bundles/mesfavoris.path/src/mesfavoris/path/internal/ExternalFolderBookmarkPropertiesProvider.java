@@ -1,7 +1,7 @@
-package mesfavoris.texteditor.internal;
+package mesfavoris.path.internal;
 
-import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROPERTY_NAME;
-import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FOLDER_PATH;
+import static mesfavoris.path.PathBookmarkProperties.PROPERTY_NAME;
+import static mesfavoris.path.PathBookmarkProperties.PROP_FOLDER_PATH;
 
 import java.util.Map;
 

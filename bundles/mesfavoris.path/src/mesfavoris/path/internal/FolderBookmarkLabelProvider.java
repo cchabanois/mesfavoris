@@ -1,6 +1,6 @@
-package mesfavoris.texteditor.internal;
+package mesfavoris.path.internal;
 
-import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FOLDER_PATH;
+import static mesfavoris.path.PathBookmarkProperties.PROP_FOLDER_PATH;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
@@ -10,7 +10,6 @@ import org.eclipse.swt.graphics.Image;
 
 import mesfavoris.bookmarktype.AbstractBookmarkLabelProvider;
 import mesfavoris.model.Bookmark;
-import mesfavoris.texteditor.Activator;
 
 public class FolderBookmarkLabelProvider extends AbstractBookmarkLabelProvider {
 	private final ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
