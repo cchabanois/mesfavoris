@@ -6,19 +6,19 @@
       <bookmarkType
             name="path">
          <labelProvider
-               class="mesfavoris.texteditor.internal.FolderBookmarkLabelProvider"
+               class="mesfavoris.path.internal.FolderBookmarkLabelProvider"
                priority="10">
          </labelProvider>
          <locationProvider
-               class="mesfavoris.texteditor.internal.ExternalFolderBookmarkLocationProvider"
+               class="mesfavoris.path.internal.ExternalFolderBookmarkLocationProvider"
                priority="10">
          </locationProvider>
          <propertiesProvider
-               class="mesfavoris.texteditor.internal.ExternalFolderBookmarkPropertiesProvider"
+               class="mesfavoris.path.internal.ExternalFolderBookmarkPropertiesProvider"
                priority="10">
          </propertiesProvider>
          <gotoBookmark
-               class="mesfavoris.texteditor.internal.GotoExternalFolderBookmark"
+               class="mesfavoris.path.internal.GotoExternalFolderBookmark"
                priority="10">
          </gotoBookmark>
          <properties>
