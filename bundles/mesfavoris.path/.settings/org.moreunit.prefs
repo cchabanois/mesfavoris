@@ -1,0 +1,4 @@
+eclipse.preferences.version=1
+org.moreunit.test_annotation=BY_NAME
+org.moreunit.unitsourcefolder=mesfavoris.path\:src\:mesfavoris.path.tests\:src
+org.moreunit.useprojectsettings=true
