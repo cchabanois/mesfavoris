@@ -6,6 +6,13 @@ import mesfavoris.model.Bookmark;
 
 public interface IBookmarkLocationProvider {
 
-	IBookmarkLocation getBookmarkLocation(Bookmark bookmark, IProgressMonitor monitor);	
-	
+	/**
+	 * Get the location corresponding to the given {@link Bookmark}
+	 * 
+	 * @param bookmark
+	 * @param monitor
+	 * @return the bookmark location or null if not found
+	 */
+	IBookmarkLocation getBookmarkLocation(Bookmark bookmark, IProgressMonitor monitor);
+
 }

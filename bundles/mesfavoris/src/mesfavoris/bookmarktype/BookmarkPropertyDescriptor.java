@@ -1,5 +1,13 @@
 package mesfavoris.bookmarktype;
 
+import mesfavoris.model.Bookmark;
+
+/**
+ * Descriptor for a {@link Bookmark} property
+ * 
+ * @author cchabanois
+ *
+ */
 public class BookmarkPropertyDescriptor {
 	private final String name;
 	private final BookmarkPropertyType type;
@@ -7,10 +15,7 @@ public class BookmarkPropertyDescriptor {
 	private final String description;
 
 	public enum BookmarkPropertyType {
-        PATH,
-        STRING,
-        INT,
-        INSTANT	
+		PATH, STRING, INT, INSTANT
 	}
 
 	public BookmarkPropertyDescriptor(String name, BookmarkPropertyType type, boolean updatable, String description) {
@@ -19,23 +24,23 @@ public class BookmarkPropertyDescriptor {
 		this.updatable = updatable;
 		this.description = description;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public BookmarkPropertyType getType() {
 		return type;
 	}
-	
+
 	public boolean isUpdatable() {
 		return updatable;
 	}
-	
+
 	@Override
 	public String toString() {
 		return name;
@@ -71,5 +76,5 @@ public class BookmarkPropertyDescriptor {
 			return false;
 		return true;
 	}
-	
+
 }
