@@ -1,4 +1,4 @@
-package mesfavoris.texteditor.resource;
+package mesfavoris.path.resource;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.osgi.framework.Bundle;
 
 import mesfavoris.commons.ui.wizards.datatransfer.BundleProjectImportOperation;
+import mesfavoris.path.resource.FuzzyResourceFinder;
 
 public class FuzzyResourceFinderTest {
 	private final FuzzyResourceFinder fuzzyResourceFinder = new FuzzyResourceFinder();

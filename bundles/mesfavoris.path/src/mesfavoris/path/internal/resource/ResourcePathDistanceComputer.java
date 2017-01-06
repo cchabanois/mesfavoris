@@ -1,4 +1,4 @@
-package mesfavoris.texteditor.internal.resource;
+package mesfavoris.path.internal.resource;
 
 import org.eclipse.core.runtime.IPath;
 

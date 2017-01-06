@@ -1,4 +1,4 @@
-package mesfavoris.texteditor.resource;
+package mesfavoris.path.resource;
 
 import java.util.Optional;
 
@@ -10,8 +10,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
-import mesfavoris.texteditor.internal.StatusHelper;
-import mesfavoris.texteditor.internal.resource.ResourcePathDistanceComputer;
+import mesfavoris.path.internal.StatusHelper;
+import mesfavoris.path.internal.resource.ResourcePathDistanceComputer;
 
 /**
  * Find a resource. Name has to be the same than the given one but path can be

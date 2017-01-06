@@ -1,9 +1,11 @@
-package mesfavoris.texteditor.internal.resource;
+package mesfavoris.path.internal.resource;
 
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.Path;
 import org.junit.Test;
+
+import mesfavoris.path.internal.resource.ResourcePathDistanceComputer;
 
 public class ResourcePathDistanceComputerTest {
 	private final ResourcePathDistanceComputer resourcePathDistanceComputer = new ResourcePathDistanceComputer();

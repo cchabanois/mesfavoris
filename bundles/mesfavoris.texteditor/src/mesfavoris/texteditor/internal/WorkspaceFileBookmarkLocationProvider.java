@@ -14,8 +14,8 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 
 import mesfavoris.model.Bookmark;
+import mesfavoris.path.resource.FuzzyResourceFinder;
 import mesfavoris.texteditor.TextEditorBookmarkProperties;
-import mesfavoris.texteditor.resource.FuzzyResourceFinder;
 import mesfavoris.texteditor.text.DocumentUtils;
 
 public class WorkspaceFileBookmarkLocationProvider extends AbstractFileBookmarkLocationProvider {
