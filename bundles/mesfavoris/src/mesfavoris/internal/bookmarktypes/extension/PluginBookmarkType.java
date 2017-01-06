@@ -126,7 +126,7 @@ public class PluginBookmarkType {
 	public int getPriority(Object object) {
 		Integer priority = priorities.get(object);
 		if (priority == null) {
-			return 100;
+			return Integer.MAX_VALUE;
 		} else {
 			return priority;
 		}

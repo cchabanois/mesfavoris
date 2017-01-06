@@ -129,7 +129,7 @@ public class PluginBookmarkTypes implements IBookmarkPropertyDescriptors {
 	}
 
 	private int getPriority(Object object) {
-		int priority = 100;
+		int priority = Integer.MAX_VALUE;
 		for (PluginBookmarkType bookmarkType : getBookmarkTypes()) {
 			int newPriority = bookmarkType.getPriority(object);
 			if (newPriority < priority) {
