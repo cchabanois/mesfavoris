@@ -62,6 +62,9 @@ public class RenameBookmarkHandler extends AbstractBookmarkHandler {
 	@Override
 	public boolean isEnabled() {
 		Bookmark bookmark = getSelectedBookmark(getSelection());
+		if (bookmark == null) {
+			return false;
+		}
 		RemoteBookmarkFolder remoteBookmarkFolder = remoteBookmarksStoreManager
 				.getRemoteBookmarkFolderContaining(bookmarksService.getBookmarksTree(), bookmark.getId());
 		if (remoteBookmarkFolder == null) {
