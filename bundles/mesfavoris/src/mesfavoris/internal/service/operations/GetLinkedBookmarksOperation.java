@@ -23,6 +23,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
 
+import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.internal.markers.BookmarksMarkers;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
@@ -43,8 +44,11 @@ public class GetLinkedBookmarksOperation {
 	}
 
 	public List<Bookmark> getLinkedBookmarks(IWorkbenchPart part, ISelection selection) {
-		if (part instanceof ITextEditor && selection instanceof TextSelection) {
-			ITextEditor textEditor = (ITextEditor) part;
+		ITextEditor textEditor = AdapterUtils.getAdapter(part, ITextEditor.class);
+		if (textEditor != part) {
+			selection = textEditor.getSelectionProvider().getSelection();
+		}
+		if (textEditor != null && selection instanceof TextSelection) {
 			TextSelection textSelection = (TextSelection) selection;
 			int line = textSelection.getStartLine();
 			return getLinkedBookmarks(textEditor, line);
