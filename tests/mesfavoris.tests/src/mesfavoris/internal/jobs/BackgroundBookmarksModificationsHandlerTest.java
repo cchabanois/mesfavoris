@@ -51,7 +51,7 @@ public class BackgroundBookmarksModificationsHandlerTest {
 		ArgumentCaptor<List> anyList = ArgumentCaptor.forClass(List.class);
 		
 		// When
-		Thread.sleep(1000);
+		Thread.sleep(2000);
 		
 		// Then
 		verify(bookmarksModificationsHandler).handle(anyList.capture(), any(IProgressMonitor.class));
