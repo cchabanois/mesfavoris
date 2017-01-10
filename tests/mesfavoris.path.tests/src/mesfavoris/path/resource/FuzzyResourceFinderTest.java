@@ -46,7 +46,7 @@ public class FuzzyResourceFinderTest {
 	
 	private static void importProjectFromTemplate(String projectName, String templateName)
 			throws InvocationTargetException, InterruptedException {
-		Bundle bundle = Platform.getBundle("mesfavoris.texteditor.tests");
+		Bundle bundle = Platform.getBundle("mesfavoris.path.tests");
 		new BundleProjectImportOperation(bundle, projectName, "/projects/" + templateName + "/").run(null);
 	}	
 	
