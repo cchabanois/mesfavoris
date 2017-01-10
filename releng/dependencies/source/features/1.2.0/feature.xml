@@ -2,7 +2,7 @@
 <feature
       id="third-party.feature"
       label="Feature"
-      version="1.2.0.qualifier">
+      version="1.2.0">
 
    <plugin
          id="com.google.guava"
