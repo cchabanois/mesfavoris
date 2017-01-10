@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="third-party.feature"
+      label="Feature"
+      version="1.2.0.qualifier">
+
+   <plugin
+         id="com.google.guava"
+         download-size="0"
+         install-size="0"
+         version="19.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gson"
+         download-size="0"
+         install-size="0"
+         version="2.7.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.assertj.core"
+         download-size="0"
+         install-size="0"
+         version="3.5.2"
+         unpack="false"/>
+
+   <plugin
+         id="net.sourceforge.htmlunit"
+         download-size="0"
+         install-size="0"
+         version="2.23.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.jsoup"
+         download-size="0"
+         install-size="0"
+         version="1.9.2"
+         unpack="false"/>
+
+   <plugin
+         id="org.mockito.mockito-all"
+         download-size="0"
+         install-size="0"
+         version="1.10.19"
+         unpack="false"/>
+
+</feature>
