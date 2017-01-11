@@ -45,17 +45,20 @@ public class GetLinkedBookmarksOperation {
 
 	public List<Bookmark> getLinkedBookmarks(IWorkbenchPart part, ISelection selection) {
 		ITextEditor textEditor = AdapterUtils.getAdapter(part, ITextEditor.class);
+		if (textEditor == null) {
+			return Collections.emptyList();
+		}
 		if (textEditor != part) {
 			selection = textEditor.getSelectionProvider().getSelection();
 		}
-		if (textEditor != null && selection instanceof TextSelection) {
-			TextSelection textSelection = (TextSelection) selection;
-			int line = textSelection.getStartLine();
-			return getLinkedBookmarks(textEditor, line);
+		if (!(selection instanceof TextSelection)) {
+			return Collections.emptyList();
 		}
-		return Collections.emptyList();
+		TextSelection textSelection = (TextSelection) selection;
+		int line = textSelection.getStartLine();
+		return getLinkedBookmarks(textEditor, line);
 	}
-	
+
 	private List<Bookmark> getLinkedBookmarks(ITextEditor textEditor, int activeLine) {
 		List<IMarker> bookmarkMarkers = getBookmarkMarkers(textEditor, activeLine);
 		final BookmarksTree bookmarksTree = bookmarkDatabase.getBookmarksTree();
