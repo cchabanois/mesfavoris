@@ -103,6 +103,10 @@ public class PluginBookmarkTypes implements IBookmarkPropertyDescriptors {
 				.sorted((obj1, obj2) -> getPriority(obj1) - getPriority(obj2)).collect(Collectors.toList());
 	}
 
+	/**
+	 * This method must be called from the UI thread
+	 * @return
+	 */
 	public List<IBookmarkLabelProvider> getLabelProviders() {
 		return getBookmarkTypes().stream().flatMap(bookmarkType -> bookmarkType.getLabelProviders().stream())
 				.sorted((obj1, obj2) -> getPriority(obj1) - getPriority(obj2)).collect(Collectors.toList());

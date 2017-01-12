@@ -5,6 +5,7 @@ import static mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder.bookmarksT
 import static mesfavoris.tests.commons.waits.Waiter.waitUntil;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_NUMBER;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_WORKSPACE_PATH;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
@@ -17,11 +18,14 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.junit.After;
@@ -32,6 +36,7 @@ import org.osgi.framework.Bundle;
 import com.google.common.collect.Lists;
 
 import mesfavoris.BookmarksException;
+import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.commons.ui.wizards.datatransfer.BundleProjectImportOperation;
 import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkMarkerAttributesProvider;
 import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkTypes;
@@ -76,21 +81,60 @@ public class GetLinkedBookmarksOperationTest {
 		waitUntil("Cannot find marker", () -> bookmarksMarkers.findMarker(bookmark.getId(), null));
 
 		// When
-		ITextEditor textEditor = openTextEditor(new Path("/testGetLinkedBookmarks/LICENSE.txt"));
-		textEditor.selectAndReveal(getOffset(textEditor, 10), 0);
-		List<Bookmark> bookmarks = operation.getLinkedBookmarks(textEditor,
-				textEditor.getSelectionProvider().getSelection());
+		IEditorPart editorPart = openEditor(new Path("/testGetLinkedBookmarks/LICENSE.txt"));
+		ITextEditor textEditor = getTextEditor(editorPart);
+		selectAndReveal(textEditor, getOffset(textEditor, 10));
+		List<Bookmark> bookmarks = operation.getLinkedBookmarks(textEditor, getSelection(textEditor));
 
 		// Then
 		assertEquals(1, bookmarks.size());
 		assertEquals(bookmark, bookmarks.get(0));
 	}
 
-	private ITextEditor openTextEditor(IPath path) throws PartInitException {
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		IEditorPart editorPart = IDE.openEditor(window.getActivePage(), workspaceRoot.getFile(path));
-		return (ITextEditor) editorPart;
+	@Test
+	public void testGetLinkedBookmarksInMultipageEditor() throws Exception {
+		// Given
+		importProjectFromTemplate("testGetLinkedBookmarksInMultipageEditor", "commons-cli");
+		Bookmark bookmark = bookmark("pom.xml")
+				.withProperty(PROP_WORKSPACE_PATH, "/testGetLinkedBookmarksInMultipageEditor/pom.xml")
+				.withProperty(PROP_LINE_NUMBER, "10").build();
+		addBookmark(rootFolderId, bookmark);
+		waitUntil("Cannot find marker", () -> bookmarksMarkers.findMarker(bookmark.getId(), null));
+
+		// When
+		IEditorPart editorPart = openEditor(new Path("/testGetLinkedBookmarksInMultipageEditor/pom.xml"));
+		assertThat(editorPart).isInstanceOf(MultiPageEditorPart.class);
+		ITextEditor textEditor = getTextEditor(editorPart);
+		selectAndReveal(textEditor, getOffset(textEditor, 10));
+		List<Bookmark> bookmarks = operation.getLinkedBookmarks(textEditor, getSelection(textEditor));
+
+		// Then
+		assertEquals(1, bookmarks.size());
+		assertEquals(bookmark, bookmarks.get(0));
+	}
+
+	private ISelection getSelection(ITextEditor textEditor) {
+		return UIThreadRunnable.syncExec(() -> textEditor.getSelectionProvider().getSelection());
+	}
+
+	private IEditorPart openEditor(IPath path) throws PartInitException {
+		return UIThreadRunnable.syncExec(() -> {
+			try {
+				IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+				IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+				return IDE.openEditor(window.getActivePage(), workspaceRoot.getFile(path));
+			} catch (PartInitException e) {
+				throw new RuntimeException(e);
+			}
+		});
+	}
+
+	private ITextEditor getTextEditor(IEditorPart editorPart) {
+		return UIThreadRunnable.syncExec(() -> AdapterUtils.getAdapter(editorPart, ITextEditor.class));
+	}
+
+	private void selectAndReveal(ITextEditor textEditor, int offset) {
+		UIThreadRunnable.syncExec(() -> textEditor.selectAndReveal(offset, 0));
 	}
 
 	private BookmarksTree getInitialTree() {

@@ -1,6 +1,7 @@
 package mesfavoris.internal.bookmarktypes.extension;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -26,16 +27,18 @@ import mesfavoris.internal.StatusHelper;
 public class PluginBookmarkType {
 	private final String name;
 	private final ImageDescriptor imageDescriptor;
+	private final IConfigurationElement bookmarkTypeConfigurationElement;
 	private final IdentityHashMap<Object, Integer> priorities = new IdentityHashMap<>();
-	private final Set<IGotoBookmark> gotoBookmarks = new HashSet<>();
-	private final Set<IBookmarkPropertiesProvider> propertiesProviders = new HashSet<>();;
-	private final Set<IBookmarkLabelProvider> labelProviders = new HashSet<>();;
-	private final Set<IBookmarkLocationProvider> locationProviders = new HashSet<>();;
-	private final Set<IBookmarkMarkerAttributesProvider> markerAttributesProviders = new HashSet<>();
-	private final Set<IImportTeamProject> importTeamProjects = new HashSet<>();
+	private Set<IGotoBookmark> gotoBookmarks;
+	private Set<IBookmarkPropertiesProvider> propertiesProviders;
+	private Set<IBookmarkLabelProvider> labelProviders;
+	private Set<IBookmarkLocationProvider> locationProviders;
+	private Set<IBookmarkMarkerAttributesProvider> markerAttributesProviders;
+	private Set<IImportTeamProject> importTeamProjects;
 	private final Map<String, BookmarkPropertyDescriptor> properties = new HashMap<>();
 
 	public PluginBookmarkType(IConfigurationElement bookmarkTypeConfigurationElement) {
+		this.bookmarkTypeConfigurationElement = bookmarkTypeConfigurationElement;
 		this.name = bookmarkTypeConfigurationElement.getAttribute("name");
 		String iconPath = bookmarkTypeConfigurationElement.getAttribute("icon");
 		if (iconPath != null) {
@@ -44,16 +47,11 @@ public class PluginBookmarkType {
 		} else {
 			this.imageDescriptor = null;
 		}
-		load(bookmarkTypeConfigurationElement, "propertiesProvider", propertiesProviders);
-		load(bookmarkTypeConfigurationElement, "gotoBookmark", gotoBookmarks);
-		load(bookmarkTypeConfigurationElement, "labelProvider", labelProviders);
-		load(bookmarkTypeConfigurationElement, "locationProvider", locationProviders);
-		load(bookmarkTypeConfigurationElement, "markerAttributesProvider", markerAttributesProviders);
-		load(bookmarkTypeConfigurationElement, "importTeamProject", importTeamProjects);
 		loadAttributes(bookmarkTypeConfigurationElement);
 	}
 
-	private <T> void load(IConfigurationElement bookmarkTypeConfigurationElement, String elementName, Set<T> set) {
+	private <T> Set<T> load(IConfigurationElement bookmarkTypeConfigurationElement, String elementName) {
+		Set<T> set = new HashSet<>();
 		IConfigurationElement[] elements = bookmarkTypeConfigurationElement.getChildren(elementName);
 		for (IConfigurationElement configurationElement : elements) {
 			String className = configurationElement.getAttribute("class");
@@ -66,6 +64,7 @@ public class PluginBookmarkType {
 				StatusHelper.logWarn("Could not create bookmark type element " + className, e);
 			}
 		}
+		return Collections.unmodifiableSet(set);
 	}
 
 	private int getPriority(IConfigurationElement configurationElement) {
@@ -91,7 +90,10 @@ public class PluginBookmarkType {
 		}
 	}
 
-	public Set<IGotoBookmark> getGotoBookmarks() {
+	public synchronized Set<IGotoBookmark> getGotoBookmarks() {
+		if (gotoBookmarks == null) {
+			gotoBookmarks = load(bookmarkTypeConfigurationElement, "gotoBookmark");
+		}
 		return gotoBookmarks;
 	}
 
@@ -103,23 +105,42 @@ public class PluginBookmarkType {
 		return name;
 	}
 
-	public Set<IImportTeamProject> getImportTeamProjects() {
+	public synchronized Set<IImportTeamProject> getImportTeamProjects() {
+		if (importTeamProjects == null) {
+			importTeamProjects = load(bookmarkTypeConfigurationElement, "importTeamProject");
+		}
 		return importTeamProjects;
 	}
 
-	public Set<IBookmarkLabelProvider> getLabelProviders() {
+	/**
+	 * Must be called from the UI thread
+	 * @return
+	 */
+	public synchronized Set<IBookmarkLabelProvider> getLabelProviders() {
+		if (labelProviders == null) {
+			labelProviders = load(bookmarkTypeConfigurationElement, "labelProvider");
+		}
 		return labelProviders;
 	}
 
-	public Set<IBookmarkLocationProvider> getLocationProviders() {
+	public synchronized Set<IBookmarkLocationProvider> getLocationProviders() {
+		if (locationProviders == null) {
+			locationProviders = load(bookmarkTypeConfigurationElement, "locationProvider");
+		}
 		return locationProviders;
 	}
 
-	public Set<IBookmarkMarkerAttributesProvider> getMarkerAttributesProviders() {
+	public synchronized Set<IBookmarkMarkerAttributesProvider> getMarkerAttributesProviders() {
+		if (markerAttributesProviders == null) {
+			markerAttributesProviders = load(bookmarkTypeConfigurationElement, "markerAttributesProvider");
+		}
 		return markerAttributesProviders;
 	}
 
-	public Set<IBookmarkPropertiesProvider> getPropertiesProviders() {
+	public synchronized Set<IBookmarkPropertiesProvider> getPropertiesProviders() {
+		if (propertiesProviders == null) {
+			propertiesProviders = load(bookmarkTypeConfigurationElement, "propertiesProvider");
+		}
 		return propertiesProviders;
 	}
 
