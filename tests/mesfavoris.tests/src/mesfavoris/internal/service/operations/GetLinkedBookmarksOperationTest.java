@@ -103,6 +103,7 @@ public class GetLinkedBookmarksOperationTest {
 
 		// When
 		IEditorPart editorPart = openEditor(new Path("/testGetLinkedBookmarksInMultipageEditor/pom.xml"));
+		// that's why we require org.eclipse.m2e.editor in MANIFEST.MF
 		assertThat(editorPart).isInstanceOf(MultiPageEditorPart.class);
 		ITextEditor textEditor = getTextEditor(editorPart);
 		selectAndReveal(textEditor, getOffset(textEditor, 10));
