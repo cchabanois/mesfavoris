@@ -43,7 +43,7 @@
 										<classfiles>
 											<fileset dir="${project.basedir}/../../bundles" 
 												includes="**/target/**/*.class"
-												excludes="**/HyperlinkSourceViewer.class,**/HyperlinkTokenScanner.class,**/SpellcheckableMessageArea.class,**/LocalServerReceiver.class"/>
+												excludes="**/HyperlinkSourceViewer*,**/HyperlinkTokenScanner*,**/SpellcheckableMessageArea*,**/LocalServerReceiver*"/>
 										</classfiles>
 										<sourcefiles>
 											<fileset dir="${project.basedir}/../../bundles" includes="**/*.java"/>
