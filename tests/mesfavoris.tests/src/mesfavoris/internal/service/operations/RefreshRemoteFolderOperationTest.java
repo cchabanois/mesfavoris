@@ -55,6 +55,21 @@ public class RefreshRemoteFolderOperationTest {
 	}
 
 	@Test
+	public void testRefreshAllRemoteFolders() throws Exception {
+		// Given
+		remoteBookmarksStore.add(getRemoteBookmarkFolder2(), new BookmarkId("bookmarkFolder2"),
+				new NullProgressMonitor());
+		remoteBookmarksStore.connect(new NullProgressMonitor());
+
+		// When
+		refreshRemoteFolderOperation.refresh(new NullProgressMonitor());
+
+		// Then
+		assertEquals(getRemoteBookmarkFolder2().toString(),
+				bookmarkDatabase.getBookmarksTree().subTree(new BookmarkId("bookmarkFolder2")).toString());
+	}	
+	
+	@Test
 	public void testRefreshRemoteFolderWaitsUntilNotDirty() throws Exception {
 		// Given
 		remoteBookmarksStore.add(getRemoteBookmarkFolder2(), new BookmarkId("bookmarkFolder2"),
