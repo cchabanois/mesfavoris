@@ -1,5 +1,7 @@
 package mesfavoris.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -8,9 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -27,9 +27,6 @@ public class BookmarksTreeTest {
 	private Bookmark bookmark5 = new Bookmark(new BookmarkId("id5"));
 	private Bookmark bookmark6 = new Bookmark(new BookmarkId("id6"));
 
-	@Rule
-	public ExpectedException exception = ExpectedException.none();
-
 	@Before
 	public void setUp() {
 		bookmarksTree = new BookmarksTree(rootFolder);
@@ -45,14 +42,14 @@ public class BookmarksTreeTest {
 	public void testRootFolderHasNoParent() {
 		// Given
 		BookmarkFolder rootFolder = bookmarksTree.getRootFolder();
-		
+
 		// When
 		BookmarkFolder parent = bookmarksTree.getParentBookmark(rootFolder.getId());
-		
+
 		// Then
 		assertNull(parent);
 	}
-	
+
 	@Test
 	public void testGetParentBookmark() {
 		// Given
@@ -92,6 +89,18 @@ public class BookmarksTreeTest {
 	}
 
 	@Test
+	public void testCannotAddBookmarkTwice() {
+
+		// When
+		Throwable thrown = catchThrowable(() -> {
+			bookmarksTree = bookmarksTree.addBookmarks(bookmarkFolder2.getId(), Lists.newArrayList(bookmark1));
+		});
+
+		// Then
+		assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
+	}
+
+	@Test
 	public void testMoveBookmarks() {
 		// Given
 
@@ -121,12 +130,14 @@ public class BookmarksTreeTest {
 
 	@Test
 	public void testMoveBookmarksAfterItSelf() {
-		// Given
-		exception.expect(IllegalArgumentException.class);
-		
 		// When
-		bookmarksTree = bookmarksTree.moveAfter(Lists.newArrayList(bookmark2.getId()), bookmarkFolder1.getId(),
-				bookmark2.getId());
+		Throwable thrown = catchThrowable(() -> {
+			bookmarksTree = bookmarksTree.moveAfter(Lists.newArrayList(bookmark2.getId()), bookmarkFolder1.getId(),
+					bookmark2.getId());
+		});
+
+		// Then
+		assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
@@ -196,8 +207,8 @@ public class BookmarksTreeTest {
 
 		// Then
 		assertSame(bookmarksTree, newBookmarkTree);
-	}	
-	
+	}
+
 	@Test
 	public void testDeletePropertyValue() {
 		// Given
@@ -278,16 +289,27 @@ public class BookmarksTreeTest {
 		assertNull(bookmarksTree.getBookmark(bookmark7.getId()));
 		assertNull(bookmarksTree.getBookmark(bookmark8.getId()));
 	}
-	
+
+	@Test
+	public void testCannotDeleteNonEmptyBookmarkFolder() {
+		// When
+		Throwable thrown = catchThrowable(() -> {
+			bookmarksTree = bookmarksTree.deleteBookmark(bookmarkFolder2.getId(), false);
+		});
+
+		// Then
+		assertThat(thrown).isInstanceOf(IllegalStateException.class);
+	}
+
 	@Test
 	public void testSubTree() {
 		// Given
-		
+
 		// When
 		BookmarksTree subTree = bookmarksTree.subTree(bookmarkFolder1.getId());
-		
+
 		// Then
-		assertEquals(bookmarkFolder1,subTree.getRootFolder());
+		assertEquals(bookmarkFolder1, subTree.getRootFolder());
 	}
 
 }
