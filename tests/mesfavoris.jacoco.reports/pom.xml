@@ -39,8 +39,11 @@
 										<file file="${jacoco.reportPath}" />
 									</executiondata>
 									<structure name="mesfavoris">
+									    <!-- We exclude classes we did not author -->
 										<classfiles>
-											<fileset dir="${project.basedir}/../../bundles" includes="**/target/**/*.class"/>
+											<fileset dir="${project.basedir}/../../bundles" 
+												includes="**/target/**/*.class"
+												excludes="**/HyperlinkSourceViewer.class,**/HyperlinkTokenScanner.class,**/SpellcheckableMessageArea.class,**/LocalServerReceiver.class"/>
 										</classfiles>
 										<sourcefiles>
 											<fileset dir="${project.basedir}/../../bundles" includes="**/*.java"/>
