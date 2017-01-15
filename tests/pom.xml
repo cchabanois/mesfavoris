@@ -12,21 +12,22 @@
 		<artifactId>mesfavoris.root</artifactId>
 		<version>1.2.0-SNAPSHOT</version>
 	</parent>
-	
+
 	<properties>
-		<jacoco.reportPath>${project.basedir}/../target/coverage</jacoco.reportPath>
 		<ui.test.vmargs></ui.test.vmargs> <!-- default case -->
+		<jacoco.reportPath>${project.basedir}/../target/jacoco.exec</jacoco.reportPath>
 	</properties>
 
 
 	<modules>
 		<module>mesfavoris.tests</module>
-		<module>mesfavoris.gdrive.tests</module>
-		<module>mesfavoris.texteditor.tests</module>
+		<!-- <module>mesfavoris.gdrive.tests</module> -->
+		<!-- <module>mesfavoris.texteditor.tests</module> -->
 		<module>mesfavoris.path.tests</module>
 		<module>mesfavoris.url.tests</module>
 		<module>mesfavoris.tests.commons</module>
-		<module>mesfavoris.java.tests</module>
+		<!-- <module>mesfavoris.java.tests</module> -->
+		<module>mesfavoris.jacoco.reports</module>
 	</modules>
 
 	<profiles>
@@ -45,8 +46,8 @@
 
 	<build>
 		<plugins>
-		
-				<plugin>
+
+			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.7.7.201606060606</version>
@@ -67,9 +68,16 @@
 							<append>true</append>
 						</configuration>
 					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
 				</executions>
-			</plugin>	
-		
+			</plugin>
+
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
@@ -95,7 +103,7 @@
 							<type>eclipse-plugin</type>
 							<artifactId>org.apache.felix.gogo.shell</artifactId>
 							<version>0.0.0</version>
-						</dependency>						
+						</dependency>
 					</dependencies>
 				</configuration>
 			</plugin>
