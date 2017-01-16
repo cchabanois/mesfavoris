@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.ui.PlatformUI;
 
 import mesfavoris.internal.model.copy.BookmarksCopier;
 import mesfavoris.internal.model.utils.BookmarksTreeUtils;
@@ -29,15 +30,21 @@ public class CopyBookmarkOperation {
 		if (selection.size() == 0) {
 			return;
 		}
-		Clipboard clipboard = new Clipboard(null);
-		try {
-			TextTransfer textTransfer = TextTransfer.getInstance();
-			Transfer[] transfers = new Transfer[] { textTransfer };
-			Object[] data = new Object[] { getSelectionAsJson(bookmarksTree, selection) };
-			clipboard.setContents(data, transfers);
-		} finally {
-			clipboard.dispose();
-		}
+		copyToClipboardInUIThread(getSelectionAsJson(bookmarksTree, selection));
+	}
+
+	private void copyToClipboardInUIThread(String text) {
+		PlatformUI.getWorkbench().getDisplay().syncExec(() -> {
+			Clipboard clipboard = new Clipboard(null);
+			try {
+				TextTransfer textTransfer = TextTransfer.getInstance();
+				Transfer[] transfers = new Transfer[] { textTransfer };
+				Object[] data = new Object[] { text };
+				clipboard.setContents(data, transfers);
+			} finally {
+				clipboard.dispose();
+			}
+		});
 	}
 
 	public boolean hasDuplicatedBookmarksInSelection(BookmarksTree bookmarksTree, List<BookmarkId> selection) {

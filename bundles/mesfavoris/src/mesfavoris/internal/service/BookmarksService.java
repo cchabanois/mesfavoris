@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 
@@ -148,10 +147,10 @@ public class BookmarksService implements IBookmarksService {
 	}
 
 	@Override
-	public void paste(Display display, BookmarkId parentBookmarkId, IProgressMonitor monitor)
+	public void paste(BookmarkId parentBookmarkId, IProgressMonitor monitor)
 			throws BookmarksException {
 		PasteBookmarkOperation operation = new PasteBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider);
-		operation.paste(display, parentBookmarkId, monitor);
+		operation.paste(parentBookmarkId, monitor);
 	}
 
 	@Override

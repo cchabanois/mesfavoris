@@ -1,5 +1,9 @@
 package mesfavoris.internal.service.operations;
 
+import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookmark;
+import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookmarkFolder;
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
@@ -7,16 +11,12 @@ import java.util.List;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
 import org.junit.Before;
 import org.junit.Test;
 
-import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookmark;
-import static mesfavoris.tests.commons.bookmarks.BookmarksTreeTestUtil.getBookmarkFolder;
-import static org.junit.Assert.*;
-
 import com.google.common.collect.Lists;
 
-import mesfavoris.internal.service.operations.CopyBookmarkOperation;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.persistence.json.BookmarksTreeJsonDeserializer;
@@ -48,15 +48,17 @@ public class CopyBookmarkOperationTest {
 	}
 
 	private String getClipboardContents() {
-		Clipboard clipboard = new Clipboard(null);
-		String textData;
-		try {
-			TextTransfer textTransfer = TextTransfer.getInstance();
-			textData = (String) clipboard.getContents(textTransfer);
-		} finally {
-			clipboard.dispose();
-		}
-		return textData;
+		return UIThreadRunnable.syncExec(() -> {
+			Clipboard clipboard = new Clipboard(null);
+			String textData;
+			try {
+				TextTransfer textTransfer = TextTransfer.getInstance();
+				textData = (String) clipboard.getContents(textTransfer);
+				return textData;
+			} finally {
+				clipboard.dispose();
+			}
+		});
 	}
 
 	private BookmarksTree deserialize(String serializedBookmarksTree) throws IOException {

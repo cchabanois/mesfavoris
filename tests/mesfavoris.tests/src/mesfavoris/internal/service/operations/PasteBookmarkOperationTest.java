@@ -14,7 +14,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
 import org.eclipse.ui.IWorkbenchPart;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,8 +50,8 @@ public class PasteBookmarkOperationTest {
 		int numberOfBookmarksBefore = bookmarkDatabase.getBookmarksTree().size();
 
 		// When
-		pasteBookmarkOperation.paste(Display.getCurrent(),
-				getBookmarkFolder(bookmarkDatabase.getBookmarksTree(), 0, 0, 0).getId(), new NullProgressMonitor());
+		pasteBookmarkOperation.paste(getBookmarkFolder(bookmarkDatabase.getBookmarksTree(), 0, 0, 0).getId(),
+				new NullProgressMonitor());
 
 		// Then
 		assertEquals(numberOfBookmarksBefore + 7, bookmarkDatabase.getBookmarksTree().size());
@@ -65,8 +65,8 @@ public class PasteBookmarkOperationTest {
 		BookmarksTree previousTree = bookmarkDatabase.getBookmarksTree();
 
 		// When
-		pasteBookmarkOperation.paste(Display.getCurrent(),
-				getBookmarkFolder(bookmarkDatabase.getBookmarksTree(), 0, 0, 0).getId(), new NullProgressMonitor());
+		pasteBookmarkOperation.paste(getBookmarkFolder(bookmarkDatabase.getBookmarksTree(), 0, 0, 0).getId(),
+				new NullProgressMonitor());
 
 		// Then
 		assertEquals(previousTree, bookmarkDatabase.getBookmarksTree());
@@ -79,8 +79,8 @@ public class PasteBookmarkOperationTest {
 		int numberOfBookmarksBefore = bookmarkDatabase.getBookmarksTree().size();
 
 		// When
-		pasteBookmarkOperation.paste(Display.getCurrent(),
-				getBookmarkFolder(bookmarkDatabase.getBookmarksTree(), 0, 0, 0).getId(), new NullProgressMonitor());
+		pasteBookmarkOperation.paste(getBookmarkFolder(bookmarkDatabase.getBookmarksTree(), 0, 0, 0).getId(),
+				new NullProgressMonitor());
 
 		// Then
 		assertEquals(numberOfBookmarksBefore + 1, bookmarkDatabase.getBookmarksTree().size());
@@ -92,15 +92,17 @@ public class PasteBookmarkOperationTest {
 	}
 
 	public void copyToClipboard(String text) {
-		Clipboard clipboard = new Clipboard(null);
-		try {
-			TextTransfer textTransfer = TextTransfer.getInstance();
-			Transfer[] transfers = new Transfer[] { textTransfer };
-			Object[] data = new Object[] { text };
-			clipboard.setContents(data, transfers);
-		} finally {
-			clipboard.dispose();
-		}
+		UIThreadRunnable.syncExec(() -> {
+			Clipboard clipboard = new Clipboard(null);
+			try {
+				TextTransfer textTransfer = TextTransfer.getInstance();
+				Transfer[] transfers = new Transfer[] { textTransfer };
+				Object[] data = new Object[] { text };
+				clipboard.setContents(data, transfers);
+			} finally {
+				clipboard.dispose();
+			}
+		});
 	}
 
 	private static class TestBookmarkPropertiesProvider implements IBookmarkPropertiesProvider {

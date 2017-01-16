@@ -22,6 +22,7 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.URLTransfer;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 
 import com.google.common.collect.Lists;
 
@@ -45,8 +46,9 @@ public class PasteBookmarkOperation {
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 	}
 
-	public void paste(Display display, BookmarkId parentBookmarkId, IProgressMonitor monitor)
+	public void paste(BookmarkId parentBookmarkId, IProgressMonitor monitor)
 			throws BookmarksException {
+		Display display = PlatformUI.getWorkbench().getDisplay();
 		String clipboardContents = getClipboardContentsFromUIThread(display);
 		BookmarksTree bookmarksTree = getBookmarksTree(clipboardContents);
 		if (bookmarksTree != null) {

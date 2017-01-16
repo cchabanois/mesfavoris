@@ -5,7 +5,6 @@ import java.util.function.Consumer;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 
@@ -42,7 +41,7 @@ public interface IBookmarksService {
 
 	List<Bookmark> getLinkedBookmarks(IWorkbenchPart part, ISelection selection);
 
-	void paste(Display display, BookmarkId parentBookmarkId, IProgressMonitor monitor) throws BookmarksException;
+	void paste(BookmarkId parentBookmarkId, IProgressMonitor monitor) throws BookmarksException;
 
 	void refresh(BookmarkId bookmarkFolderId, IProgressMonitor monitor) throws BookmarksException;
 

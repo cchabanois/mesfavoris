@@ -5,7 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.progress.IProgressService;
@@ -24,17 +23,17 @@ public class PasteBookmarkHandler extends AbstractBookmarkHandler {
 			return null;
 		}
 		BookmarkFolder bookmarkFolder = (BookmarkFolder) selection.getFirstElement();
-		paste(Display.getCurrent(), bookmarkFolder.getId());
+		paste(bookmarkFolder.getId());
 
 		return null;
 	}
 
-	private void paste(Display display, BookmarkId bookmarkFolderId) throws ExecutionException {
+	private void paste(BookmarkId bookmarkFolderId) throws ExecutionException {
 		IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
 		try {
 			progressService.busyCursorWhile(monitor -> {
 				try {
-					bookmarksService.paste(display, bookmarkFolderId, monitor);
+					bookmarksService.paste(bookmarkFolderId, monitor);
 				} catch (BookmarksException e) {
 					throw new InvocationTargetException(e);
 				}
