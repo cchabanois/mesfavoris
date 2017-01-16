@@ -7,6 +7,9 @@ import java.io.InputStream;
 import java.util.Base64;
 
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
@@ -16,8 +19,18 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
 
 public class UrlBookmarkLabelProviderTest {
-	private UrlBookmarkLabelProvider urlBookmarkLabelProvider = new UrlBookmarkLabelProvider();
+	private UrlBookmarkLabelProvider urlBookmarkLabelProvider;
 
+	@Before
+	public void setUp() {
+		urlBookmarkLabelProvider = UIThreadRunnable.syncExec(()->new UrlBookmarkLabelProvider());
+	}
+	
+	@After
+	public void tearDown() {
+		UIThreadRunnable.syncExec(()->urlBookmarkLabelProvider.dispose());
+	}
+	
 	@Test
 	public void testGetImageReturns16x16Images() throws IOException {
 		// Given
@@ -26,7 +39,7 @@ public class UrlBookmarkLabelProviderTest {
 				ImmutableMap.of(UrlBookmarkProperties.PROP_FAVICON, getImageAsBase64("lemonde-favicon.ico")));
 
 		// When
-		Image image = urlBookmarkLabelProvider.getImage(bookmark);
+		Image image = UIThreadRunnable.syncExec(()->urlBookmarkLabelProvider.getImage(bookmark));
 		
 		// Then
 		assertEquals(16, image.getBounds().width);
