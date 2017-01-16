@@ -17,7 +17,7 @@ public class DeleteBookmarkHandler extends AbstractBookmarkHandler {
 			return null;
 		}
 		try {
-			bookmarksService.deleteBookmarks(getAsBookmarkIds(selection));
+			bookmarksService.deleteBookmarks(getAsBookmarkIds(selection), true);
 		} catch (BookmarksException e) {
 			throw new ExecutionException("Could not delete bookmark", e);
 		}

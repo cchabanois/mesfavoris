@@ -24,7 +24,7 @@ public class DeleteLinkedBookmarkHandler extends AbstractBookmarkPartOperationHa
 			return null;
 		}
 		try {
-			bookmarksService.deleteBookmarks(Lists.newArrayList(linkedBookmarks.get(0).getId()));
+			bookmarksService.deleteBookmarks(Lists.newArrayList(linkedBookmarks.get(0).getId()), true);
 		} catch (BookmarksException e) {
 			StatusHelper.showError("Could not delete bookmark", e, false);
 		}
