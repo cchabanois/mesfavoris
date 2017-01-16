@@ -136,9 +136,9 @@ public class BookmarksService implements IBookmarksService {
 	}
 
 	@Override
-	public void deleteBookmarks(final List<BookmarkId> selection) throws BookmarksException {
+	public void deleteBookmarks(final List<BookmarkId> selection, boolean recurse) throws BookmarksException {
 		DeleteBookmarksOperation operation = new DeleteBookmarksOperation(bookmarkDatabase);
-		operation.deleteBookmarks(selection);
+		operation.deleteBookmarks(selection, recurse);
 	}
 
 	@Override

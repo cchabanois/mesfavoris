@@ -38,7 +38,7 @@ public interface IBookmarksService {
 
 	void cutToClipboard(List<BookmarkId> selection) throws BookmarksException;
 
-	void deleteBookmarks(List<BookmarkId> selection) throws BookmarksException;
+	void deleteBookmarks(List<BookmarkId> selection, boolean recurse) throws BookmarksException;
 
 	List<Bookmark> getLinkedBookmarks(IWorkbenchPart part, ISelection selection);
 

@@ -14,14 +14,14 @@ public class DeleteBookmarksOperation {
 		this.bookmarkDatabase = bookmarkDatabase;
 	}
 
-	public void deleteBookmarks(final List<BookmarkId> selection) throws BookmarksException {
+	public void deleteBookmarks(final List<BookmarkId> selection, boolean recurse) throws BookmarksException {
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
 			for (BookmarkId bookmarkId : selection) {
 				BookmarkFolder bookmarkFolder = bookmarksTreeModifier.getCurrentTree().getParentBookmark(bookmarkId);
 				if (bookmarkFolder == null) {
 					return;
 				}
-				bookmarksTreeModifier.deleteBookmark(bookmarkId, true);
+				bookmarksTreeModifier.deleteBookmark(bookmarkId, recurse);
 			}
 		});
 	}

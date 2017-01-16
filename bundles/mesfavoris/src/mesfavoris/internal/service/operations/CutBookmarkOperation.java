@@ -20,7 +20,7 @@ public class CutBookmarkOperation {
 		CopyBookmarkOperation copyBookmarkOperation = new CopyBookmarkOperation();
 		copyBookmarkOperation.copyToClipboard(bookmarkDatabase.getBookmarksTree(),selection);
 		DeleteBookmarksOperation deleteBookmarksOperation = new DeleteBookmarksOperation(bookmarkDatabase);
-		deleteBookmarksOperation.deleteBookmarks(selection);
+		deleteBookmarksOperation.deleteBookmarks(selection, true);
 	}
 
 	public boolean hasDuplicatedBookmarksInSelection(BookmarksTree bookmarksTree, List<BookmarkId> selection) {

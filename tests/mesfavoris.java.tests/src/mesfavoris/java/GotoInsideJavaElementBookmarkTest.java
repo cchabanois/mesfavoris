@@ -5,6 +5,7 @@ import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_DECLARING_TYPE;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_KIND;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_NAME;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_LINE_NUMBER_INSIDE_ELEMENT;
+import static mesfavoris.tests.commons.ui.SWTBotViewHelper.closeWelcomeView;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -20,7 +21,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.ui.PreferenceConstants;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEclipseEditor;
-import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -104,12 +104,5 @@ public class GotoInsideJavaElementBookmarkTest {
 		Bundle bundle = Platform.getBundle("mesfavoris.java.tests");
 		new BundleProjectImportOperation(bundle, projectName, "/projects/" + templateName + "/").run(null);
 	}	
-	
-	private void closeWelcomeView() {
-		try {
-			bot.viewByTitle("Welcome").close();
-		} catch (WidgetNotFoundException e) {
-		}
-	}
 	
 }

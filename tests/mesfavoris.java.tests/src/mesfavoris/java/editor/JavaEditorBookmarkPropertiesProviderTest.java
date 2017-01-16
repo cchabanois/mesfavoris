@@ -1,5 +1,13 @@
 package mesfavoris.java.editor;
 
+import static mesfavoris.java.JavaBookmarkProperties.KIND_METHOD;
+import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_DECLARING_TYPE;
+import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_KIND;
+import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_NAME;
+import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_METHOD_SIGNATURE;
+import static mesfavoris.java.JavaBookmarkProperties.PROP_LINE_NUMBER_INSIDE_ELEMENT;
+import static mesfavoris.tests.commons.ui.SWTBotViewHelper.closeWelcomeView;
+import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_CONTENT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.InvocationTargetException;
@@ -21,7 +29,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEclipseEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
-import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
 import org.eclipse.swtbot.swt.finder.results.Result;
 import org.eclipse.ui.IEditorPart;
@@ -33,9 +40,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
-import static mesfavoris.java.JavaBookmarkProperties.*;
+
 import mesfavoris.commons.ui.wizards.datatransfer.BundleProjectImportOperation;
-import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_CONTENT;
 
 public class JavaEditorBookmarkPropertiesProviderTest {
 	private static final String PROJECT_NAME = "JavaEditorBookmarkPropertiesProviderTest";
@@ -121,13 +127,6 @@ public class JavaEditorBookmarkPropertiesProviderTest {
 		// IEditorPart editorPart = JavaUI.openInEditor(type, true, true);
 		SWTBotEditor editor = bot.editorById(editorPart.getEditorSite().getId());
 		return editor.toTextEditor();
-	}
-
-	private void closeWelcomeView() {
-		try {
-			bot.viewByTitle("Welcome").close();
-		} catch (WidgetNotFoundException e) {
-		}
 	}
 
 }
