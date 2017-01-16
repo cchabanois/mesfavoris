@@ -5,7 +5,9 @@ import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmarkFolder;
 import static mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder.bookmarksTree;
 import static mesfavoris.tests.commons.ui.SWTBotViewHelper.closeWelcomeView;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
 
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
@@ -25,6 +27,7 @@ import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.service.IBookmarksService;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
+import mesfavoris.tests.commons.waits.Waiter;
 
 /**
  * -Djava.awt.headless=true needed on mac for these tests. See
@@ -57,17 +60,21 @@ public class ShowInBookmarksViewOperationTest {
 	}
 
 	@Test
-	public void testShowInBookmarksView() {
+	public void testShowInBookmarksView() throws TimeoutException {
 		// Given
 		IWorkbenchPage activePage = UIThreadRunnable
 				.syncExec(() -> PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage());
+		assertNotNull(activePage);
 
 		// When
 		bookmarksService.showInBookmarksView(activePage, new BookmarkId("bookmark21"), true);
 
 		// Then
 		SWTBotTree botTree = bot.viewById(BookmarksView.ID).bot().tree();
-		assertThat(botTree.selection().get(0).get(0)).isIn("bookmark21", "> bookmark21");
+		Waiter.waitUntil("bookmark not selected", () -> {
+			assertThat(botTree.selection().get(0).get(0)).isEqualTo("bookmark21");
+			return true;
+		});
 	}
 
 	private BookmarksTree createBookmarksTree() {
