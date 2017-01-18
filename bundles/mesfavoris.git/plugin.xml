@@ -18,10 +18,6 @@
                class="mesfavoris.git.CommitEditorBookmarkPropertiesProvider"
                priority="10">
          </propertiesProvider>
-         <propertiesProvider
-               class="mesfavoris.git.CommitEditorBookmarkPropertiesProvider"
-               priority="10">
-         </propertiesProvider>
          <locationProvider
                class="mesfavoris.git.RepositoryCommitBookmarkLocationProvider"
                priority="10">
