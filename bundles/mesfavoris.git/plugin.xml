@@ -8,7 +8,7 @@
             name="git">
          <propertiesProvider
                class="mesfavoris.git.GitProjectPropertiesProvider"
-               priority="100">
+               priority="1000">
          </propertiesProvider>
          <importTeamProject
                class="mesfavoris.git.ImportGitProject"
