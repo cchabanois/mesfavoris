@@ -27,6 +27,7 @@
 		<module>mesfavoris.url.tests</module>
 		<module>mesfavoris.tests.commons</module>
 		<module>mesfavoris.java.tests</module>
+		<module>mesfavoris.git.tests</module>
 		<module>mesfavoris.jacoco.reports</module>
 	</modules>
 
