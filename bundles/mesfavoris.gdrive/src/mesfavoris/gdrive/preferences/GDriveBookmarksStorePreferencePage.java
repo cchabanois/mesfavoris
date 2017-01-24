@@ -31,8 +31,8 @@ public class GDriveBookmarksStorePreferencePage extends PreferencePage implement
 
 	@Override
 	public void init(IWorkbench workbench) {
-		gDriveConnectionManager = Activator.getGDriveConnectionManager();
-		bookmarkMappings = Activator.getBookmarkMappingsStore();
+		gDriveConnectionManager = Activator.getDefault().getGDriveConnectionManager();
+		bookmarkMappings = Activator.getDefault().getBookmarkMappingsStore();
 	}
 
 	@Override

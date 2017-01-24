@@ -20,18 +20,30 @@ import mesfavoris.service.IBookmarksService;
 public final class MesFavoris {
 
 	public static BookmarkDatabase getBookmarkDatabase() {
+		if (BookmarksPlugin.getDefault() == null) {
+			return null;
+		}
 		return BookmarksPlugin.getDefault().getBookmarkDatabase();
 	}
 
 	public static IBookmarksService getBookmarksService() {
+		if (BookmarksPlugin.getDefault() == null) {
+			return null;
+		}
 		return BookmarksPlugin.getDefault().getBookmarksService();
 	}
 
 	public static IPathPlaceholderResolver getPathPlaceholderResolver() {
+		if (BookmarksPlugin.getDefault() == null) {
+			return null;
+		}
 		return new PathPlaceholderResolver(BookmarksPlugin.getDefault().getPathPlaceholdersStore());
 	}
 	
 	public static IBookmarksMarkers getBookmarksMarkers() {
+		if (BookmarksPlugin.getDefault() == null) {
+			return null;
+		}
 		return BookmarksPlugin.getDefault().getBookmarksMarkers();
 	}
 }

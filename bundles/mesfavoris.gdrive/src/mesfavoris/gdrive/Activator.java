@@ -11,6 +11,7 @@ import mesfavoris.gdrive.changes.BookmarksFileChangeManager;
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
 import mesfavoris.gdrive.mappings.BookmarkMappingsPersister;
 import mesfavoris.gdrive.mappings.BookmarkMappingsStore;
+import mesfavoris.model.BookmarkDatabase;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -23,9 +24,10 @@ public class Activator extends AbstractUIPlugin {
 	// The shared instance
 	private static Activator plugin;
 
-	private static GDriveConnectionManager gDriveConnectionManager;
-	private static BookmarkMappingsStore bookmarkMappingsStore;
-	private static BookmarksFileChangeManager bookmarksFileChangeManager;
+	private BookmarkDatabase bookmarkDatabase;
+	private GDriveConnectionManager gDriveConnectionManager;
+	private BookmarkMappingsStore bookmarkMappingsStore;
+	private BookmarksFileChangeManager bookmarksFileChangeManager;
 
 	public Activator() {
 	}
@@ -41,14 +43,16 @@ public class Activator extends AbstractUIPlugin {
 		File storeFile = new File(getStateLocation().toFile(), "bookmarksStore.json");
 		bookmarkMappingsStore = new BookmarkMappingsStore(new BookmarkMappingsPersister(storeFile));
 		bookmarkMappingsStore.init();
-		MesFavoris.getBookmarkDatabase().addListener(bookmarkMappingsStore);
+		bookmarkDatabase = MesFavoris.getBookmarkDatabase();
+		bookmarkDatabase.addListener(bookmarkMappingsStore);
 		bookmarksFileChangeManager = new BookmarksFileChangeManager(gDriveConnectionManager, bookmarkMappingsStore);
 		bookmarksFileChangeManager.init();
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		MesFavoris.getBookmarkDatabase().removeListener(bookmarkMappingsStore);
+		// listener is not OSGI friendly ...
+		bookmarkDatabase.removeListener(bookmarkMappingsStore);
 		bookmarkMappingsStore.close();
 		try {
 			gDriveConnectionManager.close();
@@ -59,15 +63,15 @@ public class Activator extends AbstractUIPlugin {
 		}
 	}
 
-	public static GDriveConnectionManager getGDriveConnectionManager() {
+	public GDriveConnectionManager getGDriveConnectionManager() {
 		return gDriveConnectionManager;
 	}
 
-	public static BookmarkMappingsStore getBookmarkMappingsStore() {
+	public BookmarkMappingsStore getBookmarkMappingsStore() {
 		return bookmarkMappingsStore;
 	}
 
-	public static BookmarksFileChangeManager getBookmarksFileChangeManager() {
+	public BookmarksFileChangeManager getBookmarksFileChangeManager() {
 		return bookmarksFileChangeManager;
 	}
 

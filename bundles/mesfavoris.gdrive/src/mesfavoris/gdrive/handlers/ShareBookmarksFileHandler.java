@@ -26,8 +26,8 @@ public class ShareBookmarksFileHandler extends AbstractBookmarkHandler {
 	private final BookmarkMappingsStore bookmarkMappingsStore;
 
 	public ShareBookmarksFileHandler() {
-		this.gDriveConnectionManager = Activator.getGDriveConnectionManager();
-		this.bookmarkMappingsStore = Activator.getBookmarkMappingsStore();
+		this.gDriveConnectionManager = Activator.getDefault().getGDriveConnectionManager();
+		this.bookmarkMappingsStore = Activator.getDefault().getBookmarkMappingsStore();
 	}
 
 	@Override

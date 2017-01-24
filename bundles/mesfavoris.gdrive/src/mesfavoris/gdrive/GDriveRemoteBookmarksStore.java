@@ -50,8 +50,8 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 
 	public GDriveRemoteBookmarksStore() {
 		this((IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class),
-				Activator.getGDriveConnectionManager(), Activator.getBookmarkMappingsStore(),
-				Activator.getBookmarksFileChangeManager());
+				Activator.getDefault().getGDriveConnectionManager(), Activator.getDefault().getBookmarkMappingsStore(),
+				Activator.getDefault().getBookmarksFileChangeManager());
 	}
 
 	public GDriveRemoteBookmarksStore(IEventBroker eventBroker, GDriveConnectionManager gDriveConnectionManager,
@@ -174,10 +174,11 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 
 	@Override
 	public Optional<RemoteBookmarkFolder> getRemoteBookmarkFolder(BookmarkId bookmarkFolderId) {
-		return bookmarkMappingsStore.getMapping(bookmarkFolderId).map(mapping->new RemoteBookmarkFolder(getDescriptor().getId(), mapping.getBookmarkFolderId(),
+		return bookmarkMappingsStore.getMapping(bookmarkFolderId)
+				.map(mapping -> new RemoteBookmarkFolder(getDescriptor().getId(), mapping.getBookmarkFolderId(),
 						mapping.getProperties()));
 	}
-	
+
 	@Override
 	public RemoteBookmarksTree load(BookmarkId bookmarkFolderId, IProgressMonitor monitor) throws IOException {
 		Drive drive = gDriveConnectionManager.getDrive();
@@ -231,7 +232,7 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 			monitor.done();
 		}
 	}
-	
+
 	@Override
 	public UserInfo getUserInfo() {
 		return gDriveConnectionManager.getUserInfo();

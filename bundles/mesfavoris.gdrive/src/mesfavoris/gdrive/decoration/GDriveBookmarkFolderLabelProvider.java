@@ -21,7 +21,7 @@ public class GDriveBookmarkFolderLabelProvider extends BookmarkFolderLabelProvid
 	private final StylerProvider stylerProvider = new StylerProvider();
 
 	public GDriveBookmarkFolderLabelProvider() {
-		bookmarkMappings = Activator.getBookmarkMappingsStore();
+		bookmarkMappings = Activator.getDefault().getBookmarkMappingsStore();
 	}
 
 	@Override

@@ -36,10 +36,10 @@ public class ImportBookmarksFromGdriveHandler extends AbstractHandler {
 	private final IBookmarkMappings bookmarkMappings;
 
 	public ImportBookmarksFromGdriveHandler() {
-		this.gDriveConnectionManager = Activator.getGDriveConnectionManager();
-		this.bookmarkMappingsStore = Activator.getBookmarkMappingsStore();
+		this.gDriveConnectionManager = Activator.getDefault().getGDriveConnectionManager();
+		this.bookmarkMappingsStore = Activator.getDefault().getBookmarkMappingsStore();
 		this.bookmarksService = MesFavoris.getBookmarksService();
-		this.bookmarkMappings = Activator.getBookmarkMappingsStore();
+		this.bookmarkMappings = Activator.getDefault().getBookmarkMappingsStore();
 	}
 
 	@Override

@@ -18,7 +18,7 @@ public class ViewInGDriveHandler extends AbstractBookmarkHandler {
 	private final BookmarkMappingsStore bookmarkMappingsStore;
 
 	public ViewInGDriveHandler() {
-		this.bookmarkMappingsStore = Activator.getBookmarkMappingsStore();
+		this.bookmarkMappingsStore = Activator.getDefault().getBookmarkMappingsStore();
 	}
 
 	@Override
