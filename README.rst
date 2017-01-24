@@ -118,7 +118,9 @@ Bookmark types
 A bookmark can be of several types. For exemple, it can contain properties from a file bookmark, java bookmark and git bookmark. 
 The available bookmarks types are :
 
-- file bookmark : bookmark to a resource inside the eclipse workspace
+- file/folder bookmark : bookmark to a resource inside the eclipse workspace
+- external file/folder bookmark : bookmark to a resource outside the eclipse workspace
+You can drap & drop file or folder to the bookmarks view
 - text editor bookmark : bookmark to a specific line in a text file (file can be outside eclipse workspace)
 - java bookmark : either to a type member or to a specific line in a java file
 - url bookmark : bookmark to an url. You can copy an url from your browser and paste it into the *Mes Favoris* view
