@@ -61,6 +61,22 @@ public class ImportGitProjectTest {
 		assertTrue(project.exists());
 	}
 
+	@Test
+	public void testImportAlreadyImportedGitProjectDoesNothing() throws BookmarksException {
+		// Given
+		Bookmark bookmark = bookmark("myBookmark").withProperty(PROP_BRANCH, "master")
+				.withProperty(PROP_PROJECT_PATH, PROJECT_NAME).withProperty(PROP_URL, REPOSITORY_URL).build();
+		importGitProject.importProject(bookmark, new NullProgressMonitor());
+		
+		// When
+		importGitProject.importProject(bookmark, new NullProgressMonitor());
+
+		// Then
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IProject project = workspace.getRoot().getProject(PROJECT_NAME);
+		assertTrue(project.exists());
+	}
+
 	private void tryDeleteProject(String projectName) {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject project = workspace.getRoot().getProject(projectName);
