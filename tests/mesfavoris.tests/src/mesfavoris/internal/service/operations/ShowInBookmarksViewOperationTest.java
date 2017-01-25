@@ -8,7 +8,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
@@ -21,12 +20,11 @@ import org.junit.Test;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.MesFavoris;
-import mesfavoris.internal.views.BookmarksView;
-import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.service.IBookmarksService;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
+import mesfavoris.tests.commons.ui.BookmarksViewDriver;
 import mesfavoris.tests.commons.waits.Waiter;
 
 /**
@@ -39,12 +37,14 @@ import mesfavoris.tests.commons.waits.Waiter;
 public class ShowInBookmarksViewOperationTest {
 	private SWTWorkbenchBot bot;
 	private IBookmarksService bookmarksService;
+	private BookmarksViewDriver bookmarksViewDriver;
 
 	@Before
 	public void setUp() throws BookmarksException {
 		bookmarksService = MesFavoris.getBookmarksService();
 		bot = new SWTWorkbenchBot();
 		closeWelcomeView();
+		bookmarksViewDriver = new BookmarksViewDriver(bot);
 		bookmarksService.addBookmarksTree(bookmarksService.getBookmarksTree().getRootFolder().getId(),
 				createBookmarksTree(), (bookmarksTree) -> {
 				});
@@ -52,11 +52,7 @@ public class ShowInBookmarksViewOperationTest {
 
 	@After
 	public void tearDown() throws BookmarksException {
-		BookmarkId rootFolderId = bookmarksService.getBookmarksTree().getRootFolder().getId();
-		bookmarksService.deleteBookmarks(bookmarksService.getBookmarksTree().getChildren(rootFolderId).stream()
-				.map(bookmark -> bookmark.getId())
-				.filter(bookmarkId -> !bookmarkId.equals(DefaultBookmarkFolderProvider.DEFAULT_BOOKMARKFOLDER_ID))
-				.collect(Collectors.toList()), true);
+		bookmarksViewDriver.deleteAllBookmarksExceptDefaultBookmarkFolder();
 	}
 
 	@Test
@@ -70,7 +66,7 @@ public class ShowInBookmarksViewOperationTest {
 		bookmarksService.showInBookmarksView(activePage, new BookmarkId("bookmark21"), true);
 
 		// Then
-		SWTBotTree botTree = bot.viewById(BookmarksView.ID).bot().tree();
+		SWTBotTree botTree = bookmarksViewDriver.tree();
 		Waiter.waitUntil("bookmark not selected", () -> {
 			assertThat(botTree.selection().get(0).get(0)).isEqualTo("bookmark21");
 			return true;

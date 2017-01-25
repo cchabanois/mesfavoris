@@ -2,8 +2,11 @@ package mesfavoris;
 
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.placeholders.PathPlaceholderResolver;
+import mesfavoris.internal.views.BookmarksView;
+import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.BookmarkDatabase;
+import mesfavoris.model.BookmarkId;
 import mesfavoris.placeholders.IPathPlaceholderResolver;
 import mesfavoris.service.IBookmarksService;
 
@@ -18,7 +21,9 @@ import mesfavoris.service.IBookmarksService;
  * @noinstantiate This class is not intended to be instantiated by clients.
  */
 public final class MesFavoris {
-
+	public final static BookmarkId DEFAULT_BOOKMARKFOLDER_ID = DefaultBookmarkFolderProvider.DEFAULT_BOOKMARKFOLDER_ID;
+	public final static String VIEW_ID = BookmarksView.ID;
+	
 	public static BookmarkDatabase getBookmarkDatabase() {
 		if (BookmarksPlugin.getDefault() == null) {
 			return null;
@@ -39,7 +44,7 @@ public final class MesFavoris {
 		}
 		return new PathPlaceholderResolver(BookmarksPlugin.getDefault().getPathPlaceholdersStore());
 	}
-	
+
 	public static IBookmarksMarkers getBookmarksMarkers() {
 		if (BookmarksPlugin.getDefault() == null) {
 			return null;
