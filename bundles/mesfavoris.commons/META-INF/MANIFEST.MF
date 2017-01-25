@@ -16,3 +16,4 @@ Export-Package: mesfavoris.commons.core,
  mesfavoris.commons.ui.statushandlers,
  mesfavoris.commons.ui.viewers,
  mesfavoris.commons.ui.wizards.datatransfer
+Bundle-Vendor: Mes Favoris

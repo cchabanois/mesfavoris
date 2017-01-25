@@ -23,3 +23,4 @@ Bundle-ActivationPolicy: lazy
 Export-Package: mesfavoris.texteditor,
  mesfavoris.texteditor.text,
  mesfavoris.texteditor.text.matching
+Bundle-Vendor: Mes Favoris

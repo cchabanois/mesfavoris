@@ -2,7 +2,8 @@
 <feature
       id="mesfavoris.java.feature"
       label="mesfavoris for Java"
-      version="1.2.0.qualifier">
+      version="1.2.0.qualifier"
+      provider-name="Mes Favoris">
 
    <description>
       %description

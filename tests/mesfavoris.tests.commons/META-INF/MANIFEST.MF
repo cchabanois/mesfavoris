@@ -22,3 +22,4 @@ Export-Package: mesfavoris.tests.commons.bookmarks,
  mesfavoris.tests.commons.rules,
  mesfavoris.tests.commons.ui,
  mesfavoris.tests.commons.waits
+Bundle-Vendor: Mes Favoris

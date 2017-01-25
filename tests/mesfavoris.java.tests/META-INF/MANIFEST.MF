@@ -14,3 +14,4 @@ Require-Bundle: org.junit;bundle-version="4.11.0",
  org.eclipse.swtbot.eclipse.finder
 Bundle-ClassPath: lib/org.mockito.mockito-all_1.10.19.jar,
  .
+Bundle-Vendor: Mes Favoris

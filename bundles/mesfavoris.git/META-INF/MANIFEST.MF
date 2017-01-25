@@ -15,3 +15,4 @@ Require-Bundle: mesfavoris;bundle-version="1.2.0",
  org.eclipse.ui.ide,
  org.eclipse.egit.ui,
  com.google.guava;bundle-version="19.0.0"
+Bundle-Vendor: Mes Favoris

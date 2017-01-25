@@ -32,3 +32,4 @@ Bundle-ClassPath: .,
  libs/jetty-util-6.1.26.jar,
  libs/jsr305-1.3.9.jar,
  libs/servlet-api-2.5-20081211.jar
+Bundle-Vendor: Mes Favoris
