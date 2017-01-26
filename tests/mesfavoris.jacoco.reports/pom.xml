@@ -13,67 +13,75 @@
 		<version>1.2.0-SNAPSHOT</version>
 	</parent>
 
-	<build>
-		<plugins>
+	<profiles>
+		<profile>
+			<id>jacoco-report</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
 
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.8</version>
-				<executions>
-					<execution>
-						<id>prepare-reports</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<!-- mostly taken from https://github.com/LorenzoBettini/xtraitj/blob/master/xtraitj.swtbot.tests/pom.xml -->
-							<target>
-								<taskdef name="report" classname="org.jacoco.ant.ReportTask"
-									classpathref="maven.plugin.classpath" />
-								<echo message="Coverage report" />
-								<report>
-									<executiondata>
-										<file file="${jacoco.reportPath}" />
-									</executiondata>
-									<structure name="mesfavoris">
-									    <!-- We exclude classes we did not author -->
-										<classfiles>
-											<fileset dir="${project.basedir}/../../bundles" 
-												includes="**/target/**/*.class"
-												excludes="**/HyperlinkSourceViewer*,**/HyperlinkTokenScanner*,**/SpellcheckableMessageArea*,**/LocalServerReceiver*"/>
-										</classfiles>
-										<sourcefiles>
-											<fileset dir="${project.basedir}/../../bundles" includes="**/*.java"/>
-										</sourcefiles>
-									</structure>
-									<html destdir="${project.basedir}/target/jacoco-html"
-										footer="Code Coverage Report for mesfavoris ${project.version}"
-										locale="en" />
-									<xml destfile="${project.basedir}/target/jacoco-report.xml" />
-								</report>
-							</target>
-						</configuration>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.jacoco</groupId>
-						<artifactId>org.jacoco.ant</artifactId>
-						<version>0.7.7.201606060606</version>
-					</dependency>
-					<dependency>
-						<groupId>org.apache.ant</groupId>
-						<artifactId>ant-junit</artifactId>
-						<version>1.8.2</version>
-					</dependency>
-				</dependencies>
-			</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.8</version>
+						<executions>
+							<execution>
+								<id>prepare-reports</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<!-- mostly taken from https://github.com/LorenzoBettini/xtraitj/blob/master/xtraitj.swtbot.tests/pom.xml -->
+									<target>
+										<taskdef name="report" classname="org.jacoco.ant.ReportTask"
+											classpathref="maven.plugin.classpath" />
+										<echo message="Coverage report" />
+										<report>
+											<executiondata>
+												<file file="${jacoco.reportPath}" />
+											</executiondata>
+											<structure name="mesfavoris">
+												<!-- We exclude classes we did not author -->
+												<classfiles>
+													<fileset dir="${project.basedir}/../../bundles"
+														includes="**/target/**/*.class"
+														excludes="**/HyperlinkSourceViewer*,**/HyperlinkTokenScanner*,**/SpellcheckableMessageArea*,**/LocalServerReceiver*" />
+												</classfiles>
+												<sourcefiles>
+													<fileset dir="${project.basedir}/../../bundles"
+														includes="**/*.java" />
+												</sourcefiles>
+											</structure>
+											<html destdir="${project.basedir}/target/jacoco-html"
+												footer="Code Coverage Report for mesfavoris ${project.version}"
+												locale="en" />
+											<xml destfile="${project.basedir}/target/jacoco-report.xml" />
+										</report>
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>org.jacoco</groupId>
+								<artifactId>org.jacoco.ant</artifactId>
+								<version>0.7.7.201606060606</version>
+							</dependency>
+							<dependency>
+								<groupId>org.apache.ant</groupId>
+								<artifactId>ant-junit</artifactId>
+								<version>1.8.2</version>
+							</dependency>
+						</dependencies>
+					</plugin>
 
-		</plugins>
-	</build>
-
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
 
