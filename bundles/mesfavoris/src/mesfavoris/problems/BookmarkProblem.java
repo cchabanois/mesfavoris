@@ -16,7 +16,7 @@ public class BookmarkProblem {
 
 	public static enum Severity {
 		// order is important
-		ERROR, WARNING, INFO
+		ERROR, WARNING
 	}
 
 	public BookmarkProblem(BookmarkId bookmarkId, String problemType, Severity severity,

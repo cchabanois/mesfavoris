@@ -27,8 +27,8 @@ import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.commons.ui.viewers.StylerProvider;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
-import mesfavoris.internal.numberedbookmarks.NumberedBookmarksImageDescriptors;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;
+import mesfavoris.internal.numberedbookmarks.NumberedBookmarksImageDescriptors;
 import mesfavoris.internal.views.virtual.BookmarkLink;
 import mesfavoris.internal.views.virtual.VirtualBookmarkFolder;
 import mesfavoris.model.Bookmark;
@@ -169,14 +169,22 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 			ImageDescriptor imageDescriptor = BookmarksPlugin.getImageDescriptor(ICON_VIRTUAL_BOOKMARK_FOLDER);
 			overlayImages[IDecoration.BOTTOM_RIGHT] = imageDescriptor;
 		}
-		Optional<Severity> severity = getProblemSeverity(bookmark.getId());
-		if (severity.isPresent()) {
-			ImageDescriptor imageDescriptor = BookmarksPlugin.getImageDescriptor(ICON_ERROR);
-			overlayImages[IDecoration.BOTTOM_LEFT] = imageDescriptor;
+		Optional<ImageDescriptor> problemImageDescriptor = getProblemOverlayImageDescriptor(bookmark.getId());
+		if (problemImageDescriptor.isPresent()) {
+			overlayImages[IDecoration.BOTTOM_LEFT] = problemImageDescriptor.get();
 		}
 		return overlayImages;
 	}
 
+	private Optional<ImageDescriptor> getProblemOverlayImageDescriptor(BookmarkId bookmarkId) {
+		return getProblemSeverity(bookmarkId).map(severity-> {
+			switch (severity) {
+			case ERROR : return ISharedImages.IMG_DEC_FIELD_ERROR;
+			default : return ISharedImages.IMG_DEC_FIELD_WARNING;
+			}
+		}).map(key->PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(key));
+	}
+	
 	private Optional<Severity> getProblemSeverity(BookmarkId bookmarkId) {
 		return bookmarkProblems.getBookmarkProblems(bookmarkId).stream().map(problem -> problem.getSeverity())
 				.findFirst();

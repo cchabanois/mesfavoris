@@ -40,11 +40,10 @@ public class BookmarkProblemsPersisterTest {
 		BookmarkProblem problem2 = new BookmarkProblem(bookmarkId1, BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED,
 				Severity.WARNING, ImmutableMap.of("placeholder", "MY_PLACEHOLDER"));
 		BookmarkProblem problem3 = new BookmarkProblem(bookmarkId1, BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE,
-				Severity.INFO, ImmutableMap.of("prop1", "value1", "prop2", "value2"));
+				Severity.WARNING, ImmutableMap.of("prop1", "value1", "prop2", "value2"));
 		BookmarkProblem problem4 = new BookmarkProblem(bookmarkId2, BookmarkProblem.TYPE_CANNOT_GOTOBOOKMARK,
 				Severity.ERROR, Maps.newHashMap());
-		bookmarkProblems = bookmarkProblems.add(problem1).add(problem2)
-				.add(problem3).add(problem4);
+		bookmarkProblems = bookmarkProblems.add(problem1).add(problem2).add(problem3).add(problem4);
 
 		// When
 		bookmarkProblemsPersister.save(bookmarkProblems, new NullProgressMonitor());
@@ -61,7 +60,7 @@ public class BookmarkProblemsPersisterTest {
 				.hasValueSatisfying(
 						problem -> assertThat(problem.getProperties()).containsEntry("placeholder", "MY_PLACEHOLDER"));
 		assertThat(loadedBookmarkProblems.getBookmarkProblem(bookmarkId1, BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE))
-				.hasValueSatisfying(problem -> assertThat(problem.getSeverity()).isEqualTo(Severity.INFO))
+				.hasValueSatisfying(problem -> assertThat(problem.getSeverity()).isEqualTo(Severity.WARNING))
 				.hasValueSatisfying(problem -> assertThat(problem.getProperties()).containsEntry("prop1", "value1")
 						.containsEntry("prop2", "value2"));
 		assertThat(loadedBookmarkProblems.getBookmarkProblem(bookmarkId2, BookmarkProblem.TYPE_CANNOT_GOTOBOOKMARK))

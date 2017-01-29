@@ -112,7 +112,7 @@ public class BookmarkProblemsPersister {
 			throws IOException {
 		String name;
 		String problemType = null;
-		Severity severity = Severity.INFO;
+		Severity severity = Severity.WARNING;
 		Map<String, String> properties = Maps.newHashMap();
 		jsonReader.beginObject();
 		while (jsonReader.hasNext()) {
