@@ -36,6 +36,8 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.persistence.IDirtyBookmarksProvider;
+import mesfavoris.problems.BookmarkProblem.Severity;
+import mesfavoris.problems.IBookmarkProblems;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
 import mesfavoris.remote.RemoteBookmarkFolder;
@@ -44,6 +46,7 @@ import mesfavoris.remote.RemoteBookmarksStoreManager;
 public class BookmarksLabelProvider extends StyledCellLabelProvider implements ILabelProvider, IStyledLabelProvider {
 	private static final String ICON_VIRTUAL_BOOKMARK_FOLDER = "icons/ovr16/virt_ovr.png";
 	private static final String ICON_BOOKMARK_LINK = "icons/ovr16/link_ovr.png";
+	private static final String ICON_ERROR = "icons/ovr16/error.png";
 	private final BookmarkDatabase bookmarkDatabase;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IBookmarkLabelProvider bookmarkLabelProvider;
@@ -53,15 +56,18 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 	private final StylerProvider stylerProvider = new StylerProvider();
 	private final Color disabledColor;
 	private final IDirtyBookmarksProvider dirtyBookmarksProvider;
+	private final IBookmarkProblems bookmarkProblems;
 
 	public BookmarksLabelProvider(BookmarkDatabase bookmarkDatabase,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager, IDirtyBookmarksProvider dirtyBookmarksProvider,
-			IBookmarkLabelProvider bookmarkLabelProvider, NumberedBookmarks numberedBookmarks) {
+			IBookmarkLabelProvider bookmarkLabelProvider, NumberedBookmarks numberedBookmarks,
+			IBookmarkProblems bookmarkProblems) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
 		this.bookmarkLabelProvider = bookmarkLabelProvider;
 		this.dirtyBookmarksProvider = dirtyBookmarksProvider;
 		this.numberedBookmarks = numberedBookmarks;
+		this.bookmarkProblems = bookmarkProblems;
 		this.disabledColor = PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_GRAY);
 
 		this.commentColor = new Color(PlatformUI.getWorkbench().getDisplay(), 63, 127, 95);
@@ -163,7 +169,17 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 			ImageDescriptor imageDescriptor = BookmarksPlugin.getImageDescriptor(ICON_VIRTUAL_BOOKMARK_FOLDER);
 			overlayImages[IDecoration.BOTTOM_RIGHT] = imageDescriptor;
 		}
+		Optional<Severity> severity = getProblemSeverity(bookmark.getId());
+		if (severity.isPresent()) {
+			ImageDescriptor imageDescriptor = BookmarksPlugin.getImageDescriptor(ICON_ERROR);
+			overlayImages[IDecoration.BOTTOM_LEFT] = imageDescriptor;
+		}
 		return overlayImages;
+	}
+
+	private Optional<Severity> getProblemSeverity(BookmarkId bookmarkId) {
+		return bookmarkProblems.getBookmarkProblems(bookmarkId).stream().map(problem -> problem.getSeverity())
+				.findFirst();
 	}
 
 	private IRemoteBookmarksStore getRemoteBookmarkStore(BookmarkId bookmarkFolderId) {

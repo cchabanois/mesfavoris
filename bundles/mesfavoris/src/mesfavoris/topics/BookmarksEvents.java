@@ -7,4 +7,5 @@ public class BookmarksEvents {
 	public static final String TOPIC_VISITED_BOOKMARKS_CHANGED = BOOKMARKS_TOPIC_BASE + "/visitedBookmarks/changed";
 	public static final String TOPIC_RECENT_BOOKMARKS_CHANGED = BOOKMARKS_TOPIC_BASE + "/recentBookmarks/changed";
 	public static final String TOPIC_NUMBERED_BOOKMARKS_CHANGED = BOOKMARKS_TOPIC_BASE + "/numberedBookmarks/changed";
+	public static final String TOPIC_BOOKMARK_PROBLEMS_CHANGED = BOOKMARKS_TOPIC_BASE + "/bookmarkProblems/changed";
 }

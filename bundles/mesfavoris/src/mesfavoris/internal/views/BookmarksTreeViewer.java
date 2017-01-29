@@ -31,6 +31,7 @@ import mesfavoris.persistence.IBookmarksDirtyStateListener;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
+import mesfavoris.topics.BookmarksEvents;
 import mesfavoris.viewers.BookmarksLabelProvider;
 
 public class BookmarksTreeViewer extends TreeViewer {
@@ -41,6 +42,7 @@ public class BookmarksTreeViewer extends TreeViewer {
 	private final IBookmarksListener bookmarksListener = (modifications) -> refreshInUIThread();
 	private final IBookmarksDirtyStateListener dirtyListener = (dirtyBookmarks) -> refreshInUIThread();
 	private final EventHandler bookmarkStoresEventHandler = (event) -> refresh();
+	private final EventHandler bookmarkProblemsEventHandler = (event) -> refresh();
 	private final IBookmarksDirtyStateTracker bookmarksDirtyStateTracker;
 
 	public BookmarksTreeViewer(Composite parent, BookmarkDatabase bookmarkDatabase,
@@ -64,6 +66,7 @@ public class BookmarksTreeViewer extends TreeViewer {
 		bookmarkDatabase.addListener(bookmarksListener);
 		eventBroker.subscribe(AbstractRemoteBookmarksStore.TOPIC_REMOTE_BOOKMARK_STORES_ALL,
 				bookmarkStoresEventHandler);
+		eventBroker.subscribe(BookmarksEvents.TOPIC_BOOKMARK_PROBLEMS_CHANGED, bookmarkProblemsEventHandler);
 		bookmarksDirtyStateTracker.addListener(dirtyListener);
 	}
 
@@ -71,7 +74,8 @@ public class BookmarksTreeViewer extends TreeViewer {
 		BookmarksLabelProvider bookmarksLabelProvider = new BookmarksLabelProvider(bookmarkDatabase,
 				remoteBookmarksStoreManager, bookmarksDirtyStateTracker,
 				BookmarksPlugin.getDefault().getBookmarkLabelProvider(),
-				BookmarksPlugin.getDefault().getNumberedBookmarks());
+				BookmarksPlugin.getDefault().getNumberedBookmarks(),
+				BookmarksPlugin.getDefault().getBookmarkProblems());
 		return bookmarksLabelProvider;
 	}
 
@@ -79,6 +83,7 @@ public class BookmarksTreeViewer extends TreeViewer {
 	protected void handleDispose(DisposeEvent event) {
 		bookmarksDirtyStateTracker.removeListener(dirtyListener);
 		eventBroker.unsubscribe(bookmarkStoresEventHandler);
+		eventBroker.unsubscribe(bookmarkProblemsEventHandler);
 		bookmarkDatabase.removeListener(bookmarksListener);
 		super.handleDispose(event);
 	}

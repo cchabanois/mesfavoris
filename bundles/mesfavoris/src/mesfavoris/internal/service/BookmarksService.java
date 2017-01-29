@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -38,11 +39,13 @@ import mesfavoris.internal.service.operations.ShowInBookmarksViewOperation;
 import mesfavoris.internal.service.operations.SortByNameOperation;
 import mesfavoris.internal.service.operations.UpdateBookmarkOperation;
 import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
+import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
+import mesfavoris.problems.IBookmarkProblems;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.service.IBookmarksService;
 
@@ -56,13 +59,17 @@ public class BookmarksService implements IBookmarksService {
 	private final IGotoBookmark gotoBookmark;
 	private final NumberedBookmarks numberedBookmarks;
 	private final IBookmarkPropertyDescriptors bookmarkPropertyDescriptors;
+	private final IBookmarksMarkers bookmarksMarkers;
+	private final IBookmarkProblems bookmarkProblems;
+	private final IEventBroker eventBroker;
 
 	public BookmarksService(BookmarkDatabase bookmarkDatabase, IBookmarkPropertiesProvider bookmarkPropertiesProvider,
 			DefaultBookmarkFolderProvider defaultBookmarkFolderProvider,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
 			IBookmarksDirtyStateTracker bookmarksDirtyStateTracker, IBookmarkLocationProvider bookmarkLocationProvider,
 			IGotoBookmark gotoBookmark, NumberedBookmarks numberedBookmarks,
-			IBookmarkPropertyDescriptors bookmarkPropertyDescriptors) {
+			IBookmarkPropertyDescriptors bookmarkPropertyDescriptors, IBookmarksMarkers bookmarksMarkers,
+			IBookmarkProblems bookmarkProblems, IEventBroker eventBroker) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 		this.defaultBookmarkFolderProvider = defaultBookmarkFolderProvider;
@@ -72,6 +79,9 @@ public class BookmarksService implements IBookmarksService {
 		this.gotoBookmark = gotoBookmark;
 		this.numberedBookmarks = numberedBookmarks;
 		this.bookmarkPropertyDescriptors = bookmarkPropertyDescriptors;
+		this.bookmarksMarkers = bookmarksMarkers;
+		this.bookmarkProblems = bookmarkProblems;
+		this.eventBroker = eventBroker;
 	}
 
 	@Override
@@ -147,8 +157,7 @@ public class BookmarksService implements IBookmarksService {
 	}
 
 	@Override
-	public void paste(BookmarkId parentBookmarkId, IProgressMonitor monitor)
-			throws BookmarksException {
+	public void paste(BookmarkId parentBookmarkId, IProgressMonitor monitor) throws BookmarksException {
 		PasteBookmarkOperation operation = new PasteBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider);
 		operation.paste(parentBookmarkId, monitor);
 	}
@@ -212,14 +221,15 @@ public class BookmarksService implements IBookmarksService {
 		Set<String> nonUpdatableProperties = bookmarkPropertyDescriptors.getPropertyDescriptors().stream()
 				.filter(descriptor -> !descriptor.isUpdatable()).map(descriptor -> descriptor.getName())
 				.collect(Collectors.toSet());
-		UpdateBookmarkOperation operation = new UpdateBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider, nonUpdatableProperties);
+		UpdateBookmarkOperation operation = new UpdateBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider,
+				nonUpdatableProperties);
 		operation.updateBookmark(bookmarkId, part, selection, monitor);
 	}
 
 	@Override
 	public void gotoBookmark(BookmarkId bookmarkId, IProgressMonitor monitor) throws BookmarksException {
 		GotoBookmarkOperation gotoBookmarkOperation = new GotoBookmarkOperation(bookmarkDatabase,
-				bookmarkLocationProvider, gotoBookmark);
+				bookmarkLocationProvider, gotoBookmark, bookmarksMarkers, bookmarkProblems, eventBroker);
 		gotoBookmarkOperation.gotoBookmark(bookmarkId, monitor);
 	}
 
@@ -233,7 +243,7 @@ public class BookmarksService implements IBookmarksService {
 	public void gotoNumberedBookmark(BookmarkNumber bookmarkNumber, IProgressMonitor monitor)
 			throws BookmarksException {
 		GotoNumberedBookmarkOperation operation = new GotoNumberedBookmarkOperation(numberedBookmarks, bookmarkDatabase,
-				bookmarkLocationProvider, gotoBookmark);
+				bookmarkLocationProvider, gotoBookmark, bookmarksMarkers, bookmarkProblems, eventBroker);
 		operation.gotoNumberedBookmark(bookmarkNumber, monitor);
 	}
 

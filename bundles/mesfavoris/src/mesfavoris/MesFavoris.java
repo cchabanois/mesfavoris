@@ -8,6 +8,7 @@ import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.placeholders.IPathPlaceholderResolver;
+import mesfavoris.problems.IBookmarkProblems;
 import mesfavoris.service.IBookmarksService;
 
 /**
@@ -50,5 +51,12 @@ public final class MesFavoris {
 			return null;
 		}
 		return BookmarksPlugin.getDefault().getBookmarksMarkers();
+	}
+	
+	public static IBookmarkProblems getBookmarkProblems() {
+		if (BookmarksPlugin.getDefault() == null) {
+			return null;
+		}
+		return BookmarksPlugin.getDefault().getBookmarkProblems();
 	}
 }
