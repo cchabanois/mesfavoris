@@ -27,14 +27,14 @@ public class GotoExternalFileBookmark implements IGotoBookmark {
 		}
 		ExternalFileBookmarkLocation externalFileBookmarkLocation = (ExternalFileBookmarkLocation) bookmarkLocation;
 		IEditorPart editorPart = openEditor(window, externalFileBookmarkLocation.getFileSystemPath());
+		if (externalFileBookmarkLocation.getLineNumber() == null) {
+			return true;
+		}
 		ITextEditor textEditor = AdapterUtils.getAdapter(editorPart, ITextEditor.class);
 		if (textEditor == null) {
 			return false;
 		}
-		if (externalFileBookmarkLocation.getLineNumber() != null) {
-			return gotoLine(textEditor, externalFileBookmarkLocation.getLineNumber());
-		}
-		return true;
+		return gotoLine(textEditor, externalFileBookmarkLocation.getLineNumber());
 	}
 
 	private boolean gotoLine(ITextEditor textEditor, int lineNumber) {
