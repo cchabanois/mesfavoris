@@ -74,4 +74,10 @@ public class BookmarkProblem {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "BookmarkProblem [bookmarkId=" + bookmarkId + ", severity=" + severity + ", problemType=" + problemType
+				+ "]";
+	}
+
 }

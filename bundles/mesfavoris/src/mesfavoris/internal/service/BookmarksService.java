@@ -229,7 +229,8 @@ public class BookmarksService implements IBookmarksService {
 	@Override
 	public void gotoBookmark(BookmarkId bookmarkId, IProgressMonitor monitor) throws BookmarksException {
 		GotoBookmarkOperation gotoBookmarkOperation = new GotoBookmarkOperation(bookmarkDatabase,
-				bookmarkLocationProvider, gotoBookmark, bookmarksMarkers, bookmarkProblems, eventBroker);
+				bookmarkLocationProvider, gotoBookmark, bookmarksMarkers, bookmarkPropertiesProvider, bookmarkProblems,
+				eventBroker);
 		gotoBookmarkOperation.gotoBookmark(bookmarkId, monitor);
 	}
 
@@ -242,8 +243,11 @@ public class BookmarksService implements IBookmarksService {
 	@Override
 	public void gotoNumberedBookmark(BookmarkNumber bookmarkNumber, IProgressMonitor monitor)
 			throws BookmarksException {
+		GotoBookmarkOperation gotoBookmarkOperation = new GotoBookmarkOperation(bookmarkDatabase,
+				bookmarkLocationProvider, gotoBookmark, bookmarksMarkers, bookmarkPropertiesProvider, bookmarkProblems,
+				eventBroker);
 		GotoNumberedBookmarkOperation operation = new GotoNumberedBookmarkOperation(numberedBookmarks, bookmarkDatabase,
-				bookmarkLocationProvider, gotoBookmark, bookmarksMarkers, bookmarkProblems, eventBroker);
+				gotoBookmarkOperation);
 		operation.gotoNumberedBookmark(bookmarkNumber, monitor);
 	}
 

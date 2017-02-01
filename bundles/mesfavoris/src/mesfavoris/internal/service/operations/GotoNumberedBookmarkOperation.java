@@ -3,42 +3,28 @@ package mesfavoris.internal.service.operations;
 import java.util.Optional;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.bookmarktype.IBookmarkLocationProvider;
-import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;
-import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
-import mesfavoris.problems.IBookmarkProblems;
 
 public class GotoNumberedBookmarkOperation {
 	private final NumberedBookmarks numberedBookmarks;
 	private final BookmarkDatabase bookmarkDatabase;
-	private final IBookmarkLocationProvider bookmarkLocationProvider;
-	private final IGotoBookmark gotoBookmark;
-	private final IBookmarksMarkers bookmarksMarkers;
-	private final IBookmarkProblems bookmarkProblems;
-	private final IEventBroker eventBroker;
+	private final GotoBookmarkOperation gotoBookmarkOperation;
 
 	public GotoNumberedBookmarkOperation(NumberedBookmarks numberedBookmarks, BookmarkDatabase bookmarkDatabase,
-			IBookmarkLocationProvider bookmarkLocationProvider, IGotoBookmark gotoBookmark,
-			IBookmarksMarkers bookmarksMarkers, IBookmarkProblems bookmarkProblems, IEventBroker eventBroker) {
+			GotoBookmarkOperation gotoBookmarkOperation) {
 		this.numberedBookmarks = numberedBookmarks;
 		this.bookmarkDatabase = bookmarkDatabase;
-		this.bookmarkLocationProvider = bookmarkLocationProvider;
-		this.gotoBookmark = gotoBookmark;
-		this.bookmarksMarkers = bookmarksMarkers;
-		this.bookmarkProblems = bookmarkProblems;
-		this.eventBroker = eventBroker;
+		this.gotoBookmarkOperation = gotoBookmarkOperation;
 	}
 
 	public void gotoNumberedBookmark(BookmarkNumber bookmarkNumber, IProgressMonitor monitor)
@@ -70,9 +56,7 @@ public class GotoNumberedBookmarkOperation {
 	}
 
 	private void gotoBookmark(BookmarkId bookmarkId, IProgressMonitor monitor) throws BookmarksException {
-		GotoBookmarkOperation operation = new GotoBookmarkOperation(bookmarkDatabase, bookmarkLocationProvider,
-				gotoBookmark, bookmarksMarkers, bookmarkProblems, eventBroker);
-		operation.gotoBookmark(bookmarkId, monitor);
+		gotoBookmarkOperation.gotoBookmark(bookmarkId, monitor);
 	}
 
 }
