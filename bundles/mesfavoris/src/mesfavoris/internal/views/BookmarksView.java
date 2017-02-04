@@ -1,7 +1,6 @@
 package mesfavoris.internal.views;
 
 import java.util.Optional;
-import java.util.Set;
 
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.NotEnabledException;
@@ -29,15 +28,12 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
@@ -46,9 +42,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
-import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.handlers.IHandlerService;
@@ -81,10 +75,7 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
-import mesfavoris.problems.BookmarkProblem;
 import mesfavoris.problems.IBookmarkProblems;
-import mesfavoris.problems.BookmarkProblem.Severity;
-import mesfavoris.problems.IBookmarkProblemHandler;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 
@@ -109,7 +100,6 @@ public class BookmarksView extends ViewPart {
 	private ToolBarManager commentsToolBarManager;
 	private IMemento memento;
 	private PreviousActivePartListener previousActivePartListener = new PreviousActivePartListener();
-	private FormText bookmarkProblemsFormText;
 	private Composite commentsComposite;
 	private Section commentsSection;
 	private BookmarkProblemsControl bookmarkProblemsControl;
@@ -140,44 +130,6 @@ public class BookmarksView extends ViewPart {
 		getSite().setSelectionProvider(bookmarksTreeViewer);
 		toggleLinkAction.init();
 		restoreState(memento);
-	}
-
-	private void createBookmarkProblemsForm(Composite parent) {
-		bookmarkProblemsFormText = toolkit.createFormText(parent, true);
-		ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
-		bookmarkProblemsFormText.setImage("imageError", sharedImages.getImage(ISharedImages.IMG_OBJS_ERROR_TSK));
-		bookmarkProblemsFormText.setImage("imageWarning", sharedImages.getImage(ISharedImages.IMG_OBJS_WARN_TSK));
-		GridDataFactory.fillDefaults().exclude(true).applyTo(bookmarkProblemsFormText);
-		bookmarkProblemsFormText.setVisible(false);
-	}
-
-	private void updateBookmarkProblemsForm(Bookmark bookmark) {
-		Set<BookmarkProblem> problems = bookmarkProblems.getBookmarkProblems(bookmark.getId());
-		if (problems.isEmpty()) {
-			bookmarkProblemsFormText.setText("", false, false);
-			bookmarkProblemsFormText.setVisible(false);
-			GridDataFactory.fillDefaults().exclude(true).applyTo(bookmarkProblemsFormText);
-			commentsSection.layout();
-			commentsSection.redraw();
-			return;
-		}
-		bookmarkProblemsFormText.setVisible(true);
-		StringBuilder sb = new StringBuilder();
-		sb.append("<form>");
-		for (BookmarkProblem problem : problems) {
-			IBookmarkProblemHandler handler = bookmarkProblemHandlers
-					.getBookmarkProblemHandler(problem.getProblemType());
-			;
-			String value = problem.getSeverity() == Severity.ERROR ? "imageError" : "imageWarning";
-			String message = handler.getErrorMessage(problem);
-			sb.append(String.format("<li style=\"image\" value=\"%s\">%s</li>", value, message));
-		}
-		sb.append("</form>");
-		bookmarkProblemsFormText.setText(sb.toString(), true, false);
-		GridDataFactory.fillDefaults().exclude(false).applyTo(bookmarkProblemsFormText);
-		commentsSection.layout();
-
-		commentsSection.redraw();
 	}
 
 	private void createCommentsSection(Composite parent) {
