@@ -2,6 +2,7 @@ package mesfavoris.internal.service.operations;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -22,10 +23,12 @@ public class CheckBookmarkPropertiesOperation {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
 	private final IBookmarkProblems bookmarkProblems;
+	private final Set<String> nonUpdatableProperties;
 
-	public CheckBookmarkPropertiesOperation(BookmarkDatabase bookmarkDatabase,
+	public CheckBookmarkPropertiesOperation(BookmarkDatabase bookmarkDatabase, Set<String> nonUpdatableProperties,
 			IBookmarkPropertiesProvider bookmarkPropertiesProvider, IBookmarkProblems bookmarkProblems) {
 		this.bookmarkDatabase = bookmarkDatabase;
+		this.nonUpdatableProperties = nonUpdatableProperties;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 		this.bookmarkProblems = bookmarkProblems;
 	}
@@ -50,7 +53,7 @@ public class CheckBookmarkPropertiesOperation {
 		bookmarkPropertiesProvider.addBookmarkProperties(bookmarkProperties, part, selection, monitor);
 		for (String propName : bookmarkProperties.keySet()) {
 			String newValue = bookmarkProperties.get(propName);
-			if (!newValue.equals(bookmark.getPropertyValue(propName))) {
+			if (!nonUpdatableProperties.contains(propName) && !newValue.equals(bookmark.getPropertyValue(propName))) {
 				propertiesNeedingUpdate.put(propName, newValue);
 			}
 		}
@@ -63,7 +66,7 @@ public class CheckBookmarkPropertiesOperation {
 				Severity.WARNING, propertiesNeedingUpdate);
 		bookmarkProblems.add(problem);
 	}
-	
+
 	private void removePropertiesNeedUpdateBookmarkProblem(BookmarkId bookmarkId) {
 		bookmarkProblems.getBookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE)
 				.ifPresent(problem -> bookmarkProblems.delete(problem));

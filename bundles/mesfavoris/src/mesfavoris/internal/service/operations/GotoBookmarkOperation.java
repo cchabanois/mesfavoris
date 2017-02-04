@@ -1,6 +1,7 @@
 package mesfavoris.internal.service.operations;
 
 import java.util.Collections;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -41,8 +42,8 @@ public class GotoBookmarkOperation {
 
 	public GotoBookmarkOperation(BookmarkDatabase bookmarkDatabase, IBookmarkLocationProvider bookmarkLocationProvider,
 			IGotoBookmark gotoBookmark, IBookmarksMarkers bookmarksMarkers,
-			IBookmarkPropertiesProvider bookmarkPropertiesProvider, IBookmarkProblems bookmarkProblems,
-			IEventBroker eventBroker) {
+			IBookmarkPropertiesProvider bookmarkPropertiesProvider, Set<String> nonUpdatableProperties,
+			IBookmarkProblems bookmarkProblems, IEventBroker eventBroker) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.bookmarkLocationProvider = bookmarkLocationProvider;
 		this.gotoBookmark = gotoBookmark;
@@ -50,7 +51,7 @@ public class GotoBookmarkOperation {
 		this.bookmarkProblems = bookmarkProblems;
 		this.eventBroker = eventBroker;
 		this.checkBookmarkPropertiesOperation = new CheckBookmarkPropertiesOperation(bookmarkDatabase,
-				bookmarkPropertiesProvider, bookmarkProblems);
+				nonUpdatableProperties, bookmarkPropertiesProvider, bookmarkProblems);
 	}
 
 	public void gotoBookmark(BookmarkId bookmarkId, IProgressMonitor monitor) throws BookmarksException {

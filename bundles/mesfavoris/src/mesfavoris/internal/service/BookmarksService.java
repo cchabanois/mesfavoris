@@ -218,19 +218,24 @@ public class BookmarksService implements IBookmarksService {
 	@Override
 	public void updateBookmark(BookmarkId bookmarkId, IWorkbenchPart part, ISelection selection,
 			IProgressMonitor monitor) throws BookmarksException {
-		Set<String> nonUpdatableProperties = bookmarkPropertyDescriptors.getPropertyDescriptors().stream()
-				.filter(descriptor -> !descriptor.isUpdatable()).map(descriptor -> descriptor.getName())
-				.collect(Collectors.toSet());
+		Set<String> nonUpdatableProperties = getNonUpdatableProperties();
 		UpdateBookmarkOperation operation = new UpdateBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider,
 				nonUpdatableProperties);
 		operation.updateBookmark(bookmarkId, part, selection, monitor);
 	}
 
+	private Set<String> getNonUpdatableProperties() {
+		Set<String> nonUpdatableProperties = bookmarkPropertyDescriptors.getPropertyDescriptors().stream()
+				.filter(descriptor -> !descriptor.isUpdatable()).map(descriptor -> descriptor.getName())
+				.collect(Collectors.toSet());
+		return nonUpdatableProperties;
+	}
+
 	@Override
 	public void gotoBookmark(BookmarkId bookmarkId, IProgressMonitor monitor) throws BookmarksException {
 		GotoBookmarkOperation gotoBookmarkOperation = new GotoBookmarkOperation(bookmarkDatabase,
-				bookmarkLocationProvider, gotoBookmark, bookmarksMarkers, bookmarkPropertiesProvider, bookmarkProblems,
-				eventBroker);
+				bookmarkLocationProvider, gotoBookmark, bookmarksMarkers, bookmarkPropertiesProvider,
+				getNonUpdatableProperties(), bookmarkProblems, eventBroker);
 		gotoBookmarkOperation.gotoBookmark(bookmarkId, monitor);
 	}
 
@@ -244,8 +249,8 @@ public class BookmarksService implements IBookmarksService {
 	public void gotoNumberedBookmark(BookmarkNumber bookmarkNumber, IProgressMonitor monitor)
 			throws BookmarksException {
 		GotoBookmarkOperation gotoBookmarkOperation = new GotoBookmarkOperation(bookmarkDatabase,
-				bookmarkLocationProvider, gotoBookmark, bookmarksMarkers, bookmarkPropertiesProvider, bookmarkProblems,
-				eventBroker);
+				bookmarkLocationProvider, gotoBookmark, bookmarksMarkers, bookmarkPropertiesProvider,
+				getNonUpdatableProperties(), bookmarkProblems, eventBroker);
 		GotoNumberedBookmarkOperation operation = new GotoNumberedBookmarkOperation(numberedBookmarks, bookmarkDatabase,
 				gotoBookmarkOperation);
 		operation.gotoNumberedBookmark(bookmarkNumber, monitor);
