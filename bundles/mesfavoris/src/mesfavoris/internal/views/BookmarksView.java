@@ -1,6 +1,7 @@
 package mesfavoris.internal.views;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.NotEnabledException;
@@ -28,12 +29,15 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
@@ -42,7 +46,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.DrillDownAdapter;
@@ -63,6 +70,8 @@ import mesfavoris.internal.actions.RemoveFromRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.ToggleLinkAction;
 import mesfavoris.internal.jobs.ImportTeamProjectFromBookmarkJob;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarksVirtualFolder;
+import mesfavoris.internal.problems.extension.BookmarkProblemHandlers;
+import mesfavoris.internal.problems.ui.BookmarkProblemsControl;
 import mesfavoris.internal.recent.RecentBookmarksVirtualFolder;
 import mesfavoris.internal.views.comment.BookmarkCommentArea;
 import mesfavoris.internal.visited.LatestVisitedBookmarksVirtualFolder;
@@ -72,6 +81,10 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
+import mesfavoris.problems.BookmarkProblem;
+import mesfavoris.problems.IBookmarkProblems;
+import mesfavoris.problems.BookmarkProblem.Severity;
+import mesfavoris.problems.IBookmarkProblemHandler;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 
@@ -84,6 +97,8 @@ public class BookmarksView extends ViewPart {
 	private final IEventBroker eventBroker;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IBookmarksDirtyStateTracker bookmarksDirtyStateTracker;
+	private final IBookmarkProblems bookmarkProblems;
+	private final BookmarkProblemHandlers bookmarkProblemHandlers;
 	private BookmarksTreeViewer bookmarksTreeViewer;
 	private BookmarkCommentArea bookmarkCommentViewer;
 	private DrillDownAdapter drillDownAdapter;
@@ -94,12 +109,18 @@ public class BookmarksView extends ViewPart {
 	private ToolBarManager commentsToolBarManager;
 	private IMemento memento;
 	private PreviousActivePartListener previousActivePartListener = new PreviousActivePartListener();
-
+	private FormText bookmarkProblemsFormText;
+	private Composite commentsComposite;
+	private Section commentsSection;
+	private BookmarkProblemsControl bookmarkProblemsControl;
+	
 	public BookmarksView() {
 		this.bookmarkDatabase = BookmarksPlugin.getDefault().getBookmarkDatabase();
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
 		this.remoteBookmarksStoreManager = BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager();
 		this.bookmarksDirtyStateTracker = BookmarksPlugin.getDefault().getBookmarksDirtyStateTracker();
+		this.bookmarkProblems = BookmarksPlugin.getDefault().getBookmarkProblems();
+		this.bookmarkProblemHandlers = BookmarksPlugin.getDefault().getBookmarkProblemHandlers();
 	}
 
 	public void createPartControl(Composite parent) {
@@ -121,17 +142,56 @@ public class BookmarksView extends ViewPart {
 		restoreState(memento);
 	}
 
+	private void createBookmarkProblemsForm(Composite parent) {
+		bookmarkProblemsFormText = toolkit.createFormText(parent, true);
+		ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
+		bookmarkProblemsFormText.setImage("imageError", sharedImages.getImage(ISharedImages.IMG_OBJS_ERROR_TSK));
+		bookmarkProblemsFormText.setImage("imageWarning", sharedImages.getImage(ISharedImages.IMG_OBJS_WARN_TSK));
+		GridDataFactory.fillDefaults().exclude(true).applyTo(bookmarkProblemsFormText);
+		bookmarkProblemsFormText.setVisible(false);
+	}
+
+	private void updateBookmarkProblemsForm(Bookmark bookmark) {
+		Set<BookmarkProblem> problems = bookmarkProblems.getBookmarkProblems(bookmark.getId());
+		if (problems.isEmpty()) {
+			bookmarkProblemsFormText.setText("", false, false);
+			bookmarkProblemsFormText.setVisible(false);
+			GridDataFactory.fillDefaults().exclude(true).applyTo(bookmarkProblemsFormText);
+			commentsSection.layout();
+			commentsSection.redraw();
+			return;
+		}
+		bookmarkProblemsFormText.setVisible(true);
+		StringBuilder sb = new StringBuilder();
+		sb.append("<form>");
+		for (BookmarkProblem problem : problems) {
+			IBookmarkProblemHandler handler = bookmarkProblemHandlers
+					.getBookmarkProblemHandler(problem.getProblemType());
+			;
+			String value = problem.getSeverity() == Severity.ERROR ? "imageError" : "imageWarning";
+			String message = handler.getErrorMessage(problem);
+			sb.append(String.format("<li style=\"image\" value=\"%s\">%s</li>", value, message));
+		}
+		sb.append("</form>");
+		bookmarkProblemsFormText.setText(sb.toString(), true, false);
+		GridDataFactory.fillDefaults().exclude(false).applyTo(bookmarkProblemsFormText);
+		commentsSection.layout();
+
+		commentsSection.redraw();
+	}
+
 	private void createCommentsSection(Composite parent) {
-		Section commentsSection = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR);
+		commentsSection = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR);
 		commentsSection.setText("Comments");
 		commentsSection.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
-
 		createCommentsSectionToolbar(commentsSection);
 
-		Composite commentsComposite = toolkit.createComposite(commentsSection);
+		commentsComposite = toolkit.createComposite(commentsSection);
 		toolkit.paintBordersFor(commentsComposite);
 		commentsSection.setClient(commentsComposite);
 		GridLayoutFactory.fillDefaults().extendedMargins(2, 2, 2, 2).applyTo(commentsComposite);
+		bookmarkProblemsControl = new BookmarkProblemsControl(commentsComposite, bookmarkProblems, bookmarkProblemHandlers);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(bookmarkProblemsControl);
 		bookmarkCommentViewer = new BookmarkCommentArea(commentsComposite,
 				SWT.MULTI | SWT.V_SCROLL | SWT.WRAP | toolkit.getBorderStyle(), bookmarkDatabase);
 		bookmarkCommentViewer.getTextWidget().setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
@@ -172,6 +232,8 @@ public class BookmarksView extends ViewPart {
 			importProjectAction.setImageDescriptor(importTeamProject.get().getIcon());
 			commentsToolBarManager.add(importProjectAction);
 		}
+		ImageHyperlink imageHyperLink = new ImageHyperlink(commentsSection, SWT.CENTER);
+		imageHyperLink.setText("5 bookmark problems");
 		commentsToolBarManager.update(true);
 	}
 
@@ -232,6 +294,9 @@ public class BookmarksView extends ViewPart {
 			public void selectionChanged(SelectionChangedEvent event) {
 				final Bookmark bookmark = bookmarksTreeViewer.getSelectedBookmark();
 				updateCommentsSectionToolbar(bookmark);
+				bookmarkProblemsControl.setBookmark(bookmark.getId());
+				commentsSection.layout();
+				commentsSection.redraw();
 				bookmarkCommentViewer.setBookmark(bookmark);
 			}
 		});

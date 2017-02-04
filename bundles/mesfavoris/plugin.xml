@@ -3,6 +3,7 @@
 <plugin>
    <extension-point id="remoteStorage" name="Remote Bookmarks Storage" schema="schema/remoteStorage.exsd"/>
    <extension-point id="bookmarkTypes" name="Bookmark Types" schema="schema/bookmarkTypes.exsd"/>
+   <extension-point id="bookmarkProblems" name="Bookmark problems" schema="schema/bookmarkProblems.exsd"/>
 
    <extension
          point="org.eclipse.ui.views">
@@ -733,5 +734,16 @@
             </property>
          </properties>
       </bookmarkType>
+   </extension>
+   <extension
+         point="mesfavoris.bookmarkProblems">
+      <bookmarkProblem
+            class="mesfavoris.internal.problems.handlers.CannotGotoBookmarkProblemHandler"
+            type="cannotGotoBookmark">
+      </bookmarkProblem>
+      <bookmarkProblem
+            class="mesfavoris.internal.problems.handlers.PropertiesNeedUpdateBookmarkProblemHandler"
+            type="propertiesNeedUpdate">
+      </bookmarkProblem>
    </extension>
 </plugin>

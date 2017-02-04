@@ -39,6 +39,7 @@ import mesfavoris.internal.persistence.LocalBookmarksSaver;
 import mesfavoris.internal.persistence.RemoteBookmarksSaver;
 import mesfavoris.internal.placeholders.PathPlaceholdersStore;
 import mesfavoris.internal.problems.BookmarkProblemsDatabase;
+import mesfavoris.internal.problems.extension.BookmarkProblemHandlers;
 import mesfavoris.internal.recent.RecentBookmarksDatabase;
 import mesfavoris.internal.remote.RemoteBookmarksStoreLoader;
 import mesfavoris.internal.remote.RemoteBookmarksTreeChangeEventHandler;
@@ -87,6 +88,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 	private PathPlaceholdersStore pathPlaceholdersStore;
 	private PluginBookmarkTypes pluginBookmarkTypes;
 	private BookmarkProblemsDatabase bookmarkProblems;
+	private BookmarkProblemHandlers bookmarkProblemHandlers;
 
 	private final BookmarkAdapterFactory bookmarkAdapterFactory = new BookmarkAdapterFactory();
 	private RemoteBookmarksTreeChangeEventHandler remoteBookmarksTreeChangeEventHandler;
@@ -112,6 +114,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 				remoteBookmarksStoreManager);
 		bookmarkDatabase = loadBookmarkDatabase(bookmarksFile, bookmarksModificationValidator);
 		pluginBookmarkTypes = new PluginBookmarkTypes();
+		bookmarkProblemHandlers = new BookmarkProblemHandlers();
 		bookmarkLabelProvider = new PluginBookmarkLabelProvider(pluginBookmarkTypes);
 		PluginBookmarkMarkerAttributesProvider bookmarkMarkerAttributesProvider = new PluginBookmarkMarkerAttributesProvider(
 				pluginBookmarkTypes);
@@ -276,6 +279,10 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		return bookmarkProblems;
 	}
 
+	public BookmarkProblemHandlers getBookmarkProblemHandlers() {
+		return bookmarkProblemHandlers;
+	}
+	
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in
 	 * relative path
