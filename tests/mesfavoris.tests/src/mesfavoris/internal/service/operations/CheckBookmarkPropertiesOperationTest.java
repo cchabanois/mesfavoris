@@ -20,6 +20,7 @@ import java.util.concurrent.TimeoutException;
 import org.assertj.core.util.Lists;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -33,11 +34,14 @@ import org.mockito.stubbing.Answer;
 
 import com.google.common.collect.ImmutableMap;
 
+import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
+import mesfavoris.internal.placeholders.PathPlaceholdersMap;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
+import mesfavoris.placeholders.PathPlaceholder;
 import mesfavoris.problems.BookmarkProblem;
 import mesfavoris.problems.IBookmarkProblems;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
@@ -51,6 +55,7 @@ public class CheckBookmarkPropertiesOperationTest {
 	private IWorkbenchPage workbenchPage = mock(IWorkbenchPage.class);
 	private ISelection selection = mock(ISelection.class);
 	private IBookmarkProblems bookmarkProblems = mock(IBookmarkProblems.class);
+	private PathPlaceholdersMap pathPlaceholders = new PathPlaceholdersMap();
 	private Set<String> nonUpdatableProperties = new HashSet<>();
 
 	@Before
@@ -59,7 +64,7 @@ public class CheckBookmarkPropertiesOperationTest {
 				Lists.newArrayList(Bookmark.PROPERTY_NAME, Bookmark.PROPERTY_COMMENT, Bookmark.PROPERTY_COMMENT));
 		bookmarkDatabase = new BookmarkDatabase("test", createBookmarksTree());
 		operation = new CheckBookmarkPropertiesOperation(bookmarkDatabase, nonUpdatableProperties,
-				bookmarkPropertiesProvider, bookmarkProblems);
+				bookmarkPropertiesProvider, pathPlaceholders, bookmarkProblems);
 		IWorkbenchPartSite workbenchPartSite = mock(IWorkbenchPartSite.class);
 		when(workbenchPart.getSite()).thenReturn(workbenchPartSite);
 		when(workbenchPartSite.getPage()).thenReturn(workbenchPage);
@@ -82,6 +87,27 @@ public class CheckBookmarkPropertiesOperationTest {
 
 		// Then
 		assertThat(propertiesNeedingUpdate).containsExactly(entry("prop2", "newValue2"), entry("prop3", "value3"));
+	}
+
+	@Test
+	public void testGetPropertiesUsingUndefinedPlaceholder() throws BookmarksException {
+		// Given
+		pathPlaceholders.add(new PathPlaceholder("PLACEHOLDER2", new Path("/var/workspace/project")));
+		BookmarkId bookmarkId = new BookmarkId("bookmark12");
+		bookmarkDatabase.modify(bookmarksTreeModifier -> {
+			bookmarksTreeModifier.addBookmarks(new BookmarkId("folder1"),
+					Lists.newArrayList(new Bookmark(bookmarkId, ImmutableMap.of("filePath",
+							"${PLACEHOLDER1}/myFile.txt", "folderPath", "${PLACEHOLDER2}/myFolder"))));
+		});
+
+		// When
+		Map<String, String> propertiesUsingUndefinedPlaceholder = operation
+				.getPropertiesUsingUndefinedPlaceholder(bookmarkId);
+
+		// Then
+		assertThat(propertiesUsingUndefinedPlaceholder)
+				.containsExactly(entry("filePath", "${PLACEHOLDER1}/myFile.txt"));
+
 	}
 
 	@Test
