@@ -1,6 +1,8 @@
 package mesfavoris.internal.views.properties;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.jface.viewers.IColorProvider;
@@ -14,19 +16,16 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
-import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.model.Bookmark;
 import mesfavoris.problems.BookmarkProblem;
-import mesfavoris.problems.IBookmarkProblems;
 
 public class BookmarkPropertySource implements IPropertySource {
 	private final Bookmark bookmark;
-	private final IBookmarkProblems bookmarkProblems;
-	private final BookmarkPropertyWithProblemLabelProvider bookmarkPropertyWithProblemLabelProvider = new BookmarkPropertyWithProblemLabelProvider();
+	private final Set<BookmarkProblem> bookmarkProblems;
 
-	public BookmarkPropertySource(Bookmark bookmark) {
+	public BookmarkPropertySource(Bookmark bookmark, Set<BookmarkProblem> bookmarkProblems) {
 		this.bookmark = bookmark;
-		this.bookmarkProblems = BookmarksPlugin.getDefault().getBookmarkProblems();
+		this.bookmarkProblems = bookmarkProblems;
 	}
 
 	@Override
@@ -36,30 +35,60 @@ public class BookmarkPropertySource implements IPropertySource {
 
 	@Override
 	public IPropertyDescriptor[] getPropertyDescriptors() {
-		return bookmark.getProperties().keySet().stream().map(propertyName -> getPropertyDescriptor(propertyName))
-				.collect(Collectors.toList()).toArray(new IPropertyDescriptor[0]);
+		Optional<BookmarkProblem> problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
+		List<IPropertyDescriptor> propertyDescriptors = bookmark.getProperties().keySet().stream()
+				.map(propertyName -> getPropertyDescriptorFromBookmarkProperty(propertyName, problem))
+				.collect(Collectors.toList());
+		if (problem.isPresent()) {
+			propertyDescriptors.addAll(problem.get().getProperties().keySet().stream()
+					.filter(propertyName -> bookmark.getPropertyValue(propertyName) == null)
+					.map(propertyName -> getPropertyDescriptorFromProblemProperty(propertyName))
+					.collect(Collectors.toList()));
+		}
+		return propertyDescriptors.toArray(new IPropertyDescriptor[0]);
 	}
 
-	private IPropertyDescriptor getPropertyDescriptor(String propertyName) {
+	private IPropertyDescriptor getPropertyDescriptorFromBookmarkProperty(String propertyName,
+			Optional<BookmarkProblem> problem) {
 		PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyName);
-		Optional<BookmarkProblem> problem = bookmarkProblems.getBookmarkProblem(bookmark.getId(),
-				BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
-		String updatedValue = problem.map(bookmarkProblem->bookmarkProblem.getProperties().get(propertyName)).orElse(null);
+		String updatedValue = problem.map(bookmarkProblem -> bookmarkProblem.getProperties().get(propertyName))
+				.orElse(null);
 		if (updatedValue != null) {
-			propertyDescriptor.setLabelProvider(bookmarkPropertyWithProblemLabelProvider);
+			propertyDescriptor.setLabelProvider(new PropertyLabelProvider(false, true));
 		}
+		return propertyDescriptor;
+	}
+
+	private IPropertyDescriptor getPropertyDescriptorFromProblemProperty(String propertyName) {
+		PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyName + " (New value)");
+		propertyDescriptor.setLabelProvider(new PropertyLabelProvider(true, true));
 		return propertyDescriptor;
 	}
 
 	@Override
 	public Object getPropertyValue(Object id) {
-		String propertyName = (String)id;
+		String propertyName = (String) id;
 		String propertyValue = bookmark.getPropertyValue(propertyName);
-		Optional<BookmarkProblem> problem = bookmarkProblems.getBookmarkProblem(bookmark.getId(),
-				BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
-		String updatedValue = problem.map(bookmarkProblem->bookmarkProblem.getProperties().get(propertyName)).orElse(null);
+		if (propertyValue != null) {
+			return getPropertyValueFromBookmark(propertyName);
+		} else {
+			return getPropertyValueFromProblem(propertyName);
+		}
+
+	}
+
+	private Object getPropertyValueFromProblem(String propertyName) {
+		Optional<BookmarkProblem> problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
+		return problem.get().getProperties().get(propertyName);
+	}
+
+	private Object getPropertyValueFromBookmark(String propertyName) {
+		String propertyValue = bookmark.getPropertyValue(propertyName);
+		Optional<BookmarkProblem> problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
+		String updatedValue = problem.map(bookmarkProblem -> bookmarkProblem.getProperties().get(propertyName))
+				.orElse(null);
 		if (updatedValue != null) {
-			return new PropertyNeedsUpdatePropertySource(propertyName, propertyValue, updatedValue); 
+			return new PropertyNeedsUpdatePropertySource(propertyName, propertyValue, updatedValue);
 		} else {
 			return propertyValue;
 		}
@@ -80,12 +109,39 @@ public class BookmarkPropertySource implements IPropertySource {
 
 	}
 
-	private static class BookmarkPropertyWithProblemLabelProvider extends LabelProvider {
+	public Optional<BookmarkProblem> getBookmarkProblem(String problemType) {
+		return bookmarkProblems.stream().filter(problem -> problemType.equals(problem.getProblemType())).findAny();
+	}
+
+	private static class PropertyLabelProvider extends LabelProvider implements IColorProvider {
+		private final boolean isGrayed;
+		private final boolean useWarningIcon;
+
+		public PropertyLabelProvider(boolean isGrayed, boolean useWarningIcon) {
+			this.isGrayed = isGrayed;
+			this.useWarningIcon = useWarningIcon;
+		}
 
 		@Override
 		public Image getImage(Object element) {
-			ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
-			return sharedImages.getImage(ISharedImages.IMG_OBJS_WARN_TSK);
+			if (useWarningIcon) {
+				ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
+				return sharedImages.getImage(ISharedImages.IMG_OBJS_WARN_TSK);
+			}
+			return null;
+		}
+
+		@Override
+		public Color getForeground(Object element) {
+			if (isGrayed) {
+				return PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_GRAY);
+			}
+			return null;
+		}
+
+		@Override
+		public Color getBackground(Object element) {
+			return null;
 		}
 
 	}
@@ -110,7 +166,7 @@ public class BookmarkPropertySource implements IPropertySource {
 		@Override
 		public IPropertyDescriptor[] getPropertyDescriptors() {
 			PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, "Updated value");
-			propertyDescriptor.setLabelProvider(new GrayedLabelProvided());
+			propertyDescriptor.setLabelProvider(new PropertyLabelProvider(true, false));
 			return new IPropertyDescriptor[] { propertyDescriptor };
 		}
 
@@ -133,19 +189,4 @@ public class BookmarkPropertySource implements IPropertySource {
 		}
 
 	}
-
-	private static class GrayedLabelProvided extends LabelProvider implements IColorProvider {
-
-		@Override
-		public Color getForeground(Object element) {
-			return PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_GRAY);
-		}
-
-		@Override
-		public Color getBackground(Object element) {
-			return null;
-		}
-		
-	}
-	
 }
