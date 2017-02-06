@@ -12,7 +12,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 import org.assertj.core.util.Lists;
@@ -49,12 +51,15 @@ public class CheckBookmarkPropertiesOperationTest {
 	private IWorkbenchPage workbenchPage = mock(IWorkbenchPage.class);
 	private ISelection selection = mock(ISelection.class);
 	private IBookmarkProblems bookmarkProblems = mock(IBookmarkProblems.class);
+	private Set<String> nonUpdatableProperties = new HashSet<>();
 
 	@Before
 	public void setUp() {
+		nonUpdatableProperties.addAll(
+				Lists.newArrayList(Bookmark.PROPERTY_NAME, Bookmark.PROPERTY_COMMENT, Bookmark.PROPERTY_COMMENT));
 		bookmarkDatabase = new BookmarkDatabase("test", createBookmarksTree());
-		operation = new CheckBookmarkPropertiesOperation(bookmarkDatabase, bookmarkPropertiesProvider,
-				bookmarkProblems);
+		operation = new CheckBookmarkPropertiesOperation(bookmarkDatabase, nonUpdatableProperties,
+				bookmarkPropertiesProvider, bookmarkProblems);
 		IWorkbenchPartSite workbenchPartSite = mock(IWorkbenchPartSite.class);
 		when(workbenchPart.getSite()).thenReturn(workbenchPartSite);
 		when(workbenchPartSite.getPage()).thenReturn(workbenchPage);
@@ -84,11 +89,12 @@ public class CheckBookmarkPropertiesOperationTest {
 		// Given
 		BookmarkId bookmarkId = new BookmarkId("bookmark12");
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
-			bookmarksTreeModifier.addBookmarks(new BookmarkId("folder1"), Lists.newArrayList(new Bookmark(bookmarkId,
-					ImmutableMap.of(Bookmark.PROPERTY_NAME, "bookmark12", "prop1", "value1", "prop2", "value2"))));
+			bookmarksTreeModifier.addBookmarks(new BookmarkId("folder1"),
+					Lists.newArrayList(new Bookmark(bookmarkId, ImmutableMap.of(Bookmark.PROPERTY_NAME, "bookmark12",
+							Bookmark.PROPERTY_COMMENT, "comment", "prop1", "value1", "prop2", "value2"))));
 		});
-		doPutPropertiesWhenAddBookmarkPropertiesCalled(bookmarkPropertiesProvider, selection,
-				ImmutableMap.of("prop1", "value1", "prop2", "newValue2", "prop3", "value3"));
+		doPutPropertiesWhenAddBookmarkPropertiesCalled(bookmarkPropertiesProvider, selection, ImmutableMap.of(
+				Bookmark.PROPERTY_COMMENT, "new comment", "prop1", "value1", "prop2", "newValue2", "prop3", "value3"));
 
 		// When
 		operation.checkBookmarkPropertiesProblem(bookmarkId, workbenchPart, selection);
