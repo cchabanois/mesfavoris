@@ -149,9 +149,6 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		File bookmarkProblemsFile = new File(getStateLocation().toFile(), "bookmarkProblems.json");
 		bookmarkProblems = new BookmarkProblemsDatabase(eventBroker, bookmarkDatabase, bookmarkProblemsFile);
 		bookmarkProblems.init();
-		bookmarksService = new BookmarksService(bookmarkDatabase, bookmarkPropertiesProvider,
-				defaultBookmarkFolderProvider, remoteBookmarksStoreManager, bookmarksSaver, bookmarkLocationProvider,
-				gotoBookmark, numberedBookmarks, pluginBookmarkTypes, bookmarksMarkers, bookmarkProblems, eventBroker);
 		File storeFile = new File(getStateLocation().toFile(), "placeholders.json");
 		pathPlaceholdersStore = new PathPlaceholdersStore(storeFile);
 		pathPlaceholdersStore.init();
@@ -161,6 +158,10 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 				pathPlaceholdersStore.add(new PathPlaceholder(PLACEHOLDER_HOME_NAME, userHome));
 			}
 		}
+		bookmarksService = new BookmarksService(bookmarkDatabase, bookmarkPropertiesProvider,
+				defaultBookmarkFolderProvider, remoteBookmarksStoreManager, bookmarksSaver, bookmarkLocationProvider,
+				gotoBookmark, numberedBookmarks, pluginBookmarkTypes, bookmarksMarkers, pathPlaceholdersStore,
+				bookmarkProblems, eventBroker);
 	}
 
 	private BookmarkDatabase loadBookmarkDatabase(File bookmarksFile,
@@ -282,7 +283,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 	public BookmarkProblemHandlers getBookmarkProblemHandlers() {
 		return bookmarkProblemHandlers;
 	}
-	
+
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in
 	 * relative path

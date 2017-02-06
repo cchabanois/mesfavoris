@@ -35,10 +35,10 @@ public class BookmarkPropertySource implements IPropertySource {
 
 	@Override
 	public IPropertyDescriptor[] getPropertyDescriptors() {
-		Optional<BookmarkProblem> problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
 		List<IPropertyDescriptor> propertyDescriptors = bookmark.getProperties().keySet().stream()
-				.map(propertyName -> getPropertyDescriptorFromBookmarkProperty(propertyName, problem))
+				.map(propertyName -> getPropertyDescriptorFromBookmarkProperty(propertyName))
 				.collect(Collectors.toList());
+		Optional<BookmarkProblem> problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
 		if (problem.isPresent()) {
 			propertyDescriptors.addAll(problem.get().getProperties().keySet().stream()
 					.filter(propertyName -> bookmark.getPropertyValue(propertyName) == null)
@@ -48,12 +48,17 @@ public class BookmarkPropertySource implements IPropertySource {
 		return propertyDescriptors.toArray(new IPropertyDescriptor[0]);
 	}
 
-	private IPropertyDescriptor getPropertyDescriptorFromBookmarkProperty(String propertyName,
-			Optional<BookmarkProblem> problem) {
+	private IPropertyDescriptor getPropertyDescriptorFromBookmarkProperty(String propertyName) {
 		PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyName);
+		Optional<BookmarkProblem> problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
 		String updatedValue = problem.map(bookmarkProblem -> bookmarkProblem.getProperties().get(propertyName))
 				.orElse(null);
 		if (updatedValue != null) {
+			propertyDescriptor.setLabelProvider(new PropertyLabelProvider(false, true));
+		}
+		problem = getBookmarkProblem(BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED);
+		String value = problem.map(bookmarkProblem -> bookmarkProblem.getProperties().get(propertyName)).orElse(null);
+		if (value != null) {
 			propertyDescriptor.setLabelProvider(new PropertyLabelProvider(false, true));
 		}
 		return propertyDescriptor;

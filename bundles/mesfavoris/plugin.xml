@@ -738,12 +738,16 @@
    <extension
          point="mesfavoris.bookmarkProblems">
       <bookmarkProblem
-            class="mesfavoris.internal.problems.handlers.CannotGotoBookmarkProblemHandler"
+            class="mesfavoris.internal.problems.handlers.CannotGotoProblemHandler"
             type="cannotGotoBookmark">
       </bookmarkProblem>
       <bookmarkProblem
-            class="mesfavoris.internal.problems.handlers.PropertiesNeedUpdateBookmarkProblemHandler"
+            class="mesfavoris.internal.problems.handlers.PropertiesNeedUpdateProblemHandler"
             type="propertiesNeedUpdate">
+      </bookmarkProblem>
+      <bookmarkProblem
+            class="mesfavoris.internal.problems.handlers.PlaceholderUndefinedProblemHandler"
+            type="placeholderUndefined">
       </bookmarkProblem>
    </extension>
 </plugin>

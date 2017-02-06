@@ -3,11 +3,11 @@ package mesfavoris.internal.problems.handlers;
 import mesfavoris.problems.BookmarkProblem;
 import mesfavoris.problems.IBookmarkProblemHandler;
 
-public class PropertiesNeedUpdateBookmarkProblemHandler implements IBookmarkProblemHandler {
+public class CannotGotoProblemHandler implements IBookmarkProblemHandler {
 
 	@Override
 	public String getErrorMessage(BookmarkProblem bookmarkProblem) {
-		return "Some properties need to be updated";
+		return "Cannot goto bookmark";
 	}
 
 	@Override
