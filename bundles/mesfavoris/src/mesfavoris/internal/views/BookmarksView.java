@@ -1,6 +1,7 @@
 package mesfavoris.internal.views;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.NotEnabledException;
@@ -17,6 +18,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -26,10 +28,15 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IActionBars;
@@ -41,7 +48,9 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
+import org.eclipse.ui.forms.HyperlinkSettings;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.Section;
@@ -65,7 +74,7 @@ import mesfavoris.internal.actions.ToggleLinkAction;
 import mesfavoris.internal.jobs.ImportTeamProjectFromBookmarkJob;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarksVirtualFolder;
 import mesfavoris.internal.problems.extension.BookmarkProblemHandlers;
-import mesfavoris.internal.problems.ui.BookmarkProblemsControl;
+import mesfavoris.internal.problems.ui.BookmarkProblemsTooltip;
 import mesfavoris.internal.recent.RecentBookmarksVirtualFolder;
 import mesfavoris.internal.views.comment.BookmarkCommentArea;
 import mesfavoris.internal.visited.LatestVisitedBookmarksVirtualFolder;
@@ -75,6 +84,8 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
+import mesfavoris.problems.BookmarkProblem;
+import mesfavoris.problems.BookmarkProblem.Severity;
 import mesfavoris.problems.IBookmarkProblems;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
@@ -97,12 +108,14 @@ public class BookmarksView extends ViewPart {
 	private Action collapseAllAction;
 	private ToggleLinkAction toggleLinkAction;
 	private FormToolkit toolkit;
+	private Form form;
 	private ToolBarManager commentsToolBarManager;
 	private IMemento memento;
 	private PreviousActivePartListener previousActivePartListener = new PreviousActivePartListener();
 	private Composite commentsComposite;
 	private Section commentsSection;
-	private BookmarkProblemsControl bookmarkProblemsControl;
+	private BookmarkProblemsTooltip bookmarkProblemsTooltip;
+	private Image icon;
 	
 	public BookmarksView() {
 		this.bookmarkDatabase = BookmarksPlugin.getDefault().getBookmarkDatabase();
@@ -116,14 +129,19 @@ public class BookmarksView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		GridLayoutFactory.fillDefaults().applyTo(parent);
 		toolkit = new FormToolkit(parent.getDisplay());
-		SashForm sashForm = new SashForm(parent, SWT.VERTICAL);
+		toolkit.getHyperlinkGroup().setHyperlinkUnderlineMode(HyperlinkSettings.UNDERLINE_HOVER);
+		form = toolkit.createForm(parent);
+		icon = BookmarksPlugin.getImageDescriptor("icons/bookmarks-16.png").createImage();
+		form.setImage(icon);
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(form);
+		form.setText("Mes Favoris");
+		toolkit.decorateFormHeading(form);
+		GridLayoutFactory.swtDefaults().applyTo(form.getBody());
+		SashForm sashForm = new SashForm(form.getBody(), SWT.VERTICAL);
 		toolkit.adapt(sashForm, true, true);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(sashForm);
 		createTreeControl(sashForm);
 		createCommentsSection(sashForm);
-
-		sashForm.setWeights(new int[] { 70, 30 });
-
 		makeActions();
 		hookContextMenu();
 		contributeToActionBars();
@@ -142,8 +160,6 @@ public class BookmarksView extends ViewPart {
 		toolkit.paintBordersFor(commentsComposite);
 		commentsSection.setClient(commentsComposite);
 		GridLayoutFactory.fillDefaults().extendedMargins(2, 2, 2, 2).applyTo(commentsComposite);
-		bookmarkProblemsControl = new BookmarkProblemsControl(commentsComposite, bookmarkProblems, bookmarkProblemHandlers);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(bookmarkProblemsControl);
 		bookmarkCommentViewer = new BookmarkCommentArea(commentsComposite,
 				SWT.MULTI | SWT.V_SCROLL | SWT.WRAP | toolkit.getBorderStyle(), bookmarkDatabase);
 		bookmarkCommentViewer.getTextWidget().setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
@@ -206,6 +222,9 @@ public class BookmarksView extends ViewPart {
 		getSite().getPage().removePartListener(previousActivePartListener);
 		toggleLinkAction.dispose();
 		toolkit.dispose();
+		if (icon != null) {
+			icon.dispose();
+		}
 		super.dispose();
 	}
 
@@ -246,10 +265,10 @@ public class BookmarksView extends ViewPart {
 			public void selectionChanged(SelectionChangedEvent event) {
 				final Bookmark bookmark = bookmarksTreeViewer.getSelectedBookmark();
 				updateCommentsSectionToolbar(bookmark);
-				bookmarkProblemsControl.setBookmark(bookmark.getId());
 				commentsSection.layout();
 				commentsSection.redraw();
 				bookmarkCommentViewer.setBookmark(bookmark);
+				updateFormBookmarkProblems(bookmark.getId());
 			}
 		});
 		hookDoubleClickAction();
@@ -367,6 +386,30 @@ public class BookmarksView extends ViewPart {
 				}
 			}
 		});
+	}
+
+	private void updateFormBookmarkProblems(BookmarkId bookmarkId) {
+		Set<BookmarkProblem> problems = bookmarkProblems.getBookmarkProblems(bookmarkId);
+		if (problems.size() == 0) {
+			form.setMessage(null);
+			return;
+		}
+		int type = problems.iterator().next().getSeverity() == Severity.ERROR ? IMessageProvider.ERROR
+				: IMessageProvider.WARNING;
+		form.setMessage(problems.size() == 1 ? "One bookmark problem detected"
+				: "" + problems.size() + " bookmark problems detected", type);
+		if (bookmarkProblemsTooltip == null) {
+			Control control = form.getHead().getChildren()[1];
+			bookmarkProblemsTooltip = new BookmarkProblemsTooltip(toolkit, control, ToolTip.NO_RECREATE,
+					bookmarkProblems, bookmarkProblemHandlers) {
+				public Point getLocation(Point tipSize, Event event) {
+					Rectangle bounds = control.getBounds();
+					return control.getParent().toDisplay(bounds.x, bounds.y + bounds.height);
+				}
+			};
+			bookmarkProblemsTooltip.setHideOnMouseDown(false);
+		}
+		bookmarkProblemsTooltip.setBookmark(bookmarkId);
 	}
 
 	public IWorkbenchPart getPreviousActivePart() {
