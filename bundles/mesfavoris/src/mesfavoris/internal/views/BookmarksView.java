@@ -268,7 +268,7 @@ public class BookmarksView extends ViewPart {
 				commentsSection.layout();
 				commentsSection.redraw();
 				bookmarkCommentViewer.setBookmark(bookmark);
-				updateFormBookmarkProblems(bookmark.getId());
+				updateFormBookmarkProblems(bookmark);
 			}
 		});
 		hookDoubleClickAction();
@@ -388,8 +388,12 @@ public class BookmarksView extends ViewPart {
 		});
 	}
 
-	private void updateFormBookmarkProblems(BookmarkId bookmarkId) {
-		Set<BookmarkProblem> problems = bookmarkProblems.getBookmarkProblems(bookmarkId);
+	private void updateFormBookmarkProblems(Bookmark bookmark) {
+		if (bookmark == null) {
+			form.setMessage(null);
+			return;
+		}
+		Set<BookmarkProblem> problems = bookmarkProblems.getBookmarkProblems(bookmark.getId());
 		if (problems.size() == 0) {
 			form.setMessage(null);
 			return;
@@ -409,7 +413,7 @@ public class BookmarksView extends ViewPart {
 			};
 			bookmarkProblemsTooltip.setHideOnMouseDown(false);
 		}
-		bookmarkProblemsTooltip.setBookmark(bookmarkId);
+		bookmarkProblemsTooltip.setBookmark(bookmark.getId());
 	}
 
 	public IWorkbenchPart getPreviousActivePart() {
