@@ -2,6 +2,7 @@ package mesfavoris.internal.views;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.NotEnabledException;
@@ -17,7 +18,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -38,7 +39,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -52,7 +52,6 @@ import org.eclipse.ui.forms.HyperlinkSettings;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.DrillDownAdapter;
@@ -109,14 +108,13 @@ public class BookmarksView extends ViewPart {
 	private ToggleLinkAction toggleLinkAction;
 	private FormToolkit toolkit;
 	private Form form;
-	private ToolBarManager commentsToolBarManager;
 	private IMemento memento;
 	private PreviousActivePartListener previousActivePartListener = new PreviousActivePartListener();
 	private Composite commentsComposite;
 	private Section commentsSection;
 	private BookmarkProblemsTooltip bookmarkProblemsTooltip;
 	private Image icon;
-	
+
 	public BookmarksView() {
 		this.bookmarkDatabase = BookmarksPlugin.getDefault().getBookmarkDatabase();
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
@@ -154,7 +152,6 @@ public class BookmarksView extends ViewPart {
 		commentsSection = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR);
 		commentsSection.setText("Comments");
 		commentsSection.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
-		createCommentsSectionToolbar(commentsSection);
 
 		commentsComposite = toolkit.createComposite(commentsSection);
 		toolkit.paintBordersFor(commentsComposite);
@@ -168,23 +165,17 @@ public class BookmarksView extends ViewPart {
 		bookmarkCommentViewer.setBookmark(null);
 	}
 
-	private void createCommentsSectionToolbar(Section commentsSection) {
-		this.commentsToolBarManager = new ToolBarManager(SWT.FLAT | SWT.HORIZONTAL);
-		ToolBar toolbar = commentsToolBarManager.createControl(commentsSection);
-		commentsSection.setTextClient(toolbar);
-	}
-
-	private void updateCommentsSectionToolbar(final Bookmark bookmark) {
-		IContributionItem[] items = commentsToolBarManager.getItems();
+	private void updateFormToolbar(final Bookmark bookmark) {
+		IContributionItem[] items = form.getToolBarManager().getItems();
 
 		for (IContributionItem item : items) {
-			IContributionItem removed = commentsToolBarManager.remove(item);
+			IContributionItem removed = form.getToolBarManager().remove(item);
 			if (removed != null) {
 				item.dispose();
 			}
 		}
 		if (bookmark == null) {
-			commentsToolBarManager.update(false);
+			form.getToolBarManager().update(false);
 			return;
 		}
 		Optional<IImportTeamProject> importTeamProject = BookmarksPlugin.getDefault().getImportTeamProjectProvider()
@@ -198,11 +189,9 @@ public class BookmarksView extends ViewPart {
 				}
 			};
 			importProjectAction.setImageDescriptor(importTeamProject.get().getIcon());
-			commentsToolBarManager.add(importProjectAction);
+			form.getToolBarManager().add(importProjectAction);
 		}
-		ImageHyperlink imageHyperLink = new ImageHyperlink(commentsSection, SWT.CENTER);
-		imageHyperLink.setText("5 bookmark problems");
-		commentsToolBarManager.update(true);
+		form.getToolBarManager().update(true);
 	}
 
 	private void addBulbDecorator(final Control control, final String tooltip) {
@@ -264,9 +253,7 @@ public class BookmarksView extends ViewPart {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				final Bookmark bookmark = bookmarksTreeViewer.getSelectedBookmark();
-				updateCommentsSectionToolbar(bookmark);
-				commentsSection.layout();
-				commentsSection.redraw();
+				updateFormToolbar(bookmark);
 				bookmarkCommentViewer.setBookmark(bookmark);
 				updateFormBookmarkProblems(bookmark);
 			}
@@ -403,7 +390,8 @@ public class BookmarksView extends ViewPart {
 		form.setMessage(problems.size() == 1 ? "One bookmark problem detected"
 				: "" + problems.size() + " bookmark problems detected", type);
 		if (bookmarkProblemsTooltip == null) {
-			Control control = form.getHead().getChildren()[1];
+			Control control = Stream.of(form.getHead().getChildren()).filter(child -> child instanceof CLabel)
+					.findFirst().get();
 			bookmarkProblemsTooltip = new BookmarkProblemsTooltip(toolkit, control, ToolTip.NO_RECREATE,
 					bookmarkProblems, bookmarkProblemHandlers) {
 				public Point getLocation(Point tipSize, Event event) {
