@@ -3,6 +3,7 @@ package mesfavoris.gdrive;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.time.Duration;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -47,6 +48,7 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 	private final GDriveConnectionManager gDriveConnectionManager;
 	private final BookmarkMappingsStore bookmarkMappingsStore;
 	private final BookmarksFileChangeManager bookmarksFileChangeManager;
+	private final Duration durationForNewRevision;
 
 	public GDriveRemoteBookmarksStore() {
 		this((IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class),
@@ -60,6 +62,7 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 		this.gDriveConnectionManager = gDriveConnectionManager;
 		this.bookmarkMappingsStore = bookmarksMappingsStore;
 		this.bookmarksFileChangeManager = bookmarksFileChangeManager;
+		this.durationForNewRevision = Duration.ofMinutes(2);
 		this.gDriveConnectionManager.addConnectionListener(new IConnectionListener() {
 
 			@Override
@@ -215,7 +218,7 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 				.orElseThrow(() -> new IllegalArgumentException("This folder has not been added to gDrive"));
 		try {
 			monitor.beginTask("Saving bookmark folder", 100);
-			UpdateFileOperation updateFileOperation = new UpdateFileOperation(drive);
+			UpdateFileOperation updateFileOperation = new UpdateFileOperation(drive, durationForNewRevision);
 			byte[] content = serializeBookmarkFolder(bookmarksTree, bookmarkFolderId,
 					new SubProgressMonitor(monitor, 20));
 			File file = updateFileOperation.updateFile(fileId, content, etag, new SubProgressMonitor(monitor, 80));
