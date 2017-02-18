@@ -37,6 +37,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
@@ -56,6 +57,8 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.PropertySheetPage;
 
 import com.google.common.collect.Lists;
 
@@ -82,6 +85,7 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
+import mesfavoris.model.IBookmarksListener;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.problems.BookmarkProblem;
 import mesfavoris.problems.BookmarkProblem.Severity;
@@ -114,7 +118,10 @@ public class BookmarksView extends ViewPart {
 	private Section commentsSection;
 	private BookmarkProblemsTooltip bookmarkProblemsTooltip;
 	private Image icon;
+	private PropertySheetPage propertyPage;
+	private final IBookmarksListener bookmarksListener = (modifications) -> refreshPropertyPage();
 
+	
 	public BookmarksView() {
 		this.bookmarkDatabase = BookmarksPlugin.getDefault().getBookmarkDatabase();
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
@@ -146,6 +153,7 @@ public class BookmarksView extends ViewPart {
 		getSite().setSelectionProvider(bookmarksTreeViewer);
 		toggleLinkAction.init();
 		restoreState(memento);
+		bookmarkDatabase.addListener(bookmarksListener);
 	}
 
 	private void createCommentsSection(Composite parent) {
@@ -209,6 +217,7 @@ public class BookmarksView extends ViewPart {
 	@Override
 	public void dispose() {
 		getSite().getPage().removePartListener(previousActivePartListener);
+		bookmarkDatabase.removeListener(bookmarksListener);
 		toggleLinkAction.dispose();
 		toolkit.dispose();
 		if (icon != null) {
@@ -408,4 +417,23 @@ public class BookmarksView extends ViewPart {
 		return previousActivePartListener.getPreviousActivePart();
 	}
 
+	private void refreshPropertyPage() {
+		Display.getDefault().asyncExec(() -> {
+		    if (propertyPage != null) {
+		        propertyPage.refresh();
+		    }
+		});
+	}
+
+	@Override
+	public Object getAdapter(Class adapter) {
+	    if (adapter == IPropertySheetPage.class) {
+	        if (propertyPage == null) {
+	            propertyPage = new PropertySheetPage();
+	        }
+	        return propertyPage;
+	    }
+	    return super.getAdapter(adapter);
+	}	
+	
 }
