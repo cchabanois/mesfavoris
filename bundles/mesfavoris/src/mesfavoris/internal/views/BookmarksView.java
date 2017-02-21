@@ -405,7 +405,7 @@ public class BookmarksView extends ViewPart {
 					bookmarkProblems, bookmarkProblemHandlers) {
 				public Point getLocation(Point tipSize, Event event) {
 					Rectangle bounds = control.getBounds();
-					return control.getParent().toDisplay(bounds.x, bounds.y + bounds.height);
+					return control.getParent().toDisplay(bounds.x, bounds.y);
 				}
 			};
 			bookmarkProblemsTooltip.setHideOnMouseDown(false);

@@ -53,6 +53,8 @@ public class BookmarkProblemsTooltip extends ToolTip {
 		bookmarkProblemsFormText.setImage(IMAGE_ERROR_KEY, sharedImages.getImage(ISharedImages.IMG_OBJS_ERROR_TSK));
 		bookmarkProblemsFormText.setImage(IMAGE_WARNING_KEY, sharedImages.getImage(ISharedImages.IMG_OBJS_WARN_TSK));
 		GridData gridData = new GridData(GridData.FILL_BOTH);
+		gridData.minimumWidth = 300;
+		gridData.minimumHeight = 50;
 		bookmarkProblemsFormText.setLayoutData(gridData);
 
 		Set<BookmarkProblem> problems = bookmarkProblems.getBookmarkProblems(bookmarkId);
