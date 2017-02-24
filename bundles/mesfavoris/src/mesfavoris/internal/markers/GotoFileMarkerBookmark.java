@@ -22,7 +22,7 @@ public class GotoFileMarkerBookmark implements IGotoBookmark {
 		FileMarkerBookmarkLocation fileMarkerBookmarkLocation = (FileMarkerBookmarkLocation) bookmarkLocation;
 		try {
 			IEditorPart editorPart = IDE.openEditor(window.getActivePage(), fileMarkerBookmarkLocation.getMarker(),
-					false);
+					true);
 			return editorPart != null;
 		} catch (PartInitException e) {
 			return false;

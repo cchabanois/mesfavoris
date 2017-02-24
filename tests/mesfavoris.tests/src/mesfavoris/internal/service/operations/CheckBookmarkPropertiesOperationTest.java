@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.entry;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -33,9 +33,11 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
+import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.internal.placeholders.PathPlaceholdersMap;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
@@ -57,21 +59,23 @@ public class CheckBookmarkPropertiesOperationTest {
 	private IBookmarkProblems bookmarkProblems = mock(IBookmarkProblems.class);
 	private PathPlaceholdersMap pathPlaceholders = new PathPlaceholdersMap();
 	private Set<String> nonUpdatableProperties = new HashSet<>();
+	private Set<String> pathProperties = Sets.newHashSet("git.repositoryDir", "folderPath", "filePath");
 
 	@Before
 	public void setUp() {
 		nonUpdatableProperties.addAll(
 				Lists.newArrayList(Bookmark.PROPERTY_NAME, Bookmark.PROPERTY_COMMENT, Bookmark.PROPERTY_COMMENT));
 		bookmarkDatabase = new BookmarkDatabase("test", createBookmarksTree());
-		operation = new CheckBookmarkPropertiesOperation(bookmarkDatabase, nonUpdatableProperties,
-				bookmarkPropertiesProvider, pathPlaceholders, bookmarkProblems);
+		PathPlaceholderResolver pathPlaceholderResolver = new PathPlaceholderResolver(pathPlaceholders);
+		operation = new CheckBookmarkPropertiesOperation(bookmarkDatabase, nonUpdatableProperties, pathProperties,
+				bookmarkPropertiesProvider, pathPlaceholderResolver, bookmarkProblems);
 		IWorkbenchPartSite workbenchPartSite = mock(IWorkbenchPartSite.class);
 		when(workbenchPart.getSite()).thenReturn(workbenchPartSite);
 		when(workbenchPartSite.getPage()).thenReturn(workbenchPage);
 	}
 
 	@Test
-	public void testGetPropertiesNeedingUpdate() throws Exception {
+	public void testPropertiesNeedingUpdate() throws Exception {
 		// Given
 		BookmarkId bookmarkId = new BookmarkId("bookmark12");
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
@@ -82,36 +86,53 @@ public class CheckBookmarkPropertiesOperationTest {
 				ImmutableMap.of("prop1", "value1", "prop2", "newValue2", "prop3", "value3"));
 
 		// When
-		Map<String, String> propertiesNeedingUpdate = operation.getPropertiesNeedingUpdate(bookmarkId, workbenchPart,
+		Set<BookmarkProblem> newBookmarkProblems = operation.getBookmarkPropertiesProblems(bookmarkId, workbenchPart,
 				selection, new NullProgressMonitor());
 
 		// Then
-		assertThat(propertiesNeedingUpdate).containsExactly(entry("prop2", "newValue2"), entry("prop3", "value3"));
+		assertThat(newBookmarkProblems).hasSize(1);
+		BookmarkProblem bookmarkProblem = newBookmarkProblems.iterator().next();
+		assertThat(bookmarkProblem.getProblemType()).isEqualTo(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
+		assertThat(bookmarkProblem.getProperties()).containsExactly(entry("prop2", "newValue2"),
+				entry("prop3", "value3"));
 	}
 
 	@Test
-	public void testGetPropertiesUsingUndefinedPlaceholder() throws BookmarksException {
+	public void testPropertiesUsingUndefinedPlaceholder() throws BookmarksException {
 		// Given
-		pathPlaceholders.add(new PathPlaceholder("PLACEHOLDER2", new Path("/var/workspace/project")));
+		pathPlaceholders.add(new PathPlaceholder("PLACEHOLDER2", new Path("/var/workspace/project2")));
 		BookmarkId bookmarkId = new BookmarkId("bookmark12");
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
 			bookmarksTreeModifier.addBookmarks(new BookmarkId("folder1"),
 					Lists.newArrayList(new Bookmark(bookmarkId, ImmutableMap.of("filePath",
 							"${PLACEHOLDER1}/myFile.txt", "folderPath", "${PLACEHOLDER2}/myFolder"))));
 		});
+		whenAddBookmarkPropertiesThenPutAll(ImmutableMap.of("filePath", "/var/workspace/project1/myFile.txt"));
 
 		// When
-		Map<String, String> propertiesUsingUndefinedPlaceholder = operation
-				.getPropertiesUsingUndefinedPlaceholder(bookmarkId);
+		Set<BookmarkProblem> newBookmarkProblems = operation.getBookmarkPropertiesProblems(bookmarkId, workbenchPart,
+				selection, new NullProgressMonitor());
 
 		// Then
-		assertThat(propertiesUsingUndefinedPlaceholder)
-				.containsExactly(entry("filePath", "${PLACEHOLDER1}/myFile.txt"));
+		assertThat(newBookmarkProblems).hasSize(1);
+		BookmarkProblem bookmarkProblem = newBookmarkProblems.iterator().next();
+		assertThat(bookmarkProblem.getProblemType()).isEqualTo(BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED);
+		assertThat(bookmarkProblem.getProperties()).containsOnly(entry("filePath", "${PLACEHOLDER1}/myFile.txt"),
+				entry("${PLACEHOLDER1}", "/var/workspace/project1"));
 
 	}
 
+	private void whenAddBookmarkPropertiesThenPutAll(Map<String, String> properties) {
+		doAnswer(invocation -> {
+			Map<String, String> map = invocation.getArgumentAt(0, Map.class);
+			map.putAll(properties);
+			return null;
+		}).when(bookmarkPropertiesProvider).addBookmarkProperties(any(Map.class), eq(workbenchPart), eq(selection),
+				any(IProgressMonitor.class));
+	}
+
 	@Test
-	public void testCheckBookmarkPropertiesProblem() throws Exception {
+	public void testCheckBookmarkPropertiesProblems() throws Exception {
 		// Given
 		BookmarkId bookmarkId = new BookmarkId("bookmark12");
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
@@ -123,7 +144,7 @@ public class CheckBookmarkPropertiesOperationTest {
 				Bookmark.PROPERTY_COMMENT, "new comment", "prop1", "value1", "prop2", "newValue2", "prop3", "value3"));
 
 		// When
-		operation.checkBookmarkPropertiesProblem(bookmarkId, workbenchPart, selection);
+		operation.checkBookmarkPropertiesProblems(bookmarkId, workbenchPart, selection);
 
 		// Then
 		BookmarkProblem bookmarkProblem = waitUntilBookmarkProblemAdded();

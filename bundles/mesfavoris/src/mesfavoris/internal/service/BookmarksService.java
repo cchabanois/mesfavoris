@@ -12,12 +12,14 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 
 import mesfavoris.BookmarksException;
+import mesfavoris.bookmarktype.BookmarkPropertyDescriptor.BookmarkPropertyType;
 import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertyDescriptors;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;
+import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.internal.service.operations.AddBookmarkFolderOperation;
 import mesfavoris.internal.service.operations.AddBookmarkOperation;
 import mesfavoris.internal.service.operations.AddBookmarksTreeOperation;
@@ -46,6 +48,7 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
+import mesfavoris.placeholders.IPathPlaceholderResolver;
 import mesfavoris.placeholders.IPathPlaceholders;
 import mesfavoris.problems.IBookmarkProblems;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
@@ -65,6 +68,7 @@ public class BookmarksService implements IBookmarksService {
 	private final IPathPlaceholders pathPlaceholders;
 	private final IBookmarkProblems bookmarkProblems;
 	private final IEventBroker eventBroker;
+	private final IPathPlaceholderResolver pathPlaceholderResolver;
 
 	public BookmarksService(BookmarkDatabase bookmarkDatabase, IBookmarkPropertiesProvider bookmarkPropertiesProvider,
 			DefaultBookmarkFolderProvider defaultBookmarkFolderProvider,
@@ -86,6 +90,7 @@ public class BookmarksService implements IBookmarksService {
 		this.pathPlaceholders = pathPlaceholders;
 		this.bookmarkProblems = bookmarkProblems;
 		this.eventBroker = eventBroker;
+		this.pathPlaceholderResolver = new PathPlaceholderResolver(pathPlaceholders);
 	}
 
 	@Override
@@ -235,15 +240,21 @@ public class BookmarksService implements IBookmarksService {
 		return nonUpdatableProperties;
 	}
 
+	private Set<String> getPathProperties() {
+		Set<String> pathProperties = bookmarkPropertyDescriptors.getPropertyDescriptors().stream()
+				.filter(descriptor -> descriptor.getType() == BookmarkPropertyType.PATH)
+				.map(descriptor -> descriptor.getName()).collect(Collectors.toSet());
+		return pathProperties;
+	}
+
 	private CheckBookmarkPropertiesOperation getCheckBookmarkPropertiesOperation() {
-		return new CheckBookmarkPropertiesOperation(bookmarkDatabase, getNonUpdatableProperties(),
-				bookmarkPropertiesProvider, pathPlaceholders, bookmarkProblems);
+		return new CheckBookmarkPropertiesOperation(bookmarkDatabase, getNonUpdatableProperties(), getPathProperties(),
+				bookmarkPropertiesProvider, pathPlaceholderResolver, bookmarkProblems);
 	}
 
 	private GotoBookmarkOperation getGotoBookmarkOperation() {
 		return new GotoBookmarkOperation(bookmarkDatabase, bookmarkLocationProvider, gotoBookmark, bookmarksMarkers,
-				bookmarkPropertiesProvider, getCheckBookmarkPropertiesOperation(),
-				bookmarkProblems, eventBroker);
+				bookmarkPropertiesProvider, getCheckBookmarkPropertiesOperation(), bookmarkProblems, eventBroker);
 	}
 
 	@Override

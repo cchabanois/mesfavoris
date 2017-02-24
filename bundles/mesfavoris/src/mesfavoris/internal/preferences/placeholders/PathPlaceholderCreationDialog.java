@@ -1,6 +1,7 @@
 package mesfavoris.internal.preferences.placeholders;
 
 import java.io.File;
+import java.util.Optional;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -36,21 +37,32 @@ public class PathPlaceholderCreationDialog extends StatusDialog {
 	private Text nameText;
 	private Text pathText;
 	private final IDialogSettings dialogSettings;
-	private final PathPlaceholder initialPathPlaceholder;
+	private final Optional<String> initialName;
+	private final Optional<IPath> initialPath;
 	private PathPlaceholder pathPlaceholder;
 	private final IPathPlaceholders pathPlaceholders;
-
+	private final boolean editMode;
+	
 	public PathPlaceholderCreationDialog(Shell parent, IPathPlaceholders pathPlaceholders,
 			PathPlaceholder pathPlaceholder) {
 		super(parent);
 		this.pathPlaceholders = pathPlaceholders;
-		this.initialPathPlaceholder = pathPlaceholder;
 		this.pathPlaceholder = pathPlaceholder;
-		if (pathPlaceholder == null) {
-			setTitle("New Placeholder Entry");
-		} else {
-			setTitle("Edit Placeholder Entry");
-		}
+		this.initialName = Optional.of(pathPlaceholder.getName());
+		this.initialPath = Optional.of(pathPlaceholder.getPath());
+		this.editMode = true;
+		setTitle("Edit Placeholder Entry");
+		dialogSettings = BookmarksPlugin.getDefault().getDialogSettings();
+	}
+
+	public PathPlaceholderCreationDialog(Shell parent, IPathPlaceholders pathPlaceholders, Optional<String> initialName,
+			Optional<IPath> initialPath) {
+		super(parent);
+		this.pathPlaceholders = pathPlaceholders;
+		this.initialName = initialName;
+		this.initialPath = initialPath;
+		this.editMode = false;
+		setTitle("New Placeholder Entry");
 		dialogSettings = BookmarksPlugin.getDefault().getDialogSettings();
 	}
 
@@ -77,12 +89,12 @@ public class PathPlaceholderCreationDialog extends StatusDialog {
 		gd.widthHint = fieldWidthHint;
 		gd.grabExcessHorizontalSpace = true;
 		nameText.setLayoutData(gd);
-		if (initialPathPlaceholder != null) {
-			nameText.setText(initialPathPlaceholder.getName());
+		if (initialName.isPresent()) {
+			nameText.setText(initialName.get());
 		}
-		nameText.setEditable(initialPathPlaceholder == null);
+		nameText.setEditable(initialName.isPresent());
 		nameText.addModifyListener(e -> updateStatus());
-		
+
 		createEmptySpace(inner, 1);
 
 		Label pathLabel = new Label(inner, SWT.LEFT);
@@ -93,9 +105,9 @@ public class PathPlaceholderCreationDialog extends StatusDialog {
 		gd.widthHint = fieldWidthHint;
 		gd.grabExcessHorizontalSpace = true;
 		pathText.setLayoutData(gd);
-		if (initialPathPlaceholder != null) {
-			pathText.setText(initialPathPlaceholder.getPath().toString());
-		}	
+		if (initialPath.isPresent()) {
+			pathText.setText(initialPath.get().toString());
+		}
 		pathText.addModifyListener(e -> updateStatus());
 
 		Button folderButton = new Button(inner, SWT.PUSH);
@@ -107,8 +119,9 @@ public class PathPlaceholderCreationDialog extends StatusDialog {
 				pathText.setText(path.toOSString());
 			}
 		});
-		
+
 		applyDialogFont(composite);
+		updateStatus();
 		return composite;
 	}
 
@@ -163,7 +176,7 @@ public class PathPlaceholderCreationDialog extends StatusDialog {
 		}
 		updateStatus(status);
 	}
-	
+
 	private IStatus getPathStatus() {
 		String path = pathText.getText();
 		IStatus status;
@@ -188,7 +201,8 @@ public class PathPlaceholderCreationDialog extends StatusDialog {
 			status = new Status(IStatus.ERROR, BookmarksPlugin.PLUGIN_ID,
 					"The variable name starts or ends with white spaces.");
 		} else if (!Path.ROOT.isValidSegment(name)) {
-			status = new Status(IStatus.ERROR, BookmarksPlugin.PLUGIN_ID, "The variable name contains ':', '/' or '\'.");
+			status = new Status(IStatus.ERROR, BookmarksPlugin.PLUGIN_ID,
+					"The variable name contains ':', '/' or '\'.");
 		} else if (nameConflict(name)) {
 			status = new Status(IStatus.ERROR, BookmarksPlugin.PLUGIN_ID, "Variable name already exists.");
 		} else {
@@ -198,7 +212,7 @@ public class PathPlaceholderCreationDialog extends StatusDialog {
 	}
 
 	private boolean nameConflict(String name) {
-		if (initialPathPlaceholder != null && initialPathPlaceholder.getName().equals(name)) {
+		if (editMode && initialName.get().equals(name)) {
 			return false;
 		}
 		return pathPlaceholders.get(name) != null;
@@ -207,7 +221,7 @@ public class PathPlaceholderCreationDialog extends StatusDialog {
 	public PathPlaceholder getPathPlaceholder() {
 		return pathPlaceholder;
 	}
-	
+
 	private static IStatus getMoreSevere(IStatus s1, IStatus s2) {
 		if (s1.getSeverity() > s2.getSeverity()) {
 			return s1;
@@ -215,5 +229,5 @@ public class PathPlaceholderCreationDialog extends StatusDialog {
 			return s2;
 		}
 	}
-	
+
 }

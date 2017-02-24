@@ -3,6 +3,7 @@ package mesfavoris.internal.preferences.placeholders;
 import static mesfavoris.internal.Constants.PLACEHOLDER_HOME_NAME;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -50,9 +51,8 @@ public class PathPlaceholdersPreferencePage extends PreferencePage implements IW
 		pathPlaceholdersStore = BookmarksPlugin.getDefault().getPathPlaceholdersStore();
 		bookmarkDatabase = BookmarksPlugin.getDefault().getBookmarkDatabase();
 		remoteBookmarksStoreManager = BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager();
-		pathPropertyNames = BookmarksPlugin.getDefault().getBookmarkPropertyDescriptors()
-				.getPropertyDescriptors().stream()
-				.filter(propertyDescriptor -> propertyDescriptor.getType() == BookmarkPropertyType.PATH)
+		pathPropertyNames = BookmarksPlugin.getDefault().getBookmarkPropertyDescriptors().getPropertyDescriptors()
+				.stream().filter(propertyDescriptor -> propertyDescriptor.getType() == BookmarkPropertyType.PATH)
 				.map(propertyDescriptor -> propertyDescriptor.getName()).collect(Collectors.toList());
 	}
 
@@ -200,7 +200,7 @@ public class PathPlaceholdersPreferencePage extends PreferencePage implements IW
 
 	protected void handleNewButtonSelected() {
 		PathPlaceholderCreationDialog dialog = new PathPlaceholderCreationDialog(getShell(), pathPlaceholdersStore,
-				null);
+				Optional.empty(), Optional.empty());
 		if (dialog.open() != Window.OK) {
 			return;
 		}

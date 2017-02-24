@@ -76,7 +76,7 @@ public class GotoBookmarkOperation {
 	}
 
 	private void checkBookmarkPropertiesProblem(BookmarkId bookmarkId, WorkbenchPartSelection workbenchPartSelection) {
-		checkBookmarkPropertiesOperation.checkBookmarkPropertiesProblem(bookmarkId, workbenchPartSelection.part,
+		checkBookmarkPropertiesOperation.checkBookmarkPropertiesProblems(bookmarkId, workbenchPartSelection.part,
 				workbenchPartSelection.selection);
 	}
 
