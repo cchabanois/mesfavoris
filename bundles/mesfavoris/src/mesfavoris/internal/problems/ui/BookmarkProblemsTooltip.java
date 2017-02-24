@@ -87,6 +87,7 @@ public class BookmarkProblemsTooltip extends ToolTip {
 		bookmarkProblemsFormText.setText(sb.toString(), true, false);
 		bookmarkProblemsFormText.addHyperlinkListener(new HyperlinkAdapter() {
 			public void linkActivated(HyperlinkEvent e) {
+				hide();
 				handleAction((String) e.getHref());
 			}
 		});
