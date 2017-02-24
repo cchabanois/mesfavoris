@@ -2,6 +2,8 @@ package mesfavoris.internal.problems;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -12,7 +14,7 @@ import org.javimmutable.collections.util.JImmutables;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.problems.BookmarkProblem;
 
-public class BookmarkProblems {
+public class BookmarkProblems implements Iterable<BookmarkProblem> {
 	private final static BookmarkProblemComparator BOOKMARK_PROBLEM_COMPARATOR = new BookmarkProblemComparator();
 	private final JImmutableMap<BookmarkId, JImmutableSet<BookmarkProblem>> map;
 	private final int size;
@@ -90,6 +92,11 @@ public class BookmarkProblems {
 		return new BookmarkProblems(map, size);
 	}
 
+	@Override
+	public Iterator<BookmarkProblem> iterator() {
+		return new BookmarkProblemIterator();
+	}
+
 	private static class BookmarkProblemComparator implements Comparator<BookmarkProblem> {
 
 		@Override
@@ -100,7 +107,43 @@ public class BookmarkProblems {
 			}
 			return problem1.getProblemType().compareTo(problem2.getProblemType());
 		}
-		
+
 	}
-	
+
+	private class BookmarkProblemIterator implements Iterator<BookmarkProblem> {
+		private final Iterator<JImmutableSet<BookmarkProblem>> setIterator;
+		private Iterator<BookmarkProblem> currentIterator;
+
+		private BookmarkProblemIterator() {
+			setIterator = map.valuesCursor().iterator();
+		}
+
+		@Override
+		public boolean hasNext() {
+			if (currentIterator == null) {
+				return setIterator.hasNext();
+			}
+			if (currentIterator.hasNext()) {
+				return true;
+			} else {
+				return setIterator.hasNext();
+			}
+		}
+
+		@Override
+		public BookmarkProblem next() {
+			if (currentIterator == null) {
+				currentIterator = setIterator.next().iterator();
+			}
+			while (true) {
+				try {
+					return currentIterator.next();
+				} catch (NoSuchElementException e) {
+					currentIterator = setIterator.next().iterator();
+				}
+			}
+		}
+
+	}
+
 }

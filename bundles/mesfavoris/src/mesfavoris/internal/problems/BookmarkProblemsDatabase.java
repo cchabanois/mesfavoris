@@ -2,6 +2,7 @@ package mesfavoris.internal.problems;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -131,6 +132,12 @@ public class BookmarkProblemsDatabase implements IBookmarkProblems {
 				ImmutableMap.of("before", bookmarkProblems, "after", newBookmarksProblems));
 	}
 
+
+	@Override
+	public Iterator<BookmarkProblem> iterator() {
+		return bookmarkProblemsReference.get().iterator();
+	}	
+	
 	private class SaveJob extends Job {
 
 		public SaveJob() {

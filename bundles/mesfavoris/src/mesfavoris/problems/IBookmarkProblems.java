@@ -5,7 +5,7 @@ import java.util.Set;
 
 import mesfavoris.model.BookmarkId;
 
-public interface IBookmarkProblems {
+public interface IBookmarkProblems extends Iterable<BookmarkProblem> {
 
 	Optional<BookmarkProblem> getBookmarkProblem(BookmarkId bookmarkId, String problemType);
 
