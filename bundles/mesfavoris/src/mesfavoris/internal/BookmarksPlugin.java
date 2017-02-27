@@ -150,7 +150,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		bookmarkProblems = new BookmarkProblemsDatabase(eventBroker, bookmarkDatabase, bookmarkProblemsFile);
 		bookmarkProblems.init();
 		File storeFile = new File(getStateLocation().toFile(), "placeholders.json");
-		pathPlaceholdersStore = new PathPlaceholdersStore(storeFile);
+		pathPlaceholdersStore = new PathPlaceholdersStore(eventBroker, storeFile);
 		pathPlaceholdersStore.init();
 		if (pathPlaceholdersStore.get(PLACEHOLDER_HOME_NAME) == null) {
 			IPath userHome = getUserHome();

@@ -10,12 +10,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.e4.core.services.events.IEventBroker;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
@@ -23,18 +26,22 @@ import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.StatusHelper;
 import mesfavoris.placeholders.IPathPlaceholders;
 import mesfavoris.placeholders.PathPlaceholder;
+import mesfavoris.topics.BookmarksEvents;
 
 public class PathPlaceholdersStore implements IPathPlaceholders {
 	private final Map<String, PathPlaceholder> mappings = new ConcurrentHashMap<>();
 	private final SaveJob saveJob = new SaveJob();
 	private final File storeFile;
+	private final IEventBroker eventBroker;
 
-	public PathPlaceholdersStore(File storeFile) {
+	public PathPlaceholdersStore(IEventBroker eventBroker, File storeFile) {
+		this.eventBroker = eventBroker;
 		this.storeFile = storeFile;
 	}
 
 	public void add(PathPlaceholder pathPlaceholder) {
 		if (!pathPlaceholder.equals(mappings.put(pathPlaceholder.getName(), pathPlaceholder))) {
+			postPlaceholdersChanged(pathPlaceholder.getName(), pathPlaceholder.getPath());
 			saveJob.schedule();
 		}
 	}
@@ -54,8 +61,19 @@ public class PathPlaceholdersStore implements IPathPlaceholders {
 
 	public void remove(String name) {
 		if (mappings.remove(name) != null) {
+			postPlaceholdersChanged(name, null);
 			saveJob.schedule();
 		}
+	}
+
+	private void postPlaceholdersChanged(String name, IPath path) {
+		Map<String, String> data;
+		if (path != null) {
+			data = ImmutableMap.of("name", name, "path", path == null ? null : path.toPortableString());
+		} else {
+			data = ImmutableMap.of("name", name);
+		}
+		eventBroker.post(BookmarksEvents.TOPIC_PATH_PLACEHOLDERS_CHANGED, data);
 	}
 
 	public void init() {
