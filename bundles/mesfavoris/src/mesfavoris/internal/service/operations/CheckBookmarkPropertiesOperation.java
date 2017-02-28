@@ -1,5 +1,6 @@
 package mesfavoris.internal.service.operations;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -55,6 +56,16 @@ public class CheckBookmarkPropertiesOperation {
 		new CheckBookmarkProperties(bookmarkId, part, selection).schedule();
 	}
 
+	public Set<BookmarkProblem> getBookmarkPropertiesProblems(BookmarkId bookmarkId) {
+		Set<BookmarkProblem> bookmarkProblems = new HashSet<>();
+		Map<String, String> propertiesUsingUndefinedPlaceholder = getPropertiesUsingUndefinedPlaceholder(bookmarkId);
+		if (!propertiesUsingUndefinedPlaceholder.isEmpty()) {
+			bookmarkProblems.add(getPlaceholderBookmarkProblem(bookmarkId, propertiesUsingUndefinedPlaceholder,
+					Collections.emptySet()));
+		}
+		return bookmarkProblems;
+	}	
+	
 	public Set<BookmarkProblem> getBookmarkPropertiesProblems(BookmarkId bookmarkId, IWorkbenchPart part,
 			ISelection selection, IProgressMonitor monitor) {
 		Set<BookmarkProblem> bookmarkProblems = new HashSet<>();

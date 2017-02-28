@@ -8,11 +8,11 @@ import static org.assertj.core.api.Assertions.entry;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
@@ -58,13 +58,11 @@ public class CheckBookmarkPropertiesOperationTest {
 	private ISelection selection = mock(ISelection.class);
 	private IBookmarkProblems bookmarkProblems = mock(IBookmarkProblems.class);
 	private PathPlaceholdersMap pathPlaceholders = new PathPlaceholdersMap();
-	private Set<String> nonUpdatableProperties = new HashSet<>();
+	private Set<String> nonUpdatableProperties = Sets.newHashSet(Bookmark.PROPERTY_NAME, Bookmark.PROPERTY_COMMENT, Bookmark.PROPERTY_COMMENT);
 	private Set<String> pathProperties = Sets.newHashSet("git.repositoryDir", "folderPath", "filePath");
 
 	@Before
 	public void setUp() {
-		nonUpdatableProperties.addAll(
-				Lists.newArrayList(Bookmark.PROPERTY_NAME, Bookmark.PROPERTY_COMMENT, Bookmark.PROPERTY_COMMENT));
 		bookmarkDatabase = new BookmarkDatabase("test", createBookmarksTree());
 		PathPlaceholderResolver pathPlaceholderResolver = new PathPlaceholderResolver(pathPlaceholders);
 		operation = new CheckBookmarkPropertiesOperation(bookmarkDatabase, nonUpdatableProperties, pathProperties,
