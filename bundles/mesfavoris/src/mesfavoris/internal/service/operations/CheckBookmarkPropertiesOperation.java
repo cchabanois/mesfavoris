@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Provider;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -29,19 +31,20 @@ public class CheckBookmarkPropertiesOperation {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
 	private final IBookmarkProblems bookmarkProblems;
-	private final Set<String> nonUpdatableProperties;
+	private final Provider<Set<String>> nonUpdatablePropertiesProvider;
+	private final Provider<Set<String>> pathPropertiesProvider;
 	private final IPathPlaceholderResolver pathPlaceholderResolver;
-	private final PathPlaceholderGuesser pathPlaceholderGuesser;
 
-	public CheckBookmarkPropertiesOperation(BookmarkDatabase bookmarkDatabase, Set<String> nonUpdatableProperties,
-			Set<String> pathProperties, IBookmarkPropertiesProvider bookmarkPropertiesProvider,
-			IPathPlaceholderResolver pathPlaceholderResolver, IBookmarkProblems bookmarkProblems) {
+	public CheckBookmarkPropertiesOperation(BookmarkDatabase bookmarkDatabase,
+			Provider<Set<String>> nonUpdatablePropertiesProvider, Provider<Set<String>> pathPropertiesProvider,
+			IBookmarkPropertiesProvider bookmarkPropertiesProvider, IPathPlaceholderResolver pathPlaceholderResolver,
+			IBookmarkProblems bookmarkProblems) {
 		this.bookmarkDatabase = bookmarkDatabase;
-		this.nonUpdatableProperties = nonUpdatableProperties;
+		this.nonUpdatablePropertiesProvider = nonUpdatablePropertiesProvider;
+		this.pathPropertiesProvider = pathPropertiesProvider;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 		this.bookmarkProblems = bookmarkProblems;
 		this.pathPlaceholderResolver = pathPlaceholderResolver;
-		this.pathPlaceholderGuesser = new PathPlaceholderGuesser(pathPlaceholderResolver, pathProperties);
 	}
 
 	/**
@@ -64,13 +67,15 @@ public class CheckBookmarkPropertiesOperation {
 					Collections.emptySet()));
 		}
 		return bookmarkProblems;
-	}	
-	
+	}
+
 	public Set<BookmarkProblem> getBookmarkPropertiesProblems(BookmarkId bookmarkId, IWorkbenchPart part,
 			ISelection selection, IProgressMonitor monitor) {
 		Set<BookmarkProblem> bookmarkProblems = new HashSet<>();
 		Map<String, String> propertiesNeedingUpdate = getPropertiesNeedingUpdate(bookmarkId, part, selection, monitor);
 		Map<String, String> propertiesUsingUndefinedPlaceholder = getPropertiesUsingUndefinedPlaceholder(bookmarkId);
+		PathPlaceholderGuesser pathPlaceholderGuesser = new PathPlaceholderGuesser(pathPlaceholderResolver,
+				pathPropertiesProvider.get());
 		Set<PathPlaceholder> undefinedPathPlaceholders = pathPlaceholderGuesser
 				.guessUndefinedPlaceholders(propertiesUsingUndefinedPlaceholder, propertiesNeedingUpdate);
 		propertiesUsingUndefinedPlaceholder.keySet().forEach(propName -> propertiesNeedingUpdate.remove(propName));
@@ -90,6 +95,7 @@ public class CheckBookmarkPropertiesOperation {
 		Map<String, String> bookmarkProperties = new HashMap<>();
 		Map<String, String> propertiesNeedingUpdate = new HashMap<>();
 		bookmarkPropertiesProvider.addBookmarkProperties(bookmarkProperties, part, selection, monitor);
+		Set<String> nonUpdatableProperties = nonUpdatablePropertiesProvider.get();
 		for (String propName : bookmarkProperties.keySet()) {
 			String newValue = bookmarkProperties.get(propName);
 			if (!nonUpdatableProperties.contains(propName) && !newValue.equals(bookmark.getPropertyValue(propName))) {

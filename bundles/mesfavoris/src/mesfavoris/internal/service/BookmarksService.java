@@ -1,9 +1,7 @@
 package mesfavoris.internal.service;
 
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.e4.core.services.events.IEventBroker;
@@ -12,11 +10,12 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.bookmarktype.BookmarkPropertyDescriptor.BookmarkPropertyType;
 import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertyDescriptors;
 import mesfavoris.bookmarktype.IGotoBookmark;
+import mesfavoris.bookmarktype.NonUpdatablePropertiesProvider;
+import mesfavoris.bookmarktype.PathPropertiesProvider;
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;
 import mesfavoris.internal.placeholders.PathPlaceholderResolver;
@@ -227,29 +226,16 @@ public class BookmarksService implements IBookmarksService {
 	@Override
 	public void updateBookmark(BookmarkId bookmarkId, IWorkbenchPart part, ISelection selection,
 			IProgressMonitor monitor) throws BookmarksException {
-		Set<String> nonUpdatableProperties = getNonUpdatableProperties();
 		UpdateBookmarkOperation operation = new UpdateBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider,
-				nonUpdatableProperties);
+				new NonUpdatablePropertiesProvider(bookmarkPropertyDescriptors));
 		operation.updateBookmark(bookmarkId, part, selection, monitor);
 	}
 
-	private Set<String> getNonUpdatableProperties() {
-		Set<String> nonUpdatableProperties = bookmarkPropertyDescriptors.getPropertyDescriptors().stream()
-				.filter(descriptor -> !descriptor.isUpdatable()).map(descriptor -> descriptor.getName())
-				.collect(Collectors.toSet());
-		return nonUpdatableProperties;
-	}
-
-	private Set<String> getPathProperties() {
-		Set<String> pathProperties = bookmarkPropertyDescriptors.getPropertyDescriptors().stream()
-				.filter(descriptor -> descriptor.getType() == BookmarkPropertyType.PATH)
-				.map(descriptor -> descriptor.getName()).collect(Collectors.toSet());
-		return pathProperties;
-	}
-
 	private CheckBookmarkPropertiesOperation getCheckBookmarkPropertiesOperation() {
-		return new CheckBookmarkPropertiesOperation(bookmarkDatabase, getNonUpdatableProperties(), getPathProperties(),
-				bookmarkPropertiesProvider, pathPlaceholderResolver, bookmarkProblems);
+		return new CheckBookmarkPropertiesOperation(bookmarkDatabase,
+				new NonUpdatablePropertiesProvider(bookmarkPropertyDescriptors),
+				new PathPropertiesProvider(bookmarkPropertyDescriptors), bookmarkPropertiesProvider,
+				pathPlaceholderResolver, bookmarkProblems);
 	}
 
 	private GotoBookmarkOperation getGotoBookmarkOperation() {

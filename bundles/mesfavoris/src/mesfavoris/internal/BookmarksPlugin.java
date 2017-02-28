@@ -24,6 +24,8 @@ import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertyDescriptors;
 import mesfavoris.bookmarktype.IGotoBookmark;
+import mesfavoris.bookmarktype.NonUpdatablePropertiesProvider;
+import mesfavoris.bookmarktype.PathPropertiesProvider;
 import mesfavoris.internal.adapters.BookmarkAdapterFactory;
 import mesfavoris.internal.bookmarktypes.ImportTeamProjectProvider;
 import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkLabelProvider;
@@ -37,13 +39,16 @@ import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;
 import mesfavoris.internal.persistence.BookmarksAutoSaver;
 import mesfavoris.internal.persistence.LocalBookmarksSaver;
 import mesfavoris.internal.persistence.RemoteBookmarksSaver;
+import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.internal.placeholders.PathPlaceholdersStore;
+import mesfavoris.internal.problems.BookmarkProblemsAutoUpdater;
 import mesfavoris.internal.problems.BookmarkProblemsDatabase;
 import mesfavoris.internal.problems.extension.BookmarkProblemHandlers;
 import mesfavoris.internal.recent.RecentBookmarksDatabase;
 import mesfavoris.internal.remote.RemoteBookmarksStoreLoader;
 import mesfavoris.internal.remote.RemoteBookmarksTreeChangeEventHandler;
 import mesfavoris.internal.service.BookmarksService;
+import mesfavoris.internal.service.operations.CheckBookmarkPropertiesOperation;
 import mesfavoris.internal.service.operations.RefreshRemoteFolderOperation;
 import mesfavoris.internal.validation.BookmarksModificationValidator;
 import mesfavoris.internal.views.virtual.BookmarkLink;
@@ -89,6 +94,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 	private PluginBookmarkTypes pluginBookmarkTypes;
 	private BookmarkProblemsDatabase bookmarkProblems;
 	private BookmarkProblemHandlers bookmarkProblemHandlers;
+	private BookmarkProblemsAutoUpdater bookmarkProblemsAutoUpdater;
 
 	private final BookmarkAdapterFactory bookmarkAdapterFactory = new BookmarkAdapterFactory();
 	private RemoteBookmarksTreeChangeEventHandler remoteBookmarksTreeChangeEventHandler;
@@ -162,6 +168,13 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 				defaultBookmarkFolderProvider, remoteBookmarksStoreManager, bookmarksSaver, bookmarkLocationProvider,
 				gotoBookmark, numberedBookmarks, pluginBookmarkTypes, bookmarksMarkers, pathPlaceholdersStore,
 				bookmarkProblems, eventBroker);
+		CheckBookmarkPropertiesOperation checkBookmarkPropertiesOperation = new CheckBookmarkPropertiesOperation(
+				bookmarkDatabase, new NonUpdatablePropertiesProvider(pluginBookmarkTypes),
+				new PathPropertiesProvider(pluginBookmarkTypes), bookmarkPropertiesProvider,
+				new PathPlaceholderResolver(pathPlaceholdersStore), bookmarkProblems);
+		bookmarkProblemsAutoUpdater = new BookmarkProblemsAutoUpdater(eventBroker, bookmarkDatabase, bookmarkProblems,
+				new PathPropertiesProvider(pluginBookmarkTypes), checkBookmarkPropertiesOperation);
+		bookmarkProblemsAutoUpdater.init();
 	}
 
 	private BookmarkDatabase loadBookmarkDatabase(File bookmarksFile,
@@ -196,6 +209,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		IAdapterManager adapterManager = Platform.getAdapterManager();
 		adapterManager.unregisterAdapters(bookmarkAdapterFactory);
 
+		bookmarkProblemsAutoUpdater.close();
 		pathPlaceholdersStore.close();
 		bookmarksMarkers.close();
 		mostVisitedBookmarks.close();

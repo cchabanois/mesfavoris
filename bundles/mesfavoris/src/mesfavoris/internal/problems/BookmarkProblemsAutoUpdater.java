@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import javax.inject.Provider;
+
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.osgi.service.event.EventHandler;
 
@@ -27,20 +29,22 @@ public class BookmarkProblemsAutoUpdater {
 			(String) event.getProperty("name"));
 	private final BookmarkDatabase bookmarkDatabase;
 	private final BookmarkProblemsDatabase bookmarkProblemsDatabase;
-	private final Set<String> pathProperties;
+	private final Provider<Set<String>> pathPropertiesProvider;
 	private final CheckBookmarkPropertiesOperation checkBookmarkPropertiesOperation;
 	private final IBookmarksListener bookmarksListener = modifications -> bookmarksAdded(
 			modifications.stream().filter(modification -> modification instanceof BookmarksAddedModification)
 					.map(modification -> (BookmarksAddedModification) modification).collect(Collectors.toList()));
 
-	public BookmarkProblemsAutoUpdater(IEventBroker eventBroker, BookmarkDatabase bookmarkDatabase, BookmarkProblemsDatabase bookmarkProblemsDatabase, Set<String> pathProperties, CheckBookmarkPropertiesOperation checkBookmarkPropertiesOperation) {
+	public BookmarkProblemsAutoUpdater(IEventBroker eventBroker, BookmarkDatabase bookmarkDatabase,
+			BookmarkProblemsDatabase bookmarkProblemsDatabase, Provider<Set<String>> pathPropertiesProvider,
+			CheckBookmarkPropertiesOperation checkBookmarkPropertiesOperation) {
 		this.eventBroker = eventBroker;
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.bookmarkProblemsDatabase = bookmarkProblemsDatabase;
-		this.pathProperties = pathProperties;
+		this.pathPropertiesProvider = pathPropertiesProvider;
 		this.checkBookmarkPropertiesOperation = checkBookmarkPropertiesOperation;
 	}
-	
+
 	public void init() {
 		bookmarkDatabase.addListener(bookmarksListener);
 		eventBroker.subscribe(BookmarksEvents.TOPIC_PATH_PLACEHOLDERS_CHANGED, pathPlaceholderChangedEventHandler);
@@ -65,7 +69,7 @@ public class BookmarkProblemsAutoUpdater {
 
 	private boolean hasPropertyUsingPathPlaceholder(BookmarkProblem bookmarkProblem, String pathPlaceholderName) {
 		Map<String, String> properties = bookmarkProblem.getProperties();
-		for (String pathProperty : pathProperties) {
+		for (String pathProperty : pathPropertiesProvider.get()) {
 			String propValue = properties.get(pathProperty);
 			if (propValue != null
 					&& pathPlaceholderName.equals(PathPlaceholderResolver.getPlaceholderName(propValue))) {
@@ -85,8 +89,9 @@ public class BookmarkProblemsAutoUpdater {
 				.map(bookmark -> bookmark.getId())
 				.flatMap(bookmarkId -> checkBookmarkPropertiesOperation.getBookmarkPropertiesProblems(bookmarkId)
 						.stream())
-				.filter(bookmarkProblem -> !bookmarkProblemsDatabase.getBookmarkProblem(bookmarkProblem.getBookmarkId(),
-						bookmarkProblem.getProblemType()).isPresent())
+				.filter(bookmarkProblem -> !bookmarkProblemsDatabase
+						.getBookmarkProblem(bookmarkProblem.getBookmarkId(), bookmarkProblem.getProblemType())
+						.isPresent())
 				.forEach(bookmarkProblem -> bookmarkProblemsDatabase.add(bookmarkProblem));
 	}
 

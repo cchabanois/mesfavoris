@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Provider;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
@@ -16,13 +18,13 @@ import mesfavoris.model.BookmarkId;
 public class UpdateBookmarkOperation {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
-	private final Set<String> nonUpdatableProperties;
+	private final Provider<Set<String>> nonUpdatablePropertiesProvider;
 
 	public UpdateBookmarkOperation(BookmarkDatabase bookmarkDatabase,
-			IBookmarkPropertiesProvider bookmarkPropertiesProvider, Set<String> nonUpdatableProperties) {
+			IBookmarkPropertiesProvider bookmarkPropertiesProvider, Provider<Set<String>> nonUpdatablePropertiesProvider) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
-		this.nonUpdatableProperties = nonUpdatableProperties;
+		this.nonUpdatablePropertiesProvider = nonUpdatablePropertiesProvider;
 	}
 
 	public void updateBookmark(BookmarkId bookmarkId, IWorkbenchPart part, ISelection selection,
@@ -36,6 +38,7 @@ public class UpdateBookmarkOperation {
 	}
 
 	private void updateBookmark(final BookmarkId bookmarkId, Map<String, String> properties) throws BookmarksException {
+		Set<String> nonUpdatableProperties = nonUpdatablePropertiesProvider.get();
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
 			properties.forEach((propertyName, propertyValue) -> {
 				if (!nonUpdatableProperties.contains(propertyName)) {
