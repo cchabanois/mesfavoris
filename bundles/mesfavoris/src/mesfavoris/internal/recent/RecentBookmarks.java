@@ -55,7 +55,7 @@ public class RecentBookmarks {
 		return delete(bookmarkId, true);
 	}
 
-	public RecentBookmarks delete(BookmarkId bookmarkId, boolean deleteNoMoreRecent) {
+	private RecentBookmarks delete(BookmarkId bookmarkId, boolean deleteNoMoreRecent) {
 		RecentBookmark recentBookmark = get(bookmarkId);
 		if (recentBookmark == null) {
 			return this;
@@ -77,7 +77,11 @@ public class RecentBookmarks {
 			return this;
 		} else {
 			RecentBookmarks recentBookmarks = new RecentBookmarks(newByCreationDateSet, newMap, recentDuration);
-			return recentBookmarks.deleteNoMoreRecent();
+			if (deleteNoMoreRecent) {
+				return recentBookmarks.deleteNoMoreRecent();
+			} else {
+				return recentBookmarks;
+			}
 		}
 	}
 
