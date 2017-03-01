@@ -10,6 +10,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -35,12 +36,14 @@ public class UpdateBookmarkOperationTest {
 	private UpdateBookmarkOperation updateBookmarkOperation;
 	private BookmarkDatabase bookmarkDatabase;
 	private IBookmarkPropertiesProvider bookmarkPropertiesProvider = mock(IBookmarkPropertiesProvider.class);
+	private Set<String> nonUpdatableProperties = Sets.newHashSet(Bookmark.PROPERTY_NAME, Bookmark.PROPERTY_COMMENT,
+			Bookmark.PROPERTY_CREATED);
 
 	@Before
 	public void setUp() {
 		bookmarkDatabase = new BookmarkDatabase("test", createBookmarksTree());
 		updateBookmarkOperation = new UpdateBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider,
-				Sets.newHashSet(Bookmark.PROPERTY_COMMENT, Bookmark.PROPERTY_CREATED, Bookmark.PROPERTY_NAME));
+				() -> nonUpdatableProperties);
 	}
 
 	@Test

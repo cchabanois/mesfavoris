@@ -58,15 +58,16 @@ public class CheckBookmarkPropertiesOperationTest {
 	private ISelection selection = mock(ISelection.class);
 	private IBookmarkProblems bookmarkProblems = mock(IBookmarkProblems.class);
 	private PathPlaceholdersMap pathPlaceholders = new PathPlaceholdersMap();
-	private Set<String> nonUpdatableProperties = Sets.newHashSet(Bookmark.PROPERTY_NAME, Bookmark.PROPERTY_COMMENT, Bookmark.PROPERTY_COMMENT);
+	private Set<String> nonUpdatableProperties = Sets.newHashSet(Bookmark.PROPERTY_NAME, Bookmark.PROPERTY_COMMENT,
+			Bookmark.PROPERTY_COMMENT);
 	private Set<String> pathProperties = Sets.newHashSet("git.repositoryDir", "folderPath", "filePath");
 
 	@Before
 	public void setUp() {
 		bookmarkDatabase = new BookmarkDatabase("test", createBookmarksTree());
 		PathPlaceholderResolver pathPlaceholderResolver = new PathPlaceholderResolver(pathPlaceholders);
-		operation = new CheckBookmarkPropertiesOperation(bookmarkDatabase, nonUpdatableProperties, pathProperties,
-				bookmarkPropertiesProvider, pathPlaceholderResolver, bookmarkProblems);
+		operation = new CheckBookmarkPropertiesOperation(bookmarkDatabase, () -> nonUpdatableProperties,
+				() -> pathProperties, bookmarkPropertiesProvider, pathPlaceholderResolver, bookmarkProblems);
 		IWorkbenchPartSite workbenchPartSite = mock(IWorkbenchPartSite.class);
 		when(workbenchPart.getSite()).thenReturn(workbenchPartSite);
 		when(workbenchPartSite.getPage()).thenReturn(workbenchPage);

@@ -58,10 +58,10 @@ public class BookmarkProblemsAutoUpdaterTest {
 		pathPlaceholdersStore.init();
 		PathPlaceholderResolver pathPlaceholderResolver = new PathPlaceholderResolver(pathPlaceholdersStore);
 		checkBookmarkPropertiesOperation = new CheckBookmarkPropertiesOperation(bookmarkDatabase,
-				nonUpdatableProperties, pathProperties, bookmarkPropertiesProvider, pathPlaceholderResolver,
+				() -> nonUpdatableProperties, () -> pathProperties, bookmarkPropertiesProvider, pathPlaceholderResolver,
 				bookmarkProblemsDatabase);
 		bookmarkProblemsAutoUpdater = new BookmarkProblemsAutoUpdater(eventBroker, bookmarkDatabase,
-				bookmarkProblemsDatabase, pathProperties, checkBookmarkPropertiesOperation);
+				bookmarkProblemsDatabase, () -> pathProperties, checkBookmarkPropertiesOperation);
 		bookmarkProblemsAutoUpdater.init();
 	}
 
@@ -102,13 +102,14 @@ public class BookmarkProblemsAutoUpdaterTest {
 			return bookmarkProblemsDatabase.getBookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED)
 					.isPresent();
 		});
-		
+
 		// When
 		pathPlaceholdersStore.add(new PathPlaceholder("PROJECT", new Path("/home/cedric/myProject")));
-		
+
 		// Then
 		Waiter.waitUntil("Placeholder bookmark problem still present", () -> {
-			return !bookmarkProblemsDatabase.getBookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED).isPresent();
+			return !bookmarkProblemsDatabase.getBookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED)
+					.isPresent();
 		});
 	}
 
