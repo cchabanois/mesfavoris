@@ -59,6 +59,7 @@ public class GotoBookmarkOperation {
 				subMonitor.newChild(100));
 		if (bookmarkLocation == null) {
 			addGotoBookmarkProblem(bookmarkId);
+			checkBookmarkPropertiesProblem(bookmarkId);
 			throw new BookmarksException("Could not find bookmark");
 		}
 		Display.getDefault().asyncExec(() -> {
@@ -71,10 +72,15 @@ public class GotoBookmarkOperation {
 				checkBookmarkPropertiesProblem(bookmarkId, workbenchPartSelection);
 			} else {
 				addGotoBookmarkProblem(bookmarkId);
+				checkBookmarkPropertiesProblem(bookmarkId);
 			}
 		});
 	}
 
+	private void checkBookmarkPropertiesProblem(BookmarkId bookmarkId) {
+		checkBookmarkPropertiesOperation.checkBookmarkPropertiesProblems(bookmarkId);
+	}	
+	
 	private void checkBookmarkPropertiesProblem(BookmarkId bookmarkId, WorkbenchPartSelection workbenchPartSelection) {
 		checkBookmarkPropertiesOperation.checkBookmarkPropertiesProblems(bookmarkId, workbenchPartSelection.part,
 				workbenchPartSelection.selection);

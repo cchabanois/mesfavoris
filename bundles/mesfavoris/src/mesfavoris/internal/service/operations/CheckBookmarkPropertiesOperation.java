@@ -48,8 +48,7 @@ public class CheckBookmarkPropertiesOperation {
 	}
 
 	/**
-	 * Check if bookmark properties need update. Add a {@link BookmarkProblem}
-	 * if it is the case.
+	 * Check bookmark properties problems. Will add or remove {@link BookmarkProblem}s.
 	 * 
 	 * @param bookmarkId
 	 * @param part
@@ -59,6 +58,10 @@ public class CheckBookmarkPropertiesOperation {
 		new CheckBookmarkProperties(bookmarkId, part, selection).schedule();
 	}
 
+	public void checkBookmarkPropertiesProblems(BookmarkId bookmarkId) {
+		new CheckBookmarkProperties(bookmarkId).schedule();
+	}	
+	
 	public Set<BookmarkProblem> getBookmarkPropertiesProblems(BookmarkId bookmarkId) {
 		Set<BookmarkProblem> bookmarkProblems = new HashSet<>();
 		Map<String, String> propertiesUsingUndefinedPlaceholder = getPropertiesUsingUndefinedPlaceholder(bookmarkId);
@@ -150,6 +153,13 @@ public class CheckBookmarkPropertiesOperation {
 		private final IWorkbenchPart part;
 		private final ISelection selection;
 
+		public CheckBookmarkProperties(BookmarkId bookmarkId) {
+			super("Checking bookmark properties");
+			this.bookmarkId = bookmarkId;
+			this.part = null;
+			this.selection = null;
+		}	
+		
 		public CheckBookmarkProperties(BookmarkId bookmarkId, IWorkbenchPart part, ISelection selection) {
 			super("Checking bookmark properties");
 			this.bookmarkId = bookmarkId;
@@ -159,8 +169,12 @@ public class CheckBookmarkPropertiesOperation {
 
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
-			Set<BookmarkProblem> newBookmarkProblems = getBookmarkPropertiesProblems(bookmarkId, part, selection,
-					monitor);
+			Set<BookmarkProblem> newBookmarkProblems;
+			if (part == null) {
+				newBookmarkProblems = getBookmarkPropertiesProblems(bookmarkId);
+			} else {
+				newBookmarkProblems = getBookmarkPropertiesProblems(bookmarkId, part, selection, monitor);
+			}
 			newBookmarkProblems.forEach(bookmarkProblem -> bookmarkProblems.add(bookmarkProblem));
 			if (!newBookmarkProblems.stream().filter(bookmarkProblem -> bookmarkProblem.getProblemType()
 					.equals(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE)).findAny().isPresent()) {
