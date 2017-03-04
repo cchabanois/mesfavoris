@@ -29,9 +29,15 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
+import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.viewers.BookmarksTableLabelProvider;
 
 public class DeleteBookmarkHandler extends AbstractBookmarkHandler {
+	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
+
+	public DeleteBookmarkHandler() {
+		remoteBookmarksStoreManager = BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager();
+	}
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -39,8 +45,8 @@ public class DeleteBookmarkHandler extends AbstractBookmarkHandler {
 		if (selection.isEmpty()) {
 			return null;
 		}
-		List<Bookmark> bookmarks = new ArrayList<>(getSelectedBookmarksRecursively(MesFavoris.getBookmarkDatabase().getBookmarksTree(),
-				selection));
+		List<Bookmark> bookmarks = new ArrayList<>(
+				getSelectedBookmarksRecursively(MesFavoris.getBookmarkDatabase().getBookmarksTree(), selection));
 		ConfirmDeleteDialog dialog = new ConfirmDeleteDialog(HandlerUtil.getActiveShell(event), bookmarks);
 		if (dialog.open() != Window.OK) {
 			return null;
@@ -58,7 +64,8 @@ public class DeleteBookmarkHandler extends AbstractBookmarkHandler {
 		Set<Bookmark> bookmarks = new LinkedHashSet<>();
 		for (Bookmark bookmark : ((List<Bookmark>) (selection.toList()))) {
 			bookmarks.add(bookmark);
-			if (bookmark instanceof BookmarkFolder) {
+			if (bookmark instanceof BookmarkFolder
+					&& remoteBookmarksStoreManager.getRemoteBookmarkFolder(bookmark.getId()) == null) {
 				getAllBookmarksUnder(bookmarksTree, bookmark.getId(), bookmarks);
 			}
 		}
@@ -83,7 +90,7 @@ public class DeleteBookmarkHandler extends AbstractBookmarkHandler {
 			super(parentShell, "Delete bookmarks", null, "Are you sure you want to delete these bookmarks ?",
 					MessageDialog.CONFIRM, new String[] { IDialogConstants.OK_LABEL, IDialogConstants.CANCEL_LABEL },
 					0);
-			setShellStyle(getShellStyle() | SWT.RESIZE);
+			setShellStyle(getShellStyle() | SWT.RESIZE | SWT.SHEET);
 			this.bookmarks = bookmarks;
 		}
 

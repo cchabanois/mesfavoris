@@ -38,7 +38,14 @@ public class BookmarksPropertyTester extends PropertyTester {
 		if ("isDefaultBookmarkFolder".equals(property)) {
 			return isDefaultBookmarkFolder(bookmark);
 		}
+		if ("isRemoteBookmarkFolder".equals(property)) {
+			return isRemoteBookmarkFolder(bookmark);
+		}
 		return false;
+	}
+
+	private boolean isRemoteBookmarkFolder(Bookmark bookmark) {
+		return remoteBookmarksStoreManager.getRemoteBookmarkFolder(bookmark.getId()) != null;
 	}
 
 	private boolean isDefaultBookmarkFolder(Bookmark bookmark) {
