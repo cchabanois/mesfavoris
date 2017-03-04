@@ -59,6 +59,7 @@ import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetPage;
+import org.osgi.service.event.EventHandler;
 
 import com.google.common.collect.Lists;
 
@@ -92,6 +93,7 @@ import mesfavoris.problems.BookmarkProblem.Severity;
 import mesfavoris.problems.IBookmarkProblems;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
+import mesfavoris.topics.BookmarksEvents;
 
 public class BookmarksView extends ViewPart {
 	private static final String COMMAND_ID_GOTO_FAVORI = "mesfavoris.command.gotoFavori";
@@ -104,6 +106,7 @@ public class BookmarksView extends ViewPart {
 	private final IBookmarksDirtyStateTracker bookmarksDirtyStateTracker;
 	private final IBookmarkProblems bookmarkProblems;
 	private final BookmarkProblemHandlers bookmarkProblemHandlers;
+	private final EventHandler bookmarkProblemsEventHandler;
 	private BookmarksTreeViewer bookmarksTreeViewer;
 	private BookmarkCommentArea bookmarkCommentViewer;
 	private DrillDownAdapter drillDownAdapter;
@@ -121,7 +124,6 @@ public class BookmarksView extends ViewPart {
 	private PropertySheetPage propertyPage;
 	private final IBookmarksListener bookmarksListener = (modifications) -> refreshPropertyPage();
 
-	
 	public BookmarksView() {
 		this.bookmarkDatabase = BookmarksPlugin.getDefault().getBookmarkDatabase();
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
@@ -129,6 +131,10 @@ public class BookmarksView extends ViewPart {
 		this.bookmarksDirtyStateTracker = BookmarksPlugin.getDefault().getBookmarksDirtyStateTracker();
 		this.bookmarkProblems = BookmarksPlugin.getDefault().getBookmarkProblems();
 		this.bookmarkProblemHandlers = BookmarksPlugin.getDefault().getBookmarkProblemHandlers();
+		bookmarkProblemsEventHandler = (event) -> {
+			refreshPropertyPage();
+			updateFormBookmarkProblems(bookmarksTreeViewer.getSelectedBookmark());
+		};
 	}
 
 	public void createPartControl(Composite parent) {
@@ -154,6 +160,7 @@ public class BookmarksView extends ViewPart {
 		toggleLinkAction.init();
 		restoreState(memento);
 		bookmarkDatabase.addListener(bookmarksListener);
+		eventBroker.subscribe(BookmarksEvents.TOPIC_BOOKMARK_PROBLEMS_CHANGED, bookmarkProblemsEventHandler);
 	}
 
 	private void createCommentsSection(Composite parent) {
@@ -218,6 +225,7 @@ public class BookmarksView extends ViewPart {
 	public void dispose() {
 		getSite().getPage().removePartListener(previousActivePartListener);
 		bookmarkDatabase.removeListener(bookmarksListener);
+		eventBroker.unsubscribe(bookmarkProblemsEventHandler);
 		toggleLinkAction.dispose();
 		toolkit.dispose();
 		if (icon != null) {
@@ -419,21 +427,21 @@ public class BookmarksView extends ViewPart {
 
 	private void refreshPropertyPage() {
 		Display.getDefault().asyncExec(() -> {
-		    if (propertyPage != null) {
-		        propertyPage.refresh();
-		    }
+			if (propertyPage != null) {
+				propertyPage.refresh();
+			}
 		});
 	}
 
 	@Override
 	public Object getAdapter(Class adapter) {
-	    if (adapter == IPropertySheetPage.class) {
-	        if (propertyPage == null) {
-	            propertyPage = new PropertySheetPage();
-	        }
-	        return propertyPage;
-	    }
-	    return super.getAdapter(adapter);
-	}	
-	
+		if (adapter == IPropertySheetPage.class) {
+			if (propertyPage == null) {
+				propertyPage = new PropertySheetPage();
+			}
+			return propertyPage;
+		}
+		return super.getAdapter(adapter);
+	}
+
 }
