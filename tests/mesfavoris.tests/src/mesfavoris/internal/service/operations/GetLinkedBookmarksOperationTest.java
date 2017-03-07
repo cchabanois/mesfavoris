@@ -74,7 +74,7 @@ public class GetLinkedBookmarksOperationTest {
 	public void testGetLinkedBookmarks() throws Exception {
 		// Given
 		importProjectFromTemplate("testGetLinkedBookmarks", "commons-cli");
-		Bookmark bookmark = bookmark("LICENSE.txt")
+		Bookmark bookmark = bookmark(new BookmarkId(), "LICENSE.txt")
 				.withProperty(PROP_WORKSPACE_PATH, "/testGetLinkedBookmarks/LICENSE.txt")
 				.withProperty(PROP_LINE_NUMBER, "10").build();
 		addBookmark(rootFolderId, bookmark);

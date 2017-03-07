@@ -106,7 +106,7 @@ public class GotoBookmarkOperationTest {
 	@Test
 	public void testGotoBookmark() throws Exception {
 		// Given
-		Bookmark bookmark = bookmark("LICENSE.txt")
+		Bookmark bookmark = bookmark(new BookmarkId(), "LICENSE.txt")
 				.withProperty(PROP_WORKSPACE_PATH, "/gotoBookmarkOperationTest/LICENSE.txt")
 				.withProperty(PROP_LINE_NUMBER, "10").build();
 		addBookmark(new BookmarkId("rootFolder"), bookmark);
