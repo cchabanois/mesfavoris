@@ -40,6 +40,7 @@ public class PathPlaceholdersStoreTest {
 		pathPlaceholdersStore.add(new PathPlaceholder("BLT", new Path("/home/cchabanois/blt")));
 
 		// When
+		Thread.sleep(1000);
 		pathPlaceholdersStore.close();
 		pathPlaceholdersStore = new PathPlaceholdersStore(eventBroker, file);
 		pathPlaceholdersStore.init();
