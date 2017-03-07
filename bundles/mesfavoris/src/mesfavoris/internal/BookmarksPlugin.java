@@ -169,7 +169,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 				gotoBookmark, numberedBookmarks, pluginBookmarkTypes, bookmarksMarkers, pathPlaceholdersStore,
 				bookmarkProblems, eventBroker);
 		CheckBookmarkPropertiesOperation checkBookmarkPropertiesOperation = new CheckBookmarkPropertiesOperation(
-				bookmarkDatabase, new NonUpdatablePropertiesProvider(pluginBookmarkTypes),
+				bookmarkDatabase, remoteBookmarksStoreManager, new NonUpdatablePropertiesProvider(pluginBookmarkTypes),
 				new PathPropertiesProvider(pluginBookmarkTypes), bookmarkPropertiesProvider,
 				new PathPlaceholderResolver(pathPlaceholdersStore), bookmarkProblems);
 		bookmarkProblemsAutoUpdater = new BookmarkProblemsAutoUpdater(eventBroker, bookmarkDatabase, bookmarkProblems,

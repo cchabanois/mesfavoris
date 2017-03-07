@@ -766,5 +766,9 @@
             class="mesfavoris.internal.problems.handlers.PlaceholderUndefinedProblemHandler"
             type="placeholderUndefined">
       </bookmarkProblem>
+      <bookmarkProblem
+            class="mesfavoris.internal.problems.handlers.LocalPathSharedProblemHandler"
+            type="localPathShared">
+      </bookmarkProblem>
    </extension>
 </plugin>

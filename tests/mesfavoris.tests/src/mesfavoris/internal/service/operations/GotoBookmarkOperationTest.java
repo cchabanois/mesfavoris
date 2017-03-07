@@ -43,10 +43,12 @@ import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkTypes;
 import mesfavoris.internal.markers.BookmarksMarkers;
 import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.internal.problems.BookmarkProblemsDatabase;
+import mesfavoris.internal.remote.InMemoryRemoteBookmarksStore;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
+import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
 
 public class GotoBookmarkOperationTest {
@@ -54,7 +56,8 @@ public class GotoBookmarkOperationTest {
 	private BookmarkDatabase bookmarkDatabase;
 	private BookmarkProblemsDatabase bookmarkProblemsDatabase;
 	private BookmarksMarkers bookmarksMarkers;
-
+	private InMemoryRemoteBookmarksStore remoteBookmarksStore;
+	
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
@@ -80,8 +83,11 @@ public class GotoBookmarkOperationTest {
 				.getBookmarkPropertiesProvider();
 		IBookmarkPropertyDescriptors bookmarkPropertyDescriptors = BookmarksPlugin.getDefault()
 				.getBookmarkPropertyDescriptors();
+		this.remoteBookmarksStore = new InMemoryRemoteBookmarksStore(eventBroker);
+		RemoteBookmarksStoreManager remoteBookmarksStoreManager = new RemoteBookmarksStoreManager(
+				() -> Lists.newArrayList(remoteBookmarksStore));
 		CheckBookmarkPropertiesOperation checkBookmarkPropertiesOperation = new CheckBookmarkPropertiesOperation(
-				bookmarkDatabase, new NonUpdatablePropertiesProvider(bookmarkPropertyDescriptors),
+				bookmarkDatabase, remoteBookmarksStoreManager, new NonUpdatablePropertiesProvider(bookmarkPropertyDescriptors),
 				new PathPropertiesProvider(bookmarkPropertyDescriptors), bookmarkPropertiesProvider,
 				new PathPlaceholderResolver(BookmarksPlugin.getDefault().getPathPlaceholdersStore()),
 				bookmarkProblemsDatabase);

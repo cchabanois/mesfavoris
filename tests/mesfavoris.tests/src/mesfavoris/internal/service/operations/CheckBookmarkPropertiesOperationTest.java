@@ -21,6 +21,7 @@ import org.assertj.core.util.Lists;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -39,6 +40,7 @@ import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.internal.placeholders.PathPlaceholdersMap;
+import mesfavoris.internal.remote.InMemoryRemoteBookmarksStore;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
@@ -46,6 +48,7 @@ import mesfavoris.model.BookmarksTree;
 import mesfavoris.placeholders.PathPlaceholder;
 import mesfavoris.problems.BookmarkProblem;
 import mesfavoris.problems.IBookmarkProblems;
+import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
 import mesfavoris.tests.commons.waits.Waiter;
 
@@ -61,13 +64,19 @@ public class CheckBookmarkPropertiesOperationTest {
 	private Set<String> nonUpdatableProperties = Sets.newHashSet(Bookmark.PROPERTY_NAME, Bookmark.PROPERTY_COMMENT,
 			Bookmark.PROPERTY_COMMENT);
 	private Set<String> pathProperties = Sets.newHashSet("git.repositoryDir", "folderPath", "filePath");
+	private InMemoryRemoteBookmarksStore remoteBookmarksStore;
 
 	@Before
 	public void setUp() {
 		bookmarkDatabase = new BookmarkDatabase("test", createBookmarksTree());
 		PathPlaceholderResolver pathPlaceholderResolver = new PathPlaceholderResolver(pathPlaceholders);
-		operation = new CheckBookmarkPropertiesOperation(bookmarkDatabase, () -> nonUpdatableProperties,
-				() -> pathProperties, bookmarkPropertiesProvider, pathPlaceholderResolver, bookmarkProblems);
+		IEventBroker eventBroker = mock(IEventBroker.class);
+		this.remoteBookmarksStore = new InMemoryRemoteBookmarksStore(eventBroker);
+		RemoteBookmarksStoreManager remoteBookmarksStoreManager = new RemoteBookmarksStoreManager(
+				() -> Lists.newArrayList(remoteBookmarksStore));
+		operation = new CheckBookmarkPropertiesOperation(bookmarkDatabase, remoteBookmarksStoreManager,
+				() -> nonUpdatableProperties, () -> pathProperties, bookmarkPropertiesProvider, pathPlaceholderResolver,
+				bookmarkProblems);
 		IWorkbenchPartSite workbenchPartSite = mock(IWorkbenchPartSite.class);
 		when(workbenchPart.getSite()).thenReturn(workbenchPartSite);
 		when(workbenchPartSite.getPage()).thenReturn(workbenchPage);
@@ -77,10 +86,8 @@ public class CheckBookmarkPropertiesOperationTest {
 	public void testPropertiesNeedingUpdate() throws Exception {
 		// Given
 		BookmarkId bookmarkId = new BookmarkId("bookmark12");
-		bookmarkDatabase.modify(bookmarksTreeModifier -> {
-			bookmarksTreeModifier.addBookmarks(new BookmarkId("folder1"), Lists.newArrayList(new Bookmark(bookmarkId,
-					ImmutableMap.of(Bookmark.PROPERTY_NAME, "bookmark12", "prop1", "value1", "prop2", "value2"))));
-		});
+		addBookmark(new BookmarkId("folder1"), new Bookmark(bookmarkId,
+					ImmutableMap.of(Bookmark.PROPERTY_NAME, "bookmark12", "prop1", "value1", "prop2", "value2")));
 		doPutPropertiesWhenAddBookmarkPropertiesCalled(bookmarkPropertiesProvider, selection,
 				ImmutableMap.of("prop1", "value1", "prop2", "newValue2", "prop3", "value3"));
 
@@ -101,11 +108,8 @@ public class CheckBookmarkPropertiesOperationTest {
 		// Given
 		pathPlaceholders.add(new PathPlaceholder("PLACEHOLDER2", new Path("/var/workspace/project2")));
 		BookmarkId bookmarkId = new BookmarkId("bookmark12");
-		bookmarkDatabase.modify(bookmarksTreeModifier -> {
-			bookmarksTreeModifier.addBookmarks(new BookmarkId("folder1"),
-					Lists.newArrayList(new Bookmark(bookmarkId, ImmutableMap.of("filePath",
-							"${PLACEHOLDER1}/myFile.txt", "folderPath", "${PLACEHOLDER2}/myFolder"))));
-		});
+		addBookmark(new BookmarkId("folder1"), new Bookmark(bookmarkId,
+				ImmutableMap.of("filePath", "${PLACEHOLDER1}/myFile.txt", "folderPath", "${PLACEHOLDER2}/myFolder")));
 		whenAddBookmarkPropertiesThenPutAll(ImmutableMap.of("filePath", "/var/workspace/project1/myFile.txt"));
 
 		// When
@@ -121,24 +125,31 @@ public class CheckBookmarkPropertiesOperationTest {
 
 	}
 
-	private void whenAddBookmarkPropertiesThenPutAll(Map<String, String> properties) {
-		doAnswer(invocation -> {
-			Map<String, String> map = invocation.getArgumentAt(0, Map.class);
-			map.putAll(properties);
-			return null;
-		}).when(bookmarkPropertiesProvider).addBookmarkProperties(any(Map.class), eq(workbenchPart), eq(selection),
-				any(IProgressMonitor.class));
+	@Test
+	public void testPropertiesWithLocalPathShared() throws Exception {
+		// Given
+		BookmarkId bookmarkId = new BookmarkId();
+		addBookmark(new BookmarkId("folder2"),
+				new Bookmark(bookmarkId, ImmutableMap.of("filePath", "/var/workspace/project/myFile.txt")));
+		remoteBookmarksStore.add(bookmarkDatabase.getBookmarksTree().subTree(new BookmarkId("folder2")),
+				new BookmarkId("folder2"), new NullProgressMonitor());
+
+		// When
+		Set<BookmarkProblem> newBookmarkProblems = operation.getBookmarkPropertiesProblems(bookmarkId, workbenchPart,
+				selection, new NullProgressMonitor());
+
+		// Then
+		assertThat(newBookmarkProblems).hasSize(1);
+		BookmarkProblem bookmarkProblem = newBookmarkProblems.iterator().next();
+		assertThat(bookmarkProblem.getProblemType()).isEqualTo(BookmarkProblem.TYPE_LOCAL_PATH_SHARED);
 	}
 
 	@Test
 	public void testCheckBookmarkPropertiesProblems() throws Exception {
 		// Given
 		BookmarkId bookmarkId = new BookmarkId("bookmark12");
-		bookmarkDatabase.modify(bookmarksTreeModifier -> {
-			bookmarksTreeModifier.addBookmarks(new BookmarkId("folder1"),
-					Lists.newArrayList(new Bookmark(bookmarkId, ImmutableMap.of(Bookmark.PROPERTY_NAME, "bookmark12",
-							Bookmark.PROPERTY_COMMENT, "comment", "prop1", "value1", "prop2", "value2"))));
-		});
+		addBookmark(new BookmarkId("folder1"), new Bookmark(bookmarkId, ImmutableMap.of(Bookmark.PROPERTY_NAME,
+				"bookmark12", Bookmark.PROPERTY_COMMENT, "comment", "prop1", "value1", "prop2", "value2")));
 		doPutPropertiesWhenAddBookmarkPropertiesCalled(bookmarkPropertiesProvider, selection, ImmutableMap.of(
 				Bookmark.PROPERTY_COMMENT, "new comment", "prop1", "value1", "prop2", "newValue2", "prop3", "value3"));
 
@@ -151,6 +162,21 @@ public class CheckBookmarkPropertiesOperationTest {
 		assertThat(bookmarkProblem.getProblemType()).isEqualTo(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
 		assertThat(bookmarkProblem.getProperties()).containsExactly(entry("prop2", "newValue2"),
 				entry("prop3", "value3"));
+	}
+
+	private void whenAddBookmarkPropertiesThenPutAll(Map<String, String> properties) {
+		doAnswer(invocation -> {
+			Map<String, String> map = invocation.getArgumentAt(0, Map.class);
+			map.putAll(properties);
+			return null;
+		}).when(bookmarkPropertiesProvider).addBookmarkProperties(any(Map.class), eq(workbenchPart), eq(selection),
+				any(IProgressMonitor.class));
+	}	
+	
+	private void addBookmark(BookmarkId parentBookmarkId, Bookmark bookmark) throws BookmarksException {
+		bookmarkDatabase.modify(bookmarksTreeModifier -> {
+			bookmarksTreeModifier.addBookmarks(parentBookmarkId, Lists.newArrayList(bookmark));
+		});
 	}
 
 	private BookmarkProblem waitUntilBookmarkProblemAdded() throws TimeoutException {

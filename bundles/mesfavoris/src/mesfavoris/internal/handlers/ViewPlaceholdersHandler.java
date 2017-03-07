@@ -8,9 +8,9 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-public class ViewPlaceholdersHandler extends AbstractHandler {
+import mesfavoris.internal.Constants;
 
-	private static final String PAGE_ID = "mesfavoris.texteditor.placeholdersPage";
+public class ViewPlaceholdersHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -23,7 +23,7 @@ public class ViewPlaceholdersHandler extends AbstractHandler {
 		} else {
 			shell = activeWorkbenchWindow.getShell();
 		}
-		showPreferencePage(shell, PAGE_ID);
+		showPreferencePage(shell, Constants.PLACEHOLDERS_PREFERENCE_PAGE_ID);
 		return null;
 	}
 

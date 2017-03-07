@@ -23,6 +23,7 @@ import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.internal.placeholders.PathPlaceholdersStore;
+import mesfavoris.internal.remote.InMemoryRemoteBookmarksStore;
 import mesfavoris.internal.service.operations.CheckBookmarkPropertiesOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
@@ -30,6 +31,7 @@ import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.placeholders.PathPlaceholder;
 import mesfavoris.problems.BookmarkProblem;
+import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
 import mesfavoris.tests.commons.waits.Waiter;
 
@@ -43,6 +45,7 @@ public class BookmarkProblemsAutoUpdaterTest {
 	private PathPlaceholdersStore pathPlaceholdersStore;
 	private IBookmarkPropertiesProvider bookmarkPropertiesProvider = mock(IBookmarkPropertiesProvider.class);
 	private CheckBookmarkPropertiesOperation checkBookmarkPropertiesOperation;
+	private InMemoryRemoteBookmarksStore remoteBookmarksStore;
 
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -57,9 +60,12 @@ public class BookmarkProblemsAutoUpdaterTest {
 		pathPlaceholdersStore = new PathPlaceholdersStore(eventBroker, temporaryFolder.newFile());
 		pathPlaceholdersStore.init();
 		PathPlaceholderResolver pathPlaceholderResolver = new PathPlaceholderResolver(pathPlaceholdersStore);
+		this.remoteBookmarksStore = new InMemoryRemoteBookmarksStore(eventBroker);
+		RemoteBookmarksStoreManager remoteBookmarksStoreManager = new RemoteBookmarksStoreManager(
+				() -> Lists.newArrayList(remoteBookmarksStore));
 		checkBookmarkPropertiesOperation = new CheckBookmarkPropertiesOperation(bookmarkDatabase,
-				() -> nonUpdatableProperties, () -> pathProperties, bookmarkPropertiesProvider, pathPlaceholderResolver,
-				bookmarkProblemsDatabase);
+				remoteBookmarksStoreManager, () -> nonUpdatableProperties, () -> pathProperties,
+				bookmarkPropertiesProvider, pathPlaceholderResolver, bookmarkProblemsDatabase);
 		bookmarkProblemsAutoUpdater = new BookmarkProblemsAutoUpdater(eventBroker, bookmarkDatabase,
 				bookmarkProblemsDatabase, () -> pathProperties, checkBookmarkPropertiesOperation);
 		bookmarkProblemsAutoUpdater.init();

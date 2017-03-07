@@ -232,7 +232,7 @@ public class BookmarksService implements IBookmarksService {
 	}
 
 	private CheckBookmarkPropertiesOperation getCheckBookmarkPropertiesOperation() {
-		return new CheckBookmarkPropertiesOperation(bookmarkDatabase,
+		return new CheckBookmarkPropertiesOperation(bookmarkDatabase, remoteBookmarksStoreManager,
 				new NonUpdatablePropertiesProvider(bookmarkPropertyDescriptors),
 				new PathPropertiesProvider(bookmarkPropertyDescriptors), bookmarkPropertiesProvider,
 				pathPlaceholderResolver, bookmarkProblems);
