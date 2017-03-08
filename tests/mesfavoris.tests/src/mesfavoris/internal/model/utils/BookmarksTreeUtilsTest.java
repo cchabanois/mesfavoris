@@ -21,7 +21,7 @@ import mesfavoris.model.BookmarksTree;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeGenerator;
 import mesfavoris.tests.commons.bookmarks.IncrementalIDGenerator;
 
-public class BookmarksTreeUtilTest {
+public class BookmarksTreeUtilsTest {
 	private BookmarksTree bookmarksTree;
 
 	@Before
