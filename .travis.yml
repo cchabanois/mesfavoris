@@ -29,7 +29,10 @@ before_install:
  - unzip -qq apache-maven-3.3.9-bin.zip
  - export M2_HOME=$PWD/apache-maven-3.3.9
  - export PATH=$M2_HOME/bin:$PATH
-
+ - wget -O ngrok.zip https://dl.ngrok.com/ngrok_2.0.19_linux_amd64.zip
+ - unzip ngrok.zip
+ - ./ngrok tcp 5005 --authtoken=$NGROK_AUTH_TOKEN --log=stdout --log-level=debug | grep "tcp.ngrok.io"
+ 
 install: true
 
 before_script:
