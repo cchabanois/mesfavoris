@@ -31,7 +31,7 @@ before_install:
  - export PATH=$M2_HOME/bin:$PATH
  - wget -O ngrok.zip https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
  - unzip ngrok.zip
- - ./ngrok tcp 5005 --authtoken=$NGROK_AUTH_TOKEN --log=stdout --log-level=debug | grep "tcp.ngrok.io"
+ - { ./ngrok tcp 5005 --authtoken=$NGROK_AUTH_TOKEN --log=stdout --log-level=debug | grep "tcp.ngrok.io" } &
  
 install: true
 
@@ -42,6 +42,7 @@ before_script:
 script:
  - export
  - bash -e ./travis_build.sh
+ - killall -SIGINT ngrok && echo "ngrok terminated"
 
 notifications:
   webhooks:
