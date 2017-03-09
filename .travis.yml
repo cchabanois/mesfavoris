@@ -40,7 +40,6 @@ before_script:
  - metacity --sm-disable --replace 2> metacity.err &
 
 script:
- - export
  - bash -e ./travis_build.sh
  - killall -SIGINT ngrok && echo "ngrok terminated"
 
