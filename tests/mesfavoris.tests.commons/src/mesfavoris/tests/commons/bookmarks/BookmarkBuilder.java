@@ -13,7 +13,7 @@ public abstract class BookmarkBuilder<T extends Bookmark>  {
 	protected final Map<String, String> properties = new HashMap<>();
 	
 	public BookmarkBuilder(BookmarkId bookmarkId, String name) {
-		this.id = new BookmarkId(name);
+		this.id = bookmarkId;
 		properties.put(Bookmark.PROPERTY_NAME, name);		
 	}
 	
