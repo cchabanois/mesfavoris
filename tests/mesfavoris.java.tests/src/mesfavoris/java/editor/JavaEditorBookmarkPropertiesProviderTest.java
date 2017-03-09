@@ -94,6 +94,27 @@ public class JavaEditorBookmarkPropertiesProviderTest {
 				.containsEntry(PROP_JAVA_METHOD_SIGNATURE, "String[] flatten(Options,String[],boolean)");
 	}
 
+	@Test
+	public void testBookmarkBeforeDeclarationButOnSameLine() throws Exception {
+		// Given
+		SWTBotEclipseEditor textEditor = textEditor("org.apache.commons.cli.Parser");
+		textEditor.navigateTo(44, 0);
+		Map<String, String> bookmarkProperties = new HashMap<>();
+
+		// When
+		IWorkbenchPart part = getActivePart();
+		ISelection selection = getSelection(part);
+		javaEditorBookmarkPropertiesProvider.addBookmarkProperties(bookmarkProperties, part, selection,
+				new NullProgressMonitor());
+
+		// Then
+		assertThat(bookmarkProperties).containsEntry(PROP_LINE_NUMBER_INSIDE_ELEMENT, "0")
+				.containsEntry(PROP_JAVA_DECLARING_TYPE, "org.apache.commons.cli.Parser")
+				.containsEntry(PROP_JAVA_ELEMENT_NAME, "setOptions").containsEntry(PROP_JAVA_ELEMENT_KIND, KIND_METHOD)
+				.containsEntry(PROP_LINE_CONTENT, "protected void setOptions(Options options)")
+				.containsEntry(PROP_JAVA_METHOD_SIGNATURE, "void setOptions(Options)");
+	}
+	
 	private ISelection getSelection(IWorkbenchPart part) {
 		return UIThreadRunnable.syncExec(() -> part.getSite().getSelectionProvider().getSelection());
 	}
@@ -110,7 +131,7 @@ public class JavaEditorBookmarkPropertiesProviderTest {
 	}
 
 	private SWTBotEclipseEditor textEditor(String fullyQualifiedType) throws JavaModelException, PartInitException {
-		IType type = javaProject.findType("org.apache.commons.cli.BasicParser");
+		IType type = javaProject.findType(fullyQualifiedType);
 
 		IEditorPart editorPart = UIThreadRunnable.syncExec(new Result<IEditorPart>() {
 

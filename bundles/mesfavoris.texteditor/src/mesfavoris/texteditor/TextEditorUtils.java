@@ -9,8 +9,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class TextEditorUtils {
 
-	public static void gotoLine(ITextEditor textEditor, int line)
-			throws BadLocationException {
+	public static void gotoLine(ITextEditor textEditor, int line) throws BadLocationException {
 		IDocumentProvider provider = textEditor.getDocumentProvider();
 		IDocument document = provider.getDocument(textEditor.getEditorInput());
 
@@ -22,6 +21,19 @@ public class TextEditorUtils {
 
 	}
 
+	public static int getOffsetOfFirstNonWhitespaceCharAtLine(ITextEditor textEditor, int lineNumber)
+			throws BadLocationException {
+		IDocumentProvider provider = textEditor.getDocumentProvider();
+		IDocument document = provider.getDocument(textEditor.getEditorInput());
+		IRegion region = document.getLineInformation(lineNumber);
+		int offset = region.getOffset();
+		int lastOffset = offset + region.getLength() - 1;
+		while ((offset <= lastOffset) && (document.getChar(offset) <= ' ')) {
+			offset++;
+		}
+		return offset;
+	}
+
 	public static String getLineContent(ITextEditor textEditor, int lineNumber) {
 		try {
 			IDocumentProvider provider = textEditor.getDocumentProvider();
@@ -31,6 +43,6 @@ public class TextEditorUtils {
 		} catch (BadLocationException e) {
 			return null;
 		}
-	}	
-	
+	}
+
 }

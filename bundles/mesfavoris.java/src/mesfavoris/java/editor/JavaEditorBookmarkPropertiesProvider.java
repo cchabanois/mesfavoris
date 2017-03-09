@@ -11,6 +11,7 @@ import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.ITypeRoot;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavaUI;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
@@ -35,27 +36,38 @@ public class JavaEditorBookmarkPropertiesProvider extends JavaTypeMemberBookmark
 			return;
 		}
 		ITextSelection textSelection = (ITextSelection) selection;
+		int lineNumber = textSelection.getStartLine();
+		int offset = getOffset(editor, textSelection);
 		IJavaElement editorJavaElement = JavaUI.getEditorInputJavaElement(editor.getEditorInput());
 		if (editorJavaElement == null) {
 			return;
 		}
-		IJavaElement containingJavaElement = getContainingJavaElement(editorJavaElement, textSelection);
+		IJavaElement containingJavaElement = getContainingJavaElement(editorJavaElement, offset);
 
 		if (!(containingJavaElement instanceof IMember)) {
 			return;
 		}
 		IMember member = (IMember) containingJavaElement;
 		super.addMemberBookmarkProperties(bookmarkProperties, member);
-		addLineNumberInsideMemberProperty(bookmarkProperties, member, textSelection);
-		addJavadocComment(bookmarkProperties, member, textSelection);
-		addLineContent(bookmarkProperties, editor, textSelection.getStartLine());
+		addLineNumberInsideMemberProperty(bookmarkProperties, member, lineNumber);
+		addJavadocComment(bookmarkProperties, member, lineNumber);
+		addLineContent(bookmarkProperties, editor, lineNumber);
 	}
 
+	private int getOffset(ITextEditor textEditor, ITextSelection textSelection) {
+		try {
+			int offset = TextEditorUtils.getOffsetOfFirstNonWhitespaceCharAtLine(textEditor, textSelection.getStartLine());
+			return offset > textSelection.getOffset() ? offset : textSelection.getOffset();
+		} catch (BadLocationException e) {
+			return textSelection.getOffset();
+		}
+		
+	}
+	
 	private void addLineNumberInsideMemberProperty(Map<String, String> bookmarkProperties, IMember member,
-			ITextSelection textSelection) {
+			int lineNumber) {
 		try {
 			int methodLineNumber = JavaEditorUtils.getLineNumber(member);
-			int lineNumber = textSelection.getStartLine();
 			int lineNumberInsideMethod = lineNumber - methodLineNumber;
 			putIfAbsent(bookmarkProperties, PROP_LINE_NUMBER_INSIDE_ELEMENT, Integer.toString(lineNumberInsideMethod));
 		} catch (JavaModelException e) {
@@ -64,9 +76,9 @@ public class JavaEditorBookmarkPropertiesProvider extends JavaTypeMemberBookmark
 	}
 
 	private void addJavadocComment(Map<String, String> bookmarkProperties, IMember member,
-			ITextSelection textSelection) {
+			int lineNumber) {
 		try {
-			if (JavaEditorUtils.getLineNumber(member) != textSelection.getStartLine()) {
+			if (JavaEditorUtils.getLineNumber(member) != lineNumber) {
 				return;
 			}
 			super.addJavadocComment(bookmarkProperties, member);
@@ -75,13 +87,13 @@ public class JavaEditorBookmarkPropertiesProvider extends JavaTypeMemberBookmark
 		}
 	}
 
-	private IJavaElement getContainingJavaElement(IJavaElement editorJavaElement, ITextSelection textSelection) {
+	private IJavaElement getContainingJavaElement(IJavaElement editorJavaElement, int offset) {
 		if (!(editorJavaElement instanceof ITypeRoot)) {
 			return null;
 		}
 		ITypeRoot compilationUnit = (ITypeRoot) editorJavaElement;
 		try {
-			IJavaElement selectedJavaElement = compilationUnit.getElementAt(textSelection.getOffset());
+			IJavaElement selectedJavaElement = compilationUnit.getElementAt(offset);
 			return selectedJavaElement;
 		} catch (JavaModelException e) {
 			return null;
