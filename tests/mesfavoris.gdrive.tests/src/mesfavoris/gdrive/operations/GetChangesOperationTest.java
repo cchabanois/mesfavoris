@@ -51,7 +51,7 @@ public class GetChangesOperationTest {
 		List<Change> changes = getChangesOperation.getChanges(startChangeId);
 
 		// Then
-		assertEquals(2, changes.size());
+		assertEquals("There is not 2 changes as expected :" + changes, 2, changes.size());
 		assertEquals(file1.getId(), changes.get(0).getFileId());
 		assertEquals(file2.getId(), changes.get(1).getFileId());
 	}
@@ -68,7 +68,7 @@ public class GetChangesOperationTest {
 		changes = getChangesOperation.getChanges(startChangeId);
 
 		// Then
-		assertEquals(1, changes.size());
+		assertEquals("There is not one change as expected :" + changes, 1, changes.size());
 		assertEquals(file2.getId(), changes.get(0).getFileId());
 	}
 
