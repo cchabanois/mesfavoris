@@ -2,6 +2,7 @@ package mesfavoris.texteditor.internal;
 
 import static mesfavoris.tests.commons.ui.SWTBotEditorHelper.textEditor;
 import static mesfavoris.tests.commons.ui.SWTBotViewHelper.closeWelcomeView;
+import static mesfavoris.tests.commons.waits.Waiter.waitUntil;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROPERTY_NAME;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FILE_PATH;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_CONTENT;
@@ -54,6 +55,7 @@ public class TextEditorBookmarkPropertiesProviderTest {
 		// Given
 		SWTBotEclipseEditor textEditor = textEditor(project, "LICENSE.txt");
 		textEditor.navigateTo(25, 0);
+		waitUntil("cursor is not on line 25", () -> textEditor.cursorPosition().line == 25);
 		Map<String, String> bookmarkProperties = new HashMap<>();
 
 		// When
