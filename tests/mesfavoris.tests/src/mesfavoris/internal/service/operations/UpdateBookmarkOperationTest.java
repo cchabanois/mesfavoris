@@ -30,6 +30,7 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
+import mesfavoris.problems.IBookmarkProblems;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
 
 public class UpdateBookmarkOperationTest {
@@ -38,12 +39,13 @@ public class UpdateBookmarkOperationTest {
 	private IBookmarkPropertiesProvider bookmarkPropertiesProvider = mock(IBookmarkPropertiesProvider.class);
 	private Set<String> nonUpdatableProperties = Sets.newHashSet(Bookmark.PROPERTY_NAME, Bookmark.PROPERTY_COMMENT,
 			Bookmark.PROPERTY_CREATED);
+	private IBookmarkProblems bookmarkProblems = mock(IBookmarkProblems.class);
 
 	@Before
 	public void setUp() {
 		bookmarkDatabase = new BookmarkDatabase("test", createBookmarksTree());
-		updateBookmarkOperation = new UpdateBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider,
-				() -> nonUpdatableProperties);
+		updateBookmarkOperation = new UpdateBookmarkOperation(bookmarkDatabase, bookmarkProblems,
+				bookmarkPropertiesProvider, () -> nonUpdatableProperties);
 	}
 
 	@Test

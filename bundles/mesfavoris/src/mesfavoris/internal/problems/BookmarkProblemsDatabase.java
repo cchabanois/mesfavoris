@@ -114,6 +114,11 @@ public class BookmarkProblemsDatabase implements IBookmarkProblems {
 	}
 
 	@Override
+	public void delete(BookmarkId bookmarkId) {
+		modify(bookmarkProblems->bookmarkProblems.delete(bookmarkId));
+	}
+	
+	@Override
 	public void add(BookmarkProblem problem) {
 		modify(bookmarkProblems->bookmarkProblems.add(problem));
 	}

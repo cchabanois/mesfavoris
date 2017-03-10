@@ -226,8 +226,8 @@ public class BookmarksService implements IBookmarksService {
 	@Override
 	public void updateBookmark(BookmarkId bookmarkId, IWorkbenchPart part, ISelection selection,
 			IProgressMonitor monitor) throws BookmarksException {
-		UpdateBookmarkOperation operation = new UpdateBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider,
-				new NonUpdatablePropertiesProvider(bookmarkPropertyDescriptors));
+		UpdateBookmarkOperation operation = new UpdateBookmarkOperation(bookmarkDatabase, bookmarkProblems,
+				bookmarkPropertiesProvider, new NonUpdatablePropertiesProvider(bookmarkPropertyDescriptors));
 		operation.updateBookmark(bookmarkId, part, selection, monitor);
 	}
 

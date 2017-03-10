@@ -13,6 +13,8 @@ public interface IBookmarkProblems extends Iterable<BookmarkProblem> {
 
 	void delete(BookmarkProblem problem);
 
+	void delete(BookmarkId bookmarkId);
+	
 	void add(BookmarkProblem problem);
 
 	int size();

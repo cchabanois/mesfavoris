@@ -14,15 +14,19 @@ import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
+import mesfavoris.problems.IBookmarkProblems;
 
 public class UpdateBookmarkOperation {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
 	private final Provider<Set<String>> nonUpdatablePropertiesProvider;
+	private final IBookmarkProblems bookmarkProblems;
 
-	public UpdateBookmarkOperation(BookmarkDatabase bookmarkDatabase,
-			IBookmarkPropertiesProvider bookmarkPropertiesProvider, Provider<Set<String>> nonUpdatablePropertiesProvider) {
+	public UpdateBookmarkOperation(BookmarkDatabase bookmarkDatabase, IBookmarkProblems bookmarkProblems,
+			IBookmarkPropertiesProvider bookmarkPropertiesProvider,
+			Provider<Set<String>> nonUpdatablePropertiesProvider) {
 		this.bookmarkDatabase = bookmarkDatabase;
+		this.bookmarkProblems = bookmarkProblems;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 		this.nonUpdatablePropertiesProvider = nonUpdatablePropertiesProvider;
 	}
@@ -45,7 +49,7 @@ public class UpdateBookmarkOperation {
 					bookmarksTreeModifier.setPropertyValue(bookmarkId, propertyName, propertyValue);
 				}
 			});
-		});
+		}, bookmarksTree -> bookmarkProblems.delete(bookmarkId));
 	}
 
 }
