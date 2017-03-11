@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Before;
@@ -48,7 +49,9 @@ public class GetChangesOperationTest {
 		File file2 = createFile("file2.txt", "the contents");
 
 		// When
-		List<Change> changes = getChangesOperation.getChanges(startChangeId);
+		// sometimes, we have deleted files (from previous tests ?)
+		List<Change> changes = getChangesOperation.getChanges(startChangeId).stream()
+				.filter(change -> change.getDeleted() == false).collect(Collectors.toList());
 
 		// Then
 		assertEquals("There is not 2 changes as expected :" + changes, 2, changes.size());
@@ -65,7 +68,9 @@ public class GetChangesOperationTest {
 		// When
 		startChangeId = changes.get(changes.size() - 1).getId() + 1;
 		File file2 = createFile("file2.txt", "the contents");
-		changes = getChangesOperation.getChanges(startChangeId);
+		// sometimes, we have deleted files (from previous tests ?)
+		changes = getChangesOperation.getChanges(startChangeId).stream().filter(change -> change.getDeleted() == false)
+				.collect(Collectors.toList());
 
 		// Then
 		assertEquals("There is not one change as expected :" + changes, 1, changes.size());
