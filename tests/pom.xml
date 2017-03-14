@@ -88,7 +88,7 @@
 					<useUIThread>false</useUIThread>
 					<!-- <debugPort>5005</debugPort> -->
 					<!-- tycho.testArgLine is the configuration for jacoco agent -->
-					<argLine>${tycho.testArgLine} ${ui.test.vmargs} -Xdebug -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=y</argLine>
+					<argLine>${tycho.testArgLine} ${ui.test.vmargs} -Xdebug -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=n</argLine>
 					<dependencies>
 						<dependency>
 							<!-- see https://bugs.eclipse.org/bugs/show_bug.cgi?id=462862 -->
