@@ -1,5 +1,6 @@
 package mesfavoris.texteditor.internal;
 
+import static mesfavoris.tests.commons.ui.SWTBotEditorHelper.closeAllEditors;
 import static mesfavoris.tests.commons.ui.SWTBotEditorHelper.textEditor;
 import static mesfavoris.tests.commons.ui.SWTBotViewHelper.closeWelcomeView;
 import static mesfavoris.tests.commons.waits.Waiter.waitUntil;
@@ -47,6 +48,7 @@ public class TextEditorBookmarkPropertiesProviderTest {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		project = root.getProject(PROJECT_NAME);
 		closeWelcomeView();
+		closeAllEditors();
 		textEditorBookmarkPropertiesProvider = new TextEditorBookmarkPropertiesProvider();
 	}
 

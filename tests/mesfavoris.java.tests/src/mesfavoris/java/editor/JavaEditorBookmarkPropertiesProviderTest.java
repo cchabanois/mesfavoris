@@ -6,6 +6,7 @@ import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_KIND;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_NAME;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_METHOD_SIGNATURE;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_LINE_NUMBER_INSIDE_ELEMENT;
+import static mesfavoris.tests.commons.ui.SWTBotEditorHelper.closeAllEditors;
 import static mesfavoris.tests.commons.ui.SWTBotViewHelper.closeWelcomeView;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_CONTENT;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,6 +71,7 @@ public class JavaEditorBookmarkPropertiesProviderTest {
 		IProject project = root.getProject(PROJECT_NAME);
 		javaProject = JavaCore.create(project);
 		closeWelcomeView();
+		closeAllEditors();
 		javaEditorBookmarkPropertiesProvider = new JavaEditorBookmarkPropertiesProvider();
 	}
 

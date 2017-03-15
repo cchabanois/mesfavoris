@@ -2,6 +2,7 @@ package mesfavoris.internal.service.operations;
 
 import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmark;
 import static mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder.bookmarksTree;
+import static mesfavoris.tests.commons.ui.SWTBotEditorHelper.closeAllEditors;
 import static mesfavoris.tests.commons.ui.SWTBotViewHelper.closeWelcomeView;
 import static mesfavoris.tests.commons.waits.Waiter.waitUntil;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_NUMBER;
@@ -95,6 +96,7 @@ public class GotoBookmarkOperationTest {
 				bookmarksMarkers, bookmarkPropertiesProvider, checkBookmarkPropertiesOperation,
 				bookmarkProblemsDatabase, eventBroker);
 		closeWelcomeView();
+		closeAllEditors();
 	}
 
 	@After

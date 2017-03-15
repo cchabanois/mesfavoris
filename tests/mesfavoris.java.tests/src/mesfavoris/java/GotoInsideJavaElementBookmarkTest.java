@@ -5,6 +5,7 @@ import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_DECLARING_TYPE;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_KIND;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_JAVA_ELEMENT_NAME;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_LINE_NUMBER_INSIDE_ELEMENT;
+import static mesfavoris.tests.commons.ui.SWTBotEditorHelper.closeAllEditors;
 import static mesfavoris.tests.commons.ui.SWTBotViewHelper.closeWelcomeView;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -65,6 +66,7 @@ public class GotoInsideJavaElementBookmarkTest {
 		IProject project = root.getProject(PROJECT_NAME);
 		javaProject = JavaCore.create(project);
 		closeWelcomeView();
+		closeAllEditors();
 		gotoBookmark = new GotoInsideJavaElementBookmark();
 	}
 

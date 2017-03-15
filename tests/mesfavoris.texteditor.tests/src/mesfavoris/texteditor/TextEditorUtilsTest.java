@@ -1,5 +1,6 @@
 package mesfavoris.texteditor;
 
+import static mesfavoris.tests.commons.ui.SWTBotEditorHelper.closeAllEditors;
 import static mesfavoris.tests.commons.ui.SWTBotEditorHelper.textEditor;
 import static mesfavoris.tests.commons.ui.SWTBotViewHelper.closeWelcomeView;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,6 +42,7 @@ public class TextEditorUtilsTest {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		project = root.getProject(PROJECT_NAME);
 		closeWelcomeView();
+		closeAllEditors();
 	}
 
 	@Test
