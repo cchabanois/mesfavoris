@@ -11,5 +11,5 @@ Require-Bundle: org.junit;bundle-version="4.11.0",
  mesfavoris.tests.commons;bundle-version="1.4.0",
  org.assertj.core;bundle-version="3.5.2",
  org.eclipse.swtbot.eclipse.finder,
- org.hamcrest.library;bundle-version="1.4.0"
+ org.hamcrest.library;bundle-version="1.3.0"
 Bundle-Vendor: Mes Favoris
