@@ -16,21 +16,32 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
+import mesfavoris.internal.BookmarksPlugin;
+import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkTypes;
 import mesfavoris.model.Bookmark;
 import mesfavoris.problems.BookmarkProblem;
 
 public class BookmarkPropertySource implements IPropertySource {
+	private static final String CATEGORY_UNKNOWN = "unknown";
 	private final Bookmark bookmark;
 	private final Set<BookmarkProblem> bookmarkProblems;
+	private final PluginBookmarkTypes pluginBookmarkTypes;
 
 	public BookmarkPropertySource(Bookmark bookmark, Set<BookmarkProblem> bookmarkProblems) {
 		this.bookmark = bookmark;
 		this.bookmarkProblems = bookmarkProblems;
+		this.pluginBookmarkTypes = BookmarksPlugin.getDefault().getPluginBookmarkTypes();
 	}
 
 	@Override
 	public Object getEditableValue() {
 		return bookmark;
+	}
+
+	private String getCategory(String propertyName) {
+		return pluginBookmarkTypes.getBookmarkTypes().stream()
+				.filter(pluginBookmarkType -> pluginBookmarkType.getPropertyDescriptor(propertyName) != null)
+				.map(pluginBookmarkType -> pluginBookmarkType.getName()).findFirst().orElse(CATEGORY_UNKNOWN);
 	}
 
 	@Override
@@ -61,12 +72,14 @@ public class BookmarkPropertySource implements IPropertySource {
 		if (value != null) {
 			propertyDescriptor.setLabelProvider(new PropertyLabelProvider(false, true));
 		}
+		propertyDescriptor.setCategory(getCategory(propertyName));
 		return propertyDescriptor;
 	}
 
 	private IPropertyDescriptor getPropertyDescriptorFromProblemProperty(String propertyName) {
 		PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyName + " (New value)");
 		propertyDescriptor.setLabelProvider(new PropertyLabelProvider(true, true));
+		propertyDescriptor.setCategory(getCategory(propertyName));
 		return propertyDescriptor;
 	}
 

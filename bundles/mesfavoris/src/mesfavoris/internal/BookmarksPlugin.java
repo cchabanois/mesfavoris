@@ -298,6 +298,10 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		return bookmarkProblemHandlers;
 	}
 
+	public PluginBookmarkTypes getPluginBookmarkTypes() {
+		return pluginBookmarkTypes;
+	}
+	
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in
 	 * relative path
