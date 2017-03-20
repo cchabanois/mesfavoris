@@ -63,6 +63,11 @@
                   type="string"
                   updatable="true">
             </property>
+            <property
+                  name="java.type"
+                  type="string"
+                  updatable="true">
+            </property>
          </properties>
       </bookmarkType>
    </extension>
