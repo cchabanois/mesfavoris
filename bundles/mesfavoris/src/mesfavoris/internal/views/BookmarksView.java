@@ -220,8 +220,8 @@ public class BookmarksView extends ViewPart {
 			IBookmarkProblemHandler handler = bookmarkProblemHandlers
 					.getBookmarkProblemHandler(needsUpdateBookmarkProblem.get().getProblemType());
 			if (handler != null) {
-				Action updateBookmarkPropertiesAction = new Action("Update bookmark properties",
-						IAction.AS_PUSH_BUTTON) {
+				Action updateBookmarkPropertiesAction = new Action(
+						handler.getActionMessage(needsUpdateBookmarkProblem.get()), IAction.AS_PUSH_BUTTON) {
 					public void run() {
 						try {
 							handler.handleAction(needsUpdateBookmarkProblem.get());
@@ -243,8 +243,8 @@ public class BookmarksView extends ViewPart {
 		IStatus status = bookmarkDatabase.getBookmarksModificationValidator()
 				.validateModification(bookmarkDatabase.getBookmarksTree(), bookmark.getId());
 		return status.isOK();
-	}	
-	
+	}
+
 	private void addBulbDecorator(final Control control, final String tooltip) {
 		ControlDecoration dec = new ControlDecoration(control, SWT.TOP | SWT.LEFT);
 
