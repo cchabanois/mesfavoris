@@ -225,8 +225,8 @@ Other bookmark problems
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 - "Cannot goto bookmark" : you need to update the bookmark using ``M1+B U``
-- "Some properties are using local paths"
-- "Placeholders undefined"
+- "Some properties are using local paths" : shared bookmarks should use placeholders.
+- "Placeholders undefined" : bookmark is using a placeholder that is undefined
 
 
 =======
