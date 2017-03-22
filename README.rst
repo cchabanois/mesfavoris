@@ -202,6 +202,8 @@ You can import bookmarks files that are already on your gDrive or that are share
 Fix bookmark problems
 ---------------------
 
+The number of bookmark problems are displayed on the *Mes Favoris* bar in the view. A tooltip will display additional information and possibly a link to fix the problem.
+
 .. image:: /docs/bookmarkProblemsBar.png?raw=true
     :alt: bookmark problems
     
@@ -218,6 +220,14 @@ When you click on a bookmark, new properties are retrieved. If they are differen
 - click 'Use new properties' on the tooltip of the *Mes Favoris* bar
 - click the 'Use new properties' icon on the toolbar
 - if the bookmark has changed too much and does not direct you to the expected place, go to the wanted place and update it (``M1+B U``)
+
+Other bookmark problems
+~~~~~~~~~~~~~~~~~~~~~~~
+
+- "Cannot goto bookmark" : you need to update the bookmark using ``M1+B U``
+- "Some properties are using local paths"
+- "Placeholders undefined"
+
 
 =======
 License
