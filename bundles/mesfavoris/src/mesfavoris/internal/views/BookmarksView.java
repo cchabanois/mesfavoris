@@ -18,6 +18,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -63,6 +64,7 @@ import org.osgi.service.event.EventHandler;
 
 import com.google.common.collect.Lists;
 
+import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IImportTeamProject;
 import mesfavoris.commons.core.AdapterUtils;
@@ -90,6 +92,7 @@ import mesfavoris.model.IBookmarksListener;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.problems.BookmarkProblem;
 import mesfavoris.problems.BookmarkProblem.Severity;
+import mesfavoris.problems.IBookmarkProblemHandler;
 import mesfavoris.problems.IBookmarkProblems;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
@@ -205,6 +208,28 @@ public class BookmarksView extends ViewPart {
 			};
 			importProjectAction.setImageDescriptor(importTeamProject.get().getIcon());
 			form.getToolBarManager().add(importProjectAction);
+		}
+		Optional<BookmarkProblem> needsUpdateBookmarkProblem = bookmarkProblems.getBookmarkProblem(bookmark.getId(),
+				BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
+		if (needsUpdateBookmarkProblem.isPresent()) {
+			IBookmarkProblemHandler handler = bookmarkProblemHandlers
+					.getBookmarkProblemHandler(needsUpdateBookmarkProblem.get().getProblemType());
+			if (handler != null) {
+				Action updateBookmarkPropertiesAction = new Action("Update bookmark properties",
+						IAction.AS_PUSH_BUTTON) {
+					public void run() {
+						try {
+							handler.handleAction(needsUpdateBookmarkProblem.get());
+							updateFormToolbar(bookmark);
+						} catch (BookmarksException e) {
+							ErrorDialog.openError(null, "Error", "Could not solve bookmark problem", e.getStatus());
+						}
+					}
+				};
+				updateBookmarkPropertiesAction
+						.setImageDescriptor(BookmarksPlugin.getImageDescriptor("icons/bookmark-update.png"));
+				form.getToolBarManager().add(updateBookmarkPropertiesAction);
+			}
 		}
 		form.getToolBarManager().update(true);
 	}
