@@ -41,7 +41,7 @@ before_script:
 
 script:
  - bash -e ./travis_build.sh
- - killall -SIGINT ngrok && echo "ngrok terminated"
+ - killall -SIGINT ngrok && echo "ngrok terminated" || true
 
 notifications:
   webhooks:
