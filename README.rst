@@ -198,6 +198,20 @@ You can import bookmarks files that are already on your gDrive or that are share
 .. image:: /docs/importBookmarksFile.png?raw=true
     :alt: import bookmarks file
 
+---------------------
+Fix bookmark problems
+---------------------
+
+Bookmark properties out of date
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Bookmark properties can become out of date. MesFavoris is designed so that it often does not prevent the bookmark to work as expected but it's better to update bookmark properties so that they are still accurate.
+
+When you click on a bookmark, new properties are retrieved. If they are different from existing ones, a warning icon is added to the bookmark and you can update the properties using :
+
+- click 'Use new properties' on the tooltip of the *Mes Favoris* bar
+- click the 'Use new properties' icon on the toolbar
+- if the bookmark has changed too much and does not direct you to the expected place, go to the wanted place and update it (``M1+B U``)
+
 =======
 License
 =======
