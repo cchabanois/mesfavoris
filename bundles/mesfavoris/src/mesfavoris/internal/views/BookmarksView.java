@@ -10,6 +10,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.NotEnabledException;
 import org.eclipse.core.commands.NotHandledException;
 import org.eclipse.core.commands.common.NotDefinedException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -140,6 +141,7 @@ public class BookmarksView extends ViewPart {
 		bookmarkProblemsEventHandler = (event) -> {
 			refreshPropertyPage();
 			updateFormBookmarkProblems(bookmarksTreeViewer.getSelectedBookmark());
+			updateFormToolbar(bookmarksTreeViewer.getSelectedBookmark());
 		};
 	}
 
@@ -223,7 +225,6 @@ public class BookmarksView extends ViewPart {
 					public void run() {
 						try {
 							handler.handleAction(needsUpdateBookmarkProblem.get());
-							updateFormToolbar(bookmark);
 						} catch (BookmarksException e) {
 							ErrorDialog.openError(null, "Error", "Could not solve bookmark problem", e.getStatus());
 						}
@@ -231,12 +232,19 @@ public class BookmarksView extends ViewPart {
 				};
 				updateBookmarkPropertiesAction
 						.setImageDescriptor(BookmarksPlugin.getImageDescriptor(IMG_UPDATE_BOOKMARK));
+				updateBookmarkPropertiesAction.setEnabled(canBeModified(bookmark));
 				form.getToolBarManager().add(updateBookmarkPropertiesAction);
 			}
 		}
 		form.getToolBarManager().update(true);
 	}
 
+	private boolean canBeModified(final Bookmark bookmark) {
+		IStatus status = bookmarkDatabase.getBookmarksModificationValidator()
+				.validateModification(bookmarkDatabase.getBookmarksTree(), bookmark.getId());
+		return status.isOK();
+	}	
+	
 	private void addBulbDecorator(final Control control, final String tooltip) {
 		ControlDecoration dec = new ControlDecoration(control, SWT.TOP | SWT.LEFT);
 
