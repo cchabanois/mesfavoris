@@ -5,6 +5,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TreeViewer;
 
 import mesfavoris.internal.BookmarksPlugin;
+import mesfavoris.internal.IUIConstants;
 
 /**
  * An {@link Action} that will collapse all nodes in a given {@link TreeViewer}.
@@ -15,7 +16,7 @@ public class CollapseAllAction extends Action {
 	private final TreeViewer viewer;
 
 	public CollapseAllAction(TreeViewer viewer) {
-		super("Collapse All", BookmarksPlugin.getImageDescriptor("icons/elcl16/collapseall.gif"));
+		super("Collapse All", BookmarksPlugin.getImageDescriptor(IUIConstants.IMG_COLLAPSEALL));
 		setToolTipText("Collapse All");
 		setDescription("Collapse All");
 		Assert.isNotNull(viewer);

@@ -8,6 +8,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 
 import mesfavoris.internal.BookmarksPlugin;
+import mesfavoris.internal.IUIConstants;
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarksImageDescriptors;
 
@@ -24,7 +25,7 @@ public class BookmarkAnnotationImageDescriptor extends CompositeImageDescriptor 
 
 	public BookmarkAnnotationImageDescriptor(Optional<BookmarkNumber> bookmarkNumber) {
 		this.bookmarkNumber = bookmarkNumber;
-		this.base = BookmarksPlugin.getImageDescriptor("icons/bookmark-16.png");
+		this.base = BookmarksPlugin.getImageDescriptor(IUIConstants.IMG_BOOKMARK);
 		this.bookmarkNumberImageDescriptor = bookmarkNumber
 				.map(number -> NumberedBookmarksImageDescriptors.getImageDescriptor(number));
 	}

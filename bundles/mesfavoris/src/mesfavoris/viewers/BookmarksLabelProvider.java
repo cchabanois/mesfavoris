@@ -26,6 +26,7 @@ import mesfavoris.bookmarktype.IBookmarkLabelProvider;
 import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.commons.ui.viewers.StylerProvider;
 import mesfavoris.internal.BookmarksPlugin;
+import mesfavoris.internal.IUIConstants;
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarksImageDescriptors;
@@ -44,8 +45,6 @@ import mesfavoris.remote.RemoteBookmarkFolder;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 
 public class BookmarksLabelProvider extends StyledCellLabelProvider implements ILabelProvider, IStyledLabelProvider {
-	private static final String ICON_VIRTUAL_BOOKMARK_FOLDER = "icons/ovr16/virt_ovr.png";
-	private static final String ICON_BOOKMARK_LINK = "icons/ovr16/link_ovr.png";
 	private static final String ICON_ERROR = "icons/ovr16/error.png";
 	private final BookmarkDatabase bookmarkDatabase;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
@@ -163,10 +162,10 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 					.getImageDescriptor(bookmarkNumber.get());
 		}
 		if (element instanceof BookmarkLink) {
-			ImageDescriptor imageDescriptor = BookmarksPlugin.getImageDescriptor(ICON_BOOKMARK_LINK);
+			ImageDescriptor imageDescriptor = BookmarksPlugin.getImageDescriptor(IUIConstants.IMG_BOOKMARK_LINK);
 			overlayImages[IDecoration.BOTTOM_RIGHT] = imageDescriptor;
 		} else if (element instanceof VirtualBookmarkFolder) {
-			ImageDescriptor imageDescriptor = BookmarksPlugin.getImageDescriptor(ICON_VIRTUAL_BOOKMARK_FOLDER);
+			ImageDescriptor imageDescriptor = BookmarksPlugin.getImageDescriptor(IUIConstants.IMG_VIRTUAL_BOOKMARK_FOLDER);
 			overlayImages[IDecoration.BOTTOM_RIGHT] = imageDescriptor;
 		}
 		Optional<ImageDescriptor> problemImageDescriptor = getProblemOverlayImageDescriptor(bookmark.getId());

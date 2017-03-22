@@ -8,6 +8,7 @@ import org.eclipse.jface.action.Action;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.internal.BookmarksPlugin;
+import mesfavoris.internal.IUIConstants;
 import mesfavoris.internal.service.operations.RefreshRemoteFolderOperation;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
@@ -22,7 +23,7 @@ public class RefreshRemoteFoldersAction extends Action {
 	public RefreshRemoteFoldersAction(BookmarkDatabase bookmarkDatabase,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
 			IBookmarksDirtyStateTracker bookmarksDirtyStateTracker) {
-		super("&Refresh", BookmarksPlugin.imageDescriptorFromPlugin(BookmarksPlugin.PLUGIN_ID, "icons/refresh.gif"));
+		super("&Refresh", BookmarksPlugin.imageDescriptorFromPlugin(BookmarksPlugin.PLUGIN_ID, IUIConstants.IMG_REFRESH));
 		setToolTipText("Refresh bookmarks");
 		setId(ID);
 		this.bookmarkDatabase = bookmarkDatabase;

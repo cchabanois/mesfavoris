@@ -1,5 +1,7 @@
 package mesfavoris.internal.views;
 
+import static mesfavoris.internal.IUIConstants.IMG_UPDATE_BOOKMARK;
+
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -69,6 +71,7 @@ import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IImportTeamProject;
 import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.internal.BookmarksPlugin;
+import mesfavoris.internal.IUIConstants;
 import mesfavoris.internal.StatusHelper;
 import mesfavoris.internal.actions.AddToRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.CollapseAllAction;
@@ -145,7 +148,7 @@ public class BookmarksView extends ViewPart {
 		toolkit = new FormToolkit(parent.getDisplay());
 		toolkit.getHyperlinkGroup().setHyperlinkUnderlineMode(HyperlinkSettings.UNDERLINE_HOVER);
 		form = toolkit.createForm(parent);
-		icon = BookmarksPlugin.getImageDescriptor("icons/bookmarks-16.png").createImage();
+		icon = BookmarksPlugin.getImageDescriptor(IUIConstants.IMG_BOOKMARKS).createImage();
 		form.setImage(icon);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(form);
 		form.setText("Mes Favoris");
@@ -227,7 +230,7 @@ public class BookmarksView extends ViewPart {
 					}
 				};
 				updateBookmarkPropertiesAction
-						.setImageDescriptor(BookmarksPlugin.getImageDescriptor("icons/bookmark-update.png"));
+						.setImageDescriptor(BookmarksPlugin.getImageDescriptor(IMG_UPDATE_BOOKMARK));
 				form.getToolBarManager().add(updateBookmarkPropertiesAction);
 			}
 		}
