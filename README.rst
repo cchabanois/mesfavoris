@@ -202,6 +202,13 @@ You can import bookmarks files that are already on your gDrive or that are share
 Fix bookmark problems
 ---------------------
 
+.. image:: /docs/bookmarkProblemsBar.png?raw=true
+    :alt: bookmark problems
+    
+.. image:: /docs/bookmarkProblemsTooltip.png?raw=true
+    :alt: bookmark problems tooltip
+    
+
 Bookmark properties out of date
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Bookmark properties can become out of date. MesFavoris is designed so that it often does not prevent the bookmark to work as expected but it's better to update bookmark properties so that they are still accurate.
