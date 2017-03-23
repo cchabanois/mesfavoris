@@ -470,6 +470,22 @@
                   id="mesfavoris.dynamicmenu.SetNumberForBookmark">
             </dynamic>
          </menu>
+         <separator
+               name="mesfavoris.separator3"
+               visible="true">
+         </separator>
+         <menu
+               commandId="org.eclipse.ui.navigate.showInQuickMenu"
+               label="Show In">
+            <command
+                  commandId="org.eclipse.ui.navigate.showIn"
+                  style="push">
+               <parameter
+                     name="org.eclipse.ui.navigate.showIn.targetId"
+                     value="org.eclipse.ui.views.PropertySheet ">
+               </parameter>
+            </command>
+         </menu>
       </menuContribution>
       <menuContribution
             allPopups="false"
