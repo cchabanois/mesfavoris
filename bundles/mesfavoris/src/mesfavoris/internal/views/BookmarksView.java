@@ -60,6 +60,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.DrillDownAdapter;
+import org.eclipse.ui.part.IShowInSource;
+import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetPage;
@@ -476,6 +478,13 @@ public class BookmarksView extends ViewPart {
 				propertyPage = new PropertySheetPage();
 			}
 			return propertyPage;
+		}
+		if (adapter == IShowInSource.class) {
+			return new IShowInSource() {
+				public ShowInContext getShowInContext() {
+					return new ShowInContext(null, bookmarksTreeViewer.getSelection());
+				}
+			};
 		}
 		return super.getAdapter(adapter);
 	}
