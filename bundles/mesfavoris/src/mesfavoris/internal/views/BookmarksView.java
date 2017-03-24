@@ -447,6 +447,8 @@ public class BookmarksView extends ViewPart {
 		if (bookmarkProblemsTooltip == null) {
 			Control control = Stream.of(form.getHead().getChildren()).filter(child -> child instanceof CLabel)
 					.findFirst().get();
+			// bug in form ? Without this line, background for the message is sometimes gray
+			control.setBackground(getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_TRANSPARENT));
 			bookmarkProblemsTooltip = new BookmarkProblemsTooltip(toolkit, control, ToolTip.NO_RECREATE,
 					bookmarkProblems, bookmarkProblemHandlers) {
 				public Point getLocation(Point tipSize, Event event) {
