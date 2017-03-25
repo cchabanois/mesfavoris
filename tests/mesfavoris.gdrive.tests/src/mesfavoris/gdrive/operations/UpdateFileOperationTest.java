@@ -105,7 +105,7 @@ public class UpdateFileOperationTest {
 		// "modified" by gdrive after creation.
 		updateFileOperation.updateFile(file.getId(), "first modification".getBytes(Charsets.UTF_8), null,
 				new NullProgressMonitor());
-		TimeUnit.SECONDS.sleep(11);
+		TimeUnit.SECONDS.sleep(14);
 		updateFileOperation.updateFile(file.getId(), "second modification".getBytes(Charsets.UTF_8), null,
 				new NullProgressMonitor());
 
