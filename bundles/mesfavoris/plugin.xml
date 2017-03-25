@@ -589,6 +589,23 @@
                </iterate>
             </with>
          </activeWhen>
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <iterate>
+                  <or>
+                     <test
+                           property="mesfavoris.canBeModified"
+                           value="true">
+                     </test>
+                     <test
+                           property="mesfavoris.isRemoteBookmarkFolder"
+                           value="true">
+                     </test>
+                  </or>
+               </iterate>
+            </with>
+         </enabledWhen>
       </handler>
       <handler
             class="mesfavoris.internal.handlers.NewBookmarkFolderHandler"
