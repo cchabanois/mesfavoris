@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
+import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
@@ -25,6 +26,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.osgi.framework.Bundle;
 
 import com.google.common.collect.ImmutableMap;
@@ -34,9 +36,12 @@ import mesfavoris.MesFavoris;
 import mesfavoris.commons.ui.wizards.datatransfer.BundleProjectImportOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
+import mesfavoris.model.BookmarksTree;
 import mesfavoris.tests.commons.ui.BookmarksViewDriver;
 import mesfavoris.tests.commons.waits.Waiter;
+import mesfavoris.texteditor.TextEditorBookmarkProperties;
 
+@RunWith(SWTBotJunit4ClassRunner.class)
 public class BookmarksViewTest {
 	private static final String PROJECT_NAME = "BookmarksViewTest";
 	private SWTWorkbenchBot bot;
@@ -80,33 +85,77 @@ public class BookmarksViewTest {
 		Bookmark bookmark = bookmark("bookmark").withProperty(Bookmark.PROPERTY_NAME, "bookmark").build();
 
 		// When
-		addBookmark(MesFavoris.getBookmarkDatabase().getBookmarksTree().getRootFolder().getId(), bookmark);
+		addBookmark(getBookmarksRootFolderId(), bookmark);
 
 		// Then
-		Waiter.waitUntil("Cannot find new bookmark", () -> bookmarksViewDriver.tree().getTreeItem("bookmark"));
+		waitUntil("Cannot find new bookmark", () -> bookmarksViewDriver.tree().getTreeItem("bookmark"));
 	}
 
 	@Test
 	public void testGotoBookmarkOnDoubleClick() throws Exception {
 		// Given
-		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(Bookmark.PROPERTY_NAME, "bookmark", PROP_WORKSPACE_PATH,
-				"/BookmarksViewTest/src/main/java/org/apache/commons/cli/DefaultParser.java",
+		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(Bookmark.PROPERTY_NAME, "bookmark",
+				PROP_WORKSPACE_PATH, "/BookmarksViewTest/src/main/java/org/apache/commons/cli/DefaultParser.java",
 				PROP_LINE_CONTENT,
 				"for (Enumeration<?> enumeration = properties.propertyNames(); enumeration.hasMoreElements();)"));
-		addBookmark(MesFavoris.getBookmarkDatabase().getBookmarksTree().getRootFolder().getId(), bookmark);
-		SWTBotTreeItem bookmarkTreeItem = Waiter.waitUntil("Cannot find new bookmark", () -> bookmarksViewDriver.tree().getTreeItem("bookmark"));
-		
+		addBookmark(getBookmarksRootFolderId(), bookmark);
+		SWTBotTreeItem bookmarkTreeItem = waitUntil("Cannot find new bookmark",
+				() -> bookmarksViewDriver.tree().getTreeItem("bookmark"));
+
 		// When
 		bookmarkTreeItem.doubleClick();
-		
+
 		// Then
-		Waiter.waitUntil("cannot go to bookmark", ()->"DefaultParser.java".equals(getActivePart().getTitle()));
+		waitUntil("cannot go to bookmark", () -> "DefaultParser.java".equals(getActivePart().getTitle()));
 		IWorkbenchPart workbenchPart = getActivePart();
-		ITextSelection selection = (ITextSelection)getSelection(workbenchPart);
+		ITextSelection selection = (ITextSelection) getSelection(workbenchPart);
 		assertEquals("DefaultParser.java", workbenchPart.getTitle());
 		assertEquals(146, selection.getStartLine());
 	}
-	
+
+	@Test
+	public void testBookmarkProblemAddedOnDoubleClick() throws Exception {
+		// Given
+		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(Bookmark.PROPERTY_NAME, "bookmark",
+				PROP_WORKSPACE_PATH, "/BookmarksViewTest/src/main/java/org/apache/commons/cli/DefaultParser.java",
+				PROP_LINE_CONTENT,
+				"for (Enumeration<?> enumeration = properties.propertyNames(); enumeration.hasMoreElements();)"));
+		addBookmark(getBookmarksRootFolderId(), bookmark);
+		SWTBotTreeItem bookmarkTreeItem = waitUntil("Cannot find new bookmark",
+				() -> bookmarksViewDriver.tree().getTreeItem("bookmark"));
+
+		// When
+		bookmarkTreeItem.doubleClick();
+
+		// Then
+		waitUntil("There should be a bookmark problem",
+				() -> "One bookmark problem detected".equals(bookmarksViewDriver.form().getMessage()));
+	}
+
+	@Test
+	public void testUpdateBookmarkPropertiesAction() throws Exception {
+		// Given
+		BookmarkId bookmarkId = new BookmarkId();
+		Bookmark bookmark = new Bookmark(bookmarkId, ImmutableMap.of(Bookmark.PROPERTY_NAME, "bookmark",
+				PROP_WORKSPACE_PATH, "/BookmarksViewTest/src/main/java/org/apache/commons/cli/DefaultParser.java",
+				PROP_LINE_CONTENT,
+				"for (Enumeration<?> enumeration = properties.propertyNames(); enumeration.hasMoreElements();)"));
+		addBookmark(getBookmarksRootFolderId(), bookmark);
+		SWTBotTreeItem bookmarkTreeItem = Waiter.waitUntil("Cannot find new bookmark",
+				() -> bookmarksViewDriver.tree().getTreeItem("bookmark"));
+		bookmarkTreeItem.doubleClick();
+		waitUntil("There should be a bookmark problem",
+				() -> "One bookmark problem detected".equals(bookmarksViewDriver.form().getMessage()));
+
+		// When
+		bookmarksViewDriver.form().toolbarButtonWithTooltip("Use new properties", 0).click();
+
+		// Then
+		waitUntil("There should be no bookmark problem", () -> bookmarksViewDriver.form().getMessage() == null);
+		assertEquals("146", getBookmarksTree().getBookmark(bookmarkId)
+				.getPropertyValue(TextEditorBookmarkProperties.PROP_LINE_NUMBER));
+	}
+
 	private static void importProjectFromTemplate(String projectName, String templateName)
 			throws InvocationTargetException, InterruptedException {
 		Bundle bundle = Platform.getBundle("mesfavoris.tests");
@@ -121,10 +170,18 @@ public class BookmarksViewTest {
 	private IWorkbenchPart getActivePart() {
 		return UIThreadRunnable
 				.syncExec(() -> PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().getActivePart());
-	}	
-	
+	}
+
 	private ISelection getSelection(IWorkbenchPart part) {
 		return UIThreadRunnable.syncExec(() -> part.getSite().getSelectionProvider().getSelection());
-	}	
-	
+	}
+
+	private BookmarkId getBookmarksRootFolderId() {
+		return getBookmarksTree().getRootFolder().getId();
+	}
+
+	private BookmarksTree getBookmarksTree() {
+		return MesFavoris.getBookmarkDatabase().getBookmarksTree();
+	}
+
 }
