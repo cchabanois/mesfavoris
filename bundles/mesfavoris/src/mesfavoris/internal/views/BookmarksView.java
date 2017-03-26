@@ -141,9 +141,9 @@ public class BookmarksView extends ViewPart {
 		this.bookmarkProblems = BookmarksPlugin.getDefault().getBookmarkProblems();
 		this.bookmarkProblemHandlers = BookmarksPlugin.getDefault().getBookmarkProblemHandlers();
 		bookmarkProblemsEventHandler = (event) -> {
-			refreshPropertyPage();
-			updateFormBookmarkProblems(bookmarksTreeViewer.getSelectedBookmark());
 			updateFormToolbar(bookmarksTreeViewer.getSelectedBookmark());
+			updateFormBookmarkProblems(bookmarksTreeViewer.getSelectedBookmark());
+			refreshPropertyPage();
 		};
 	}
 

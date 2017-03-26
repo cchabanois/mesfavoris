@@ -38,7 +38,6 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.tests.commons.ui.BookmarksViewDriver;
-import mesfavoris.tests.commons.waits.Waiter;
 import mesfavoris.texteditor.TextEditorBookmarkProperties;
 
 @RunWith(SWTBotJunit4ClassRunner.class)
@@ -141,7 +140,7 @@ public class BookmarksViewTest {
 				PROP_LINE_CONTENT,
 				"for (Enumeration<?> enumeration = properties.propertyNames(); enumeration.hasMoreElements();)"));
 		addBookmark(getBookmarksRootFolderId(), bookmark);
-		SWTBotTreeItem bookmarkTreeItem = Waiter.waitUntil("Cannot find new bookmark",
+		SWTBotTreeItem bookmarkTreeItem = waitUntil("Cannot find new bookmark",
 				() -> bookmarksViewDriver.tree().getTreeItem("bookmark"));
 		bookmarkTreeItem.doubleClick();
 		waitUntil("There should be a bookmark problem",
@@ -149,7 +148,7 @@ public class BookmarksViewTest {
 
 		// When
 		bookmarksViewDriver.form().toolbarButtonWithTooltip("Use new properties", 0).click();
-
+		
 		// Then
 		waitUntil("There should be no bookmark problem", () -> bookmarksViewDriver.form().getMessage() == null);
 		assertEquals("146", getBookmarksTree().getBookmark(bookmarkId)
