@@ -31,7 +31,9 @@ public class ExtendedBookmarksTreeContentProvider extends BookmarksTreeContentPr
 		super(bookmarkDatabase);
 		this.virtualBookmarkFolders = virtualBookmarkFolders;
 		this.listener = virtualBookmarkFolder -> viewer.getControl().getDisplay().asyncExec(() -> {
-			viewer.refresh(); // virtualBookmarkFolder);
+			if (!viewer.getControl().isDisposed()) {
+				viewer.refresh(); // virtualBookmarkFolder);
+			}
 		});
 	}
 
