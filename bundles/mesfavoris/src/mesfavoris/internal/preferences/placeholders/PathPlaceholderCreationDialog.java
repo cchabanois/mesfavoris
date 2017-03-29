@@ -92,7 +92,7 @@ public class PathPlaceholderCreationDialog extends StatusDialog {
 		if (initialName.isPresent()) {
 			nameText.setText(initialName.get());
 		}
-		nameText.setEditable(initialName.isPresent());
+		nameText.setEditable(!initialName.isPresent());
 		nameText.addModifyListener(e -> updateStatus());
 
 		createEmptySpace(inner, 1);
