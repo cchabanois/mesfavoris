@@ -1,6 +1,7 @@
 package mesfavoris.gdrive;
 
 import java.io.File;
+import java.time.Duration;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -12,6 +13,7 @@ import mesfavoris.gdrive.connection.GDriveConnectionManager;
 import mesfavoris.gdrive.mappings.BookmarkMappingsPersister;
 import mesfavoris.gdrive.mappings.BookmarkMappingsStore;
 import mesfavoris.model.BookmarkDatabase;
+import static mesfavoris.gdrive.preferences.IPreferenceConstants.POLL_CHANGES_INTERVAL_PREF;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -45,7 +47,8 @@ public class Activator extends AbstractUIPlugin {
 		bookmarkMappingsStore.init();
 		bookmarkDatabase = MesFavoris.getBookmarkDatabase();
 		bookmarkDatabase.addListener(bookmarkMappingsStore);
-		bookmarksFileChangeManager = new BookmarksFileChangeManager(gDriveConnectionManager, bookmarkMappingsStore);
+		bookmarksFileChangeManager = new BookmarksFileChangeManager(gDriveConnectionManager, bookmarkMappingsStore,
+				() -> Duration.ofSeconds(getPreferenceStore().getInt(POLL_CHANGES_INTERVAL_PREF)));
 		bookmarksFileChangeManager.init();
 	}
 
@@ -95,5 +98,5 @@ public class Activator extends AbstractUIPlugin {
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
-	
+
 }

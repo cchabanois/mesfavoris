@@ -145,5 +145,11 @@
          </labelProvider>
       </bookmarkType>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="mesfavoris.gdrive.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>

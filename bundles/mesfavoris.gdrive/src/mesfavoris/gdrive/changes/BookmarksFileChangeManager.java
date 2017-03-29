@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.inject.Provider;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.IStatus;
@@ -40,21 +42,21 @@ public class BookmarksFileChangeManager {
 	private final GDriveConnectionManager gdriveConnectionManager;
 	private final IConnectionListener connectionListener = new ConnectionListener();
 	private final BookmarksFileChangeJob job = new BookmarksFileChangeJob();
-	private final Duration pollDelay;
+	private final Provider<Duration> pollDelayProvider;
 	private final IBookmarkMappings bookmarkMappings;
 	private final ListenerList connectionListenerList = new ListenerList();
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 	
 	public BookmarksFileChangeManager(GDriveConnectionManager gdriveConnectionManager,
 			IBookmarkMappings bookmarkMappings) {
-		this(gdriveConnectionManager, bookmarkMappings, DEFAULT_POLL_DELAY);
+		this(gdriveConnectionManager, bookmarkMappings, ()->DEFAULT_POLL_DELAY);
 	}
 	
 	public BookmarksFileChangeManager(GDriveConnectionManager gdriveConnectionManager,
-			IBookmarkMappings bookmarkMappings, Duration polldelay) {
+			IBookmarkMappings bookmarkMappings, Provider<Duration> pollDelayProvider) {
 		this.gdriveConnectionManager = gdriveConnectionManager;
 		this.bookmarkMappings = bookmarkMappings;
-		this.pollDelay = polldelay;
+		this.pollDelayProvider = pollDelayProvider;
 	}
 
 	public void init() {
@@ -146,7 +148,7 @@ public class BookmarksFileChangeManager {
 				// Do not display a dialog
 				return Status.OK_STATUS;
 			} finally {
-				schedule(pollDelay.toMillis());
+				schedule(pollDelayProvider.get().toMillis());
 			}
 		}
 

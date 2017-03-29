@@ -53,7 +53,7 @@ public class GDriveRemoteBookmarksStoreTest {
 	public void setUp() throws Exception {
 		bookmarkMappingsStore = new BookmarkMappingsStore(new BookmarkMappingsPersister(temporaryFolder.newFile()));
 		bookmarksFileChangeManager = new BookmarksFileChangeManager(gDriveConnectionRule.getGDriveConnectionManager(),
-				bookmarkMappingsStore, Duration.ofSeconds(5));
+				bookmarkMappingsStore, ()->Duration.ofSeconds(5));
 		gDriveRemoteBookmarksStore = new GDriveRemoteBookmarksStore(eventBroker,
 				gDriveConnectionRule.getGDriveConnectionManager(), bookmarkMappingsStore, bookmarksFileChangeManager);
 		when(remoteBookmarksStoreDescriptor.getId()).thenReturn(ID);
