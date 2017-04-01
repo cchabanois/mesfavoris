@@ -119,8 +119,7 @@ A bookmark can be of several types. For exemple, it can contain properties from 
 The available bookmarks types are :
 
 - file/folder bookmark : bookmark to a resource inside the eclipse workspace
-- external file/folder bookmark : bookmark to a resource outside the eclipse workspace
-You can drap & drop file or folder to the bookmarks view
+- external file/folder bookmark : bookmark to a resource outside the eclipse workspace. You can drap & drop file or folder to the bookmarks view
 - text editor bookmark : bookmark to a specific line in a text file (file can be outside eclipse workspace)
 - java bookmark : either to a type member or to a specific line in a java file
 - url bookmark : bookmark to an url. You can copy an url from your browser and paste it into the *Mes Favoris* view
@@ -235,6 +234,8 @@ License
 Licensed under the `EPL License <http://www.eclipse.org/legal/epl-v10.html>`_
 
 Some icons by Yusuke Kamiyamane. Licensed under a Creative Commons Attribution 3.0 License.
+
+Logo is adapted from https://commons.wikimedia.org/wiki/File:Spin_(Bookmark)1.jpg by sirooziya [GFDL (http://www.gnu.org/copyleft/fdl.html) or CC BY-SA 3.0 (http://creativecommons.org/licenses/by-sa/3.0)
 
 .. |build| image:: https://travis-ci.org/cchabanois/mesfavoris.svg?branch=master
     :target: https://travis-ci.org/cchabanois/mesfavoris
