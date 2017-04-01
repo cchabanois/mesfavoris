@@ -226,7 +226,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 	private void handleAddAllButtonSelected() {
 		CollapseBookmarksOperation operation = new CollapseBookmarksOperation(bookmarkDatabase, pathPlaceholders,
 				pathPropertyNames);
-		List<BookmarkId> allBookmarkIds = getAllBookmarksFromTable(collapsableBookmarksViewer);
+		List<BookmarkId> allBookmarkIds = getModifiableBookmarks(getAllBookmarksFromTable(collapsableBookmarksViewer));
 		try {
 			operation.collapse(allBookmarkIds, pathPlaceholderName);
 			refresh();
@@ -254,7 +254,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 	private void handleRemoveAllButtonSelected() {
 		ExpandBookmarksOperation operation = new ExpandBookmarksOperation(bookmarkDatabase, pathPlaceholders,
 				pathPropertyNames);
-		List<BookmarkId> allBookmarkIds = getAllBookmarksFromTable(collapsedBookmarksViewer);
+		List<BookmarkId> allBookmarkIds = getModifiableBookmarks(getAllBookmarksFromTable(collapsedBookmarksViewer));
 		try {
 			operation.expand(allBookmarkIds);
 			refresh();
@@ -338,8 +338,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 
 			List<Bookmark> collapsedBookmarks = StreamSupport
 					.stream(bookmarkDatabase.getBookmarksTree().spliterator(), false)
-					.filter(bookmark -> hasCollapsedProperty(bookmark))
-					.collect(Collectors.toList());
+					.filter(bookmark -> hasCollapsedProperty(bookmark)).collect(Collectors.toList());
 
 			return collapsedBookmarks.toArray();
 		}
