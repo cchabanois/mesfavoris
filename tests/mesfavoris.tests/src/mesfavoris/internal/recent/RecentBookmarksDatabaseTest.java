@@ -100,7 +100,7 @@ public class RecentBookmarksDatabaseTest {
 	@Test
 	public void testOnlyKeepRecentBookmarks() throws BookmarksException, InterruptedException {
 		// Given
-		addBookmark(rootBookmarkId, "bookmark1", Instant.now().minus(recentDuration).plus(Duration.ofSeconds(2)));
+		addBookmark(rootBookmarkId, "bookmark1", Instant.now().minus(recentDuration).plus(Duration.ofSeconds(1)));
 		assertThat(recentBookmarksDatabase.getRecentBookmarks().getRecentBookmarks(10))
 				.containsExactly(new BookmarkId("bookmark1"));
 
