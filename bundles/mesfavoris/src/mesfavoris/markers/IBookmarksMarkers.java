@@ -10,5 +10,7 @@ public interface IBookmarksMarkers {
 	IMarker findMarker(BookmarkId bookmarkId, IProgressMonitor monitor);
 
 	void refreshMarker(BookmarkId bookmarkId, IProgressMonitor monitor);
+	
+	void deleteMarker(BookmarkId bookmarkId, IProgressMonitor monitor);
 
 }

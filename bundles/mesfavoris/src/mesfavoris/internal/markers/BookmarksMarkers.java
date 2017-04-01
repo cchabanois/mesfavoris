@@ -129,7 +129,8 @@ public class BookmarksMarkers implements IBookmarksMarkers {
 		}
 	}
 
-	private void deleteMarker(BookmarkId bookmarkId, IProgressMonitor monitor) {
+	@Override
+	public void deleteMarker(BookmarkId bookmarkId, IProgressMonitor monitor) {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, "Deleting bookmark marker", 100);
 		IMarker marker = findMarker(bookmarkId, subMonitor.newChild(50));
 		if (marker == null) {

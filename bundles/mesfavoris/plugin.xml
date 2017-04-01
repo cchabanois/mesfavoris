@@ -106,6 +106,13 @@
             id="mesfavoris.command.ViewPlaceholders"
             name="View Placeholders...">
       </command>
+      <command
+            categoryId="mesfavoris.category"
+            defaultHandler="mesfavoris.internal.handlers.DeleteBookmarkMarkerHandler"
+            description="Delete Bookmark Marker"
+            id="mesfavoris.command.deleteBookmarkMarker"
+            name="Delete Marker">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -470,6 +477,10 @@
                   id="mesfavoris.dynamicmenu.SetNumberForBookmark">
             </dynamic>
          </menu>
+         <command
+               commandId="mesfavoris.command.deleteBookmarkMarker"
+               style="push">
+         </command>
          <separator
                name="mesfavoris.separator3"
                visible="true">
