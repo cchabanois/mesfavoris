@@ -15,6 +15,10 @@
                icon="icons/import_obj.gif">
          </importTeamProject>
          <propertiesProvider
+               class="mesfavoris.git.CommitBookmarkPropertiesProvider"
+               priority="10">
+         </propertiesProvider>
+         <propertiesProvider
                class="mesfavoris.git.CommitEditorBookmarkPropertiesProvider"
                priority="10">
          </propertiesProvider>
