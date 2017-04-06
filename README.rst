@@ -26,6 +26,14 @@ Features
     :align: center
     :alt: Screenshot
 
+============
+Presentation
+============
+
+.. image:: /docs/youTubePresentation.png?raw=true
+    :align: center
+    :alt: YouTube presentation
+    :target: https://youtu.be/sbpUu-ABFKc
 
 ============
 Installation
