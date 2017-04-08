@@ -22,8 +22,8 @@ public class UrlBookmarkPropertiesProviderTest {
 
 	@Test
 	public void testUrlBookmarkPropertiesProvider() throws Exception {
-		assertTitleAndFavIcon("Test In Progress Plugin - Jenkins - Jenkins Wiki", "jenkins-favicon.ico",
-				"https://wiki.jenkins-ci.org/display/JENKINS/Test+In+Progress+Plugin");
+		assertTitleAndFavIcon("GitHub - cchabanois/mesfavoris: Bookmarks eclipse plugin", "fluidicon.png",
+				"https://github.com/cchabanois/mesfavoris");
 	}
 
 	@Test
