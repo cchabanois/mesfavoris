@@ -36,6 +36,8 @@ import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -132,7 +134,8 @@ public class BookmarksView extends ViewPart {
 	private Image icon;
 	private PropertySheetPage propertyPage;
 	private final IBookmarksListener bookmarksListener = (modifications) -> refreshPropertyPage();
-
+	private final ProxySelectionProvider proxySelectionProvider = new ProxySelectionProvider();
+	
 	public BookmarksView() {
 		this.bookmarkDatabase = BookmarksPlugin.getDefault().getBookmarkDatabase();
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
@@ -166,7 +169,8 @@ public class BookmarksView extends ViewPart {
 		makeActions();
 		hookContextMenu();
 		contributeToActionBars();
-		getSite().setSelectionProvider(bookmarksTreeViewer);
+		getSite().setSelectionProvider(proxySelectionProvider);
+		proxySelectionProvider.setCurrentSelectionProvider(bookmarksTreeViewer);
 		toggleLinkAction.init();
 		restoreState(memento);
 		bookmarkDatabase.addListener(bookmarksListener);
@@ -188,6 +192,19 @@ public class BookmarksView extends ViewPart {
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(bookmarkCommentViewer);
 		addBulbDecorator(bookmarkCommentViewer.getTextWidget(), "Content assist available");
 		bookmarkCommentViewer.setBookmark(null);
+		bookmarkCommentViewer.getSourceViewer().getControl().addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				proxySelectionProvider.setCurrentSelectionProvider(bookmarksTreeViewer);
+				
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				proxySelectionProvider.setCurrentSelectionProvider(bookmarkCommentViewer.getSourceViewer());
+			}
+		});
 	}
 
 	private void updateFormToolbar(final Bookmark bookmark) {
