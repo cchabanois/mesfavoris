@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Url
 Bundle-SymbolicName: mesfavoris.url;singleton:=true
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: mesfavoris.url.Activator
 Require-Bundle: org.eclipse.core.runtime,
  mesfavoris,
@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.swt;bundle-version="3.103.1",
  org.eclipse.jface;bundle-version="3.10.1",
  org.eclipse.ui;bundle-version="3.106.0",
- mesfavoris.commons;bundle-version="1.4.0"
+ mesfavoris.commons;bundle-version="1.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Mes Favoris
