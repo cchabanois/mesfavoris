@@ -33,7 +33,7 @@ public class GDriveBookmarkFolderLabelProvider extends BookmarkFolderLabelProvid
 		if (!bookmarkMapping.isPresent()) {
 			return styledString;
 		}
-		String sharingUser = bookmarkMapping.get().getProperties().get("sharingUser");
+		String sharingUser = bookmarkMapping.get().getProperties().get(BookmarkMapping.PROP_SHARING_USER);
 		if (sharingUser == null) {
 			return styledString;
 		}

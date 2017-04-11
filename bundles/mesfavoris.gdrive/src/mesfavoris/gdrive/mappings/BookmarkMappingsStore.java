@@ -38,7 +38,6 @@ import mesfavoris.model.modification.BookmarksModification;
  *
  */
 public class BookmarkMappingsStore implements IBookmarksListener, IBookmarkMappings {
-	private static final String PROP_SHARING_USER = "sharingUser";
 	private final IBookmarkMappingsPersister bookmarkMappingsPersister;
 	private final Map<BookmarkId, BookmarkMapping> mappings = new ConcurrentHashMap<>();
 	private final SaveJob saveJob = new SaveJob();
@@ -48,8 +47,8 @@ public class BookmarkMappingsStore implements IBookmarksListener, IBookmarkMappi
 		this.bookmarkMappingsPersister = bookmarkMappingsPersister;
 	}
 
-	public void add(BookmarkId bookmarkFolderId, File file) {
-		if (add(new BookmarkMapping(bookmarkFolderId, file.getId(), getProperties(file)))) {
+	public void add(BookmarkId bookmarkFolderId, String fileId,  Map<String, String> properties) {
+		if (add(new BookmarkMapping(bookmarkFolderId, fileId, properties))) {
 			fireMappingAdded(bookmarkFolderId);
 			saveJob.schedule();
 		}
@@ -63,27 +62,15 @@ public class BookmarkMappingsStore implements IBookmarksListener, IBookmarkMappi
 		mappings.replace(bookmarkMapping.getBookmarkFolderId(), bookmarkMapping);
 	}
 
-	public void update(File file) {
-		Optional<BookmarkMapping> mapping = getMapping(file.getId());
+	public void update(String fileId, Map<String,String> properties) {
+		Optional<BookmarkMapping> mapping = getMapping(fileId);
 		if (!mapping.isPresent()) {
 			return;
 		}
-		Map<String, String> properties = getProperties(file);
 		if (!properties.equals(mapping.get().getProperties())) {
 			replace(new BookmarkMapping(mapping.get().getBookmarkFolderId(), mapping.get().getFileId(), properties));
 			saveJob.schedule();
 		}
-	}
-
-	private Map<String, String> getProperties(File file) {
-		Map<String, String> properties = new HashMap<>();
-		if (Boolean.FALSE.equals(file.getEditable())) {
-			properties.put(PROP_READONLY, Boolean.TRUE.toString());
-		}
-		if (file.getSharingUser() != null) {
-			properties.put(PROP_SHARING_USER, file.getSharingUser().getDisplayName());
-		}
-		return properties;
 	}
 
 	public Optional<BookmarkMapping> getMapping(BookmarkId bookmarkFolderId) {

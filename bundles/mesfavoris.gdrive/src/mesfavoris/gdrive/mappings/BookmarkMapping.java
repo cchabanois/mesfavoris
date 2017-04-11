@@ -5,11 +5,15 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 
 import mesfavoris.model.BookmarkId;
+import mesfavoris.remote.RemoteBookmarkFolder;
 
 public class BookmarkMapping {
 	private final BookmarkId bookmarkFolderId;
 	private final String fileId;
 	private final Map<String,String> properties;
+	public static final String PROP_SHARING_USER = "sharingUser";
+	public static final String PROP_BOOKMARKS_COUNT = RemoteBookmarkFolder.PROP_BOOKMARKS_COUNT;
+	public static final String PROP_READONLY = RemoteBookmarkFolder.PROP_READONLY;
 	
 	public BookmarkMapping(BookmarkId bookmarkFolderId, String fileId, Map<String,String> properties) {
 		this.bookmarkFolderId = bookmarkFolderId;

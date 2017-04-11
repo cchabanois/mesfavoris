@@ -10,7 +10,9 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import com.google.api.services.drive.Drive;
 
 import mesfavoris.BookmarksException;
+import mesfavoris.gdrive.mappings.BookmarkMappingPropertiesProvider;
 import mesfavoris.gdrive.mappings.BookmarkMappingsStore;
+import mesfavoris.gdrive.mappings.IBookmarkMappingPropertiesProvider;
 import mesfavoris.gdrive.operations.DownloadHeadRevisionOperation.FileContents;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
@@ -22,13 +24,15 @@ public class ImportBookmarkFileOperation extends AbstractGDriveOperation {
 	private final BookmarkMappingsStore bookmarkMappingsStore;
 	private final IBookmarksService bookmarksService;
 	private final Optional<String> applicationFolderId;
-	
+	private final IBookmarkMappingPropertiesProvider bookmarkMappingPropertiesProvider;
+
 	public ImportBookmarkFileOperation(Drive drive, BookmarkMappingsStore bookmarkMappingsStore,
 			IBookmarksService bookmarksService, Optional<String> applicationFolderId) {
 		super(drive);
 		this.bookmarkMappingsStore = bookmarkMappingsStore;
 		this.bookmarksService = bookmarksService;
 		this.applicationFolderId = applicationFolderId;
+		this.bookmarkMappingPropertiesProvider = new BookmarkMappingPropertiesProvider();
 	}
 
 	public void importBookmarkFile(BookmarkId parentId, String fileId, IProgressMonitor monitor)
@@ -38,7 +42,7 @@ public class ImportBookmarkFileOperation extends AbstractGDriveOperation {
 			if (applicationFolderId.isPresent()) {
 				// add it to the application folder
 				AddFileToFolderOperation addFileToFolderOperation = new AddFileToFolderOperation(drive);
-				addFileToFolderOperation.addToFolder(applicationFolderId.get(), fileId);			
+				addFileToFolderOperation.addToFolder(applicationFolderId.get(), fileId);
 			}
 			DownloadHeadRevisionOperation downloadFileOperation = new DownloadHeadRevisionOperation(drive);
 			FileContents contents = downloadFileOperation.downloadFile(fileId, new SubProgressMonitor(monitor, 80));
@@ -46,8 +50,9 @@ public class ImportBookmarkFileOperation extends AbstractGDriveOperation {
 			BookmarksTree bookmarksTree = deserializer.deserialize(
 					new StringReader(new String(contents.getFileContents(), "UTF-8")),
 					new SubProgressMonitor(monitor, 20));
-			bookmarksService.addBookmarksTree(parentId, bookmarksTree,
-					newBookmarksTree -> bookmarkMappingsStore.add(bookmarksTree.getRootFolder().getId(), contents.getFile()));
+			bookmarksService.addBookmarksTree(parentId, bookmarksTree, newBookmarksTree -> bookmarkMappingsStore.add(
+					bookmarksTree.getRootFolder().getId(), contents.getFile().getId(),
+					bookmarkMappingPropertiesProvider.getBookmarkMappingProperties(contents.getFile(), bookmarksTree)));
 		} finally {
 			monitor.done();
 		}

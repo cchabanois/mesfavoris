@@ -23,7 +23,9 @@ import mesfavoris.gdrive.changes.BookmarksFileChangeManager;
 import mesfavoris.gdrive.changes.IBookmarksFileChangeListener;
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
 import mesfavoris.gdrive.connection.IConnectionListener;
+import mesfavoris.gdrive.mappings.BookmarkMappingPropertiesProvider;
 import mesfavoris.gdrive.mappings.BookmarkMappingsStore;
+import mesfavoris.gdrive.mappings.IBookmarkMappingPropertiesProvider;
 import mesfavoris.gdrive.mappings.IBookmarkMappingsListener;
 import mesfavoris.gdrive.operations.CreateFileOperation;
 import mesfavoris.gdrive.operations.DownloadHeadRevisionOperation;
@@ -49,6 +51,7 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 	private final BookmarkMappingsStore bookmarkMappingsStore;
 	private final BookmarksFileChangeManager bookmarksFileChangeManager;
 	private final Duration durationForNewRevision;
+	private final IBookmarkMappingPropertiesProvider bookmarkMappingPropertiesProvider;
 
 	public GDriveRemoteBookmarksStore() {
 		this((IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class),
@@ -94,6 +97,7 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 				postRemoteBookmarksTreeChanged(bookmarkFolderId);
 			}
 		});
+		this.bookmarkMappingPropertiesProvider = new BookmarkMappingPropertiesProvider();
 	}
 
 	@Override
@@ -131,8 +135,10 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 			com.google.api.services.drive.model.File file = createFileOperation.createFile(bookmarkDirId,
 					bookmarkFolder.getPropertyValue(Bookmark.PROPERTY_NAME), content,
 					new SubProgressMonitor(monitor, 80));
-			bookmarkMappingsStore.add(bookmarkFolder.getId(), file);
-			return new RemoteBookmarksTree(this, bookmarksTree.subTree(bookmarkFolderId), file.getEtag());
+			BookmarksTree bookmarkFolderTree = bookmarksTree.subTree(bookmarkFolderId);
+			bookmarkMappingsStore.add(bookmarkFolder.getId(), file.getId(),
+					bookmarkMappingPropertiesProvider.getBookmarkMappingProperties(file, bookmarkFolderTree));
+			return new RemoteBookmarksTree(this, bookmarkFolderTree, file.getEtag());
 		} finally {
 			monitor.done();
 		}
@@ -195,12 +201,13 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 			monitor.beginTask("Loading bookmark folder", 100);
 			DownloadHeadRevisionOperation downloadFileOperation = new DownloadHeadRevisionOperation(drive);
 			FileContents contents = downloadFileOperation.downloadFile(fileId, new SubProgressMonitor(monitor, 80));
-			bookmarkMappingsStore.update(contents.getFile());
 			IBookmarksTreeDeserializer deserializer = new BookmarksTreeJsonDeserializer();
-			BookmarksTree bookmarkFolder = deserializer.deserialize(
+			BookmarksTree bookmarkFolderTree = deserializer.deserialize(
 					new StringReader(new String(contents.getFileContents(), "UTF-8")),
 					new SubProgressMonitor(monitor, 20));
-			return new RemoteBookmarksTree(this, bookmarkFolder, contents.getFile().getEtag());
+			bookmarkMappingsStore.update(contents.getFile().getId(),
+					bookmarkMappingPropertiesProvider.getBookmarkMappingProperties(contents.getFile(), bookmarkFolderTree));
+			return new RemoteBookmarksTree(this, bookmarkFolderTree, contents.getFile().getEtag());
 		} finally {
 			monitor.done();
 		}
@@ -222,8 +229,10 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 			byte[] content = serializeBookmarkFolder(bookmarksTree, bookmarkFolderId,
 					new SubProgressMonitor(monitor, 20));
 			File file = updateFileOperation.updateFile(fileId, content, etag, new SubProgressMonitor(monitor, 80));
-			bookmarkMappingsStore.update(file);
-			return new RemoteBookmarksTree(this, bookmarksTree.subTree(bookmarkFolderId), file.getEtag());
+			BookmarksTree bookmarkFolderTree = bookmarksTree.subTree(bookmarkFolderId);
+			bookmarkMappingsStore.update(file.getId(),
+					bookmarkMappingPropertiesProvider.getBookmarkMappingProperties(file, bookmarkFolderTree));
+			return new RemoteBookmarksTree(this, bookmarkFolderTree, file.getEtag());
 		} catch (GoogleJsonResponseException e) {
 			if (e.getStatusCode() == 412) {
 				// Precondition Failed

@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -39,10 +40,12 @@ public class BookmarksFileChangeManagerTest {
 	@Before
 	public void setUp() throws Exception {
 		bookmarkMappings = new BookmarkMappingsStore(mock(IBookmarkMappingsPersister.class));
-		bookmarkMappings.add(new BookmarkId("bookmarkFolder1"), createFile("bookmarks1", "bookmarks for folder1"));
-		bookmarkMappings.add(new BookmarkId("bookmarkFolder2"), createFile("bookmarks1", "bookmarks for folder2"));
+		bookmarkMappings.add(new BookmarkId("bookmarkFolder1"),
+				createFile("bookmarks1", "bookmarks for folder1").getId(), Collections.emptyMap());
+		bookmarkMappings.add(new BookmarkId("bookmarkFolder2"),
+				createFile("bookmarks1", "bookmarks for folder2").getId(), Collections.emptyMap());
 		bookmarksFileChangeManager = new BookmarksFileChangeManager(gdriveConnectionRule.getGDriveConnectionManager(),
-				bookmarkMappings, ()->Duration.ofMillis(100));
+				bookmarkMappings, () -> Duration.ofMillis(100));
 		bookmarksFileChangeManager.addListener(listener);
 		bookmarksFileChangeManager.init();
 	}

@@ -1,5 +1,7 @@
 package mesfavoris.viewers;
 
+import java.util.Optional;
+
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -34,6 +36,11 @@ public class BookmarkFolderLabelProvider extends AbstractBookmarkLabelProvider {
 		if (remoteBookmarkFolder != null) {
 			IRemoteBookmarksStore remoteBookmarksStore = remoteBookmarksStoreManager
 					.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId());
+			Optional<Integer> bookmarksCount = getBookmarksCount(remoteBookmarkFolder);
+			if (bookmarksCount.isPresent()) {
+				result.append(String.format(" (%d)", bookmarksCount.get()), stylerProvider.getStyler(null,
+						Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW), null));
+			}
 			if (remoteBookmarksStore.getState() == State.connected && isReadOnly(remoteBookmarkFolder)) {
 				result.append(" [readonly]", stylerProvider.getStyler(null,
 						Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW), null));
@@ -46,6 +53,18 @@ public class BookmarkFolderLabelProvider extends AbstractBookmarkLabelProvider {
 	private boolean isReadOnly(RemoteBookmarkFolder remoteBookmarkFolder) {
 		return Boolean.TRUE.toString()
 				.equalsIgnoreCase(remoteBookmarkFolder.getProperties().get(RemoteBookmarkFolder.PROP_READONLY));
+	}
+
+	private Optional<Integer> getBookmarksCount(RemoteBookmarkFolder remoteBookmarkFolder) {
+		String bookmarksCount = remoteBookmarkFolder.getProperties().get(RemoteBookmarkFolder.PROP_BOOKMARKS_COUNT);
+		if (bookmarksCount == null) {
+			return Optional.empty();
+		}
+		try {
+			return Optional.of(Integer.parseInt(bookmarksCount));
+		} catch (NumberFormatException e) {
+			return Optional.empty();
+		}
 	}
 
 	@Override

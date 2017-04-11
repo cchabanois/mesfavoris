@@ -8,6 +8,7 @@ import mesfavoris.model.BookmarkId;
 
 public class RemoteBookmarkFolder {
 	public static final String PROP_READONLY = "readonly";
+	public static final String PROP_BOOKMARKS_COUNT = "bookmarksCount";
 	
 	private final String remoteBookmarkStoreId;
 	private final BookmarkId bookmarkFolderId;
