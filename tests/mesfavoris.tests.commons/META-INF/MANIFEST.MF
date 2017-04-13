@@ -24,6 +24,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: mesfavoris.tests.commons.bookmarks,
  mesfavoris.tests.commons.rules,
+ mesfavoris.tests.commons.swt,
  mesfavoris.tests.commons.ui,
  mesfavoris.tests.commons.waits
 Bundle-Vendor: Mes Favoris
