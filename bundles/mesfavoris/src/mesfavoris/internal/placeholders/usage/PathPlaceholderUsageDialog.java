@@ -68,6 +68,7 @@ public class PathPlaceholderUsageDialog extends TitleAreaDialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		setTitle("Path placeholder");
+		getShell().setText("Path placeholder usage");
 		setMessage("Path placeholder usage");
 
 		Composite parentComposite = (Composite) super.createDialogArea(parent);
