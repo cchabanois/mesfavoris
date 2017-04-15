@@ -1,6 +1,7 @@
 package mesfavoris.url;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,6 +47,22 @@ public class UrlBookmarkLabelProviderTest {
 		assertEquals(16, image.getBounds().height);
 	}
 
+	@Test
+	public void testSameImageInstanceIfSameFavIcon() throws IOException {
+		// Given
+		Bookmark bookmark1 = new Bookmark(new BookmarkId(),
+				ImmutableMap.of(UrlBookmarkProperties.PROP_FAVICON, getImageAsBase64("lemonde-favicon.ico")));
+		Bookmark bookmark2 = new Bookmark(new BookmarkId(),
+				ImmutableMap.of(UrlBookmarkProperties.PROP_FAVICON, getImageAsBase64("lemonde-favicon.ico")));
+		
+		// When
+		Image image1 = UIThreadRunnable.syncExec(()->urlBookmarkLabelProvider.getImage(bookmark1));
+		Image image2 = UIThreadRunnable.syncExec(()->urlBookmarkLabelProvider.getImage(bookmark2));
+		
+		// Then
+		assertSame(image1, image2);
+	}
+	
 	private String getImageAsBase64(String resourceName) throws IOException {
 		try (InputStream is = getClass().getResourceAsStream(resourceName)) {
 			return Base64.getEncoder().encodeToString(ByteStreams.toByteArray(is));
