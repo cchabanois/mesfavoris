@@ -23,6 +23,26 @@
 		</repository>
 	</repositories>
 
+	<profiles>
+		<profile>
+			<id>target-mars</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<target.artifactId>mesfavoris.target</target.artifactId>
+			</properties>
+		</profile>
+		<profile>
+			<id>target-neon</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<target.artifactId>mesfavoris.neon.target</target.artifactId>
+			</properties>
+		</profile>		
+	</profiles>
 	<build>
 		<plugins>
 			<plugin>
@@ -39,7 +59,7 @@
 					<target>
 						<artifact>
 							<groupId>mesfavoris</groupId>
-							<artifactId>mesfavoris.target</artifactId>
+							<artifactId>${target.artifactId}</artifactId>
 							<version>1.5.0-SNAPSHOT</version>
 						</artifact>
 					</target>
@@ -78,7 +98,8 @@
 				<version>${tycho-version}</version>
 				<executions>
 					<execution>
-					    <!-- I needed to add phase and goal otherwise unqualifiedVersion was not available in mesfavoris.bintray module -->
+						<!-- I needed to add phase and goal otherwise unqualifiedVersion was 
+							not available in mesfavoris.bintray module -->
 						<phase>validate</phase>
 						<goals>
 							<goal>build-qualifier</goal>
