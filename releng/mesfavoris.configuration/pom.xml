@@ -30,7 +30,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<target.artifactId>mesfavoris.target</target.artifactId>
+				<target.artifactId>mesfavoris.mars.target</target.artifactId>
 			</properties>
 		</profile>
 		<profile>

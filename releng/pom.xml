@@ -15,7 +15,7 @@
     </parent>
 
     <modules>
-        <module>mesfavoris.target</module>
+        <module>mesfavoris.mars.target</module>
         <module>mesfavoris.neon.target</module>
         <module>mesfavoris.update-site</module>
         <module>mesfavoris.bintray</module>
