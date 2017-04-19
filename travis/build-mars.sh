@@ -4,7 +4,7 @@ set -ev
 
 if [[ ${TRAVIS_PULL_REQUEST} != "false" ]]; then
 	echo "Build for Pull Request"
-	mvn clean verify -P jacoco-report
+	mvn clean verify -P target-mars,jacoco-report
 	STATUS=$?
 	if [ $STATUS -eq 0 ]; then
 		bash <(curl -s https://codecov.io/bash)
@@ -15,7 +15,7 @@ elif [[ $TRAVIS_TAG =~ ^release.*$ ]]; then
 	mvn clean verify -P deploy,release -Dmaven.test.skip=true
 else
 	echo "Build for standard commit"
-	mvn clean verify -P target-neon,jacoco-report,deploy
+	mvn clean verify -P target-mars,jacoco-report,deploy
 	STATUS=$?
 	if [ $STATUS -eq 0 ]; then
 		bash <(curl -s https://codecov.io/bash)

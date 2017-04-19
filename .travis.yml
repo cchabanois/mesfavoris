@@ -1,15 +1,8 @@
 sudo: false
 
-language: java
-jdk: oraclejdk8
-
 cache:
   directories:
   - $HOME/.m2
-
-env: 
-  global:
-  - DISPLAY=:99.0
 
 addons:
   apt:
@@ -17,32 +10,48 @@ addons:
     - metacity
     - oracle-java8-installer
 
-before_install:
-# maven version is 3.2.5 by default on travis. Polyglot projects need Maven 3.3.1
-# don't use archive.apache.org because it sometimes fails with 503. See https://issues.apache.org/jira/browse/INFRA-12996
-# - wget --tries=20 --retry-connrefused --waitretry=1 https://archive.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.zip
- - wget http://apache.mirrors.ovh.net/ftp.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.zip
- - wget --no-check-certificate https://www.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.zip.asc
- - wget --no-check-certificate https://www.apache.org/dist/maven/KEYS
- - gpg --import KEYS
- - gpg --verify apache-maven-3.3.9-bin.zip.asc apache-maven-3.3.9-bin.zip
- - unzip -qq apache-maven-3.3.9-bin.zip
- - export M2_HOME=$PWD/apache-maven-3.3.9
- - export PATH=$M2_HOME/bin:$PATH
-# - wget -O ngrok.zip https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
-# - unzip ngrok.zip
-# - ./ngrok tcp 5005 --authtoken=$NGROK_AUTH_TOKEN --log=stdout --log-level=debug | grep "tcp.ngrok.io" &
- 
-install: true
-
-before_script:
- - sh -e /etc/init.d/xvfb start
- - metacity --sm-disable --replace 2> metacity.err &
-
-script:
- - bash -e ./travis_build.sh
-# - killall -SIGINT ngrok && echo "ngrok terminated" || true
-
+matrix:
+  include:
+    - language: java
+      jdk: oraclejdk8
+      env: 
+        - TARGET=mars
+        - DISPLAY=:99.0
+        - USER1_GDRIVE_USERNAME=$USER1_GDRIVE_USERNAME
+        - USER1_GDRIVE_PASSWORD=$USER1_GDRIVE_PASSWORD
+        - USER1_RECOVERY_EMAIL=$USER1_RECOVERY_EMAIL
+        - USER2_GDRIVE_USERNAME=$USER2_GDRIVE_USERNAME
+        - USER2_GDRIVE_PASSWORD=$USER2_GDRIVE_PASSWORD
+        - USER2_RECOVERY_EMAIL=$USER2_RECOVERY_EMAIL        
+      before_install:
+        - source ./travis/install-maven.sh
+        # - source ./travis/start-ngrok.sh
+      install: true
+      before_script:
+        - source ./travis/start-metacity.sh
+      script:
+        - source ./travis/build-mars.sh
+      after_script:
+        - source ./travis/stop-ngrok.sh
+    - language: java
+      jdk: oraclejdk8
+      env: 
+        - TARGET=neon
+        - DISPLAY=:99.0
+        - USER1_GDRIVE_USERNAME=$USER3_GDRIVE_USERNAME
+        - USER1_GDRIVE_PASSWORD=$USER3_GDRIVE_PASSWORD
+        - USER1_RECOVERY_EMAIL=$USER3_RECOVERY_EMAIL
+        - USER2_GDRIVE_USERNAME=$USER4_GDRIVE_USERNAME
+        - USER2_GDRIVE_PASSWORD=$USER4_GDRIVE_PASSWORD
+        - USER2_RECOVERY_EMAIL=$USER4_RECOVERY_EMAIL         
+      before_install:
+        - source ./travis/install-maven.sh
+      install: true
+      before_script:
+        - source ./travis/start-metacity.sh
+      script:
+        - source ./travis/build-neon.sh
+    
 notifications:
   webhooks:
     urls:
