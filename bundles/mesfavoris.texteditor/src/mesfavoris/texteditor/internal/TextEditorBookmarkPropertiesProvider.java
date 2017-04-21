@@ -65,8 +65,9 @@ public class TextEditorBookmarkPropertiesProvider extends AbstractBookmarkProper
 		addLineContent(properties, textEditor, lineNumber);
 		addWorkspacePath(properties, textEditor);
 		putIfAbsent(properties, PROPERTY_NAME, () -> {
-			if (lineNumber > 0) {
-				return textEditor.getEditorInput().getName() + ":" + (lineNumber + 1);
+			String lineContent = properties.get(PROP_LINE_CONTENT);
+			if (lineContent != null) {
+				return textEditor.getEditorInput().getName() + " : " + lineContent;
 			} else {
 				return textEditor.getEditorInput().getName();
 			}

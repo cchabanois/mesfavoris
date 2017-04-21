@@ -71,7 +71,7 @@ public class TextEditorBookmarkPropertiesProviderTest {
 				.containsEntry(PROP_PROJECT_NAME, PROJECT_NAME)
 				.containsEntry(PROP_LINE_CONTENT,
 						"\"Source\" form shall mean the preferred form for making modifications,")
-				.containsEntry(PROPERTY_NAME, "LICENSE.txt:26")
+				.containsEntry(PROPERTY_NAME, "LICENSE.txt : \"Source\" form shall mean the preferred form for making modifications,")
 				.containsEntry(PROP_WORKSPACE_PATH, "/TextEditorBookmarkPropertiesProviderTest/LICENSE.txt")
 				.containsKey(PROP_FILE_PATH);
 	}
