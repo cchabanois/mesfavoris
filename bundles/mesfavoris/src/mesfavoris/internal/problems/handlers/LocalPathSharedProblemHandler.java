@@ -12,11 +12,6 @@ import mesfavoris.problems.IBookmarkProblemHandler;
 public class LocalPathSharedProblemHandler implements IBookmarkProblemHandler {
 
 	@Override
-	public String getErrorMessage(BookmarkProblem bookmarkProblem) {
-		return "Some properties are using local paths";
-	}
-
-	@Override
 	public String getActionMessage(BookmarkProblem bookmarkProblem) {
 		return "Set placeholder variables";
 	}

@@ -810,19 +810,27 @@
    <extension
          point="mesfavoris.bookmarkProblems">
       <bookmarkProblem
-            class="mesfavoris.internal.problems.handlers.CannotGotoProblemHandler"
+            errorMessage="Cannot goto bookmark"
+            handler="mesfavoris.internal.problems.handlers.CannotGotoProblemHandler"
+            severity="ERROR"
             type="cannotGotoBookmark">
       </bookmarkProblem>
       <bookmarkProblem
-            class="mesfavoris.internal.problems.handlers.PropertiesNeedUpdateProblemHandler"
+            errorMessage="Some properties need to be updated"
+            handler="mesfavoris.internal.problems.handlers.PropertiesNeedUpdateProblemHandler"
+            severity="WARNING"
             type="propertiesNeedUpdate">
       </bookmarkProblem>
       <bookmarkProblem
-            class="mesfavoris.internal.problems.handlers.PlaceholderUndefinedProblemHandler"
+            errorMessageProvider="mesfavoris.internal.problems.messages.PlaceholderUndefinedProblemMessageProvider"
+            handler="mesfavoris.internal.problems.handlers.PlaceholderUndefinedProblemHandler"
+            severity="WARNING"
             type="placeholderUndefined">
       </bookmarkProblem>
       <bookmarkProblem
-            class="mesfavoris.internal.problems.handlers.LocalPathSharedProblemHandler"
+            errorMessage="Some properties are using local paths"
+            handler="mesfavoris.internal.problems.handlers.LocalPathSharedProblemHandler"
+            severity="WARNING"
             type="localPathShared">
       </bookmarkProblem>
    </extension>

@@ -18,10 +18,11 @@ import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.internal.problems.extension.BookmarkProblemHandlers;
+import mesfavoris.internal.problems.extension.BookmarkProblemDescriptors;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.problems.BookmarkProblem;
-import mesfavoris.problems.BookmarkProblem.Severity;
+import mesfavoris.problems.IBookmarkProblemDescriptor;
+import mesfavoris.problems.IBookmarkProblemDescriptor.Severity;
 import mesfavoris.problems.IBookmarkProblemHandler;
 import mesfavoris.problems.IBookmarkProblems;
 
@@ -30,16 +31,14 @@ public class BookmarkProblemsTooltip extends ToolTip {
 	private static final String IMAGE_ERROR_KEY = "imageError";
 	private final FormToolkit formToolkit;
 	private final IBookmarkProblems bookmarkProblems;
-	private final BookmarkProblemHandlers bookmarkProblemHandlers;
 	private FormText bookmarkProblemsFormText;
 	private BookmarkId bookmarkId;
 
 	public BookmarkProblemsTooltip(FormToolkit formToolkit, Control control, int style,
-			IBookmarkProblems bookmarkProblems, BookmarkProblemHandlers bookmarkProblemHandlers) {
+			IBookmarkProblems bookmarkProblems) {
 		super(control, style, false);
 		this.formToolkit = formToolkit;
 		this.bookmarkProblems = bookmarkProblems;
-		this.bookmarkProblemHandlers = bookmarkProblemHandlers;
 	}
 
 	@Override
@@ -63,25 +62,25 @@ public class BookmarkProblemsTooltip extends ToolTip {
 		sb.append("<form>");
 		sb.append("<p>List of bookmark problems :</p>");
 		for (BookmarkProblem problem : problems) {
-			IBookmarkProblemHandler handler = bookmarkProblemHandlers
-					.getBookmarkProblemHandler(problem.getProblemType());
-			if (handler != null) {
-				String value = problem.getSeverity() == Severity.ERROR ? IMAGE_ERROR_KEY : IMAGE_WARNING_KEY;
-				String message = handler.getErrorMessage(problem);
-				sb.append(String.format("<li style=\"image\" value=\"%s\">", value));
-				sb.append("<span nowrap=\"true\">");
-				sb.append(message);
-				String actionMessage = handler.getActionMessage(problem);
-				if (actionMessage != null) {
-					sb.append(" - ");
-				}
-				sb.append("</span>");
-				if (actionMessage != null) {
-					sb.append(String.format("<a href=\"%s\" nowrap=\"true\">%s</a>", problem.getProblemType(),
-							actionMessage));
-				}
-				sb.append("</li>");
+			IBookmarkProblemDescriptor bookmarkProblemDescriptor = bookmarkProblems
+					.getBookmarkProblemDescriptor(problem.getProblemType());
+
+			String value = bookmarkProblemDescriptor.getSeverity() == Severity.ERROR ? IMAGE_ERROR_KEY
+					: IMAGE_WARNING_KEY;
+			String message = bookmarkProblemDescriptor.getErrorMessage(problem);
+			sb.append(String.format("<li style=\"image\" value=\"%s\">", value));
+			sb.append("<span nowrap=\"true\">");
+			sb.append(message);
+			Optional<IBookmarkProblemHandler> handler = bookmarkProblemDescriptor.getBookmarkProblemHandler();
+			if (handler.isPresent()) {
+				sb.append(" - ");
 			}
+			sb.append("</span>");
+			if (handler.isPresent()) {
+				sb.append(String.format("<a href=\"%s\" nowrap=\"true\">%s</a>", problem.getProblemType(),
+						handler.get().getActionMessage(problem)));
+			}
+			sb.append("</li>");
 		}
 		sb.append("</form>");
 		bookmarkProblemsFormText.setText(sb.toString(), true, false);
@@ -99,13 +98,13 @@ public class BookmarkProblemsTooltip extends ToolTip {
 		if (!bookmarkProblem.isPresent()) {
 			return;
 		}
-		IBookmarkProblemHandler handler = bookmarkProblemHandlers
-				.getBookmarkProblemHandler(bookmarkProblem.get().getProblemType());
-		if (handler == null) {
+		Optional<IBookmarkProblemHandler> handler = bookmarkProblems
+				.getBookmarkProblemDescriptor(bookmarkProblem.get().getProblemType()).getBookmarkProblemHandler();
+		if (!handler.isPresent()) {
 			return;
 		}
 		try {
-			handler.handleAction(bookmarkProblem.get());
+			handler.get().handleAction(bookmarkProblem.get());
 		} catch (BookmarksException e) {
 			ErrorDialog.openError(null, "Error", "Could not solve bookmark problem", e.getStatus());
 		}

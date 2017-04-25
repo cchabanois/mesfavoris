@@ -2,6 +2,8 @@ package mesfavoris.problems;
 
 import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
+
 import mesfavoris.model.BookmarkId;
 
 public class BookmarkProblem {
@@ -11,29 +13,23 @@ public class BookmarkProblem {
 	public static String TYPE_LOCAL_PATH_SHARED = "localPathShared";
 
 	private final BookmarkId bookmarkId;
-	private final Severity severity;
 	private final String problemType;
 	private final Map<String, String> properties;
 
-	public static enum Severity {
-		// order is important
-		ERROR, WARNING
+	public BookmarkProblem(BookmarkId bookmarkId, String problemType) {
+		this.bookmarkId = bookmarkId;
+		this.problemType = problemType;
+		this.properties = ImmutableMap.of();
 	}
 
-	public BookmarkProblem(BookmarkId bookmarkId, String problemType, Severity severity,
-			Map<String, String> properties) {
+	public BookmarkProblem(BookmarkId bookmarkId, String problemType, Map<String, String> properties) {
 		this.bookmarkId = bookmarkId;
-		this.severity = severity;
 		this.problemType = problemType;
-		this.properties = properties;
+		this.properties = ImmutableMap.copyOf(properties);
 	}
 
 	public BookmarkId getBookmarkId() {
 		return bookmarkId;
-	}
-
-	public Severity getSeverity() {
-		return severity;
 	}
 
 	public String getProblemType() {
@@ -77,8 +73,7 @@ public class BookmarkProblem {
 
 	@Override
 	public String toString() {
-		return "BookmarkProblem [bookmarkId=" + bookmarkId + ", severity=" + severity + ", problemType=" + problemType
-				+ "]";
+		return "BookmarkProblem [bookmarkId=" + bookmarkId + ", problemType=" + problemType + "]";
 	}
 
 }

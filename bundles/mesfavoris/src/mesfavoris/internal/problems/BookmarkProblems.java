@@ -101,10 +101,10 @@ public class BookmarkProblems implements Iterable<BookmarkProblem> {
 
 		@Override
 		public int compare(BookmarkProblem problem1, BookmarkProblem problem2) {
-			int result = problem1.getSeverity().compareTo(problem2.getSeverity());
-			if (result != 0) {
-				return result;
-			}
+//			int result = problem1.getSeverity().compareTo(problem2.getSeverity());
+//			if (result != 0) {
+//				return result;
+//			}
 			return problem1.getProblemType().compareTo(problem2.getProblemType());
 		}
 

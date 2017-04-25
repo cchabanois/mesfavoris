@@ -86,7 +86,7 @@ import mesfavoris.internal.actions.RemoveFromRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.ToggleLinkAction;
 import mesfavoris.internal.jobs.ImportTeamProjectFromBookmarkJob;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarksVirtualFolder;
-import mesfavoris.internal.problems.extension.BookmarkProblemHandlers;
+import mesfavoris.internal.problems.extension.BookmarkProblemDescriptors;
 import mesfavoris.internal.problems.ui.BookmarkProblemsTooltip;
 import mesfavoris.internal.recent.RecentBookmarksVirtualFolder;
 import mesfavoris.internal.views.comment.BookmarkCommentArea;
@@ -99,7 +99,7 @@ import mesfavoris.model.BookmarkId;
 import mesfavoris.model.IBookmarksListener;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.problems.BookmarkProblem;
-import mesfavoris.problems.BookmarkProblem.Severity;
+import mesfavoris.problems.IBookmarkProblemDescriptor.Severity;
 import mesfavoris.problems.IBookmarkProblemHandler;
 import mesfavoris.problems.IBookmarkProblems;
 import mesfavoris.remote.IRemoteBookmarksStore;
@@ -116,7 +116,7 @@ public class BookmarksView extends ViewPart {
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IBookmarksDirtyStateTracker bookmarksDirtyStateTracker;
 	private final IBookmarkProblems bookmarkProblems;
-	private final BookmarkProblemHandlers bookmarkProblemHandlers;
+	private final BookmarkProblemDescriptors bookmarkProblemDescriptors;
 	private final EventHandler bookmarkProblemsEventHandler;
 	private BookmarksTreeViewer bookmarksTreeViewer;
 	private BookmarkCommentArea bookmarkCommentViewer;
@@ -135,14 +135,14 @@ public class BookmarksView extends ViewPart {
 	private PropertySheetPage propertyPage;
 	private final IBookmarksListener bookmarksListener = (modifications) -> refreshPropertyPage();
 	private final ProxySelectionProvider proxySelectionProvider = new ProxySelectionProvider();
-	
+
 	public BookmarksView() {
 		this.bookmarkDatabase = BookmarksPlugin.getDefault().getBookmarkDatabase();
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
 		this.remoteBookmarksStoreManager = BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager();
 		this.bookmarksDirtyStateTracker = BookmarksPlugin.getDefault().getBookmarksDirtyStateTracker();
 		this.bookmarkProblems = BookmarksPlugin.getDefault().getBookmarkProblems();
-		this.bookmarkProblemHandlers = BookmarksPlugin.getDefault().getBookmarkProblemHandlers();
+		this.bookmarkProblemDescriptors = BookmarksPlugin.getDefault().getBookmarkProblemDescriptors();
 		bookmarkProblemsEventHandler = (event) -> {
 			updateFormToolbar(bookmarksTreeViewer.getSelectedBookmark());
 			updateFormBookmarkProblems(bookmarksTreeViewer.getSelectedBookmark());
@@ -193,13 +193,13 @@ public class BookmarksView extends ViewPart {
 		addBulbDecorator(bookmarkCommentViewer.getTextWidget(), "Content assist available");
 		bookmarkCommentViewer.setBookmark(null);
 		bookmarkCommentViewer.getSourceViewer().getControl().addFocusListener(new FocusListener() {
-			
+
 			@Override
 			public void focusLost(FocusEvent e) {
 				proxySelectionProvider.setCurrentSelectionProvider(bookmarksTreeViewer);
-				
+
 			}
-			
+
 			@Override
 			public void focusGained(FocusEvent e) {
 				proxySelectionProvider.setCurrentSelectionProvider(bookmarkCommentViewer.getSourceViewer());
@@ -235,25 +235,23 @@ public class BookmarksView extends ViewPart {
 		}
 		Optional<BookmarkProblem> needsUpdateBookmarkProblem = bookmarkProblems.getBookmarkProblem(bookmark.getId(),
 				BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
-		if (needsUpdateBookmarkProblem.isPresent()) {
-			IBookmarkProblemHandler handler = bookmarkProblemHandlers
-					.getBookmarkProblemHandler(needsUpdateBookmarkProblem.get().getProblemType());
-			if (handler != null) {
-				Action updateBookmarkPropertiesAction = new Action(
-						handler.getActionMessage(needsUpdateBookmarkProblem.get()), IAction.AS_PUSH_BUTTON) {
-					public void run() {
-						try {
-							handler.handleAction(needsUpdateBookmarkProblem.get());
-						} catch (BookmarksException e) {
-							ErrorDialog.openError(null, "Error", "Could not solve bookmark problem", e.getStatus());
-						}
+		Optional<IBookmarkProblemHandler> handler = needsUpdateBookmarkProblem
+				.flatMap(problem -> bookmarkProblemDescriptors.getBookmarkProblemDescriptor(problem.getProblemType())
+						.getBookmarkProblemHandler());
+		if (handler.isPresent()) {
+			Action updateBookmarkPropertiesAction = new Action(
+					handler.get().getActionMessage(needsUpdateBookmarkProblem.get()), IAction.AS_PUSH_BUTTON) {
+				public void run() {
+					try {
+						handler.get().handleAction(needsUpdateBookmarkProblem.get());
+					} catch (BookmarksException e) {
+						ErrorDialog.openError(null, "Error", "Could not solve bookmark problem", e.getStatus());
 					}
-				};
-				updateBookmarkPropertiesAction
-						.setImageDescriptor(BookmarksPlugin.getImageDescriptor(IMG_UPDATE_BOOKMARK));
-				updateBookmarkPropertiesAction.setEnabled(canBeModified(bookmark));
-				form.getToolBarManager().add(updateBookmarkPropertiesAction);
-			}
+				}
+			};
+			updateBookmarkPropertiesAction.setImageDescriptor(BookmarksPlugin.getImageDescriptor(IMG_UPDATE_BOOKMARK));
+			updateBookmarkPropertiesAction.setEnabled(canBeModified(bookmark));
+			form.getToolBarManager().add(updateBookmarkPropertiesAction);
 		}
 		form.getToolBarManager().update(true);
 	}
@@ -457,17 +455,19 @@ public class BookmarksView extends ViewPart {
 			form.setMessage(null);
 			return;
 		}
-		int type = problems.iterator().next().getSeverity() == Severity.ERROR ? IMessageProvider.ERROR
-				: IMessageProvider.WARNING;
+		BookmarkProblem firstProblem = problems.iterator().next();
+		int type = bookmarkProblems.getBookmarkProblemDescriptor(firstProblem.getProblemType())
+				.getSeverity() == Severity.ERROR ? IMessageProvider.ERROR : IMessageProvider.WARNING;
 		form.setMessage(problems.size() == 1 ? "One bookmark problem detected"
 				: "" + problems.size() + " bookmark problems detected", type);
 		if (bookmarkProblemsTooltip == null) {
 			Control control = Stream.of(form.getHead().getChildren()).filter(child -> child instanceof CLabel)
 					.findFirst().get();
-			// bug in form ? Without this line, background for the message is sometimes gray
+			// bug in form ? Without this line, background for the message is
+			// sometimes gray
 			control.setBackground(getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_TRANSPARENT));
 			bookmarkProblemsTooltip = new BookmarkProblemsTooltip(toolkit, control, ToolTip.NO_RECREATE,
-					bookmarkProblems, bookmarkProblemHandlers) {
+					bookmarkProblems) {
 				public Point getLocation(Point tipSize, Event event) {
 					Rectangle bounds = control.getBounds();
 					return control.getParent().toDisplay(bounds.x, bounds.y);

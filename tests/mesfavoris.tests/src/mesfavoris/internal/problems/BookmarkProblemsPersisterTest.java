@@ -11,11 +11,9 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 
 import mesfavoris.model.BookmarkId;
 import mesfavoris.problems.BookmarkProblem;
-import mesfavoris.problems.BookmarkProblem.Severity;
 
 public class BookmarkProblemsPersisterTest {
 	private BookmarkProblems bookmarkProblems = new BookmarkProblems();
@@ -35,14 +33,12 @@ public class BookmarkProblemsPersisterTest {
 		// Given
 		BookmarkId bookmarkId1 = new BookmarkId();
 		BookmarkId bookmarkId2 = new BookmarkId();
-		BookmarkProblem problem1 = new BookmarkProblem(bookmarkId1, BookmarkProblem.TYPE_CANNOT_GOTOBOOKMARK,
-				Severity.ERROR, Maps.newHashMap());
+		BookmarkProblem problem1 = new BookmarkProblem(bookmarkId1, BookmarkProblem.TYPE_CANNOT_GOTOBOOKMARK);
 		BookmarkProblem problem2 = new BookmarkProblem(bookmarkId1, BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED,
-				Severity.WARNING, ImmutableMap.of("placeholder", "MY_PLACEHOLDER"));
+				ImmutableMap.of("placeholder", "MY_PLACEHOLDER"));
 		BookmarkProblem problem3 = new BookmarkProblem(bookmarkId1, BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE,
-				Severity.WARNING, ImmutableMap.of("prop1", "value1", "prop2", "value2"));
-		BookmarkProblem problem4 = new BookmarkProblem(bookmarkId2, BookmarkProblem.TYPE_CANNOT_GOTOBOOKMARK,
-				Severity.ERROR, Maps.newHashMap());
+				ImmutableMap.of("prop1", "value1", "prop2", "value2"));
+		BookmarkProblem problem4 = new BookmarkProblem(bookmarkId2, BookmarkProblem.TYPE_CANNOT_GOTOBOOKMARK);
 		bookmarkProblems = bookmarkProblems.add(problem1).add(problem2).add(problem3).add(problem4);
 
 		// When
@@ -53,18 +49,14 @@ public class BookmarkProblemsPersisterTest {
 		assertThat(loadedBookmarkProblems.getBookmarksWithProblems()).containsExactlyInAnyOrder(bookmarkId1,
 				bookmarkId2);
 		assertThat(loadedBookmarkProblems.getBookmarkProblem(bookmarkId1, BookmarkProblem.TYPE_CANNOT_GOTOBOOKMARK))
-				.hasValueSatisfying(problem -> assertThat(problem.getSeverity()).isEqualTo(Severity.ERROR))
 				.hasValueSatisfying(problem -> assertThat(problem.getProperties()).isEmpty());
 		assertThat(loadedBookmarkProblems.getBookmarkProblem(bookmarkId1, BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED))
-				.hasValueSatisfying(problem -> assertThat(problem.getSeverity()).isEqualTo(Severity.WARNING))
 				.hasValueSatisfying(
 						problem -> assertThat(problem.getProperties()).containsEntry("placeholder", "MY_PLACEHOLDER"));
 		assertThat(loadedBookmarkProblems.getBookmarkProblem(bookmarkId1, BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE))
-				.hasValueSatisfying(problem -> assertThat(problem.getSeverity()).isEqualTo(Severity.WARNING))
 				.hasValueSatisfying(problem -> assertThat(problem.getProperties()).containsEntry("prop1", "value1")
 						.containsEntry("prop2", "value2"));
 		assertThat(loadedBookmarkProblems.getBookmarkProblem(bookmarkId2, BookmarkProblem.TYPE_CANNOT_GOTOBOOKMARK))
-				.hasValueSatisfying(problem -> assertThat(problem.getSeverity()).isEqualTo(Severity.ERROR))
 				.hasValueSatisfying(problem -> assertThat(problem.getProperties()).isEmpty());
 	}
 

@@ -14,13 +14,11 @@ import com.google.gson.stream.JsonWriter;
 
 import mesfavoris.model.BookmarkId;
 import mesfavoris.problems.BookmarkProblem;
-import mesfavoris.problems.BookmarkProblem.Severity;
 
 public class BookmarkProblemsPersister {
 	private static final String NAME_BOOKMARK_ID = "bookmarkId";
 	private static final String NAME_PROBLEMS = "problems";
 	private static final String NAME_PROBLEM_TYPE = "type";
-	private static final String NAME_PROBLEM_SEVERITY = "severity";
 	private static final String NAME_PROBLEM_PROPERTIES = "properties";
 
 	private final File bookmarkProblemsFile;
@@ -43,7 +41,6 @@ public class BookmarkProblemsPersister {
 				for (BookmarkProblem bookmarkProblem : bookmarkProblems.getBookmarkProblems(bookmarkId)) {
 					jsonWriter.beginObject();
 					jsonWriter.name(NAME_PROBLEM_TYPE).value(bookmarkProblem.getProblemType());
-					jsonWriter.name(NAME_PROBLEM_SEVERITY).value(bookmarkProblem.getSeverity().name());
 					jsonWriter.name(NAME_PROBLEM_PROPERTIES);
 					jsonWriter.beginArray();
 					for (Map.Entry<String, String> entry : bookmarkProblem.getProperties().entrySet()) {
@@ -112,16 +109,12 @@ public class BookmarkProblemsPersister {
 			throws IOException {
 		String name;
 		String problemType = null;
-		Severity severity = Severity.WARNING;
 		Map<String, String> properties = Maps.newHashMap();
 		jsonReader.beginObject();
 		while (jsonReader.hasNext()) {
 			name = jsonReader.nextName();
 			if (NAME_PROBLEM_TYPE.equals(name)) {
 				problemType = jsonReader.nextString();
-			}
-			if (NAME_PROBLEM_SEVERITY.equals(name)) {
-				severity = Severity.valueOf(jsonReader.nextString());
 			}
 			if (NAME_PROBLEM_PROPERTIES.equals(name)) {
 				properties.putAll(deserializeProperties(jsonReader));
@@ -131,7 +124,7 @@ public class BookmarkProblemsPersister {
 		if (bookmarkId == null || problemType == null) {
 			return null;
 		}
-		return new BookmarkProblem(bookmarkId, problemType, severity, properties);
+		return new BookmarkProblem(bookmarkId, problemType, properties);
 	}
 
 	private Map<String, String> deserializeProperties(JsonReader jsonReader) throws IOException {

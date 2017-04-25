@@ -26,7 +26,6 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.problems.BookmarkProblem;
-import mesfavoris.problems.BookmarkProblem.Severity;
 import mesfavoris.problems.IBookmarkProblems;
 import mesfavoris.topics.BookmarksEvents;
 
@@ -41,8 +40,9 @@ public class GotoBookmarkOperation {
 
 	public GotoBookmarkOperation(BookmarkDatabase bookmarkDatabase, IBookmarkLocationProvider bookmarkLocationProvider,
 			IGotoBookmark gotoBookmark, IBookmarksMarkers bookmarksMarkers,
-			IBookmarkPropertiesProvider bookmarkPropertiesProvider, CheckBookmarkPropertiesOperation checkBookmarkPropertiesOperation,
-			IBookmarkProblems bookmarkProblems, IEventBroker eventBroker) {
+			IBookmarkPropertiesProvider bookmarkPropertiesProvider,
+			CheckBookmarkPropertiesOperation checkBookmarkPropertiesOperation, IBookmarkProblems bookmarkProblems,
+			IEventBroker eventBroker) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.bookmarkLocationProvider = bookmarkLocationProvider;
 		this.gotoBookmark = gotoBookmark;
@@ -79,8 +79,8 @@ public class GotoBookmarkOperation {
 
 	private void checkBookmarkPropertiesProblem(BookmarkId bookmarkId) {
 		checkBookmarkPropertiesOperation.checkBookmarkPropertiesProblems(bookmarkId);
-	}	
-	
+	}
+
 	private void checkBookmarkPropertiesProblem(BookmarkId bookmarkId, WorkbenchPartSelection workbenchPartSelection) {
 		checkBookmarkPropertiesOperation.checkBookmarkPropertiesProblems(bookmarkId, workbenchPartSelection.part,
 				workbenchPartSelection.selection);
@@ -92,8 +92,7 @@ public class GotoBookmarkOperation {
 	}
 
 	private void addGotoBookmarkProblem(BookmarkId bookmarkId) {
-		BookmarkProblem problem = new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_CANNOT_GOTOBOOKMARK,
-				Severity.ERROR, Collections.emptyMap());
+		BookmarkProblem problem = new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_CANNOT_GOTOBOOKMARK);
 		bookmarkProblems.add(problem);
 	}
 

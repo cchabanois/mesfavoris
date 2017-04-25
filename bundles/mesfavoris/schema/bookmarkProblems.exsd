@@ -56,13 +56,47 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="class" type="string" use="required">
+         <attribute name="handler" type="string">
             <annotation>
                <documentation>
                   
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":mesfavoris.problems.IBookmarkProblemHandler"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="severity" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="ERROR">
+                  </enumeration>
+                  <enumeration value="WARNING">
+                  </enumeration>
+                  <enumeration value="INFO">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="errorMessage" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="errorMessageProvider" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":mesfavoris.internal.problems.extension.IBookmarkProblemErrorMessageProvider"/>
                </appinfo>
             </annotation>
          </attribute>

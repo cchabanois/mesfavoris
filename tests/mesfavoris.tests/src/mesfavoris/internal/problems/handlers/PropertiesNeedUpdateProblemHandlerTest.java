@@ -19,12 +19,12 @@ import com.google.common.collect.ImmutableMap;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.internal.problems.BookmarkProblemsDatabase;
+import mesfavoris.internal.problems.extension.BookmarkProblemDescriptors;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.problems.BookmarkProblem;
-import mesfavoris.problems.BookmarkProblem.Severity;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
 
 public class PropertiesNeedUpdateProblemHandlerTest {
@@ -42,7 +42,8 @@ public class PropertiesNeedUpdateProblemHandlerTest {
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
 		bookmarkDatabase = new BookmarkDatabase("main", getInitialTree());
 		file = temporaryFolder.newFile();
-		bookmarkProblemsDatabase = new BookmarkProblemsDatabase(eventBroker, bookmarkDatabase, file);
+		bookmarkProblemsDatabase = new BookmarkProblemsDatabase(eventBroker, bookmarkDatabase,
+				new BookmarkProblemDescriptors(), file);
 		bookmarkProblemsDatabase.init();
 		handler = new PropertiesNeedUpdateProblemHandler(bookmarkDatabase, bookmarkProblemsDatabase);
 	}
@@ -61,7 +62,7 @@ public class PropertiesNeedUpdateProblemHandlerTest {
 					ImmutableMap.of(Bookmark.PROPERTY_NAME, "bookmark1", "prop1", "value1", "prop2", "value2"))));
 		});
 		BookmarkProblem problem = new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE,
-				Severity.WARNING, ImmutableMap.of("prop2", "newValue2", "prop3", "value3"));
+				ImmutableMap.of("prop2", "newValue2", "prop3", "value3"));
 		bookmarkProblemsDatabase.add(problem);
 
 		// When

@@ -23,6 +23,7 @@ import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.internal.placeholders.PathPlaceholdersStore;
+import mesfavoris.internal.problems.extension.BookmarkProblemDescriptors;
 import mesfavoris.internal.remote.InMemoryRemoteBookmarksStore;
 import mesfavoris.internal.service.operations.CheckBookmarkPropertiesOperation;
 import mesfavoris.model.Bookmark;
@@ -55,7 +56,7 @@ public class BookmarkProblemsAutoUpdaterTest {
 		IEventBroker eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
 		bookmarkDatabase = new BookmarkDatabase("main", getInitialTree());
 		bookmarkProblemsDatabase = new BookmarkProblemsDatabase(eventBroker, bookmarkDatabase,
-				temporaryFolder.newFile());
+				new BookmarkProblemDescriptors(), temporaryFolder.newFile());
 		bookmarkProblemsDatabase.init();
 		pathPlaceholdersStore = new PathPlaceholdersStore(eventBroker, temporaryFolder.newFile());
 		pathPlaceholdersStore.init();

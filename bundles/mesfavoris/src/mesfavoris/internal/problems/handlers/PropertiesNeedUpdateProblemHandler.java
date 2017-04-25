@@ -26,11 +26,6 @@ public class PropertiesNeedUpdateProblemHandler implements IBookmarkProblemHandl
 	}
 
 	@Override
-	public String getErrorMessage(BookmarkProblem bookmarkProblem) {
-		return "Some properties need to be updated";
-	}
-
-	@Override
 	public String getActionMessage(BookmarkProblem bookmarkProblem) {
 		return "Use new properties";
 	}

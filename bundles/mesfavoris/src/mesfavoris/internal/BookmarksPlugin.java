@@ -43,7 +43,7 @@ import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.internal.placeholders.PathPlaceholdersStore;
 import mesfavoris.internal.problems.BookmarkProblemsAutoUpdater;
 import mesfavoris.internal.problems.BookmarkProblemsDatabase;
-import mesfavoris.internal.problems.extension.BookmarkProblemHandlers;
+import mesfavoris.internal.problems.extension.BookmarkProblemDescriptors;
 import mesfavoris.internal.recent.RecentBookmarksDatabase;
 import mesfavoris.internal.remote.RemoteBookmarksStoreLoader;
 import mesfavoris.internal.remote.RemoteBookmarksTreeChangeEventHandler;
@@ -93,7 +93,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 	private PathPlaceholdersStore pathPlaceholdersStore;
 	private PluginBookmarkTypes pluginBookmarkTypes;
 	private BookmarkProblemsDatabase bookmarkProblems;
-	private BookmarkProblemHandlers bookmarkProblemHandlers;
+	private BookmarkProblemDescriptors bookmarkProblemDescriptors;
 	private BookmarkProblemsAutoUpdater bookmarkProblemsAutoUpdater;
 
 	private final BookmarkAdapterFactory bookmarkAdapterFactory = new BookmarkAdapterFactory();
@@ -120,7 +120,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 				remoteBookmarksStoreManager);
 		bookmarkDatabase = loadBookmarkDatabase(bookmarksFile, bookmarksModificationValidator);
 		pluginBookmarkTypes = new PluginBookmarkTypes();
-		bookmarkProblemHandlers = new BookmarkProblemHandlers();
+		bookmarkProblemDescriptors = new BookmarkProblemDescriptors();
 		bookmarkLabelProvider = new PluginBookmarkLabelProvider(pluginBookmarkTypes);
 		PluginBookmarkMarkerAttributesProvider bookmarkMarkerAttributesProvider = new PluginBookmarkMarkerAttributesProvider(
 				pluginBookmarkTypes);
@@ -153,7 +153,8 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 				Duration.ofDays(5));
 		recentBookmarks.init();
 		File bookmarkProblemsFile = new File(getStateLocation().toFile(), "bookmarkProblems.json");
-		bookmarkProblems = new BookmarkProblemsDatabase(eventBroker, bookmarkDatabase, bookmarkProblemsFile);
+		bookmarkProblems = new BookmarkProblemsDatabase(eventBroker, bookmarkDatabase, bookmarkProblemDescriptors,
+				bookmarkProblemsFile);
 		bookmarkProblems.init();
 		File storeFile = new File(getStateLocation().toFile(), "placeholders.json");
 		pathPlaceholdersStore = new PathPlaceholdersStore(eventBroker, storeFile);
@@ -294,14 +295,14 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		return bookmarkProblems;
 	}
 
-	public BookmarkProblemHandlers getBookmarkProblemHandlers() {
-		return bookmarkProblemHandlers;
+	public BookmarkProblemDescriptors getBookmarkProblemDescriptors() {
+		return bookmarkProblemDescriptors;
 	}
 
 	public PluginBookmarkTypes getPluginBookmarkTypes() {
 		return pluginBookmarkTypes;
 	}
-	
+
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in
 	 * relative path

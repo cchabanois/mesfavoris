@@ -24,16 +24,6 @@ public class PlaceholderUndefinedProblemHandler implements IBookmarkProblemHandl
 		pathPlaceholdersStore = BookmarksPlugin.getDefault().getPathPlaceholdersStore();
 	}
 
-	@Override
-	public String getErrorMessage(BookmarkProblem bookmarkProblem) {
-		List<String> placeholderNames = getPlaceholderNames(bookmarkProblem);
-		if (placeholderNames.size() == 1) {
-			return "Placeholder undefined : " + placeholderNames.get(0);
-		} else {
-			return "Placeholders undefined";
-		}
-	}
-
 	private List<String> getPlaceholderNames(BookmarkProblem bookmarkProblem) {
 		List<String> placeholderNames = bookmarkProblem.getProperties().values().stream()
 				.map(propValue -> PathPlaceholderResolver.getPlaceholderName(propValue))

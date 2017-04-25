@@ -37,7 +37,7 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.persistence.IDirtyBookmarksProvider;
-import mesfavoris.problems.BookmarkProblem.Severity;
+import mesfavoris.problems.IBookmarkProblemDescriptor.Severity;
 import mesfavoris.problems.IBookmarkProblems;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
@@ -165,7 +165,8 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 			ImageDescriptor imageDescriptor = BookmarksPlugin.getImageDescriptor(IUIConstants.IMG_BOOKMARK_LINK);
 			overlayImages[IDecoration.BOTTOM_RIGHT] = imageDescriptor;
 		} else if (element instanceof VirtualBookmarkFolder) {
-			ImageDescriptor imageDescriptor = BookmarksPlugin.getImageDescriptor(IUIConstants.IMG_VIRTUAL_BOOKMARK_FOLDER);
+			ImageDescriptor imageDescriptor = BookmarksPlugin
+					.getImageDescriptor(IUIConstants.IMG_VIRTUAL_BOOKMARK_FOLDER);
 			overlayImages[IDecoration.BOTTOM_RIGHT] = imageDescriptor;
 		}
 		Optional<ImageDescriptor> problemImageDescriptor = getProblemOverlayImageDescriptor(bookmark.getId());
@@ -176,16 +177,19 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 	}
 
 	private Optional<ImageDescriptor> getProblemOverlayImageDescriptor(BookmarkId bookmarkId) {
-		return getProblemSeverity(bookmarkId).map(severity-> {
+		return getProblemSeverity(bookmarkId).map(severity -> {
 			switch (severity) {
-			case ERROR : return ISharedImages.IMG_DEC_FIELD_ERROR;
-			default : return ISharedImages.IMG_DEC_FIELD_WARNING;
+			case ERROR:
+				return ISharedImages.IMG_DEC_FIELD_ERROR;
+			default:
+				return ISharedImages.IMG_DEC_FIELD_WARNING;
 			}
-		}).map(key->PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(key));
+		}).map(key -> PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(key));
 	}
-	
+
 	private Optional<Severity> getProblemSeverity(BookmarkId bookmarkId) {
-		return bookmarkProblems.getBookmarkProblems(bookmarkId).stream().map(problem -> problem.getSeverity())
+		return bookmarkProblems.getBookmarkProblems(bookmarkId).stream()
+				.map(problem -> bookmarkProblems.getBookmarkProblemDescriptor(problem.getProblemType()).getSeverity())
 				.findFirst();
 	}
 

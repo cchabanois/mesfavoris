@@ -9,11 +9,8 @@ import java.util.NoSuchElementException;
 
 import org.junit.Test;
 
-import com.google.common.collect.Maps;
-
 import mesfavoris.model.BookmarkId;
 import mesfavoris.problems.BookmarkProblem;
-import mesfavoris.problems.BookmarkProblem.Severity;
 
 public class BookmarkProblemsTest {
 	private BookmarkProblems bookmarkProblems = new BookmarkProblems();
@@ -95,24 +92,20 @@ public class BookmarkProblemsTest {
 		BookmarkProblem problem2 = gotoBookmarkProblem(bookmarkId2);
 		BookmarkProblem problem3 = placeHolderUndefinedProblem(bookmarkId1);
 		bookmarkProblems = bookmarkProblems.add(problem1).add(problem2).add(problem3);
-		
+
 		// When
 		Iterator<BookmarkProblem> it = bookmarkProblems.iterator();
-		
+
 		// Then
 		assertThat(it).containsExactlyInAnyOrder(problem1, problem2, problem3);
-	}	
-	
-	private BookmarkProblem gotoBookmarkProblem(BookmarkId bookmarkId) {
-		return new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_CANNOT_GOTOBOOKMARK, Severity.ERROR,
-				Maps.newHashMap());
+	}
 
+	private BookmarkProblem gotoBookmarkProblem(BookmarkId bookmarkId) {
+		return new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_CANNOT_GOTOBOOKMARK);
 	}
 
 	private BookmarkProblem placeHolderUndefinedProblem(BookmarkId bookmarkId) {
-		return new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED, Severity.WARNING,
-				Maps.newHashMap());
-
+		return new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED);
 	}
 
 }

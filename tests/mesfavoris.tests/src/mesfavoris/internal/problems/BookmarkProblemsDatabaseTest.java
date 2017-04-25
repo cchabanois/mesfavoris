@@ -15,13 +15,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.google.common.collect.Maps;
-
+import mesfavoris.internal.problems.extension.BookmarkProblemDescriptors;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.problems.BookmarkProblem;
-import mesfavoris.problems.BookmarkProblem.Severity;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
 
 public class BookmarkProblemsDatabaseTest {
@@ -38,7 +36,8 @@ public class BookmarkProblemsDatabaseTest {
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
 		bookmarkDatabase = new BookmarkDatabase("main", getInitialTree());
 		file = temporaryFolder.newFile();
-		bookmarkProblemsDatabase = new BookmarkProblemsDatabase(eventBroker, bookmarkDatabase, file);
+		bookmarkProblemsDatabase = new BookmarkProblemsDatabase(eventBroker, bookmarkDatabase,
+				new BookmarkProblemDescriptors(), file);
 		bookmarkProblemsDatabase.init();
 	}
 
@@ -60,7 +59,7 @@ public class BookmarkProblemsDatabaseTest {
 		assertThat(bookmarkProblemsDatabase.getBookmarkProblems(bookmarkId)).containsExactly(problem);
 		assertThat(bookmarkProblemsDatabase.size()).isEqualTo(1);
 	}
-	
+
 	@Test
 	public void testBookmarkDeleted() throws Exception {
 		// Given
@@ -69,15 +68,15 @@ public class BookmarkProblemsDatabaseTest {
 		BookmarkProblem problem2 = placeHolderUndefinedProblem(bookmarkId);
 		bookmarkProblemsDatabase.add(problem1);
 		bookmarkProblemsDatabase.add(problem2);
-		
+
 		// When
 		bookmarkDatabase.modify(bookmarksTreeModifier -> bookmarksTreeModifier.deleteBookmark(bookmarkId, false));
 
 		// Then
 		assertThat(bookmarkProblemsDatabase.getBookmarkProblems(bookmarkId)).isEmpty();
 		assertThat(bookmarkProblemsDatabase.size()).isEqualTo(0);
-	}	
-	
+	}
+
 	private BookmarksTree getInitialTree() {
 		BookmarksTreeBuilder bookmarksTreeBuilder = bookmarksTree("rootFolder");
 		bookmarksTreeBuilder.addBookmarks("rootFolder", bookmarkFolder("bookmarkFolder1"),
@@ -89,14 +88,12 @@ public class BookmarkProblemsDatabaseTest {
 
 		return bookmarksTreeBuilder.build();
 	}
-	
+
 	private BookmarkProblem gotoBookmarkProblem(BookmarkId bookmarkId) {
-		return new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_CANNOT_GOTOBOOKMARK, Severity.ERROR,
-				Maps.newHashMap());
+		return new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_CANNOT_GOTOBOOKMARK);
 	}
-	
+
 	private BookmarkProblem placeHolderUndefinedProblem(BookmarkId bookmarkId) {
-		return new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED, Severity.WARNING,
-				Maps.newHashMap());
+		return new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED);
 	}
 }

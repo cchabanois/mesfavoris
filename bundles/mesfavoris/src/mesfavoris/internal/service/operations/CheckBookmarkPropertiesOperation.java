@@ -26,7 +26,6 @@ import mesfavoris.model.BookmarkId;
 import mesfavoris.placeholders.IPathPlaceholderResolver;
 import mesfavoris.placeholders.PathPlaceholder;
 import mesfavoris.problems.BookmarkProblem;
-import mesfavoris.problems.BookmarkProblem.Severity;
 import mesfavoris.problems.IBookmarkProblems;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 
@@ -164,7 +163,7 @@ public class CheckBookmarkPropertiesOperation {
 	private BookmarkProblem getPropertiesNeedUpdateBookmarkProblem(BookmarkId bookmarkId,
 			Map<String, String> propertiesNeedingUpdate) {
 		BookmarkProblem problem = new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE,
-				Severity.WARNING, propertiesNeedingUpdate);
+				propertiesNeedingUpdate);
 		return problem;
 	}
 
@@ -179,14 +178,13 @@ public class CheckBookmarkPropertiesOperation {
 		undefinedPathPlaceholders.forEach(pathPlaceholder -> properties.put("${" + pathPlaceholder.getName() + "}",
 				pathPlaceholder.getPath().toPortableString()));
 		BookmarkProblem problem = new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED,
-				Severity.WARNING, properties);
+				properties);
 		return problem;
 	}
 
 	private BookmarkProblem getLocalPathSharedBookmarkProblem(BookmarkId bookmarkId,
 			Map<String, String> propertiesWithLocalPath) {
-		return new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_LOCAL_PATH_SHARED, Severity.WARNING,
-				propertiesWithLocalPath);
+		return new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_LOCAL_PATH_SHARED, propertiesWithLocalPath);
 	}
 
 	private void removeLocalPathSharedBookmarkProblem(BookmarkId bookmarkId) {

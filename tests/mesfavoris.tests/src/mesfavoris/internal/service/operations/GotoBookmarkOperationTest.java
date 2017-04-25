@@ -44,6 +44,7 @@ import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkTypes;
 import mesfavoris.internal.markers.BookmarksMarkers;
 import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.internal.problems.BookmarkProblemsDatabase;
+import mesfavoris.internal.problems.extension.BookmarkProblemDescriptors;
 import mesfavoris.internal.remote.InMemoryRemoteBookmarksStore;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
@@ -58,7 +59,7 @@ public class GotoBookmarkOperationTest {
 	private BookmarkProblemsDatabase bookmarkProblemsDatabase;
 	private BookmarksMarkers bookmarksMarkers;
 	private InMemoryRemoteBookmarksStore remoteBookmarksStore;
-	
+
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
@@ -72,7 +73,7 @@ public class GotoBookmarkOperationTest {
 		IEventBroker eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
 		this.bookmarkDatabase = new BookmarkDatabase("main", getInitialTree());
 		this.bookmarkProblemsDatabase = new BookmarkProblemsDatabase(eventBroker, bookmarkDatabase,
-				temporaryFolder.newFile());
+				new BookmarkProblemDescriptors(), temporaryFolder.newFile());
 		this.bookmarkProblemsDatabase.init();
 		PluginBookmarkTypes pluginBookmarkTypes = new PluginBookmarkTypes();
 		this.bookmarksMarkers = new BookmarksMarkers(bookmarkDatabase,
@@ -88,7 +89,8 @@ public class GotoBookmarkOperationTest {
 		RemoteBookmarksStoreManager remoteBookmarksStoreManager = new RemoteBookmarksStoreManager(
 				() -> Lists.newArrayList(remoteBookmarksStore));
 		CheckBookmarkPropertiesOperation checkBookmarkPropertiesOperation = new CheckBookmarkPropertiesOperation(
-				bookmarkDatabase, remoteBookmarksStoreManager, new NonUpdatablePropertiesProvider(bookmarkPropertyDescriptors),
+				bookmarkDatabase, remoteBookmarksStoreManager,
+				new NonUpdatablePropertiesProvider(bookmarkPropertyDescriptors),
 				new PathPropertiesProvider(bookmarkPropertyDescriptors), bookmarkPropertiesProvider,
 				new PathPlaceholderResolver(BookmarksPlugin.getDefault().getPathPlaceholdersStore()),
 				bookmarkProblemsDatabase);
@@ -115,10 +117,10 @@ public class GotoBookmarkOperationTest {
 
 		// When
 		gotoBookmarkOperation.gotoBookmark(bookmark.getId(), new NullProgressMonitor());
-		
+
 		// Then
 		IWorkbenchPart workbenchPart = getActivePart();
-		ITextSelection selection = (ITextSelection)getSelection(workbenchPart);
+		ITextSelection selection = (ITextSelection) getSelection(workbenchPart);
 		assertEquals("LICENSE.txt", workbenchPart.getTitle());
 		assertEquals(10, selection.getStartLine());
 		waitUntil("Cannot find marker", () -> bookmarksMarkers.findMarker(bookmark.getId(), null));
@@ -141,8 +143,8 @@ public class GotoBookmarkOperationTest {
 	private IWorkbenchPart getActivePart() {
 		return UIThreadRunnable
 				.syncExec(() -> PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().getActivePart());
-	}	
-	
+	}
+
 	private static void importProjectFromTemplate(String projectName, String templateName)
 			throws InvocationTargetException, InterruptedException {
 		Bundle bundle = Platform.getBundle("mesfavoris.tests");

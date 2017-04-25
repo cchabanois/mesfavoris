@@ -28,6 +28,8 @@ import mesfavoris.model.IBookmarksListener;
 import mesfavoris.model.modification.BookmarkDeletedModification;
 import mesfavoris.model.modification.BookmarksModification;
 import mesfavoris.problems.BookmarkProblem;
+import mesfavoris.problems.IBookmarkProblemDescriptor;
+import mesfavoris.problems.IBookmarkProblemDescriptorProvider;
 import mesfavoris.problems.IBookmarkProblems;
 import mesfavoris.topics.BookmarksEvents;
 
@@ -39,12 +41,14 @@ public class BookmarkProblemsDatabase implements IBookmarkProblems {
 	private final SaveJob saveJob = new SaveJob();
 	private final IEventBroker eventBroker;
 	private final IBookmarksListener bookmarksListener;
+	private final IBookmarkProblemDescriptorProvider bookmarkProblemDescriptorProvider;
 
-	public BookmarkProblemsDatabase(IEventBroker eventBroker, BookmarkDatabase bookmarkDatabase,
+	public BookmarkProblemsDatabase(IEventBroker eventBroker, BookmarkDatabase bookmarkDatabase, IBookmarkProblemDescriptorProvider bookmarkProblemDescriptorProvider,
 			File bookmarkProblemsFile) {
 		this.eventBroker = eventBroker;
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.bookmarkProblemsFile = bookmarkProblemsFile;
+		this.bookmarkProblemDescriptorProvider = bookmarkProblemDescriptorProvider;
 		this.bookmarksListener = modifications -> bookmarksDeleted(
 				filterBookmarksDeleteModifications(modifications.stream()).flatMap(
 						modification -> StreamSupport.stream(modification.getDeletedBookmarks().spliterator(), false))
@@ -143,6 +147,12 @@ public class BookmarkProblemsDatabase implements IBookmarkProblems {
 		return bookmarkProblemsReference.get().iterator();
 	}	
 	
+
+	@Override
+	public IBookmarkProblemDescriptor getBookmarkProblemDescriptor(String type) {
+		return bookmarkProblemDescriptorProvider.getBookmarkProblemDescriptor(type);
+	}	
+	
 	private class SaveJob extends Job {
 
 		public SaveJob() {
@@ -163,5 +173,6 @@ public class BookmarkProblemsDatabase implements IBookmarkProblems {
 		}
 
 	}
+
 
 }
