@@ -148,11 +148,12 @@ public class BookmarksViewTest {
 
 		// When
 		bookmarksViewDriver.form().toolbarButtonWithTooltip("Use new properties", 0).click();
-		
+
 		// Then
 		waitUntil("There should be no bookmark problem", () -> bookmarksViewDriver.form().getMessage() == null);
-		assertEquals("146", getBookmarksTree().getBookmark(bookmarkId)
-				.getPropertyValue(TextEditorBookmarkProperties.PROP_LINE_NUMBER));
+		assertEquals("for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements();)",
+				getBookmarksTree().getBookmark(bookmarkId)
+						.getPropertyValue(TextEditorBookmarkProperties.PROP_LINE_CONTENT));
 	}
 
 	private static void importProjectFromTemplate(String projectName, String templateName)
