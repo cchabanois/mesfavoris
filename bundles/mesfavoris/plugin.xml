@@ -791,16 +791,19 @@
          <properties>
             <property
                   name="name"
+                  obsolescenceSeverity="IGNORE"
                   type="string"
                   updatable="false">
             </property>
             <property
                   name="comment"
+                  obsolescenceSeverity="IGNORE"
                   type="string"
                   updatable="false">
             </property>
             <property
                   name="created"
+                  obsolescenceSeverity="IGNORE"
                   type="instant"
                   updatable="false">
             </property>
@@ -817,7 +820,7 @@
       </bookmarkProblem>
       <bookmarkProblem
             errorMessage="Some properties need to be updated"
-            handler="mesfavoris.internal.problems.handlers.PropertiesNeedUpdateProblemHandler"
+            handler="mesfavoris.internal.problems.handlers.PropertiesUpdateProblemHandler"
             severity="WARNING"
             type="propertiesNeedUpdate">
       </bookmarkProblem>
@@ -832,6 +835,12 @@
             handler="mesfavoris.internal.problems.handlers.LocalPathSharedProblemHandler"
             severity="WARNING"
             type="localPathShared">
+      </bookmarkProblem>
+      <bookmarkProblem
+            errorMessage="Some properties can be updated"
+            handler="mesfavoris.internal.problems.handlers.PropertiesUpdateProblemHandler"
+            severity="INFO"
+            type="propertiesMayUpdate">
       </bookmarkProblem>
    </extension>
    <extension point="org.eclipse.epp.logging.aeri.ide.servers">

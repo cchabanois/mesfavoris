@@ -21,6 +21,8 @@ import com.google.common.collect.Sets;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
+import mesfavoris.bookmarktype.IBookmarkPropertyDescriptors;
+import mesfavoris.internal.bookmarktypes.extension.BookmarkPropertyDescriptors;
 import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.internal.placeholders.PathPlaceholdersStore;
 import mesfavoris.internal.problems.extension.BookmarkProblemDescriptors;
@@ -64,9 +66,10 @@ public class BookmarkProblemsAutoUpdaterTest {
 		this.remoteBookmarksStore = new InMemoryRemoteBookmarksStore(eventBroker);
 		RemoteBookmarksStoreManager remoteBookmarksStoreManager = new RemoteBookmarksStoreManager(
 				() -> Lists.newArrayList(remoteBookmarksStore));
+		BookmarkPropertyDescriptors propertyDescriptors = new BookmarkPropertyDescriptors();
 		checkBookmarkPropertiesOperation = new CheckBookmarkPropertiesOperation(bookmarkDatabase,
-				remoteBookmarksStoreManager, () -> nonUpdatableProperties, () -> pathProperties,
-				bookmarkPropertiesProvider, pathPlaceholderResolver, bookmarkProblemsDatabase);
+				remoteBookmarksStoreManager, propertyDescriptors, bookmarkPropertiesProvider, pathPlaceholderResolver,
+				bookmarkProblemsDatabase);
 		bookmarkProblemsAutoUpdater = new BookmarkProblemsAutoUpdater(eventBroker, bookmarkDatabase,
 				bookmarkProblemsDatabase, () -> pathProperties, checkBookmarkPropertiesOperation);
 		bookmarkProblemsAutoUpdater.init();

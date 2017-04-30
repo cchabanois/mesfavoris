@@ -24,7 +24,6 @@ import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertyDescriptors;
 import mesfavoris.bookmarktype.IGotoBookmark;
-import mesfavoris.bookmarktype.NonUpdatablePropertiesProvider;
 import mesfavoris.bookmarktype.PathPropertiesProvider;
 import mesfavoris.internal.adapters.BookmarkAdapterFactory;
 import mesfavoris.internal.bookmarktypes.ImportTeamProjectProvider;
@@ -170,8 +169,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 				gotoBookmark, numberedBookmarks, pluginBookmarkTypes, bookmarksMarkers, pathPlaceholdersStore,
 				bookmarkProblems, eventBroker);
 		CheckBookmarkPropertiesOperation checkBookmarkPropertiesOperation = new CheckBookmarkPropertiesOperation(
-				bookmarkDatabase, remoteBookmarksStoreManager, new NonUpdatablePropertiesProvider(pluginBookmarkTypes),
-				new PathPropertiesProvider(pluginBookmarkTypes), bookmarkPropertiesProvider,
+				bookmarkDatabase, remoteBookmarksStoreManager, pluginBookmarkTypes, bookmarkPropertiesProvider,
 				new PathPlaceholderResolver(pathPlaceholdersStore), bookmarkProblems);
 		bookmarkProblemsAutoUpdater = new BookmarkProblemsAutoUpdater(eventBroker, bookmarkDatabase, bookmarkProblems,
 				new PathPropertiesProvider(pluginBookmarkTypes), checkBookmarkPropertiesOperation);

@@ -4,6 +4,7 @@ import static mesfavoris.internal.IUIConstants.IMG_UPDATE_BOOKMARK;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.core.commands.ExecutionException;
@@ -99,6 +100,7 @@ import mesfavoris.model.BookmarkId;
 import mesfavoris.model.IBookmarksListener;
 import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.problems.BookmarkProblem;
+import mesfavoris.problems.IBookmarkProblemDescriptor;
 import mesfavoris.problems.IBookmarkProblemDescriptor.Severity;
 import mesfavoris.problems.IBookmarkProblemHandler;
 import mesfavoris.problems.IBookmarkProblems;
@@ -450,14 +452,17 @@ public class BookmarksView extends ViewPart {
 			form.setMessage(null);
 			return;
 		}
-		Set<BookmarkProblem> problems = bookmarkProblems.getBookmarkProblems(bookmark.getId());
+		// We do not consider bookmark problems with severity info
+		Set<BookmarkProblem> problems = bookmarkProblems.getBookmarkProblems(bookmark.getId()).stream()
+				.filter(bookmarkProblem -> getBookmarkProblemSeverity(bookmarkProblem) != Severity.INFO)
+				.collect(Collectors.toSet());
 		if (problems.size() == 0) {
 			form.setMessage(null);
 			return;
 		}
 		BookmarkProblem firstProblem = problems.iterator().next();
-		int type = bookmarkProblems.getBookmarkProblemDescriptor(firstProblem.getProblemType())
-				.getSeverity() == Severity.ERROR ? IMessageProvider.ERROR : IMessageProvider.WARNING;
+		int type = getBookmarkProblemSeverity(firstProblem) == Severity.ERROR ? IMessageProvider.ERROR
+				: IMessageProvider.WARNING;
 		form.setMessage(problems.size() == 1 ? "One bookmark problem detected"
 				: "" + problems.size() + " bookmark problems detected", type);
 		if (bookmarkProblemsTooltip == null) {
@@ -476,6 +481,12 @@ public class BookmarksView extends ViewPart {
 			bookmarkProblemsTooltip.setHideOnMouseDown(false);
 		}
 		bookmarkProblemsTooltip.setBookmark(bookmark.getId());
+	}
+
+	private Severity getBookmarkProblemSeverity(BookmarkProblem bookmarkProblem) {
+		IBookmarkProblemDescriptor problemDescriptor = bookmarkProblems
+				.getBookmarkProblemDescriptor(bookmarkProblem.getProblemType());
+		return problemDescriptor.getSeverity();
 	}
 
 	public IWorkbenchPart getPreviousActivePart() {

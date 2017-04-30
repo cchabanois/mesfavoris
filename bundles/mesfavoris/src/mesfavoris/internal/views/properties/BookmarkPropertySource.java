@@ -5,19 +5,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.eclipse.jface.viewers.IColorProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 import mesfavoris.internal.BookmarksPlugin;
+import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkType;
 import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkTypes;
+import mesfavoris.internal.views.properties.PropertyLabelProvider.PropertyIcon;
 import mesfavoris.model.Bookmark;
 import mesfavoris.problems.BookmarkProblem;
 
@@ -39,9 +34,14 @@ public class BookmarkPropertySource implements IPropertySource {
 	}
 
 	private String getCategory(String propertyName) {
+		return getPluginBookmarkType(propertyName).map(pluginBookmarkType -> pluginBookmarkType.getName())
+				.orElse(CATEGORY_UNKNOWN);
+	}
+
+	private Optional<PluginBookmarkType> getPluginBookmarkType(String propertyName) {
 		return pluginBookmarkTypes.getBookmarkTypes().stream()
 				.filter(pluginBookmarkType -> pluginBookmarkType.getPropertyDescriptor(propertyName) != null)
-				.map(pluginBookmarkType -> pluginBookmarkType.getName()).findFirst().orElse(CATEGORY_UNKNOWN);
+				.findFirst();
 	}
 
 	@Override
@@ -49,11 +49,18 @@ public class BookmarkPropertySource implements IPropertySource {
 		List<IPropertyDescriptor> propertyDescriptors = bookmark.getProperties().keySet().stream()
 				.map(propertyName -> getPropertyDescriptorFromBookmarkProperty(propertyName))
 				.collect(Collectors.toList());
-		Optional<BookmarkProblem> problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
+		Optional<BookmarkProblem> problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_MAY_UPDATE);
 		if (problem.isPresent()) {
 			propertyDescriptors.addAll(problem.get().getProperties().keySet().stream()
 					.filter(propertyName -> bookmark.getPropertyValue(propertyName) == null)
-					.map(propertyName -> getPropertyDescriptorFromProblemProperty(propertyName))
+					.map(propertyName -> getPropertyDescriptorFromProblemProperty(propertyName, PropertyIcon.INFO))
+					.collect(Collectors.toList()));
+		}
+		problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
+		if (problem.isPresent()) {
+			propertyDescriptors.addAll(problem.get().getProperties().keySet().stream()
+					.filter(propertyName -> bookmark.getPropertyValue(propertyName) == null)
+					.map(propertyName -> getPropertyDescriptorFromProblemProperty(propertyName, PropertyIcon.WARNING))
 					.collect(Collectors.toList()));
 		}
 		return propertyDescriptors.toArray(new IPropertyDescriptor[0]);
@@ -61,24 +68,30 @@ public class BookmarkPropertySource implements IPropertySource {
 
 	private IPropertyDescriptor getPropertyDescriptorFromBookmarkProperty(String propertyName) {
 		PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyName);
-		Optional<BookmarkProblem> problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
+		Optional<BookmarkProblem> problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_MAY_UPDATE);
 		String updatedValue = problem.map(bookmarkProblem -> bookmarkProblem.getProperties().get(propertyName))
 				.orElse(null);
 		if (updatedValue != null) {
-			propertyDescriptor.setLabelProvider(new PropertyLabelProvider(false, true));
+			propertyDescriptor.setLabelProvider(new PropertyLabelProvider(false, PropertyIcon.INFO));
+		}
+		problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
+		updatedValue = problem.map(bookmarkProblem -> bookmarkProblem.getProperties().get(propertyName)).orElse(null);
+		if (updatedValue != null) {
+			propertyDescriptor.setLabelProvider(new PropertyLabelProvider(false, PropertyIcon.WARNING));
 		}
 		problem = getBookmarkProblem(BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED);
 		String value = problem.map(bookmarkProblem -> bookmarkProblem.getProperties().get(propertyName)).orElse(null);
 		if (value != null) {
-			propertyDescriptor.setLabelProvider(new PropertyLabelProvider(false, true));
+			propertyDescriptor.setLabelProvider(new PropertyLabelProvider(false, PropertyIcon.WARNING));
 		}
 		propertyDescriptor.setCategory(getCategory(propertyName));
 		return propertyDescriptor;
 	}
 
-	private IPropertyDescriptor getPropertyDescriptorFromProblemProperty(String propertyName) {
+	private IPropertyDescriptor getPropertyDescriptorFromProblemProperty(String propertyName,
+			PropertyIcon propertyIcon) {
 		PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyName + " (New value)");
-		propertyDescriptor.setLabelProvider(new PropertyLabelProvider(true, true));
+		propertyDescriptor.setLabelProvider(new PropertyLabelProvider(true, propertyIcon));
 		propertyDescriptor.setCategory(getCategory(propertyName));
 		return propertyDescriptor;
 	}
@@ -102,11 +115,14 @@ public class BookmarkPropertySource implements IPropertySource {
 
 	private Object getPropertyValueFromBookmark(String propertyName) {
 		String propertyValue = bookmark.getPropertyValue(propertyName);
-		Optional<BookmarkProblem> problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
+		Optional<BookmarkProblem> problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_MAY_UPDATE);
+		if (!problem.isPresent()) {
+			problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
+		}
 		String updatedValue = problem.map(bookmarkProblem -> bookmarkProblem.getProperties().get(propertyName))
 				.orElse(null);
 		if (updatedValue != null) {
-			return new PropertyNeedsUpdatePropertySource(propertyName, propertyValue, updatedValue);
+			return new ObsoletePropertyPropertySource(propertyName, propertyValue, updatedValue);
 		} else {
 			return propertyValue;
 		}
@@ -131,80 +147,4 @@ public class BookmarkPropertySource implements IPropertySource {
 		return bookmarkProblems.stream().filter(problem -> problemType.equals(problem.getProblemType())).findAny();
 	}
 
-	private static class PropertyLabelProvider extends LabelProvider implements IColorProvider {
-		private final boolean isGrayed;
-		private final boolean useWarningIcon;
-
-		public PropertyLabelProvider(boolean isGrayed, boolean useWarningIcon) {
-			this.isGrayed = isGrayed;
-			this.useWarningIcon = useWarningIcon;
-		}
-
-		@Override
-		public Image getImage(Object element) {
-			if (useWarningIcon) {
-				ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
-				return sharedImages.getImage(ISharedImages.IMG_OBJS_WARN_TSK);
-			}
-			return null;
-		}
-
-		@Override
-		public Color getForeground(Object element) {
-			if (isGrayed) {
-				return PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_GRAY);
-			}
-			return null;
-		}
-
-		@Override
-		public Color getBackground(Object element) {
-			return null;
-		}
-
-	}
-
-	private static class PropertyNeedsUpdatePropertySource implements IPropertySource {
-
-		private final String propertyName;
-		private final String updatedValue;
-		private final String propertyValue;
-
-		public PropertyNeedsUpdatePropertySource(String propertyName, String propertyValue, String updatedValue) {
-			this.propertyName = propertyName;
-			this.updatedValue = updatedValue;
-			this.propertyValue = propertyValue;
-		}
-
-		@Override
-		public Object getEditableValue() {
-			return propertyValue;
-		}
-
-		@Override
-		public IPropertyDescriptor[] getPropertyDescriptors() {
-			PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, "Updated value");
-			propertyDescriptor.setLabelProvider(new PropertyLabelProvider(true, false));
-			return new IPropertyDescriptor[] { propertyDescriptor };
-		}
-
-		@Override
-		public Object getPropertyValue(Object id) {
-			return updatedValue;
-		}
-
-		@Override
-		public boolean isPropertySet(Object id) {
-			return false;
-		}
-
-		@Override
-		public void resetPropertyValue(Object id) {
-		}
-
-		@Override
-		public void setPropertyValue(Object id, Object value) {
-		}
-
-	}
 }

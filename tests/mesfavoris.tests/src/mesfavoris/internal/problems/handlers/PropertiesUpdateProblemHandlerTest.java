@@ -27,8 +27,8 @@ import mesfavoris.model.BookmarksTree;
 import mesfavoris.problems.BookmarkProblem;
 import mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder;
 
-public class PropertiesNeedUpdateProblemHandlerTest {
-	private PropertiesNeedUpdateProblemHandler handler;
+public class PropertiesUpdateProblemHandlerTest {
+	private PropertiesUpdateProblemHandler handler;
 	private BookmarkProblemsDatabase bookmarkProblemsDatabase;
 	private BookmarkDatabase bookmarkDatabase;
 	private File file;
@@ -45,7 +45,7 @@ public class PropertiesNeedUpdateProblemHandlerTest {
 		bookmarkProblemsDatabase = new BookmarkProblemsDatabase(eventBroker, bookmarkDatabase,
 				new BookmarkProblemDescriptors(), file);
 		bookmarkProblemsDatabase.init();
-		handler = new PropertiesNeedUpdateProblemHandler(bookmarkDatabase, bookmarkProblemsDatabase);
+		handler = new PropertiesUpdateProblemHandler(bookmarkDatabase, bookmarkProblemsDatabase);
 	}
 
 	@After

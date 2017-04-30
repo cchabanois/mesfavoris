@@ -16,7 +16,12 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 
+import mesfavoris.bookmarktype.BookmarkPropertyDescriptor;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
+import mesfavoris.bookmarktype.IBookmarkPropertyDescriptors;
+import mesfavoris.bookmarktype.NonUpdatablePropertiesProvider;
+import mesfavoris.bookmarktype.PathPropertiesProvider;
+import mesfavoris.bookmarktype.IBookmarkPropertyObsolescenceSeverityProvider.ObsolescenceSeverity;
 import mesfavoris.internal.Constants;
 import mesfavoris.internal.placeholders.PathPlaceholderGuesser;
 import mesfavoris.internal.placeholders.PathPlaceholderResolver;
@@ -28,6 +33,7 @@ import mesfavoris.placeholders.PathPlaceholder;
 import mesfavoris.problems.BookmarkProblem;
 import mesfavoris.problems.IBookmarkProblems;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
+import static mesfavoris.problems.BookmarkProblem.*;
 
 public class CheckBookmarkPropertiesOperation {
 	private final BookmarkDatabase bookmarkDatabase;
@@ -37,16 +43,18 @@ public class CheckBookmarkPropertiesOperation {
 	private final Provider<Set<String>> pathPropertiesProvider;
 	private final IPathPlaceholderResolver pathPlaceholderResolver;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
+	private final IBookmarkPropertyDescriptors bookmarkPropertyDescriptors;
 
 	public CheckBookmarkPropertiesOperation(BookmarkDatabase bookmarkDatabase,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
-			Provider<Set<String>> nonUpdatablePropertiesProvider, Provider<Set<String>> pathPropertiesProvider,
+			IBookmarkPropertyDescriptors bookmarkPropertyDescriptors,
 			IBookmarkPropertiesProvider bookmarkPropertiesProvider, IPathPlaceholderResolver pathPlaceholderResolver,
 			IBookmarkProblems bookmarkProblems) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
-		this.nonUpdatablePropertiesProvider = nonUpdatablePropertiesProvider;
-		this.pathPropertiesProvider = pathPropertiesProvider;
+		this.bookmarkPropertyDescriptors = bookmarkPropertyDescriptors;
+		this.nonUpdatablePropertiesProvider = new NonUpdatablePropertiesProvider(bookmarkPropertyDescriptors);
+		this.pathPropertiesProvider = new PathPropertiesProvider(bookmarkPropertyDescriptors);
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 		this.bookmarkProblems = bookmarkProblems;
 		this.pathPlaceholderResolver = pathPlaceholderResolver;
@@ -85,15 +93,15 @@ public class CheckBookmarkPropertiesOperation {
 	public Set<BookmarkProblem> getBookmarkPropertiesProblems(BookmarkId bookmarkId, IWorkbenchPart part,
 			ISelection selection, IProgressMonitor monitor) {
 		Set<BookmarkProblem> bookmarkProblems = new HashSet<>();
-		Map<String, String> propertiesNeedingUpdate = getPropertiesNeedingUpdate(bookmarkId, part, selection, monitor);
+		Map<String, String> obsoleteProperties = getObsoleteProperties(bookmarkId, part, selection, monitor);
 		Map<String, String> propertiesUsingUndefinedPlaceholder = getPropertiesUsingUndefinedPlaceholder(bookmarkId);
 		PathPlaceholderGuesser pathPlaceholderGuesser = new PathPlaceholderGuesser(pathPlaceholderResolver,
 				pathPropertiesProvider.get());
 		Set<PathPlaceholder> undefinedPathPlaceholders = pathPlaceholderGuesser
-				.guessUndefinedPlaceholders(propertiesUsingUndefinedPlaceholder, propertiesNeedingUpdate);
-		propertiesUsingUndefinedPlaceholder.keySet().forEach(propName -> propertiesNeedingUpdate.remove(propName));
-		if (!propertiesNeedingUpdate.isEmpty()) {
-			bookmarkProblems.add(getPropertiesNeedUpdateBookmarkProblem(bookmarkId, propertiesNeedingUpdate));
+				.guessUndefinedPlaceholders(propertiesUsingUndefinedPlaceholder, obsoleteProperties);
+		propertiesUsingUndefinedPlaceholder.keySet().forEach(propName -> obsoleteProperties.remove(propName));
+		if (!obsoleteProperties.isEmpty()) {
+			bookmarkProblems.addAll(getObsoletePropertiesBookmarkProblems(bookmarkId, obsoleteProperties));
 		}
 		if (!propertiesUsingUndefinedPlaceholder.isEmpty()) {
 			bookmarkProblems.add(getPlaceholderBookmarkProblem(bookmarkId, propertiesUsingUndefinedPlaceholder,
@@ -106,8 +114,18 @@ public class CheckBookmarkPropertiesOperation {
 		return bookmarkProblems;
 	}
 
-	private Map<String, String> getPropertiesNeedingUpdate(BookmarkId bookmarkId, IWorkbenchPart part,
-			ISelection selection, IProgressMonitor monitor) {
+	/**
+	 * Get the obsolete properties
+	 * 
+	 * @param bookmarkId
+	 * @param part
+	 * @param selection
+	 * @param monitor
+	 * @return a {@link Map} where keys are property names and values are new
+	 *         property values
+	 */
+	private Map<String, String> getObsoleteProperties(BookmarkId bookmarkId, IWorkbenchPart part, ISelection selection,
+			IProgressMonitor monitor) {
 		Bookmark bookmark = bookmarkDatabase.getBookmarksTree().getBookmark(bookmarkId);
 		Map<String, String> bookmarkProperties = new HashMap<>();
 		Map<String, String> propertiesNeedingUpdate = new HashMap<>();
@@ -160,15 +178,39 @@ public class CheckBookmarkPropertiesOperation {
 				bookmarkId) != null;
 	}
 
-	private BookmarkProblem getPropertiesNeedUpdateBookmarkProblem(BookmarkId bookmarkId,
-			Map<String, String> propertiesNeedingUpdate) {
-		BookmarkProblem problem = new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE,
-				propertiesNeedingUpdate);
-		return problem;
+	private Set<BookmarkProblem> getObsoletePropertiesBookmarkProblems(BookmarkId bookmarkId,
+			Map<String, String> obsoleteProperties) {
+		Map<String, String> warningProperties = new HashMap<>();
+		Map<String, String> infoProperties = new HashMap<>();
+		for (Map.Entry<String, String> entry : obsoleteProperties.entrySet()) {
+			BookmarkPropertyDescriptor propertyDescriptor = bookmarkPropertyDescriptors
+					.getPropertyDescriptor(entry.getKey());
+			if (propertyDescriptor == null) {
+				warningProperties.put(entry.getKey(), entry.getValue());
+			} else {
+				Bookmark bookmark = bookmarkDatabase.getBookmarksTree().getBookmark(bookmarkId);
+				ObsolescenceSeverity severity = propertyDescriptor.getObsolescenceSeverity(bookmark, entry.getKey(),
+						entry.getValue());
+				if (severity == ObsolescenceSeverity.INFO) {
+					infoProperties.put(entry.getKey(), entry.getValue());
+				} else if (severity == ObsolescenceSeverity.WARNING) {
+					warningProperties.put(entry.getKey(), entry.getValue());
+				}
+			}
+		}
+		Set<BookmarkProblem> bookmarkProblems = new HashSet<>();
+		if (!warningProperties.isEmpty()) {
+			bookmarkProblems.add(new BookmarkProblem(bookmarkId, TYPE_PROPERTIES_NEED_UPDATE, warningProperties));
+		}
+		if (!infoProperties.isEmpty()) {
+			bookmarkProblems.add(new BookmarkProblem(bookmarkId, TYPE_PROPERTIES_MAY_UPDATE, infoProperties));
+
+		}
+		return bookmarkProblems;
 	}
 
-	private void removePropertiesNeedUpdateBookmarkProblem(BookmarkId bookmarkId) {
-		bookmarkProblems.getBookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE)
+	private void removeBookmarkProblem(BookmarkId bookmarkId, String problemType) {
+		bookmarkProblems.getBookmarkProblem(bookmarkId, problemType)
 				.ifPresent(problem -> bookmarkProblems.delete(problem));
 	}
 
@@ -177,24 +219,13 @@ public class CheckBookmarkPropertiesOperation {
 		Map<String, String> properties = new HashMap<>(propertiesUsingUndefinedPlaceholder);
 		undefinedPathPlaceholders.forEach(pathPlaceholder -> properties.put("${" + pathPlaceholder.getName() + "}",
 				pathPlaceholder.getPath().toPortableString()));
-		BookmarkProblem problem = new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED,
-				properties);
+		BookmarkProblem problem = new BookmarkProblem(bookmarkId, TYPE_PLACEHOLDER_UNDEFINED, properties);
 		return problem;
 	}
 
 	private BookmarkProblem getLocalPathSharedBookmarkProblem(BookmarkId bookmarkId,
 			Map<String, String> propertiesWithLocalPath) {
-		return new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_LOCAL_PATH_SHARED, propertiesWithLocalPath);
-	}
-
-	private void removeLocalPathSharedBookmarkProblem(BookmarkId bookmarkId) {
-		bookmarkProblems.getBookmarkProblem(bookmarkId, BookmarkProblem.TYPE_LOCAL_PATH_SHARED)
-				.ifPresent(problem -> bookmarkProblems.delete(problem));
-	}
-
-	private void removePlaceholderBookmarkProblem(BookmarkId bookmarkId) {
-		bookmarkProblems.getBookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED)
-				.ifPresent(problem -> bookmarkProblems.delete(problem));
+		return new BookmarkProblem(bookmarkId, TYPE_LOCAL_PATH_SHARED, propertiesWithLocalPath);
 	}
 
 	private class CheckBookmarkProperties extends Job {
@@ -225,20 +256,25 @@ public class CheckBookmarkPropertiesOperation {
 				newBookmarkProblems = getBookmarkPropertiesProblems(bookmarkId, part, selection, monitor);
 			}
 			newBookmarkProblems.forEach(bookmarkProblem -> bookmarkProblems.add(bookmarkProblem));
-			if (!newBookmarkProblems.stream().filter(bookmarkProblem -> bookmarkProblem.getProblemType()
-					.equals(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE)).findAny().isPresent()) {
-				removePropertiesNeedUpdateBookmarkProblem(bookmarkId);
+			if (!containsBookmarkProblem(newBookmarkProblems, TYPE_PROPERTIES_NEED_UPDATE)) {
+				removeBookmarkProblem(bookmarkId, TYPE_PROPERTIES_NEED_UPDATE);
 			}
-			if (!newBookmarkProblems.stream().filter(bookmarkProblem -> bookmarkProblem.getProblemType()
-					.equals(BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED)).findAny().isPresent()) {
-				removePlaceholderBookmarkProblem(bookmarkId);
+			if (!containsBookmarkProblem(newBookmarkProblems, TYPE_PROPERTIES_MAY_UPDATE)) {
+				removeBookmarkProblem(bookmarkId, TYPE_PROPERTIES_MAY_UPDATE);
 			}
-			if (!newBookmarkProblems.stream().filter(
-					bookmarkProblem -> bookmarkProblem.getProblemType().equals(BookmarkProblem.TYPE_LOCAL_PATH_SHARED))
-					.findAny().isPresent()) {
-				removeLocalPathSharedBookmarkProblem(bookmarkId);
+			if (!containsBookmarkProblem(newBookmarkProblems, TYPE_PLACEHOLDER_UNDEFINED)) {
+				removeBookmarkProblem(bookmarkId, TYPE_PLACEHOLDER_UNDEFINED);
+			}
+			if (!containsBookmarkProblem(newBookmarkProblems, TYPE_LOCAL_PATH_SHARED)) {
+				removeBookmarkProblem(bookmarkId, TYPE_LOCAL_PATH_SHARED);
 			}
 			return Status.OK_STATUS;
+		}
+
+		private boolean containsBookmarkProblem(Set<BookmarkProblem> bookmarkProblems, String problemType) {
+			return bookmarkProblems.stream()
+					.filter(bookmarkProblem -> bookmarkProblem.getProblemType().equals(problemType))
+					.findAny().isPresent();
 		}
 
 	}

@@ -15,7 +15,6 @@ import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertyDescriptors;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.bookmarktype.NonUpdatablePropertiesProvider;
-import mesfavoris.bookmarktype.PathPropertiesProvider;
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;
 import mesfavoris.internal.placeholders.PathPlaceholderResolver;
@@ -233,9 +232,7 @@ public class BookmarksService implements IBookmarksService {
 
 	private CheckBookmarkPropertiesOperation getCheckBookmarkPropertiesOperation() {
 		return new CheckBookmarkPropertiesOperation(bookmarkDatabase, remoteBookmarksStoreManager,
-				new NonUpdatablePropertiesProvider(bookmarkPropertyDescriptors),
-				new PathPropertiesProvider(bookmarkPropertyDescriptors), bookmarkPropertiesProvider,
-				pathPlaceholderResolver, bookmarkProblems);
+				bookmarkPropertyDescriptors, bookmarkPropertiesProvider, pathPlaceholderResolver, bookmarkProblems);
 	}
 
 	private GotoBookmarkOperation getGotoBookmarkOperation() {

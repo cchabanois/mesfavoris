@@ -177,12 +177,14 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 	}
 
 	private Optional<ImageDescriptor> getProblemOverlayImageDescriptor(BookmarkId bookmarkId) {
-		return getProblemSeverity(bookmarkId).map(severity -> {
+		return getProblemSeverity(bookmarkId).flatMap(severity -> {
 			switch (severity) {
+			case WARNING:
+				return Optional.of(ISharedImages.IMG_DEC_FIELD_WARNING);
 			case ERROR:
-				return ISharedImages.IMG_DEC_FIELD_ERROR;
+				return Optional.of(ISharedImages.IMG_DEC_FIELD_ERROR);
 			default:
-				return ISharedImages.IMG_DEC_FIELD_WARNING;
+				return Optional.empty();
 			}
 		}).map(key -> PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(key));
 	}

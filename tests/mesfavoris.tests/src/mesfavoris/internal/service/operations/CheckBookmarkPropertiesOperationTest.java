@@ -34,10 +34,10 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Sets;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
+import mesfavoris.internal.bookmarktypes.extension.BookmarkPropertyDescriptors;
 import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.internal.placeholders.PathPlaceholdersMap;
 import mesfavoris.internal.remote.InMemoryRemoteBookmarksStore;
@@ -61,9 +61,6 @@ public class CheckBookmarkPropertiesOperationTest {
 	private ISelection selection = mock(ISelection.class);
 	private IBookmarkProblems bookmarkProblems = mock(IBookmarkProblems.class);
 	private PathPlaceholdersMap pathPlaceholders = new PathPlaceholdersMap();
-	private Set<String> nonUpdatableProperties = Sets.newHashSet(Bookmark.PROPERTY_NAME, Bookmark.PROPERTY_COMMENT,
-			Bookmark.PROPERTY_COMMENT);
-	private Set<String> pathProperties = Sets.newHashSet("git.repositoryDir", "folderPath", "filePath");
 	private InMemoryRemoteBookmarksStore remoteBookmarksStore;
 
 	@Before
@@ -74,9 +71,9 @@ public class CheckBookmarkPropertiesOperationTest {
 		this.remoteBookmarksStore = new InMemoryRemoteBookmarksStore(eventBroker);
 		RemoteBookmarksStoreManager remoteBookmarksStoreManager = new RemoteBookmarksStoreManager(
 				() -> Lists.newArrayList(remoteBookmarksStore));
+		BookmarkPropertyDescriptors propertyDescriptors = new BookmarkPropertyDescriptors();
 		operation = new CheckBookmarkPropertiesOperation(bookmarkDatabase, remoteBookmarksStoreManager,
-				() -> nonUpdatableProperties, () -> pathProperties, bookmarkPropertiesProvider, pathPlaceholderResolver,
-				bookmarkProblems);
+				propertyDescriptors, bookmarkPropertiesProvider, pathPlaceholderResolver, bookmarkProblems);
 		IWorkbenchPartSite workbenchPartSite = mock(IWorkbenchPartSite.class);
 		when(workbenchPart.getSite()).thenReturn(workbenchPartSite);
 		when(workbenchPartSite.getPage()).thenReturn(workbenchPage);
@@ -87,7 +84,7 @@ public class CheckBookmarkPropertiesOperationTest {
 		// Given
 		BookmarkId bookmarkId = new BookmarkId("bookmark12");
 		addBookmark(new BookmarkId("folder1"), new Bookmark(bookmarkId,
-					ImmutableMap.of(Bookmark.PROPERTY_NAME, "bookmark12", "prop1", "value1", "prop2", "value2")));
+				ImmutableMap.of(Bookmark.PROPERTY_NAME, "bookmark12", "prop1", "value1", "prop2", "value2")));
 		doPutPropertiesWhenAddBookmarkPropertiesCalled(bookmarkPropertiesProvider, selection,
 				ImmutableMap.of("prop1", "value1", "prop2", "newValue2", "prop3", "value3"));
 
@@ -101,6 +98,26 @@ public class CheckBookmarkPropertiesOperationTest {
 		assertThat(bookmarkProblem.getProblemType()).isEqualTo(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
 		assertThat(bookmarkProblem.getProperties()).containsExactly(entry("prop2", "newValue2"),
 				entry("prop3", "value3"));
+	}
+
+	@Test
+	public void testPropertiesMayUpdate() throws BookmarksException {
+		// Given
+		BookmarkId bookmarkId = new BookmarkId("bookmark12");
+		addBookmark(new BookmarkId("folder1"),
+				new Bookmark(bookmarkId, ImmutableMap.of(Bookmark.PROPERTY_NAME, "bookmark12", "lineNumber", "10")));
+		doPutPropertiesWhenAddBookmarkPropertiesCalled(bookmarkPropertiesProvider, selection,
+				ImmutableMap.of("lineNumber", "25"));
+
+		// When
+		Set<BookmarkProblem> newBookmarkProblems = operation.getBookmarkPropertiesProblems(bookmarkId, workbenchPart,
+				selection, new NullProgressMonitor());
+
+		// Then
+		assertThat(newBookmarkProblems).hasSize(1);
+		BookmarkProblem bookmarkProblem = newBookmarkProblems.iterator().next();
+		assertThat(bookmarkProblem.getProblemType()).isEqualTo(BookmarkProblem.TYPE_PROPERTIES_MAY_UPDATE);
+		assertThat(bookmarkProblem.getProperties()).containsExactly(entry("lineNumber", "25"));
 	}
 
 	@Test
@@ -171,8 +188,8 @@ public class CheckBookmarkPropertiesOperationTest {
 			return null;
 		}).when(bookmarkPropertiesProvider).addBookmarkProperties(any(Map.class), eq(workbenchPart), eq(selection),
 				any(IProgressMonitor.class));
-	}	
-	
+	}
+
 	private void addBookmark(BookmarkId parentBookmarkId, Bookmark bookmark) throws BookmarksException {
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
 			bookmarksTreeModifier.addBookmarks(parentBookmarkId, Lists.newArrayList(bookmark));

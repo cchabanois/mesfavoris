@@ -252,6 +252,33 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="obsolescenceSeverity" use="default" value="WARNING">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="IGNORE">
+                  </enumeration>
+                  <enumeration value="WARNING">
+                  </enumeration>
+                  <enumeration value="INFO">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="obsolescenceSeverityProvider" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":mesfavoris.bookmarktype.IBookmarkPropertyObsolescenceSeverityProvider"/>
+               </appinfo>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

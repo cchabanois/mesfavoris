@@ -8,21 +8,24 @@ import mesfavoris.model.Bookmark;
  * @author cchabanois
  *
  */
-public class BookmarkPropertyDescriptor {
+public class BookmarkPropertyDescriptor implements IBookmarkPropertyObsolescenceSeverityProvider {
 	private final String name;
 	private final BookmarkPropertyType type;
 	private final boolean updatable;
 	private final String description;
+	private final IBookmarkPropertyObsolescenceSeverityProvider bookmarkPropertyObsolescenceSeverityProvider;
 
 	public enum BookmarkPropertyType {
 		PATH, STRING, INT, INSTANT
 	}
 
-	public BookmarkPropertyDescriptor(String name, BookmarkPropertyType type, boolean updatable, String description) {
+	public BookmarkPropertyDescriptor(String name, BookmarkPropertyType type, boolean updatable, String description,
+			IBookmarkPropertyObsolescenceSeverityProvider bookmarkPropertyObsolescenceSeverityProvider) {
 		this.name = name;
 		this.type = type;
 		this.updatable = updatable;
 		this.description = description;
+		this.bookmarkPropertyObsolescenceSeverityProvider = bookmarkPropertyObsolescenceSeverityProvider;
 	}
 
 	public String getDescription() {
@@ -35,6 +38,11 @@ public class BookmarkPropertyDescriptor {
 
 	public BookmarkPropertyType getType() {
 		return type;
+	}
+
+	@Override
+	public ObsolescenceSeverity getObsolescenceSeverity(Bookmark bookmark, String propertyName, String newValue) {
+		return bookmarkPropertyObsolescenceSeverityProvider.getObsolescenceSeverity(bookmark, propertyName, newValue);
 	}
 
 	public boolean isUpdatable() {

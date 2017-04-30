@@ -14,13 +14,15 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import mesfavoris.bookmarktype.BookmarkPropertyDescriptor;
+import mesfavoris.bookmarktype.BookmarkPropertyDescriptor.BookmarkPropertyType;
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
 import mesfavoris.bookmarktype.IBookmarkLocationProvider;
 import mesfavoris.bookmarktype.IBookmarkMarkerAttributesProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
+import mesfavoris.bookmarktype.IBookmarkPropertyObsolescenceSeverityProvider;
+import mesfavoris.bookmarktype.IBookmarkPropertyObsolescenceSeverityProvider.ObsolescenceSeverity;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.bookmarktype.IImportTeamProject;
-import mesfavoris.bookmarktype.BookmarkPropertyDescriptor.BookmarkPropertyType;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.StatusHelper;
 
@@ -80,13 +82,41 @@ public class PluginBookmarkType {
 		for (IConfigurationElement propertiesElement : propertiesElements) {
 			IConfigurationElement[] propertyElements = propertiesElement.getChildren("property");
 			for (IConfigurationElement propertyElement : propertyElements) {
-				String name = propertyElement.getAttribute("name");
-				BookmarkPropertyType type = BookmarkPropertyType
-						.valueOf(propertyElement.getAttribute("type").toUpperCase());
-				Boolean updatable = Boolean.parseBoolean(propertyElement.getAttribute("updatable"));
-				String description = propertyElement.getAttribute("description");
-				properties.put(name, new BookmarkPropertyDescriptor(name, type, updatable, description));
+				BookmarkPropertyDescriptor bookmarkPropertyDescriptor = getBookmarkPropertyDescriptor(propertyElement);
+				properties.put(bookmarkPropertyDescriptor.getName(), bookmarkPropertyDescriptor);
 			}
+		}
+	}
+
+	private BookmarkPropertyDescriptor getBookmarkPropertyDescriptor(IConfigurationElement propertyElement) {
+		String name = propertyElement.getAttribute("name");
+		BookmarkPropertyType type = BookmarkPropertyType.valueOf(propertyElement.getAttribute("type").toUpperCase());
+		Boolean updatable = Boolean.parseBoolean(propertyElement.getAttribute("updatable"));
+		String description = propertyElement.getAttribute("description");
+		IBookmarkPropertyObsolescenceSeverityProvider obsolescenceSeverityProvider = getBookmarkPropertyObsolescenceSeverityProvider(
+				propertyElement);
+		return new BookmarkPropertyDescriptor(name, type, updatable, description, obsolescenceSeverityProvider);
+	}
+
+	private IBookmarkPropertyObsolescenceSeverityProvider getBookmarkPropertyObsolescenceSeverityProvider(
+			IConfigurationElement element) {
+		String className = element.getAttribute("obsolescenceSeverityProvider");
+		if (className == null) {
+			String severity = element.getAttribute("obsolescenceSeverity");
+			ObsolescenceSeverity obsolescenceSeverity;
+			if (severity == null) {
+				obsolescenceSeverity = ObsolescenceSeverity.WARNING;
+			} else {
+				obsolescenceSeverity = ObsolescenceSeverity.valueOf(severity);
+			}
+			return (bookmark, propertyName, newValue) -> obsolescenceSeverity;
+		}
+		try {
+			return (IBookmarkPropertyObsolescenceSeverityProvider) element
+					.createExecutableExtension("obsolescenceSeverityProvider");
+		} catch (CoreException e) {
+			StatusHelper.logWarn("Could not create obsolescenceSeverityProvider " + className, e);
+			return (bookmark, propertyName, newValue) -> ObsolescenceSeverity.WARNING;
 		}
 	}
 
@@ -114,6 +144,7 @@ public class PluginBookmarkType {
 
 	/**
 	 * Must be called from the UI thread
+	 * 
 	 * @return
 	 */
 	public synchronized Set<IBookmarkLabelProvider> getLabelProviders() {
@@ -156,9 +187,9 @@ public class PluginBookmarkType {
 	public List<BookmarkPropertyDescriptor> getPropertyDescriptors() {
 		return new ArrayList<>(properties.values());
 	}
-	
+
 	public BookmarkPropertyDescriptor getPropertyDescriptor(String propertyName) {
 		return properties.get(propertyName);
 	}
-	
+
 }

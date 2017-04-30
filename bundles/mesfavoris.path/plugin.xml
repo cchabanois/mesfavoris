@@ -36,21 +36,25 @@
          <properties>
             <property
                   name="filePath"
+                  obsolescenceSeverity="WARNING"
                   type="path"
                   updatable="true">
             </property>
             <property
                   name="folderPath"
+                  obsolescenceSeverity="WARNING"
                   type="path"
                   updatable="true">
             </property>
             <property
                   name="workspacePath"
+                  obsolescenceSeverity="WARNING"
                   type="string"
                   updatable="true">
             </property>
             <property
                   name="projectName"
+                  obsolescenceSeverity="WARNING"
                   type="string"
                   updatable="true">
             </property>

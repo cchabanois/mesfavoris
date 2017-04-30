@@ -39,6 +39,7 @@ import mesfavoris.bookmarktype.NonUpdatablePropertiesProvider;
 import mesfavoris.bookmarktype.PathPropertiesProvider;
 import mesfavoris.commons.ui.wizards.datatransfer.BundleProjectImportOperation;
 import mesfavoris.internal.BookmarksPlugin;
+import mesfavoris.internal.bookmarktypes.extension.BookmarkPropertyDescriptors;
 import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkMarkerAttributesProvider;
 import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkTypes;
 import mesfavoris.internal.markers.BookmarksMarkers;
@@ -89,9 +90,7 @@ public class GotoBookmarkOperationTest {
 		RemoteBookmarksStoreManager remoteBookmarksStoreManager = new RemoteBookmarksStoreManager(
 				() -> Lists.newArrayList(remoteBookmarksStore));
 		CheckBookmarkPropertiesOperation checkBookmarkPropertiesOperation = new CheckBookmarkPropertiesOperation(
-				bookmarkDatabase, remoteBookmarksStoreManager,
-				new NonUpdatablePropertiesProvider(bookmarkPropertyDescriptors),
-				new PathPropertiesProvider(bookmarkPropertyDescriptors), bookmarkPropertiesProvider,
+				bookmarkDatabase, remoteBookmarksStoreManager, bookmarkPropertyDescriptors, bookmarkPropertiesProvider,
 				new PathPlaceholderResolver(BookmarksPlugin.getDefault().getPathPlaceholdersStore()),
 				bookmarkProblemsDatabase);
 		gotoBookmarkOperation = new GotoBookmarkOperation(bookmarkDatabase, bookmarkLocationProvider, gotoBookmark,

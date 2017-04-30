@@ -10,6 +10,7 @@ public class BookmarkProblem {
 	public static String TYPE_CANNOT_GOTOBOOKMARK = "cannotGotoBookmark";
 	public static String TYPE_PLACEHOLDER_UNDEFINED = "placeholderUndefined";
 	public static String TYPE_PROPERTIES_NEED_UPDATE = "propertiesNeedUpdate";
+	public static String TYPE_PROPERTIES_MAY_UPDATE = "propertiesMayUpdate";
 	public static String TYPE_LOCAL_PATH_SHARED = "localPathShared";
 
 	private final BookmarkId bookmarkId;

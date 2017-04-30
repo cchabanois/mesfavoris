@@ -44,11 +44,13 @@
          <properties>
             <property
                   name="lineNumber"
+                  obsolescenceSeverityProvider="mesfavoris.texteditor.internal.LineNumberObsolescenceSeverityProvider"
                   type="int"
                   updatable="true">
             </property>
             <property
                   name="lineContent"
+                  obsolescenceSeverity="WARNING"
                   type="string"
                   updatable="true">
             </property>

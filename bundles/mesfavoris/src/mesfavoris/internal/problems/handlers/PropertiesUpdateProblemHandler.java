@@ -12,15 +12,22 @@ import mesfavoris.problems.BookmarkProblem;
 import mesfavoris.problems.IBookmarkProblemHandler;
 import mesfavoris.problems.IBookmarkProblems;
 
-public class PropertiesNeedUpdateProblemHandler implements IBookmarkProblemHandler {
+/**
+ * Handler for {@link BookmarkProblem#TYPE_PROPERTIES_NEED_UPDATE} and
+ * {@link BookmarkProblem#TYPE_PROPERTIES_MAY_UPDATE}
+ * 
+ * @author cchabanois
+ *
+ */
+public class PropertiesUpdateProblemHandler implements IBookmarkProblemHandler {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final IBookmarkProblems bookmarkProblems;
 
-	public PropertiesNeedUpdateProblemHandler() {
+	public PropertiesUpdateProblemHandler() {
 		this(MesFavoris.getBookmarkDatabase(), MesFavoris.getBookmarkProblems());
 	}
-	
-	public PropertiesNeedUpdateProblemHandler(BookmarkDatabase bookmarkDatabase, IBookmarkProblems bookmarkProblems) {
+
+	public PropertiesUpdateProblemHandler(BookmarkDatabase bookmarkDatabase, IBookmarkProblems bookmarkProblems) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.bookmarkProblems = bookmarkProblems;
 	}
