@@ -119,6 +119,9 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 		HtmlPage page = webClient.getPage(authorizationUrl);
 		webClient.waitForBackgroundJavaScriptStartingBefore(8000);
 		HtmlForm form = (HtmlForm) page.getElementById("gaia_loginform");
+		if (form == null) {
+			throw new RuntimeException("Cannot find login form :\n" + page.asXml());
+		}
 		HtmlSubmitInput signInButton = (HtmlSubmitInput) form.getInputByName("signIn");
 		HtmlTextInput userNameField = (HtmlTextInput) form.getInputByName("Email");
 		userNameField.setValueAttribute(userName);
