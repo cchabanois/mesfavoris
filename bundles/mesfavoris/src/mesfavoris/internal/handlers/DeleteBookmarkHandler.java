@@ -26,16 +26,18 @@ import mesfavoris.MesFavoris;
 import mesfavoris.handlers.AbstractBookmarkHandler;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
-import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.viewers.BookmarksTableLabelProvider;
 
 public class DeleteBookmarkHandler extends AbstractBookmarkHandler {
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
-
+	private final BookmarkDatabase bookmarkDatabase;
+	
 	public DeleteBookmarkHandler() {
+		bookmarkDatabase = MesFavoris.getBookmarkDatabase();
 		remoteBookmarksStoreManager = BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager();
 	}
 
@@ -46,7 +48,7 @@ public class DeleteBookmarkHandler extends AbstractBookmarkHandler {
 			return null;
 		}
 		List<Bookmark> bookmarks = new ArrayList<>(
-				getSelectedBookmarksRecursively(MesFavoris.getBookmarkDatabase().getBookmarksTree(), selection));
+				getBookmarksToDelete(bookmarkDatabase.getBookmarksTree(), selection));
 		ConfirmDeleteDialog dialog = new ConfirmDeleteDialog(HandlerUtil.getActiveShell(event), bookmarks);
 		if (dialog.open() != Window.OK) {
 			return null;
@@ -60,27 +62,16 @@ public class DeleteBookmarkHandler extends AbstractBookmarkHandler {
 		return null;
 	}
 
-	private Set<Bookmark> getSelectedBookmarksRecursively(BookmarksTree bookmarksTree, IStructuredSelection selection) {
+	private Set<Bookmark> getBookmarksToDelete(BookmarksTree bookmarksTree, IStructuredSelection selection) {
 		Set<Bookmark> bookmarks = new LinkedHashSet<>();
 		for (Bookmark bookmark : ((List<Bookmark>) (selection.toList()))) {
 			bookmarks.add(bookmark);
 			if (bookmark instanceof BookmarkFolder
 					&& remoteBookmarksStoreManager.getRemoteBookmarkFolder(bookmark.getId()) == null) {
-				getAllBookmarksUnder(bookmarksTree, bookmark.getId(), bookmarks);
+				bookmarks.addAll(getBookmarksRecursively(bookmarksTree, bookmark.getId(), b->true));
 			}
 		}
 		return bookmarks;
-	}
-
-	private void getAllBookmarksUnder(BookmarksTree bookmarksTree, BookmarkId bookmarkFolderId,
-			Set<Bookmark> bookmarks) {
-		List<Bookmark> children = bookmarksTree.getChildren(bookmarkFolderId);
-		bookmarks.addAll(children);
-		for (Bookmark bookmark : children) {
-			if (bookmark instanceof BookmarkFolder) {
-				getAllBookmarksUnder(bookmarksTree, bookmark.getId(), bookmarks);
-			}
-		}
 	}
 
 	private static class ConfirmDeleteDialog extends MessageDialog {

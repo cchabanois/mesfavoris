@@ -120,6 +120,13 @@
             id="mesfavoris.command.openAllSelectedBookmarks"
             name="Open All Selected Bookmarks">
       </command>
+      <command
+            categoryId="mesfavoris.category"
+            defaultHandler="mesfavoris.internal.handlers.DeleteBookmarkProblemsHandler"
+            description="Delete Bookmark Problems"
+            id="mesfavoris.command.deleteBookmarkProblems"
+            name="Delete Bookmark problems">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -486,6 +493,10 @@
          </menu>
          <command
                commandId="mesfavoris.command.deleteBookmarkMarker"
+               style="push">
+         </command>
+         <command
+               commandId="mesfavoris.command.deleteBookmarkProblems"
                style="push">
          </command>
          <command

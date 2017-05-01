@@ -15,18 +15,17 @@ import mesfavoris.MesFavoris;
 import mesfavoris.handlers.AbstractBookmarkHandler;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.StatusHelper;
-import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
-import mesfavoris.model.BookmarkFolder;
+import mesfavoris.problems.IBookmarkProblems;
 
-public class DeleteBookmarkMarkerHandler extends AbstractBookmarkHandler {
+public class DeleteBookmarkProblemsHandler extends AbstractBookmarkHandler {
 	private final BookmarkDatabase bookmarkDatabase;
-	private final IBookmarksMarkers bookmarksMarkers;
+	private final IBookmarkProblems bookmarkProblems;
 
-	public DeleteBookmarkMarkerHandler() {
+	public DeleteBookmarkProblemsHandler() {
 		this.bookmarkDatabase = MesFavoris.getBookmarkDatabase();
-		this.bookmarksMarkers = BookmarksPlugin.getDefault().getBookmarksMarkers();
+		this.bookmarkProblems = BookmarksPlugin.getDefault().getBookmarkProblems();
 	}
 
 	@Override
@@ -40,19 +39,19 @@ public class DeleteBookmarkMarkerHandler extends AbstractBookmarkHandler {
 		try {
 			progressService.busyCursorWhile(monitor -> {
 				Set<Bookmark> bookmarks = getSelectedBookmarksRecursively(bookmarkDatabase.getBookmarksTree(),
-						selection, bookmark->!(bookmark instanceof BookmarkFolder));
-				SubMonitor subMonitor = SubMonitor.convert(monitor, "Delete bookmark markers", bookmarks.size());
+						selection, b->true);
+				SubMonitor subMonitor = SubMonitor.convert(monitor, "Delete bookmark problems", bookmarks.size());
 				for (Bookmark bookmark : bookmarks) {
-					bookmarksMarkers.deleteMarker(bookmark.getId(), subMonitor.newChild(1));
+					bookmarkProblems.delete(bookmark.getId());
+					subMonitor.worked(1);
 				}
 			});
 		} catch (InvocationTargetException e) {
-			StatusHelper.showError("Could not delete bookmark marker", e.getCause(), false);
+			StatusHelper.showError("Could not delete bookmark problems", e.getCause(), false);
 		} catch (InterruptedException e) {
-			throw new ExecutionException("Could not delete bookmark marker : cancelled");
+			throw new ExecutionException("Could not delete bookmark problems : cancelled");
 		}
 		return null;
 	}
-
 
 }
