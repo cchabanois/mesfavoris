@@ -10,6 +10,7 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.internal.BookmarksPlugin;
+import mesfavoris.internal.StatusHelper;
 import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkType;
 import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkTypes;
 import mesfavoris.internal.views.properties.PropertyLabelProvider.PropertyIcon;
@@ -168,11 +169,9 @@ public class BookmarkPropertySource implements IPropertySource {
 				String propertyName = (String) id;
 				String propertyValue = (String) value;
 				bookmarksTreeModifier.setPropertyValue(bookmarkId, propertyName, propertyValue);
-			}, bookmarksTree -> {
-
 			});
 		} catch (BookmarksException e) {
-			e.printStackTrace();
+			StatusHelper.logWarn("Could not set property value", e);
 		}
 	}
 
