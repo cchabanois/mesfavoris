@@ -2,6 +2,7 @@ package mesfavoris.internal.problems;
 
 import static mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder.bookmarksTree;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 import static org.mockito.Mockito.mock;
 
 import java.util.Set;
@@ -21,7 +22,6 @@ import com.google.common.collect.Sets;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
-import mesfavoris.bookmarktype.IBookmarkPropertyDescriptors;
 import mesfavoris.internal.bookmarktypes.extension.BookmarkPropertyDescriptors;
 import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.internal.placeholders.PathPlaceholdersStore;
@@ -42,8 +42,6 @@ public class BookmarkProblemsAutoUpdaterTest {
 	private BookmarkProblemsDatabase bookmarkProblemsDatabase;
 	private BookmarkDatabase bookmarkDatabase;
 	private BookmarkProblemsAutoUpdater bookmarkProblemsAutoUpdater;
-	private Set<String> nonUpdatableProperties = Sets.newHashSet(Bookmark.PROPERTY_NAME, Bookmark.PROPERTY_COMMENT,
-			Bookmark.PROPERTY_COMMENT);
 	private Set<String> pathProperties = Sets.newHashSet("git.repositoryDir", "folderPath", "filePath");
 	private PathPlaceholdersStore pathPlaceholdersStore;
 	private IBookmarkPropertiesProvider bookmarkPropertiesProvider = mock(IBookmarkPropertiesProvider.class);
@@ -121,6 +119,45 @@ public class BookmarkProblemsAutoUpdaterTest {
 			return !bookmarkProblemsDatabase.getBookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED)
 					.isPresent();
 		});
+	}
+
+	@Test
+	public void testBookmarkProblemUpdatedWhenPropertyModified() throws BookmarksException {
+		// Given
+		BookmarkId bookmarkId = new BookmarkId();
+		Bookmark bookmark = new Bookmark(bookmarkId, ImmutableMap.of(Bookmark.PROPERTY_NAME, "bookmark", "prop1",
+				"value1", "prop2", "value2", "prop3", "value3"));
+		addBookmark(new BookmarkId("rootFolder"), bookmark);
+		bookmarkProblemsDatabase.add(new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE,
+				ImmutableMap.of("prop1", "newValue1", "prop2", "newValue2")));
+
+		// When
+		bookmarkDatabase.modify(
+				bookmarksTreeModifier -> bookmarksTreeModifier.setPropertyValue(bookmarkId, "prop1", "newValue1"));
+
+		// Then
+		BookmarkProblem bookmarkProblem = bookmarkProblemsDatabase
+				.getBookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE).get();
+		assertThat(bookmarkProblem.getProperties()).containsOnly(entry("prop2", "newValue2"));
+	}
+
+	@Test
+	public void testBookmarkProblemDeletedWhenPropertyModified() throws BookmarksException {
+		// Given
+		BookmarkId bookmarkId = new BookmarkId();
+		Bookmark bookmark = new Bookmark(bookmarkId, ImmutableMap.of(Bookmark.PROPERTY_NAME, "bookmark", "prop1",
+				"value1", "prop2", "value2", "prop3", "value3"));
+		addBookmark(new BookmarkId("rootFolder"), bookmark);
+		bookmarkProblemsDatabase.add(new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE,
+				ImmutableMap.of("prop1", "newValue1")));
+
+		// When
+		bookmarkDatabase.modify(
+				bookmarksTreeModifier -> bookmarksTreeModifier.setPropertyValue(bookmarkId, "prop1", "newValue1"));
+
+		// Then
+		assertThat(bookmarkProblemsDatabase.getBookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE))
+				.isEmpty();
 	}
 
 	private BookmarksTree getInitialTree() {

@@ -2,35 +2,41 @@ package mesfavoris.internal.views.properties;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
+import mesfavoris.BookmarksException;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkType;
 import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkTypes;
 import mesfavoris.internal.views.properties.PropertyLabelProvider.PropertyIcon;
 import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarkDatabase;
+import mesfavoris.model.BookmarkId;
 import mesfavoris.problems.BookmarkProblem;
+import mesfavoris.problems.IBookmarkProblems;
 
 public class BookmarkPropertySource implements IPropertySource {
 	private static final String CATEGORY_UNKNOWN = "unknown";
-	private final Bookmark bookmark;
-	private final Set<BookmarkProblem> bookmarkProblems;
+	private final BookmarkId bookmarkId;
+	private final IBookmarkProblems bookmarkProblems;
 	private final PluginBookmarkTypes pluginBookmarkTypes;
+	private final BookmarkDatabase bookmarkDatabase;
 
-	public BookmarkPropertySource(Bookmark bookmark, Set<BookmarkProblem> bookmarkProblems) {
-		this.bookmark = bookmark;
+	public BookmarkPropertySource(BookmarkDatabase bookmarkDatabase, IBookmarkProblems bookmarkProblems,
+			BookmarkId bookmarkId) {
+		this.bookmarkId = bookmarkId;
 		this.bookmarkProblems = bookmarkProblems;
 		this.pluginBookmarkTypes = BookmarksPlugin.getDefault().getPluginBookmarkTypes();
+		this.bookmarkDatabase = bookmarkDatabase;
 	}
 
 	@Override
 	public Object getEditableValue() {
-		return bookmark;
+		return bookmarkDatabase.getBookmarksTree().getBookmark(bookmarkId);
 	}
 
 	private String getCategory(String propertyName) {
@@ -46,6 +52,7 @@ public class BookmarkPropertySource implements IPropertySource {
 
 	@Override
 	public IPropertyDescriptor[] getPropertyDescriptors() {
+		Bookmark bookmark = bookmarkDatabase.getBookmarksTree().getBookmark(bookmarkId);
 		List<IPropertyDescriptor> propertyDescriptors = bookmark.getProperties().keySet().stream()
 				.map(propertyName -> getPropertyDescriptorFromBookmarkProperty(propertyName))
 				.collect(Collectors.toList());
@@ -68,24 +75,38 @@ public class BookmarkPropertySource implements IPropertySource {
 
 	private IPropertyDescriptor getPropertyDescriptorFromBookmarkProperty(String propertyName) {
 		PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyName);
-		Optional<BookmarkProblem> problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_MAY_UPDATE);
-		String updatedValue = problem.map(bookmarkProblem -> bookmarkProblem.getProperties().get(propertyName))
-				.orElse(null);
-		if (updatedValue != null) {
-			propertyDescriptor.setLabelProvider(new PropertyLabelProvider(false, PropertyIcon.INFO));
-		}
-		problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
-		updatedValue = problem.map(bookmarkProblem -> bookmarkProblem.getProperties().get(propertyName)).orElse(null);
-		if (updatedValue != null) {
+		if (hasPlaceholderUndefinedProblem(propertyName)) {
+			propertyDescriptor = new PropertyDescriptor(propertyName, propertyName);
 			propertyDescriptor.setLabelProvider(new PropertyLabelProvider(false, PropertyIcon.WARNING));
-		}
-		problem = getBookmarkProblem(BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED);
-		String value = problem.map(bookmarkProblem -> bookmarkProblem.getProperties().get(propertyName)).orElse(null);
-		if (value != null) {
-			propertyDescriptor.setLabelProvider(new PropertyLabelProvider(false, PropertyIcon.WARNING));
+		} else if (hasPropertyMayUpdateProblem(propertyName)) {
+			propertyDescriptor = new ObsoletePropertyPropertyDescriptor(
+					getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_MAY_UPDATE).get(), propertyName);
+		} else if (hasPropertyNeedUpdateProblem(propertyName)) {
+			propertyDescriptor = new ObsoletePropertyPropertyDescriptor(
+					getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE).get(), propertyName);
+		} else {
+			propertyDescriptor = new PropertyDescriptor(propertyName, propertyName);
 		}
 		propertyDescriptor.setCategory(getCategory(propertyName));
 		return propertyDescriptor;
+	}
+
+	private boolean hasPlaceholderUndefinedProblem(String propertyName) {
+		Optional<BookmarkProblem> problem = getBookmarkProblem(BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED);
+		Optional<String> value = problem.map(bookmarkProblem -> bookmarkProblem.getProperties().get(propertyName));
+		return value.isPresent();
+	}
+
+	private boolean hasPropertyMayUpdateProblem(String propertyName) {
+		Optional<BookmarkProblem> problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_MAY_UPDATE);
+		Optional<String> value = problem.map(bookmarkProblem -> bookmarkProblem.getProperties().get(propertyName));
+		return value.isPresent();
+	}
+
+	private boolean hasPropertyNeedUpdateProblem(String propertyName) {
+		Optional<BookmarkProblem> problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
+		Optional<String> value = problem.map(bookmarkProblem -> bookmarkProblem.getProperties().get(propertyName));
+		return value.isPresent();
 	}
 
 	private IPropertyDescriptor getPropertyDescriptorFromProblemProperty(String propertyName,
@@ -98,6 +119,7 @@ public class BookmarkPropertySource implements IPropertySource {
 
 	@Override
 	public Object getPropertyValue(Object id) {
+		Bookmark bookmark = bookmarkDatabase.getBookmarksTree().getBookmark(bookmarkId);
 		String propertyName = (String) id;
 		String propertyValue = bookmark.getPropertyValue(propertyName);
 		if (propertyValue != null) {
@@ -114,6 +136,7 @@ public class BookmarkPropertySource implements IPropertySource {
 	}
 
 	private Object getPropertyValueFromBookmark(String propertyName) {
+		Bookmark bookmark = bookmarkDatabase.getBookmarksTree().getBookmark(bookmarkId);
 		String propertyValue = bookmark.getPropertyValue(propertyName);
 		Optional<BookmarkProblem> problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_MAY_UPDATE);
 		if (!problem.isPresent()) {
@@ -140,11 +163,21 @@ public class BookmarkPropertySource implements IPropertySource {
 
 	@Override
 	public void setPropertyValue(Object id, Object value) {
+		try {
+			bookmarkDatabase.modify(bookmarksTreeModifier -> {
+				String propertyName = (String) id;
+				String propertyValue = (String) value;
+				bookmarksTreeModifier.setPropertyValue(bookmarkId, propertyName, propertyValue);
+			}, bookmarksTree -> {
 
+			});
+		} catch (BookmarksException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public Optional<BookmarkProblem> getBookmarkProblem(String problemType) {
-		return bookmarkProblems.stream().filter(problem -> problemType.equals(problem.getProblemType())).findAny();
+		return bookmarkProblems.getBookmarkProblem(bookmarkId, problemType);
 	}
 
 }
