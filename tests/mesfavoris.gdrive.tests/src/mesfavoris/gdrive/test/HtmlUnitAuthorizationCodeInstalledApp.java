@@ -120,7 +120,7 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 		webClient.waitForBackgroundJavaScriptStartingBefore(WAIT_DELAY_MS);
 		HtmlForm form = (HtmlForm) page.getElementById("gaia_loginform");
 		if (form == null) {
-			throw new RuntimeException("Cannot find login form :\n" + page.asXml());
+			throw new RuntimeException("Cannot find login form :\n" + authorizationUrl+"\n"+page.asXml());
 		}
 		HtmlSubmitInput signInButton = (HtmlSubmitInput) form.getInputByName("signIn");
 		HtmlTextInput userNameField = (HtmlTextInput) form.getInputByName("Email");
