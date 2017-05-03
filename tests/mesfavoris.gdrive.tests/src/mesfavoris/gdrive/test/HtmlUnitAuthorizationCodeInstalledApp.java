@@ -25,7 +25,7 @@ import com.google.api.client.extensions.java6.auth.oauth2.VerificationCodeReceiv
 import mesfavoris.gdrive.connection.auth.IAuthorizationCodeInstalledAppProvider;
 
 public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInstalledApp {
-	private static final int WAIT_DELAY_MS = 8000;
+	private static final int WAIT_DELAY_MS = 15000;
 	private final String userName;
 	private final String password;
 	private final Optional<String> recoveryEmail;
@@ -84,7 +84,7 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 		htmlInput.setValueAttribute(recoveryEmail.get());
 		HtmlSubmitInput signInButton = (HtmlSubmitInput) challengeForm.getInputByValue("Done");
 		HtmlPage nextPage = signInButton.click();
-		webClient.waitForBackgroundJavaScriptStartingBefore(8000);
+		webClient.waitForBackgroundJavaScriptStartingBefore(WAIT_DELAY_MS);
 		return nextPage;
 	}
 
@@ -110,14 +110,14 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 		}
 		HtmlButton button = (HtmlButton) kpeForm.get().getElementsByTagName("button").get(0);
 		HtmlPage htmlPage = button.click();
-		webClient.waitForBackgroundJavaScriptStartingBefore(8000);
+		webClient.waitForBackgroundJavaScriptStartingBefore(WAIT_DELAY_MS);
 		return htmlPage;
 	}
 
 	private HtmlPage signIn(WebClient webClient, String authorizationUrl)
 			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 		HtmlPage page = webClient.getPage(authorizationUrl);
-		webClient.waitForBackgroundJavaScriptStartingBefore(8000);
+		webClient.waitForBackgroundJavaScriptStartingBefore(WAIT_DELAY_MS);
 		HtmlForm form = (HtmlForm) page.getElementById("gaia_loginform");
 		if (form == null) {
 			throw new RuntimeException("Cannot find login form :\n" + page.asXml());
@@ -126,13 +126,13 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 		HtmlTextInput userNameField = (HtmlTextInput) form.getInputByName("Email");
 		userNameField.setValueAttribute(userName);
 		page = signInButton.click();
-		webClient.waitForBackgroundJavaScriptStartingBefore(8000);
+		webClient.waitForBackgroundJavaScriptStartingBefore(WAIT_DELAY_MS);
 		form = (HtmlForm) page.getElementById("gaia_loginform");
 		HtmlPasswordInput passwordField = (HtmlPasswordInput) form.getInputByName("Passwd");
 		signInButton = (HtmlSubmitInput) form.getInputByName("signIn");
 		passwordField.setValueAttribute(password);
 		HtmlPage allowAccessPage = signInButton.click();
-		webClient.waitForBackgroundJavaScriptStartingBefore(8000);
+		webClient.waitForBackgroundJavaScriptStartingBefore(WAIT_DELAY_MS);
 		return allowAccessPage;
 	}
 
