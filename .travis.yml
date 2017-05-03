@@ -25,7 +25,7 @@ matrix:
         - USER2_RECOVERY_EMAIL=$USER2_RECOVERY_EMAIL        
       before_install:
         - source ./travis/install-maven.sh
-        # - source ./travis/start-ngrok.sh
+        - source ./travis/start-ngrok.sh
       install: true
       before_script:
         - source ./travis/start-metacity.sh
