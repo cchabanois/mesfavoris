@@ -9,14 +9,16 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
+import com.gargoylesoftware.htmlunit.html.HtmlEmailInput;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import com.gargoylesoftware.htmlunit.javascript.host.event.MouseEvent;
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -54,6 +56,7 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 		monitor.subTask("Please open the following address in your browser:" + authorizationUrl);
 
 		try (final WebClient webClient = new WebClient()) {
+			webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 			webClient.getOptions().setThrowExceptionOnScriptError(false);
 			HtmlPage nextPage = signIn(webClient, authorizationUrl.build());
 			if (isSelectChallengePage(nextPage)) {
@@ -123,7 +126,7 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 			throw new RuntimeException("Cannot find login form :\n" + authorizationUrl+"\n"+page.asXml());
 		}
 		HtmlSubmitInput signInButton = (HtmlSubmitInput) form.getInputByName("signIn");
-		HtmlTextInput userNameField = (HtmlTextInput) form.getInputByName("Email");
+		HtmlEmailInput userNameField = (HtmlEmailInput) form.getInputByName("Email");
 		userNameField.setValueAttribute(userName);
 		page = signInButton.click();
 		webClient.waitForBackgroundJavaScriptStartingBefore(WAIT_DELAY_MS);
@@ -142,10 +145,18 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 			throw new RuntimeException("Cannot find allow access button in html page :\n" + allowAccessPage.asXml());
 		}
 		webClient.waitForBackgroundJavaScriptStartingBefore(WAIT_DELAY_MS);
-		HtmlPage tokenPage = allowAccessButton.click();
+		// allowAccessButton.click() does not work because allowAccessButton.isVisible() is false
+		// for some reason (click() was working with htmlunit 2.23)
+		HtmlPage tokenPage = clickButtonIgnoringVisibility(allowAccessButton);
 		return tokenPage;
 	}
 
+	private HtmlPage clickButtonIgnoringVisibility(HtmlButton htmlButton) throws IOException {
+		MouseEvent event = new MouseEvent(htmlButton, MouseEvent.TYPE_CLICK, false,
+                false, false, MouseEvent.BUTTON_LEFT);
+		return htmlButton.click(event, true);
+	}
+	
 	public static class Provider implements IAuthorizationCodeInstalledAppProvider {
 		private final String userName;
 		private final String password;
