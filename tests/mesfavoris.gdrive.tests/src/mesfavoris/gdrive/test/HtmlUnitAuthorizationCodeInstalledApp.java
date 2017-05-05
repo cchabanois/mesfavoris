@@ -8,6 +8,7 @@ import java.util.logging.Level;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -34,6 +35,10 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 	private final IProgressMonitor monitor;
 	private IAuthorizationListener authorizationListener;
 
+	public static final String INTERNET_EXPLORER = "Microsoft Internet Explorer";
+	public static final BrowserVersion INTERNET_EXPLORER_6 = new BrowserVersion(INTERNET_EXPLORER,
+			"4.0 (compatible; MSIE 6.0b; Windows 98)", "Mozilla/4.0 (compatible; MSIE 6.0; Windows 98)", 6, null);
+
 	static {
 		java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.SEVERE);
 	}
@@ -55,7 +60,9 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 	protected void onAuthorization(AuthorizationCodeRequestUrl authorizationUrl) throws IOException {
 		monitor.subTask("Please open the following address in your browser:" + authorizationUrl);
 
-		try (final WebClient webClient = new WebClient()) {
+		// use an old browser so that we see the old sign-in page
+		try (final WebClient webClient = new WebClient(INTERNET_EXPLORER_6)) {
+			webClient.getOptions().setJavaScriptEnabled(true);
 			webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 			webClient.getOptions().setThrowExceptionOnScriptError(false);
 			HtmlPage nextPage = signIn(webClient, authorizationUrl.build());
@@ -103,7 +110,8 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 		return htmlPage.getElementById("challengePickerList") != null;
 	}
 
-	private HtmlPage selectEmailRecoveryAsSignInChallenge(WebClient webClient, HtmlPage signInChallengePage) throws IOException {
+	private HtmlPage selectEmailRecoveryAsSignInChallenge(WebClient webClient, HtmlPage signInChallengePage)
+			throws IOException {
 		List<HtmlForm> forms = signInChallengePage.getForms();
 		Optional<HtmlForm> kpeForm = forms.stream()
 				.filter(form -> "/signin/challenge/kpe/2".equals(form.getActionAttribute())).findFirst();
@@ -137,26 +145,27 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 		HtmlPage allowAccessPage = signInButton.click();
 		webClient.waitForBackgroundJavaScriptStartingBefore(WAIT_DELAY_MS);
 		return allowAccessPage;
-	}
-
+	}	
+	
 	private HtmlPage allowAccess(WebClient webClient, HtmlPage allowAccessPage) throws IOException {
 		HtmlButton allowAccessButton = (HtmlButton) allowAccessPage.getElementById("submit_approve_access");
 		if (allowAccessButton == null) {
 			throw new RuntimeException("Cannot find allow access button in html page :\n" + allowAccessPage.asXml());
 		}
 		webClient.waitForBackgroundJavaScriptStartingBefore(WAIT_DELAY_MS);
-		// allowAccessButton.click() does not work because allowAccessButton.isVisible() is false
+		// allowAccessButton.click() does not work because
+		// allowAccessButton.isVisible() is false
 		// for some reason (click() was working with htmlunit 2.23)
 		HtmlPage tokenPage = clickButtonIgnoringVisibility(allowAccessButton);
 		return tokenPage;
 	}
 
 	private HtmlPage clickButtonIgnoringVisibility(HtmlButton htmlButton) throws IOException {
-		MouseEvent event = new MouseEvent(htmlButton, MouseEvent.TYPE_CLICK, false,
-                false, false, MouseEvent.BUTTON_LEFT);
+		MouseEvent event = new MouseEvent(htmlButton, MouseEvent.TYPE_CLICK, false, false, false,
+				MouseEvent.BUTTON_LEFT);
 		return htmlButton.click(event, true);
 	}
-	
+
 	public static class Provider implements IAuthorizationCodeInstalledAppProvider {
 		private final String userName;
 		private final String password;
@@ -174,7 +183,7 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 			this.password = password;
 			this.recoveryEmail = recoveryEmail;
 		}
-		
+
 		public void setAuthorizationListener(IAuthorizationListener authorizationListener) {
 			this.authorizationListener = authorizationListener;
 		}
