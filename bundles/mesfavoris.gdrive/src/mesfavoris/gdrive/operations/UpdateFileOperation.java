@@ -1,6 +1,7 @@
 package mesfavoris.gdrive.operations;
 
 import java.io.IOException;
+import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -20,17 +21,22 @@ import com.google.api.services.drive.model.File;
  */
 public class UpdateFileOperation extends AbstractGDriveOperation {
 	private final Duration durationForNewRevision;
+	private final Clock clock;
 	
 	public UpdateFileOperation(Drive drive) {
-		super(drive);
-		this.durationForNewRevision = Duration.ofMillis(0);
+		this(drive, Duration.ofMillis(0));
 	}
 	
 	public UpdateFileOperation(Drive drive, Duration durationForNewRevision) {
-		super(drive);
-		this.durationForNewRevision = durationForNewRevision;
+		this(drive, Clock.systemUTC(), durationForNewRevision);
 	}
 
+	public UpdateFileOperation(Drive drive, Clock clock, Duration durationForNewRevision) {
+		super(drive);
+		this.durationForNewRevision = durationForNewRevision;
+		this.clock = clock;
+	}	
+	
 	public File updateFile(String fileId, byte[] content, String etag,
 			IProgressMonitor monitor) throws IOException {
 		boolean needsNewRevision = needsNewRevision(fileId);
@@ -66,10 +72,9 @@ public class UpdateFileOperation extends AbstractGDriveOperation {
 		Drive.Files.Get get = drive.files().get(fileId);
 		File latestFileVersion = get.execute();
 		if (!latestFileVersion.getLastModifyingUser().getIsAuthenticatedUser()) {
-//		if (!latestFileVersion.getModifiedDate().equals(latestFileVersion.getModifiedByMeDate())) {
 			return true;
 		}
 		Instant modifiedInstant = Instant.ofEpochMilli(latestFileVersion.getModifiedDate().getValue());
-		return Instant.now().isAfter(modifiedInstant.plus(durationForNewRevision));
+		return clock.instant().isAfter(modifiedInstant.plus(durationForNewRevision));
 	}
 }
