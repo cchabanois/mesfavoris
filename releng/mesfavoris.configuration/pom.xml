@@ -27,7 +27,7 @@
 		<profile>
 			<id>target-mars</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
 				<target.artifactId>mesfavoris.mars.target</target.artifactId>
@@ -36,12 +36,21 @@
 		<profile>
 			<id>target-neon</id>
 			<activation>
-				<activeByDefault>false</activeByDefault>
+				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
 				<target.artifactId>mesfavoris.neon.target</target.artifactId>
 			</properties>
-		</profile>		
+		</profile>
+		<profile>
+			<id>target-oxygen</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<target.artifactId>mesfavoris.oxygen.target</target.artifactId>
+			</properties>
+		</profile>				
 	</profiles>
 	<build>
 		<plugins>
