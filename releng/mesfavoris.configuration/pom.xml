@@ -25,15 +25,6 @@
 
 	<profiles>
 		<profile>
-			<id>target-mars</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<target.artifactId>mesfavoris.mars.target</target.artifactId>
-			</properties>
-		</profile>
-		<profile>
 			<id>target-neon</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
