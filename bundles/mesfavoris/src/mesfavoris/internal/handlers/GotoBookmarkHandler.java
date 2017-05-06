@@ -4,13 +4,13 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.progress.IProgressService;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.handlers.AbstractBookmarkHandler;
 import mesfavoris.internal.StatusHelper;
 import mesfavoris.model.Bookmark;
@@ -43,7 +43,7 @@ public class GotoBookmarkHandler extends AbstractBookmarkHandler {
 		if (selection.isEmpty()) {
 			return null;
 		}
-		return AdapterUtils.getAdapter(selection.getFirstElement(), Bookmark.class);
+		return Adapters.adapt(selection.getFirstElement(), Bookmark.class);
 	}
 
 }

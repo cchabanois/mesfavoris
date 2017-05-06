@@ -10,8 +10,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: mesfavoris.commons.core,
- mesfavoris.commons.core.jobs,
+Export-Package: mesfavoris.commons.core.jobs,
  mesfavoris.commons.ui.ide,
  mesfavoris.commons.ui.statushandlers,
  mesfavoris.commons.ui.viewers,

@@ -2,6 +2,7 @@ package mesfavoris.internal.views;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -18,7 +19,6 @@ import org.eclipse.ui.PlatformUI;
 import org.osgi.service.event.EventHandler;
 
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
-import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.views.dnd.BookmarksViewerDragListener;
 import mesfavoris.internal.views.dnd.BookmarksViewerDropListener;
@@ -110,7 +110,7 @@ public class BookmarksTreeViewer extends TreeViewer {
 		IStructuredSelection selection = (IStructuredSelection) getSelection();
 		if (selection.size() == 0)
 			return null;
-		return AdapterUtils.getAdapter(selection.getFirstElement(), Bookmark.class);
+		return Adapters.adapt(selection.getFirstElement(), Bookmark.class);
 	}
 
 	public BookmarkDatabase getBookmarkDatabase() {

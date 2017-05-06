@@ -1,9 +1,9 @@
 package mesfavoris.viewers;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -23,7 +23,6 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
-import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.commons.ui.viewers.StylerProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
@@ -66,7 +65,7 @@ public class BookmarksTableLabelProvider extends StyledCellLabelProvider impleme
 	}
 
 	public StyledString getStyledText(final Object element) {
-		Bookmark bookmark = (Bookmark) AdapterUtils.getAdapter(element, Bookmark.class);
+		Bookmark bookmark = (Bookmark) Adapters.adapt(element, Bookmark.class);
 		String comment = getFirstCommentLine(bookmark);
 		boolean isDisabled = isUnderDisconnectedRemoteBookmarkFolder(bookmark);
 		StyledString styledString = new StyledString();
@@ -128,7 +127,7 @@ public class BookmarksTableLabelProvider extends StyledCellLabelProvider impleme
 
 	@Override
 	public Image getImage(final Object element) {
-		Bookmark bookmark = (Bookmark) AdapterUtils.getAdapter(element, Bookmark.class);
+		Bookmark bookmark = (Bookmark) Adapters.adapt(element, Bookmark.class);
 		Image image = bookmarkLabelProvider.getImage(bookmark);
 		if (image == null) {
 			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
@@ -140,7 +139,7 @@ public class BookmarksTableLabelProvider extends StyledCellLabelProvider impleme
 	}
 
 	private ImageDescriptor[] getOverlayImages(final Object element) {
-		Bookmark bookmark = (Bookmark) AdapterUtils.getAdapter(element, Bookmark.class);
+		Bookmark bookmark = (Bookmark) Adapters.adapt(element, Bookmark.class);
 		ImageDescriptor[] overlayImages = new ImageDescriptor[5];
 		RemoteBookmarkFolder remoteBookmarkFolder = remoteBookmarksStoreManager
 				.getRemoteBookmarkFolderContaining(bookmarkDatabase.getBookmarksTree(), bookmark.getId());

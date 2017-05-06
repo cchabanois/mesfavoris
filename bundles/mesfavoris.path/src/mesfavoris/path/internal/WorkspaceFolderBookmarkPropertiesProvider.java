@@ -1,15 +1,16 @@
 package mesfavoris.path.internal;
 
 import static mesfavoris.path.PathBookmarkProperties.PROPERTY_NAME;
+import static mesfavoris.path.PathBookmarkProperties.PROP_FOLDER_PATH;
 import static mesfavoris.path.PathBookmarkProperties.PROP_PROJECT_NAME;
 import static mesfavoris.path.PathBookmarkProperties.PROP_WORKSPACE_PATH;
-import static mesfavoris.path.PathBookmarkProperties.PROP_FOLDER_PATH;
 
 import java.io.File;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -18,7 +19,6 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import mesfavoris.MesFavoris;
 import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
-import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.placeholders.IPathPlaceholderResolver;
 
 public class WorkspaceFolderBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {
@@ -36,7 +36,7 @@ public class WorkspaceFolderBookmarkPropertiesProvider extends AbstractBookmarkP
 	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part,
 			ISelection selection, IProgressMonitor monitor) {
 		Object selected = getFirstElement(selection);
-		IResource resource = AdapterUtils.getAdapter(selected, IResource.class);
+		IResource resource = Adapters.adapt(selected, IResource.class);
 		if (!(resource instanceof IFolder)) {
 			return;
 		}

@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -22,7 +23,6 @@ import com.google.common.base.Joiner;
 
 import mesfavoris.MesFavoris;
 import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
-import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.model.Bookmark;
 import mesfavoris.placeholders.IPathPlaceholderResolver;
 
@@ -41,11 +41,11 @@ public class CommitBookmarkPropertiesProvider extends AbstractBookmarkProperties
 	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part, ISelection selection,
 			IProgressMonitor monitor) {
 		Object selected = getFirstElement(selection);
-		RevCommit revCommit = AdapterUtils.getAdapter(selected, RevCommit.class);
+		RevCommit revCommit = Adapters.adapt(selected, RevCommit.class);
 		if (revCommit == null) {
 			return;
 		}
-		Repository repository = AdapterUtils.getAdapter(selected, Repository.class);
+		Repository repository = Adapters.adapt(selected, Repository.class);
 		if (repository == null) {
 			return;
 		}

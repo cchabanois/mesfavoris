@@ -4,6 +4,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Scanner;
 
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -23,7 +24,6 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
-import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.commons.ui.viewers.StylerProvider;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.IUIConstants;
@@ -82,7 +82,7 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 	}
 
 	public StyledString getStyledText(final Object element) {
-		Bookmark bookmark = (Bookmark) AdapterUtils.getAdapter(element, Bookmark.class);
+		Bookmark bookmark = (Bookmark) Adapters.adapt(element, Bookmark.class);
 		String comment = getFirstCommentLine(bookmark);
 		boolean hasComment = comment != null && comment.trim().length() > 0;
 		boolean isDisabled = isUnderDisconnectedRemoteBookmarkFolder(bookmark);
@@ -136,7 +136,7 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 
 	@Override
 	public Image getImage(final Object element) {
-		Bookmark bookmark = (Bookmark) AdapterUtils.getAdapter(element, Bookmark.class);
+		Bookmark bookmark = (Bookmark) Adapters.adapt(element, Bookmark.class);
 		Image image = bookmarkLabelProvider.getImage(bookmark);
 		if (image == null) {
 			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
@@ -148,7 +148,7 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 	}
 
 	private ImageDescriptor[] getOverlayImages(final Object element) {
-		Bookmark bookmark = (Bookmark) AdapterUtils.getAdapter(element, Bookmark.class);
+		Bookmark bookmark = (Bookmark) Adapters.adapt(element, Bookmark.class);
 		ImageDescriptor[] overlayImages = new ImageDescriptor[5];
 		if (bookmark instanceof BookmarkFolder) {
 			IRemoteBookmarksStore store = getRemoteBookmarkStore(bookmark.getId());

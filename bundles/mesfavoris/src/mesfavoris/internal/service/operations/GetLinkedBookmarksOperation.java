@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -23,7 +24,6 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
 
-import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.internal.markers.BookmarksMarkers;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
@@ -44,7 +44,7 @@ public class GetLinkedBookmarksOperation {
 	}
 
 	public List<Bookmark> getLinkedBookmarks(IWorkbenchPart part, ISelection selection) {
-		ITextEditor textEditor = AdapterUtils.getAdapter(part, ITextEditor.class);
+		ITextEditor textEditor = Adapters.adapt(part, ITextEditor.class);
 		if (textEditor == null) {
 			return Collections.emptyList();
 		}

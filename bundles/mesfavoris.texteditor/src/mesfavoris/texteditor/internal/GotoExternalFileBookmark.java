@@ -3,6 +3,7 @@ package mesfavoris.texteditor.internal;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.ui.IEditorPart;
@@ -14,7 +15,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IGotoBookmark;
-import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.model.Bookmark;
 import mesfavoris.texteditor.TextEditorUtils;
 
@@ -30,7 +30,7 @@ public class GotoExternalFileBookmark implements IGotoBookmark {
 		if (externalFileBookmarkLocation.getLineNumber() == null) {
 			return true;
 		}
-		ITextEditor textEditor = AdapterUtils.getAdapter(editorPart, ITextEditor.class);
+		ITextEditor textEditor = Adapters.adapt(editorPart, ITextEditor.class);
 		if (textEditor == null) {
 			return false;
 		}

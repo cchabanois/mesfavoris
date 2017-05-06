@@ -1,5 +1,6 @@
 package mesfavoris.java;
 
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavaUI;
@@ -11,7 +12,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IGotoBookmark;
-import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.java.editor.JavaEditorUtils;
 import mesfavoris.model.Bookmark;
 
@@ -24,7 +24,7 @@ public class GotoInsideJavaElementBookmark implements IGotoBookmark {
 		}
 		JavaTypeMemberBookmarkLocation location = (JavaTypeMemberBookmarkLocation) bookmarkLocation;
 		IEditorPart editorPart = openInEditor(location.getMember());;
-		ITextEditor textEditor = AdapterUtils.getAdapter(editorPart, ITextEditor.class);
+		ITextEditor textEditor = Adapters.adapt(editorPart, ITextEditor.class);
 		if (textEditor == null) {
 			return false;
 		}

@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -36,7 +37,6 @@ import org.osgi.framework.Bundle;
 import com.google.common.collect.Lists;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.commons.ui.wizards.datatransfer.BundleProjectImportOperation;
 import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkMarkerAttributesProvider;
 import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkTypes;
@@ -131,7 +131,7 @@ public class GetLinkedBookmarksOperationTest {
 	}
 
 	private ITextEditor getTextEditor(IEditorPart editorPart) {
-		return UIThreadRunnable.syncExec(() -> AdapterUtils.getAdapter(editorPart, ITextEditor.class));
+		return UIThreadRunnable.syncExec(() -> Adapters.adapt(editorPart, ITextEditor.class));
 	}
 
 	private void selectAndReveal(ITextEditor textEditor, int offset) {

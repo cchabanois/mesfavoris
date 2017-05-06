@@ -9,11 +9,11 @@ import java.util.stream.StreamSupport;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.expressions.IEvaluationContext;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.ISources;
 
-import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.model.merge.BookmarksTreeIterable;
 import mesfavoris.internal.model.merge.BookmarksTreeIterable.Algorithm;
@@ -68,7 +68,7 @@ public abstract class AbstractBookmarkHandler extends AbstractHandler{
 			if (element instanceof VirtualBookmarkFolder) {
 				VirtualBookmarkFolder virtualBookmarkFolder = (VirtualBookmarkFolder) element;
 				for (BookmarkLink bookmarkLink : virtualBookmarkFolder.getChildren()) {
-					Bookmark bookmark = AdapterUtils.getAdapter(bookmarkLink, Bookmark.class);
+					Bookmark bookmark = Adapters.adapt(bookmarkLink, Bookmark.class);
 					if (bookmark instanceof BookmarkFolder) {
 						bookmarkIds.addAll(getBookmarksRecursively(bookmarksTree, bookmark.getId(), filter));
 					} else if (bookmark != null && filter.test(bookmark)) {
@@ -76,7 +76,7 @@ public abstract class AbstractBookmarkHandler extends AbstractHandler{
 					}
 				}
 			} else {
-				Bookmark bookmark = AdapterUtils.getAdapter(element, Bookmark.class);
+				Bookmark bookmark = Adapters.adapt(element, Bookmark.class);
 				if (bookmark instanceof BookmarkFolder) {
 					bookmarkIds.addAll(getBookmarksRecursively(bookmarksTree, bookmark.getId(), filter));
 				} else if (bookmark != null && filter.test(bookmark)) {

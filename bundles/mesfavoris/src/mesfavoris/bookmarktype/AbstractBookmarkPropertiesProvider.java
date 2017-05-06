@@ -3,12 +3,11 @@ package mesfavoris.bookmarktype;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.ITextEditor;
-
-import mesfavoris.commons.core.AdapterUtils;
 
 public abstract class AbstractBookmarkPropertiesProvider implements IBookmarkPropertiesProvider {
 
@@ -46,7 +45,7 @@ public abstract class AbstractBookmarkPropertiesProvider implements IBookmarkPro
 		}
 		ITextEditor[] textEditor = new ITextEditor[1];
 		part.getSite().getWorkbenchWindow().getShell().getDisplay().syncExec(() -> {
-			textEditor[0] = AdapterUtils.getAdapter(part, ITextEditor.class);
+			textEditor[0] = Adapters.adapt(part, ITextEditor.class);
 		});
 		return textEditor[0];
 	}

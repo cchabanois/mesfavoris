@@ -11,6 +11,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.NotEnabledException;
 import org.eclipse.core.commands.NotHandledException;
 import org.eclipse.core.commands.common.NotDefinedException;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.action.Action;
@@ -75,7 +76,6 @@ import com.google.common.collect.Lists;
 import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IImportTeamProject;
-import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.IUIConstants;
 import mesfavoris.internal.StatusHelper;
@@ -433,7 +433,7 @@ public class BookmarksView extends ViewPart {
 		bookmarksTreeViewer.addDoubleClickListener(event -> {
 			ISelection selection = bookmarksTreeViewer.getSelection();
 			Object firstElement = ((IStructuredSelection) selection).getFirstElement();
-			Bookmark bookmark = AdapterUtils.getAdapter(firstElement, Bookmark.class);
+			Bookmark bookmark = Adapters.adapt(firstElement, Bookmark.class);
 			if (bookmark instanceof BookmarkFolder) {
 				bookmarksTreeViewer.setExpandedState(firstElement, !bookmarksTreeViewer.getExpandedState(firstElement));
 			} else {

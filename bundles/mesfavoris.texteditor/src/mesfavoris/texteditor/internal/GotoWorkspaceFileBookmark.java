@@ -1,6 +1,7 @@
 package mesfavoris.texteditor.internal;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -11,7 +12,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import mesfavoris.bookmarktype.IBookmarkLocation;
 import mesfavoris.bookmarktype.IGotoBookmark;
-import mesfavoris.commons.core.AdapterUtils;
 import mesfavoris.model.Bookmark;
 import mesfavoris.texteditor.TextEditorUtils;
 
@@ -25,7 +25,7 @@ public class GotoWorkspaceFileBookmark implements IGotoBookmark {
 		WorkspaceFileBookmarkLocation workspaceFileBookmarkLocation = (WorkspaceFileBookmarkLocation) bookmarkLocation;
 		IFile file = workspaceFileBookmarkLocation.getWorkspaceFile();
 		IEditorPart editorPart = openEditor(window, file);
-		ITextEditor textEditor = AdapterUtils.getAdapter(editorPart, ITextEditor.class);
+		ITextEditor textEditor = Adapters.adapt(editorPart, ITextEditor.class);
 		if (textEditor == null) {
 			return false;		
 		}
