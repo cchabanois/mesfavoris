@@ -15,5 +15,6 @@ Require-Bundle: mesfavoris;bundle-version="1.5.0",
  org.eclipse.ui.ide,
  org.eclipse.egit.ui,
  com.google.guava;bundle-version="19.0.0",
- mesfavoris.commons;bundle-version="1.5.0"
+ mesfavoris.commons;bundle-version="1.5.0",
+ mesfavoris.path;bundle-version="1.5.0"
 Bundle-Vendor: Mes Favoris

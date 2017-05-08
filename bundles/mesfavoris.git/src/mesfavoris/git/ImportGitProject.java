@@ -15,10 +15,14 @@ import mesfavoris.model.Bookmark;
 public class ImportGitProject extends AbstractImportTeamProject {
 
 	private String[] getReferenceStrings(Bookmark bookmark) {
+		String projectPath = bookmark.getPropertyValue(PROP_PROJECT_PATH);
+		if (projectPath.isEmpty()) {
+			projectPath = ".";
+		}
 		// [1.0,https://git.eclipse.org/r/egit/egit.git,master,org.eclipse.egit]
 		return new String[] { "1.0," + bookmark.getPropertyValue(PROP_URL)
 				+ "," + bookmark.getPropertyValue(PROP_BRANCH) + ","
-				+ bookmark.getPropertyValue(PROP_PROJECT_PATH) };
+				+  projectPath };
 	}
 
 	@Override

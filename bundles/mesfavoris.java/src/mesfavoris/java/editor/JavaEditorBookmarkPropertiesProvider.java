@@ -1,5 +1,7 @@
 package mesfavoris.java.editor;
 
+import static mesfavoris.bookmarktype.BookmarkPropertiesProviderUtil.getSelection;
+import static mesfavoris.bookmarktype.BookmarkPropertiesProviderUtil.getTextEditor;
 import static mesfavoris.java.JavaBookmarkProperties.PROP_LINE_NUMBER_INSIDE_ELEMENT;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_CONTENT;
 

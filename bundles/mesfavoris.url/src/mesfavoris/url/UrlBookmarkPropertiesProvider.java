@@ -1,5 +1,6 @@
 package mesfavoris.url;
 
+import static mesfavoris.bookmarktype.BookmarkPropertiesProviderUtil.getFirstElement;
 import static mesfavoris.url.UrlBookmarkProperties.PROP_FAVICON;
 import static mesfavoris.url.UrlBookmarkProperties.PROP_URL;
 

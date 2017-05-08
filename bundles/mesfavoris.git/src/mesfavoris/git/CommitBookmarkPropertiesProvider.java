@@ -1,5 +1,6 @@
 package mesfavoris.git;
 
+import static mesfavoris.bookmarktype.BookmarkPropertiesProviderUtil.getFirstElement;
 import static mesfavoris.git.GitBookmarkProperties.PROP_COMMIT_ID;
 import static mesfavoris.git.GitBookmarkProperties.PROP_REMOTE_URLS;
 import static mesfavoris.git.GitBookmarkProperties.PROP_REPOSITORY_DIR;
@@ -36,7 +37,7 @@ public class CommitBookmarkPropertiesProvider extends AbstractBookmarkProperties
 	public CommitBookmarkPropertiesProvider(IPathPlaceholderResolver pathPlaceholderResolver) {
 		this.pathPlaceholderResolver = pathPlaceholderResolver;
 	}
-	
+
 	@Override
 	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part, ISelection selection,
 			IProgressMonitor monitor) {
@@ -51,8 +52,7 @@ public class CommitBookmarkPropertiesProvider extends AbstractBookmarkProperties
 		}
 		String revCommitName = revCommit.name();
 		bookmarkProperties.put(PROP_COMMIT_ID, revCommitName);
-		putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME,
-				"Commit " + revCommit.getId().abbreviate(7).name());
+		putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME, "Commit " + revCommit.getId().abbreviate(7).name());
 		putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_COMMENT, revCommit.getShortMessage());
 		IPath localRepositoryDirPath = getLocalRepositoryDirPath(repository);
 		if (localRepositoryDirPath != null) {

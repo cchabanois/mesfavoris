@@ -1,5 +1,6 @@
 package mesfavoris.java.element;
 
+import static mesfavoris.bookmarktype.BookmarkPropertiesProviderUtil.getFirstElement;
 import static mesfavoris.java.JavaBookmarkProperties.KIND_ANNOTATION;
 import static mesfavoris.java.JavaBookmarkProperties.KIND_CLASS;
 import static mesfavoris.java.JavaBookmarkProperties.KIND_ENUM;
@@ -34,51 +35,44 @@ import mesfavoris.model.Bookmark;
 
 public class JavaTypeMemberBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {
 	private final JavadocCommentProvider javadocCommentProvider = new JavadocCommentProvider();
-	
+
 	@Override
-	public void addBookmarkProperties(Map<String, String> bookmarkProperties,IWorkbenchPart part,
-			ISelection selection, IProgressMonitor monitor) {
+	public void addBookmarkProperties(Map<String, String> bookmarkProperties, IWorkbenchPart part, ISelection selection,
+			IProgressMonitor monitor) {
 		Object selected = getFirstElement(selection);
 		if (selected instanceof ITypeRoot) {
-			selected = ((ITypeRoot)selected).findPrimaryType();
+			selected = ((ITypeRoot) selected).findPrimaryType();
 		}
 		if (!(selected instanceof IMember)) {
 			return;
 		}
-		IMember member = (IMember)selected;
+		IMember member = (IMember) selected;
 		addMemberBookmarkProperties(bookmarkProperties, member);
 	}
 
-	protected void addMemberBookmarkProperties(
-			Map<String, String> bookmarkProperties, IMember member) {
-		putIfAbsent(bookmarkProperties, PROP_JAVA_ELEMENT_NAME,
-				member.getElementName());
+	protected void addMemberBookmarkProperties(Map<String, String> bookmarkProperties, IMember member) {
+		putIfAbsent(bookmarkProperties, PROP_JAVA_ELEMENT_NAME, member.getElementName());
 		if (member.getDeclaringType() != null) {
-			putIfAbsent(bookmarkProperties, PROP_JAVA_DECLARING_TYPE, member
-					.getDeclaringType().getFullyQualifiedName());
+			putIfAbsent(bookmarkProperties, PROP_JAVA_DECLARING_TYPE,
+					member.getDeclaringType().getFullyQualifiedName());
 		}
 		putIfAbsent(bookmarkProperties, PROP_JAVA_ELEMENT_KIND, getKind(member));
 		if (member instanceof IMethod) {
 			putIfAbsent(bookmarkProperties, PROP_JAVA_METHOD_SIGNATURE,
 					JavaEditorUtils.getMethodSimpleSignature((IMethod) member));
 			putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME,
-					bookmarkProperties.get(PROP_JAVA_DECLARING_TYPE) + '.'
-							+ member.getElementName() + "()");
+					bookmarkProperties.get(PROP_JAVA_DECLARING_TYPE) + '.' + member.getElementName() + "()");
 		}
 		if (member instanceof IType) {
 			IType type = (IType) member;
-			putIfAbsent(bookmarkProperties, PROP_JAVA_TYPE,
-					type.getFullyQualifiedName());
-			putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME,
-					type.getFullyQualifiedName());
+			putIfAbsent(bookmarkProperties, PROP_JAVA_TYPE, type.getFullyQualifiedName());
+			putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME, type.getFullyQualifiedName());
 		}
 		if (member instanceof IField) {
 			putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME,
-					bookmarkProperties.get(PROP_JAVA_DECLARING_TYPE) + '.'
-							+ member.getElementName());
+					bookmarkProperties.get(PROP_JAVA_DECLARING_TYPE) + '.' + member.getElementName());
 		}
-		putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME,
-				member.getElementName());
+		putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME, member.getElementName());
 	}
 
 	protected void addJavadocComment(Map<String, String> bookmarkProperties, IMember member) {
@@ -87,7 +81,7 @@ public class JavaTypeMemberBookmarkPropertiesProvider extends AbstractBookmarkPr
 			putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_COMMENT, javadoc);
 		}
 	}
-	
+
 	private String getKind(IMember member) {
 		switch (member.getElementType()) {
 		case IJavaElement.METHOD:
@@ -118,6 +112,6 @@ public class JavaTypeMemberBookmarkPropertiesProvider extends AbstractBookmarkPr
 		default:
 			return null;
 		}
-	}	
-	
+	}
+
 }

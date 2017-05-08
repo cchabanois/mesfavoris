@@ -1,5 +1,7 @@
 package mesfavoris.texteditor.internal;
 
+import static mesfavoris.bookmarktype.BookmarkPropertiesProviderUtil.getSelection;
+import static mesfavoris.bookmarktype.BookmarkPropertiesProviderUtil.getTextEditor;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROPERTY_NAME;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FILE_PATH;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_CONTENT;

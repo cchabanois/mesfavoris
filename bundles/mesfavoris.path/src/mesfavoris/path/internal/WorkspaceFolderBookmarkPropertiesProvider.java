@@ -1,5 +1,6 @@
 package mesfavoris.path.internal;
 
+import static mesfavoris.bookmarktype.BookmarkPropertiesProviderUtil.getFirstElement;
 import static mesfavoris.path.PathBookmarkProperties.PROPERTY_NAME;
 import static mesfavoris.path.PathBookmarkProperties.PROP_FOLDER_PATH;
 import static mesfavoris.path.PathBookmarkProperties.PROP_PROJECT_NAME;

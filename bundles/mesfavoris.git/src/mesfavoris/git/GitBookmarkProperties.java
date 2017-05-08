@@ -7,4 +7,5 @@ public class GitBookmarkProperties {
 	public static final String PROP_REPOSITORY_DIR = "git.repositoryDir";
 	public static final String PROP_REMOTE_URLS = "git.remoteUrls";
 	public static final String PROP_COMMIT_ID = "git.commitId";
+	public static final String PROP_RESOURCE_PATH = "git.resourcePath";
 }
