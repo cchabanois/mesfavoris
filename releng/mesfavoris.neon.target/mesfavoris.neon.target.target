@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="mes favoris Target Content" sequenceNumber="41">
+<?pde version="3.8"?><target name="mes favoris Target Content" sequenceNumber="42">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.swtbot.feature.group" version="2.5.0.201609021837"/>
 <unit id="org.eclipse.swtbot.eclipse.feature.group" version="2.5.0.201609021837"/>
-<repository location="http://download.eclipse.org/releases/neon"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.egit.feature.group" version="4.6.1.201703071140-r"/>
 <repository location="http://download.eclipse.org/releases/neon"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
@@ -28,6 +24,10 @@
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.epp.logging.aeri.feature.feature.group" version="2.0.1.v20160605-1811"/>
+<repository location="http://download.eclipse.org/releases/neon"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.egit.feature.group" version="4.4.0.201606070830-r"/>
 <repository location="http://download.eclipse.org/releases/neon"/>
 </location>
 </locations>
