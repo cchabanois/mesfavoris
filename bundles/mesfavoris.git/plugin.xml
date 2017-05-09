@@ -38,6 +38,7 @@
             <property
                   description="name of the git branch"
                   name="git.branch"
+                  obsolescenceSeverity="INFO"
                   type="string"
                   updatable="true">
             </property>
