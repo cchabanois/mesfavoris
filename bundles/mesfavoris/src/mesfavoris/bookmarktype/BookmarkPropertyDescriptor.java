@@ -1,5 +1,7 @@
 package mesfavoris.bookmarktype;
 
+import java.util.Map;
+
 import mesfavoris.model.Bookmark;
 
 /**
@@ -41,8 +43,8 @@ public class BookmarkPropertyDescriptor implements IBookmarkPropertyObsolescence
 	}
 
 	@Override
-	public ObsolescenceSeverity getObsolescenceSeverity(Bookmark bookmark, String propertyName, String newValue) {
-		return bookmarkPropertyObsolescenceSeverityProvider.getObsolescenceSeverity(bookmark, propertyName, newValue);
+	public ObsolescenceSeverity getObsolescenceSeverity(Bookmark bookmark, Map<String, String> obsoleteProperties, String propertyName) {
+		return bookmarkPropertyObsolescenceSeverityProvider.getObsolescenceSeverity(bookmark, obsoleteProperties, propertyName);
 	}
 
 	public boolean isUpdatable() {

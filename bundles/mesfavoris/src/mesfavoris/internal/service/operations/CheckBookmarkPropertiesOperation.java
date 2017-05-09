@@ -189,8 +189,8 @@ public class CheckBookmarkPropertiesOperation {
 				warningProperties.put(entry.getKey(), entry.getValue());
 			} else {
 				Bookmark bookmark = bookmarkDatabase.getBookmarksTree().getBookmark(bookmarkId);
-				ObsolescenceSeverity severity = propertyDescriptor.getObsolescenceSeverity(bookmark, entry.getKey(),
-						entry.getValue());
+				ObsolescenceSeverity severity = propertyDescriptor.getObsolescenceSeverity(bookmark, obsoleteProperties,
+						entry.getKey());
 				if (severity == ObsolescenceSeverity.INFO) {
 					infoProperties.put(entry.getKey(), entry.getValue());
 				} else if (severity == ObsolescenceSeverity.WARNING) {
@@ -273,8 +273,8 @@ public class CheckBookmarkPropertiesOperation {
 
 		private boolean containsBookmarkProblem(Set<BookmarkProblem> bookmarkProblems, String problemType) {
 			return bookmarkProblems.stream()
-					.filter(bookmarkProblem -> bookmarkProblem.getProblemType().equals(problemType))
-					.findAny().isPresent();
+					.filter(bookmarkProblem -> bookmarkProblem.getProblemType().equals(problemType)).findAny()
+					.isPresent();
 		}
 
 	}

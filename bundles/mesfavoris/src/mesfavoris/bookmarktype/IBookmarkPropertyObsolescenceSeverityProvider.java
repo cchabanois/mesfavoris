@@ -1,5 +1,7 @@
 package mesfavoris.bookmarktype;
 
+import java.util.Map;
+
 import mesfavoris.model.Bookmark;
 
 /**
@@ -19,6 +21,17 @@ public interface IBookmarkPropertyObsolescenceSeverityProvider {
 		WARNING
 	}
 
-	public ObsolescenceSeverity getObsolescenceSeverity(Bookmark bookmark, String propertyName, String newValue);
+	/**
+	 * Get the obsolescence severity for a given property
+	 * @param bookmark
+	 * @param obsoleteProperties
+	 *            key is the name of the obsolete property, value is the new
+	 *            value
+	 * @param propertyName
+	 *            the property name
+	 * @return the severity
+	 */
+	public ObsolescenceSeverity getObsolescenceSeverity(Bookmark bookmark, Map<String, String> obsoleteProperties,
+			String propertyName);
 
 }
