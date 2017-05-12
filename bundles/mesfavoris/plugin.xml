@@ -825,7 +825,6 @@
          point="mesfavoris.bookmarkProblems">
       <bookmarkProblem
             errorMessage="Cannot goto bookmark"
-            handler="mesfavoris.internal.problems.handlers.CannotGotoProblemHandler"
             severity="ERROR"
             type="cannotGotoBookmark">
       </bookmarkProblem>
