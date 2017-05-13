@@ -20,8 +20,8 @@ public class BookmarkProblemDescriptorsTest {
 		// Given
 
 		// Then
-		assertHasHandler(BookmarkProblem.TYPE_CANNOT_GOTOBOOKMARK);
-		assertHasHandler(BookmarkProblem.TYPE_CANNOT_GOTOBOOKMARK);
+		assertDoNotHaveHandler(BookmarkProblem.TYPE_CANNOT_GOTOBOOKMARK);
+		assertHasHandler(BookmarkProblem.TYPE_PROPERTIES_MAY_UPDATE);
 		assertHasHandler(BookmarkProblem.TYPE_LOCAL_PATH_SHARED);
 		assertHasHandler(BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED);
 		assertHasHandler(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
@@ -32,4 +32,9 @@ public class BookmarkProblemDescriptorsTest {
 				.getBookmarkProblemHandler()).isNotEmpty();
 	}
 	
+	private void assertDoNotHaveHandler(String problemType) {
+		assertThat(bookmarkProblemDescriptors.getBookmarkProblemDescriptor(problemType)
+				.getBookmarkProblemHandler()).isEmpty();
+	}
+	 
 }
