@@ -9,7 +9,7 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<tycho-version>0.25.0</tycho-version>
+		<tycho-version>1.0.0</tycho-version>
 		<eclipse-repo.url>http://download.eclipse.org/releases/mars</eclipse-repo.url>
 		<swtbot-repo.url>http://download.eclipse.org/technology/swtbot/releases/2.4.0</swtbot-repo.url>
 		<perforce-repo.url>http://www.perforce.com/downloads/http/p4-eclipse/install/4.5</perforce-repo.url>

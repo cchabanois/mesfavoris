@@ -8,8 +8,7 @@ import mesfavoris.commons.ui.statushandlers.PluginStatusManager;
 /**
  * Helper that uses StatusManager to handle statuses.
  * 
- * We will probably have to complete it with methods from
- * {@link org.eclipse.ui.internal.ide.StatusUtil}
+ * We will probably have to complete it with methods from org.eclipse.ui.internal.ide.StatusUtil
  * 
  * @author cedric
  * 
