@@ -4,7 +4,7 @@ set -ev
 
 if [[ ${TRAVIS_PULL_REQUEST} != "false" ]]; then
 	echo "Build for Pull Request"
-	mvn clean verify -P target-neon,jacoco-report
+	./mvnw clean verify -P target-neon,jacoco-report
 	STATUS=$?
 	if [ $STATUS -eq 0 ]; then
 		bash <(curl -s https://codecov.io/bash)
@@ -12,10 +12,10 @@ if [[ ${TRAVIS_PULL_REQUEST} != "false" ]]; then
 elif [[ $TRAVIS_TAG =~ ^release.*$ ]]; then
 	echo "Build for release"
 	# skip tests, you are not supposed to add code when creating a release, just add a tag
-	mvn clean verify -P deploy,release -Dmaven.test.skip=true
+	./mvnw clean verify -P deploy,release -Dmaven.test.skip=true
 else
 	echo "Build for standard commit"
-	mvn clean verify -P target-neon,jacoco-report,deploy
+	./mvnw clean verify -P target-neon,jacoco-report,deploy
 	STATUS=$?
 	if [ $STATUS -eq 0 ]; then
 		bash <(curl -s https://codecov.io/bash)

@@ -45,8 +45,6 @@ matrix:
         - USER2_GDRIVE_USERNAME=$USER4_GDRIVE_USERNAME
         - USER2_GDRIVE_PASSWORD=$USER4_GDRIVE_PASSWORD
         - USER2_RECOVERY_EMAIL=$USER4_RECOVERY_EMAIL         
-      before_install:
-        - source ./travis/install-maven.sh
       install: true
       before_script:
         - source ./travis/start-metacity.sh
