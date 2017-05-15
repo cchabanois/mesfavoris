@@ -89,6 +89,7 @@
 					<!-- <debugPort>5005</debugPort> -->
 					<!-- tycho.testArgLine is the configuration for jacoco agent -->
 					<argLine>${tycho.testArgLine} ${ui.test.vmargs} -Xdebug -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=n</argLine>
+				<!-- <appArgLine>-console 1234 -noExit</appArgLine> -->
 					<dependencies>
 						<dependency>
 							<!-- see https://bugs.eclipse.org/bugs/show_bug.cgi?id=462862 -->
