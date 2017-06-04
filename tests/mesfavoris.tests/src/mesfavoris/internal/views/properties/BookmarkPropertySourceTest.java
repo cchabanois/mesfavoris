@@ -119,8 +119,25 @@ public class BookmarkPropertySourceTest {
 				valuePropertySource.getPropertyDescriptors(), PROP_LINE_NUMBER);
 		assertThat(valuePropertySource.getPropertyValue(PROP_LINE_NUMBER)).isEqualTo("11");
 		assertThat(updatePropertyDescriptor.getDisplayName()).isEqualTo("Updated value");
-	}	
-	
+	}
+
+	@Test
+	public void testNewPropertyValue() throws Exception {
+		// Given
+		addBookmark(new BookmarkId("rootFolder"), bookmark("bookmark1").build());
+		bookmarkProblemsDatabase.add(new BookmarkProblem(new BookmarkId("bookmark1"),
+				BookmarkProblem.TYPE_PROPERTIES_MAY_UPDATE, ImmutableMap.of(PROP_LINE_NUMBER, "0")));
+		
+		// When
+		IPropertyDescriptor[] propertyDescriptors = bookmarkPropertySource.getPropertyDescriptors();
+		IPropertyDescriptor propertyDescriptor = getPropertyDescriptor(propertyDescriptors, PROP_LINE_NUMBER);
+		Object propertyValue = bookmarkPropertySource.getPropertyValue(PROP_LINE_NUMBER);
+		
+		// Then
+		assertThat(propertyDescriptor.getDisplayName()).isEqualTo("lineNumber (New value)");
+		assertThat(propertyValue).isEqualTo("0");
+	}
+
 	private BookmarksTree getInitialTree() {
 		BookmarksTreeBuilder bookmarksTreeBuilder = bookmarksTree("rootFolder");
 		return bookmarksTreeBuilder.build();

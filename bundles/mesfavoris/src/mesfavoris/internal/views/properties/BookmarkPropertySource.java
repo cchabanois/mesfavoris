@@ -132,8 +132,11 @@ public class BookmarkPropertySource implements IPropertySource {
 	}
 
 	private Object getPropertyValueFromProblem(String propertyName) {
-		Optional<BookmarkProblem> problem = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE);
-		return problem.get().getProperties().get(propertyName);
+		Optional<String> updatedValue = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_MAY_UPDATE).map(bookmarkProblem -> bookmarkProblem.getProperties().get(propertyName));
+		if (!updatedValue.isPresent()) {
+			 updatedValue = getBookmarkProblem(BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE).map(bookmarkProblem -> bookmarkProblem.getProperties().get(propertyName));
+		}
+		return updatedValue.get();
 	}
 
 	private Object getPropertyValueFromBookmark(String propertyName) {
