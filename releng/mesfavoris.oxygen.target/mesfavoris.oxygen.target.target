@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="mes favoris Target Content" sequenceNumber="53">
+<?pde version="3.8"?><target name="mes favoris Target Content" sequenceNumber="59">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.sdk.ide" version="4.7.0.I20170308-2000"/>
+<unit id="org.eclipse.egit.feature.group" version="4.8.0.201705170830-rc1"/>
 <repository location="http://download.eclipse.org/releases/oxygen"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
@@ -10,25 +10,21 @@
 <repository location="https://raw.githubusercontent.com/cchabanois/mesfavoris/master/releng/dependencies/repository"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.swtbot.feature.group" version="2.5.0.201609021837"/>
-<unit id="org.eclipse.swtbot.eclipse.feature.group" version="2.5.0.201609021837"/>
+<unit id="org.eclipse.swtbot.eclipse.feature.group" version="2.6.0.201705241802"/>
+<unit id="org.eclipse.swtbot.feature.group" version="2.6.0.201705241802"/>
 <repository location="http://download.eclipse.org/releases/oxygen"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.m2e.feature.feature.group" version="1.8.0.20160921-2002"/>
+<unit id="org.eclipse.sdk.ide" version="4.7.0.I20170524-2000"/>
 <repository location="http://download.eclipse.org/releases/oxygen"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.egit.feature.group" version="4.6.0.201612231935-r"/>
+<unit id="org.eclipse.m2e.feature.feature.group" version="1.8.0.20170516-2043"/>
 <repository location="http://download.eclipse.org/releases/oxygen"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="com.perforce.team.feature.feature.group" version="2016.1.1409747"/>
 <repository location="http://www.perforce.com/downloads/http/p4-eclipse/install/4.6"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.epp.logging.aeri.feature.feature.group" version="2.0.4.v20170307-1435"/>
-<repository location="http://download.eclipse.org/releases/oxygen"/>
 </location>
 </locations>
 </target>
