@@ -16,14 +16,16 @@ public class BookmarkAdapterFactory implements IAdapterFactory {
 			Bookmark bookmark = (Bookmark) adaptableObject;
 			if (IPropertySource.class.equals(adapterType)) {
 				return new BookmarkPropertySource(BookmarksPlugin.getDefault().getBookmarkDatabase(),
-						BookmarksPlugin.getDefault().getBookmarkProblems(), bookmark.getId());
+						BookmarksPlugin.getDefault().getBookmarkProblems(),
+						BookmarksPlugin.getDefault().getBookmarkProblemDescriptors(), bookmark.getId());
 			}
 		}
 		if (adaptableObject instanceof BookmarkLink) {
 			Bookmark bookmark = ((BookmarkLink) adaptableObject).getBookmark();
 			if (IPropertySource.class.equals(adapterType)) {
 				return new BookmarkPropertySource(BookmarksPlugin.getDefault().getBookmarkDatabase(),
-						BookmarksPlugin.getDefault().getBookmarkProblems(), bookmark.getId());
+						BookmarksPlugin.getDefault().getBookmarkProblems(),
+						BookmarksPlugin.getDefault().getBookmarkProblemDescriptors(), bookmark.getId());
 			}
 		}
 		return null;

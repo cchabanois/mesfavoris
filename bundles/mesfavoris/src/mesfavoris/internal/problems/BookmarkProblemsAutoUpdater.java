@@ -16,6 +16,8 @@ import javax.inject.Provider;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.osgi.service.event.EventHandler;
 
+import com.google.common.collect.Iterables;
+
 import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.internal.service.operations.CheckBookmarkPropertiesOperation;
 import mesfavoris.model.BookmarkDatabase;
@@ -120,7 +122,7 @@ public class BookmarkProblemsAutoUpdater {
 	private void updateObsoletePropertiesBookmarkProblem(BookmarkPropertiesModification modification,
 			BookmarkProblem bookmarkProblem) {
 		Map<String, String> newProperties = null;
-		for (String propertyName : modification.getModifiedProperties()) {
+		for (String propertyName : Iterables.concat(modification.getModifiedProperties(), modification.getAddedProperties())) {
 			if (Objects.equals(bookmarkProblem.getProperties().get(propertyName), modification.getTargetTree()
 					.getBookmark(modification.getBookmarkId()).getPropertyValue(propertyName))) {
 				if (newProperties == null) {

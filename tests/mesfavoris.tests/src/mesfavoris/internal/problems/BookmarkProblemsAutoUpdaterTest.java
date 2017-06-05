@@ -142,6 +142,25 @@ public class BookmarkProblemsAutoUpdaterTest {
 	}
 
 	@Test
+	public void testBookmarkProblemUpdatedWhenPropertyAdded() throws BookmarksException {
+		// Given
+		BookmarkId bookmarkId = new BookmarkId();
+		Bookmark bookmark = new Bookmark(bookmarkId, ImmutableMap.of(Bookmark.PROPERTY_NAME, "bookmark"));
+		addBookmark(new BookmarkId("rootFolder"), bookmark);
+		bookmarkProblemsDatabase.add(new BookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE,
+				ImmutableMap.of("prop1", "newValue1", "prop2", "newValue2")));
+
+		// When
+		bookmarkDatabase.modify(
+				bookmarksTreeModifier -> bookmarksTreeModifier.setPropertyValue(bookmarkId, "prop1", "newValue1"));
+
+		// Then
+		BookmarkProblem bookmarkProblem = bookmarkProblemsDatabase
+				.getBookmarkProblem(bookmarkId, BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE).get();
+		assertThat(bookmarkProblem.getProperties()).containsOnly(entry("prop2", "newValue2"));
+	}
+
+	@Test
 	public void testBookmarkProblemDeletedWhenPropertyModified() throws BookmarksException {
 		// Given
 		BookmarkId bookmarkId = new BookmarkId();

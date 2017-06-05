@@ -9,21 +9,21 @@ import mesfavoris.problems.BookmarkProblem;
 import mesfavoris.problems.IBookmarkProblemDescriptor;
 import mesfavoris.problems.IBookmarkProblemDescriptor.Severity;
 
-public class ObsoletePropertyPropertyDescriptor extends PropertyDescriptor {
+public class NewPropertyPropertyDescriptor extends PropertyDescriptor {
 	private final BookmarkProblem bookmarkProblem;
 	private final String propertyName;
 
-	public ObsoletePropertyPropertyDescriptor(BookmarkProblem bookmarkProblem,
+	public NewPropertyPropertyDescriptor(BookmarkProblem bookmarkProblem,
 			IBookmarkProblemDescriptor bookmarkProblemDescriptor, String propertyName) {
-		super(propertyName, propertyName);
+		super(propertyName, propertyName + " (New value)");
 		this.bookmarkProblem = bookmarkProblem;
 		this.propertyName = propertyName;
 		Severity severity = bookmarkProblemDescriptor.getSeverity();
 		
 		if (severity == Severity.ERROR || severity == Severity.WARNING) {
-			setLabelProvider(new PropertyLabelProvider(false, PropertyIcon.WARNING));
+			setLabelProvider(new PropertyLabelProvider(true, PropertyIcon.WARNING));
 		} else {
-			setLabelProvider(new PropertyLabelProvider(false, PropertyIcon.INFO));
+			setLabelProvider(new PropertyLabelProvider(true, PropertyIcon.INFO));
 		}
 	}
 

@@ -22,6 +22,7 @@ import org.junit.rules.TemporaryFolder;
 import com.google.common.collect.ImmutableMap;
 
 import mesfavoris.BookmarksException;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.problems.BookmarkProblemsDatabase;
 import mesfavoris.internal.problems.extension.BookmarkProblemDescriptors;
 import mesfavoris.model.Bookmark;
@@ -50,7 +51,7 @@ public class BookmarkPropertySourceTest {
 				new BookmarkProblemDescriptors(), file);
 		bookmarkProblemsDatabase.init();
 		bookmarkPropertySource = new BookmarkPropertySource(bookmarkDatabase, bookmarkProblemsDatabase,
-				new BookmarkId("bookmark1"));
+				BookmarksPlugin.getDefault().getBookmarkProblemDescriptors(), new BookmarkId("bookmark1"));
 	}
 
 	@After
@@ -127,12 +128,12 @@ public class BookmarkPropertySourceTest {
 		addBookmark(new BookmarkId("rootFolder"), bookmark("bookmark1").build());
 		bookmarkProblemsDatabase.add(new BookmarkProblem(new BookmarkId("bookmark1"),
 				BookmarkProblem.TYPE_PROPERTIES_MAY_UPDATE, ImmutableMap.of(PROP_LINE_NUMBER, "0")));
-		
+
 		// When
 		IPropertyDescriptor[] propertyDescriptors = bookmarkPropertySource.getPropertyDescriptors();
 		IPropertyDescriptor propertyDescriptor = getPropertyDescriptor(propertyDescriptors, PROP_LINE_NUMBER);
 		Object propertyValue = bookmarkPropertySource.getPropertyValue(PROP_LINE_NUMBER);
-		
+
 		// Then
 		assertThat(propertyDescriptor.getDisplayName()).isEqualTo("lineNumber (New value)");
 		assertThat(propertyValue).isEqualTo("0");

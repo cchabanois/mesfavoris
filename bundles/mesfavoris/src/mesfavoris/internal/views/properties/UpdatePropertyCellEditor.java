@@ -10,12 +10,12 @@ import org.eclipse.swt.widgets.Control;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.problems.BookmarkProblem;
 
-public class ObsoletePropertyCellEditor extends DialogCellEditor {
+public class UpdatePropertyCellEditor extends DialogCellEditor {
 	private Image image;
 	private final BookmarkProblem bookmarkProblem;
 	private final String propertyName;
 
-	public ObsoletePropertyCellEditor(Composite parent, BookmarkProblem bookmarkProblem, String propertyName) {
+	public UpdatePropertyCellEditor(Composite parent, BookmarkProblem bookmarkProblem, String propertyName) {
 		super(parent);
 		this.bookmarkProblem = bookmarkProblem;
 		this.propertyName = propertyName;

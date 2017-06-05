@@ -31,7 +31,7 @@ public class ObsoletePropertyPropertySource implements IPropertySource {
 
 	@Override
 	public Object getPropertyValue(Object id) {
-		return updatedValue;
+		return new UpdatedPropertyValue(updatedValue);
 	}
 
 	@Override
