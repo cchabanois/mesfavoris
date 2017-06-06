@@ -96,7 +96,7 @@ public class BookmarkPropertySourceTest {
 		IPropertySource valuePropertySource = (IPropertySource) propertyValue;
 		IPropertyDescriptor updatePropertyDescriptor = getPropertyDescriptor(
 				valuePropertySource.getPropertyDescriptors(), PROP_LINE_NUMBER);
-		assertThat(valuePropertySource.getPropertyValue(PROP_LINE_NUMBER)).isEqualTo("120");
+		assertThat(valuePropertySource.getPropertyValue(PROP_LINE_NUMBER)).isEqualTo(new UpdatedPropertyValue("120"));
 		assertThat(updatePropertyDescriptor.getDisplayName()).isEqualTo("Updated value");
 	}
 
@@ -118,7 +118,7 @@ public class BookmarkPropertySourceTest {
 		IPropertySource valuePropertySource = (IPropertySource) propertyValue;
 		IPropertyDescriptor updatePropertyDescriptor = getPropertyDescriptor(
 				valuePropertySource.getPropertyDescriptors(), PROP_LINE_NUMBER);
-		assertThat(valuePropertySource.getPropertyValue(PROP_LINE_NUMBER)).isEqualTo("11");
+		assertThat(valuePropertySource.getPropertyValue(PROP_LINE_NUMBER)).isEqualTo(new UpdatedPropertyValue("11"));
 		assertThat(updatePropertyDescriptor.getDisplayName()).isEqualTo("Updated value");
 	}
 
@@ -136,7 +136,7 @@ public class BookmarkPropertySourceTest {
 
 		// Then
 		assertThat(propertyDescriptor.getDisplayName()).isEqualTo("lineNumber (New value)");
-		assertThat(propertyValue).isEqualTo("0");
+		assertThat(propertyValue).isEqualTo(new UpdatedPropertyValue("0"));
 	}
 
 	private BookmarksTree getInitialTree() {
