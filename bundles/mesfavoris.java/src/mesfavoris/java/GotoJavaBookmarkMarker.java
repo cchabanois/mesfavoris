@@ -48,7 +48,7 @@ public class GotoJavaBookmarkMarker implements IGotoBookmark {
 
 	private String getEditorId(IEditorInput input) {
 		try {
-			IEditorDescriptor descriptor = IDE.getEditorDescriptor(input.getName());
+			IEditorDescriptor descriptor = IDE.getEditorDescriptor(input.getName(), true, true);
 			return descriptor.getId();
 		} catch (PartInitException e) {
 			return null;

@@ -8,21 +8,21 @@ import org.eclipse.jface.viewers.StructuredSelection;
 
 public class ProxySelectionProvider implements ISelectionProvider {
 	private ISelectionProvider currentSelectionProvider;
-	private final ListenerList listeners = new ListenerList(ListenerList.IDENTITY);
+	private final ListenerList<ISelectionChangedListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
 
 	public void setCurrentSelectionProvider(ISelectionProvider selectionProvider) {
 		if (currentSelectionProvider == selectionProvider) {
 			return;
 		}
 		if (currentSelectionProvider != null) {
-			for (Object listener : listeners.getListeners()) {
-				currentSelectionProvider.removeSelectionChangedListener((ISelectionChangedListener) listener);
+			for (ISelectionChangedListener listener : listeners) {
+				currentSelectionProvider.removeSelectionChangedListener(listener);
 			}
 		}
 		this.currentSelectionProvider = selectionProvider;
 		if (currentSelectionProvider != null) {
-			for (Object listener : listeners.getListeners()) {
-				currentSelectionProvider.addSelectionChangedListener((ISelectionChangedListener) listener);
+			for (ISelectionChangedListener listener : listeners) {
+				currentSelectionProvider.addSelectionChangedListener(listener);
 			}
 		}
 	}

@@ -1,9 +1,6 @@
 package mesfavoris.gdrive.mappings;
 
-import static mesfavoris.remote.RemoteBookmarkFolder.PROP_READONLY;
-
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +17,6 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
-import com.google.api.services.drive.model.File;
 import com.google.common.collect.ImmutableSet;
 
 import mesfavoris.gdrive.Activator;
@@ -41,7 +37,7 @@ public class BookmarkMappingsStore implements IBookmarksListener, IBookmarkMappi
 	private final IBookmarkMappingsPersister bookmarkMappingsPersister;
 	private final Map<BookmarkId, BookmarkMapping> mappings = new ConcurrentHashMap<>();
 	private final SaveJob saveJob = new SaveJob();
-	private final ListenerList listenerList = new ListenerList();
+	private final ListenerList<IBookmarkMappingsListener> listenerList = new ListenerList<>();
 
 	public BookmarkMappingsStore(IBookmarkMappingsPersister bookmarkMappingsPersister) {
 		this.bookmarkMappingsPersister = bookmarkMappingsPersister;
@@ -152,9 +148,7 @@ public class BookmarkMappingsStore implements IBookmarksListener, IBookmarkMappi
 	}
 
 	private void fireMappingRemoved(BookmarkId bookmarkFolderId) {
-		Object[] listeners = listenerList.getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			final IBookmarkMappingsListener listener = (IBookmarkMappingsListener) listeners[i];
+		for (IBookmarkMappingsListener listener : listenerList) {
 			SafeRunner.run(new ISafeRunnable() {
 
 				public void run() throws Exception {

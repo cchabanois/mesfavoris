@@ -1,6 +1,5 @@
 package mesfavoris.internal.problems.ui;
 
-import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
@@ -12,12 +11,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import mesfavoris.internal.problems.extension.BookmarkProblemDescriptors;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.problems.BookmarkProblem;
 import mesfavoris.problems.IBookmarkProblemDescriptor;
 import mesfavoris.problems.IBookmarkProblemDescriptor.Severity;
-import mesfavoris.problems.IBookmarkProblemHandler;
 import mesfavoris.problems.IBookmarkProblems;
 
 public class BookmarkProblemsControl extends Composite {

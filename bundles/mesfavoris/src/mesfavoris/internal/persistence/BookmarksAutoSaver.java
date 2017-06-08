@@ -46,7 +46,7 @@ public class BookmarksAutoSaver implements IBookmarksDirtyStateTracker {
 	private final RemoteBookmarksSaver remoteBookmarksSaver;
 	private final SaveModificationsHandler saveModificationsHandler = new SaveModificationsHandler();
 	private final IBookmarksListener bookmarksListener;
-	private final ListenerList listenerList = new ListenerList();
+	private final ListenerList<IBookmarksDirtyStateListener> listenerList = new ListenerList<>();
 	private final AtomicReference<Set<BookmarkId>> dirtyBookmarksRef = new AtomicReference<Set<BookmarkId>>(
 			Collections.emptySet());
 
@@ -113,9 +113,7 @@ public class BookmarksAutoSaver implements IBookmarksDirtyStateTracker {
 	}
 
 	private void fireDirtyBookmarksChanged(Set<BookmarkId> dirtyBookmarks) {
-		Object[] listeners = listenerList.getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			final IBookmarksDirtyStateListener listener = (IBookmarksDirtyStateListener) listeners[i];
+		for (IBookmarksDirtyStateListener listener : listenerList) {
 			SafeRunner.run(new ISafeRunnable() {
 
 				public void run() throws Exception {

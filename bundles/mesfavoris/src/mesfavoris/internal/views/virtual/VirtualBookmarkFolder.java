@@ -13,7 +13,8 @@ import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 
 /**
- * A virtual bookmark folder. This folder does not exist in the BookmarkDatabase. 
+ * A virtual bookmark folder. This folder does not exist in the
+ * BookmarkDatabase.
  * 
  * @author cchabanois
  *
@@ -21,13 +22,13 @@ import mesfavoris.model.BookmarkId;
 public abstract class VirtualBookmarkFolder implements IAdaptable {
 	protected final BookmarkId parentId;
 	protected final BookmarkFolder bookmarkFolder;
-	protected final ListenerList listenerList = new ListenerList();
-	
+	protected final ListenerList<IVirtualBookmarkFolderListener> listenerList = new ListenerList<>();
+
 	public VirtualBookmarkFolder(BookmarkId parentId, String name) {
 		this.parentId = parentId;
 		this.bookmarkFolder = new BookmarkFolder(new BookmarkId(), name);
 	}
-	
+
 	public BookmarkId getParentId() {
 		return parentId;
 	}
@@ -37,7 +38,7 @@ public abstract class VirtualBookmarkFolder implements IAdaptable {
 	}
 
 	public abstract List<BookmarkLink> getChildren();
-	
+
 	public synchronized void addListener(IVirtualBookmarkFolderListener listener) {
 		if (listenerList.isEmpty()) {
 			initListening();
@@ -46,9 +47,9 @@ public abstract class VirtualBookmarkFolder implements IAdaptable {
 	}
 
 	protected abstract void initListening();
-	
+
 	protected abstract void stopListening();
-	
+
 	public synchronized void removeListener(IVirtualBookmarkFolderListener listener) {
 		listenerList.remove(listener);
 		if (listenerList.isEmpty()) {
@@ -57,9 +58,7 @@ public abstract class VirtualBookmarkFolder implements IAdaptable {
 	}
 
 	protected void fireChildrenChanged() {
-		Object[] listeners = listenerList.getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			final IVirtualBookmarkFolderListener listener = (IVirtualBookmarkFolderListener) listeners[i];
+		for (IVirtualBookmarkFolderListener listener : listenerList) {
 			SafeRunner.run(new ISafeRunnable() {
 
 				public void run() throws Exception {
@@ -110,6 +109,6 @@ public abstract class VirtualBookmarkFolder implements IAdaptable {
 		} else if (!parentId.equals(other.parentId))
 			return false;
 		return true;
-	}	
+	}
 
 }

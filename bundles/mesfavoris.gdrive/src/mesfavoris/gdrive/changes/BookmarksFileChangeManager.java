@@ -44,7 +44,7 @@ public class BookmarksFileChangeManager {
 	private final BookmarksFileChangeJob job = new BookmarksFileChangeJob();
 	private final Provider<Duration> pollDelayProvider;
 	private final IBookmarkMappings bookmarkMappings;
-	private final ListenerList connectionListenerList = new ListenerList();
+	private final ListenerList<IBookmarksFileChangeListener> listenerList = new ListenerList<>();
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 	
 	public BookmarksFileChangeManager(GDriveConnectionManager gdriveConnectionManager,
@@ -72,17 +72,15 @@ public class BookmarksFileChangeManager {
 	}
 
 	public void addListener(IBookmarksFileChangeListener listener) {
-		connectionListenerList.add(listener);
+		listenerList.add(listener);
 	}
 
 	public void removeListener(IBookmarksFileChangeListener listener) {
-		connectionListenerList.remove(listener);
+		listenerList.remove(listener);
 	}
 
 	private void fireBookmarksFileChanged(BookmarkId bookmarkFolderId, Change change) {
-		Object[] listeners = connectionListenerList.getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			final IBookmarksFileChangeListener listener = (IBookmarksFileChangeListener) listeners[i];
+		for (IBookmarksFileChangeListener listener : listenerList) {
 			SafeRunner.run(new ISafeRunnable() {
 
 				public void run() throws Exception {

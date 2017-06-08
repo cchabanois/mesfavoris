@@ -20,7 +20,7 @@ import mesfavoris.model.modification.IBookmarksModificationValidator;
 
 public class BookmarkDatabase {
 	private final String id;
-	private final ListenerList listenerList = new ListenerList();
+	private final ListenerList<IBookmarksListener> listenerList = new ListenerList<>();
 	private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
 	private final Lock writeLock = rwLock.writeLock();
 	private final Lock readLock = rwLock.readLock();
@@ -167,9 +167,7 @@ public class BookmarkDatabase {
 	}
 
 	private void fireBookmarksModified(final List<BookmarksModification> events) {
-		Object[] listeners = listenerList.getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			final IBookmarksListener listener = (IBookmarksListener) listeners[i];
+		for (IBookmarksListener listener : listenerList) {
 			SafeRunner.run(new ISafeRunnable() {
 
 				public void run() throws Exception {

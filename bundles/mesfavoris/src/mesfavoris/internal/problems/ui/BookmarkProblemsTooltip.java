@@ -18,7 +18,6 @@ import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.internal.problems.extension.BookmarkProblemDescriptors;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.problems.BookmarkProblem;
 import mesfavoris.problems.IBookmarkProblemDescriptor;

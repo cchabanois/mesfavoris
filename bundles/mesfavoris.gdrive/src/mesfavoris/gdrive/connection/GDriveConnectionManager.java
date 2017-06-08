@@ -50,7 +50,7 @@ public class GDriveConnectionManager {
 
 	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
-	private final ListenerList connectionListenerList = new ListenerList();
+	private final ListenerList<IConnectionListener> listenerList = new ListenerList<>();
 	private HttpTransport httpTransport;
 	private final String applicationName;
 	private final File dataStoreDir;
@@ -176,9 +176,7 @@ public class GDriveConnectionManager {
 	}
 
 	private void fireConnected(final Drive drive) {
-		Object[] listeners = connectionListenerList.getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			final IConnectionListener listener = (IConnectionListener) listeners[i];
+		for (IConnectionListener listener : listenerList) {
 			SafeRunner.run(new ISafeRunnable() {
 
 				public void run() throws Exception {
@@ -194,9 +192,7 @@ public class GDriveConnectionManager {
 	}
 
 	private void fireDisconnected(final Drive drive) {
-		Object[] listeners = connectionListenerList.getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			final IConnectionListener listener = (IConnectionListener) listeners[i];
+		for (IConnectionListener listener : listenerList) {
 			SafeRunner.run(new ISafeRunnable() {
 
 				public void run() throws Exception {
@@ -253,11 +249,11 @@ public class GDriveConnectionManager {
 	}
 
 	public void addConnectionListener(IConnectionListener listener) {
-		connectionListenerList.add(listener);
+		listenerList.add(listener);
 	}
 
 	public void removeConnectionListener(IConnectionListener listener) {
-		connectionListenerList.remove(listener);
+		listenerList.remove(listener);
 	}
 
 	private UserInfo loadUserInfo() {
