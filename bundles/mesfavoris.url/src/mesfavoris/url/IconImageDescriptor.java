@@ -9,11 +9,11 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 
-public class FavIconImageDescriptor extends ImageDescriptor {
+public class IconImageDescriptor extends ImageDescriptor {
 	private final byte[] favIconBytes;
 	private ImageData imageData;
 
-	public FavIconImageDescriptor(byte[] favIconBytes) {
+	public IconImageDescriptor(byte[] favIconBytes) {
 		this.favIconBytes = favIconBytes;
 	}
 
@@ -56,10 +56,10 @@ public class FavIconImageDescriptor extends ImageDescriptor {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof FavIconImageDescriptor)) {
+		if (!(obj instanceof IconImageDescriptor)) {
 			return false;
 		}
-		FavIconImageDescriptor descriptor = (FavIconImageDescriptor) obj;
+		IconImageDescriptor descriptor = (IconImageDescriptor) obj;
 		return Arrays.equals(descriptor.favIconBytes, favIconBytes);
 	}
 

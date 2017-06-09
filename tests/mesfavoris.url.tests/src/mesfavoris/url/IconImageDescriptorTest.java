@@ -11,13 +11,13 @@ import org.junit.Test;
 
 import com.google.common.io.ByteStreams;
 
-public class FavIconImageDescriptorTest {
+public class IconImageDescriptorTest {
 
 	@Test
 	public void testHashCode() throws IOException {
 		// Given
-		FavIconImageDescriptor imageDescriptor1 = new FavIconImageDescriptor(getImageAsBytes("lemonde-favicon.ico"));
-		FavIconImageDescriptor imageDescriptor2 = new FavIconImageDescriptor(getImageAsBytes("lemonde-favicon.ico"));
+		IconImageDescriptor imageDescriptor1 = new IconImageDescriptor(getImageAsBytes("lemonde-favicon.ico"));
+		IconImageDescriptor imageDescriptor2 = new IconImageDescriptor(getImageAsBytes("lemonde-favicon.ico"));
 	
 		// When/Then
 		assertEquals(imageDescriptor1.hashCode(),imageDescriptor2.hashCode());
@@ -26,8 +26,8 @@ public class FavIconImageDescriptorTest {
 	@Test
 	public void testEquals() throws IOException {
 		// Given
-		FavIconImageDescriptor imageDescriptor1 = new FavIconImageDescriptor(getImageAsBytes("lemonde-favicon.ico"));
-		FavIconImageDescriptor imageDescriptor2 = new FavIconImageDescriptor(getImageAsBytes("lemonde-favicon.ico"));
+		IconImageDescriptor imageDescriptor1 = new IconImageDescriptor(getImageAsBytes("lemonde-favicon.ico"));
+		IconImageDescriptor imageDescriptor2 = new IconImageDescriptor(getImageAsBytes("lemonde-favicon.ico"));
 	
 		// When/Then
 		assertEquals(imageDescriptor1,imageDescriptor2);
@@ -36,7 +36,7 @@ public class FavIconImageDescriptorTest {
 	@Test
 	public void testGetImageData() throws IOException {
 		// Given
-		FavIconImageDescriptor imageDescriptor = new FavIconImageDescriptor(getImageAsBytes("lemonde-favicon.ico"));
+		IconImageDescriptor imageDescriptor = new IconImageDescriptor(getImageAsBytes("lemonde-favicon.ico"));
 
 		// When
 		ImageData imageData1 = imageDescriptor.getImageData();

@@ -1,4 +1,4 @@
-package mesfavoris.url;
+package mesfavoris.url.internal;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;

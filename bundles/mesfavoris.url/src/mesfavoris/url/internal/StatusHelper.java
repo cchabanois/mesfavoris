@@ -1,4 +1,4 @@
-package mesfavoris.url;
+package mesfavoris.url.internal;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.statushandlers.StatusManager;

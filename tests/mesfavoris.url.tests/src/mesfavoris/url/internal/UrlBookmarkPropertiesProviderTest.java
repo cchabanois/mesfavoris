@@ -1,4 +1,4 @@
-package mesfavoris.url;
+package mesfavoris.url.internal;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,6 +16,8 @@ import org.junit.Test;
 import com.google.common.io.ByteStreams;
 
 import mesfavoris.model.Bookmark;
+import mesfavoris.url.UrlBookmarkProperties;
+import mesfavoris.url.internal.UrlBookmarkPropertiesProvider;
 
 public class UrlBookmarkPropertiesProviderTest {
 	private final UrlBookmarkPropertiesProvider provider = new UrlBookmarkPropertiesProvider();

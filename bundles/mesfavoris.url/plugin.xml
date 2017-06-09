@@ -6,19 +6,19 @@
       <bookmarkType
             name="url">
          <propertiesProvider
-               class="mesfavoris.url.UrlBookmarkPropertiesProvider"
+               class="mesfavoris.url.internal.UrlBookmarkPropertiesProvider"
                priority="10">
          </propertiesProvider>
          <labelProvider
-               class="mesfavoris.url.UrlBookmarkLabelProvider"
+               class="mesfavoris.url.internal.UrlBookmarkLabelProvider"
                priority="10">
          </labelProvider>
          <gotoBookmark
-               class="mesfavoris.url.GotoUrlBookmark"
+               class="mesfavoris.url.internal.GotoUrlBookmark"
                priority="10">
          </gotoBookmark>
          <locationProvider
-               class="mesfavoris.url.UrlBookmarkLocationProvider"
+               class="mesfavoris.url.internal.UrlBookmarkLocationProvider"
                priority="10">
          </locationProvider>
          <properties>

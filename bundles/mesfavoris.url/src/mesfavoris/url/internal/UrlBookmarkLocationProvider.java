@@ -1,4 +1,4 @@
-package mesfavoris.url;
+package mesfavoris.url.internal;
 
 import static mesfavoris.url.UrlBookmarkProperties.PROP_URL;
 

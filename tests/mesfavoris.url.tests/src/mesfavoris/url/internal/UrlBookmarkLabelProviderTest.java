@@ -1,4 +1,4 @@
-package mesfavoris.url;
+package mesfavoris.url.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -18,6 +18,8 @@ import com.google.common.io.ByteStreams;
 
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
+import mesfavoris.url.UrlBookmarkProperties;
+import mesfavoris.url.internal.UrlBookmarkLabelProvider;
 
 public class UrlBookmarkLabelProviderTest {
 	private UrlBookmarkLabelProvider urlBookmarkLabelProvider;

@@ -1,6 +1,7 @@
-package mesfavoris.url;
+package mesfavoris.url.internal;
 
 import static mesfavoris.url.UrlBookmarkProperties.PROP_FAVICON;
+import static mesfavoris.url.UrlBookmarkProperties.PROP_ICON;
 import static mesfavoris.url.UrlBookmarkProperties.PROP_URL;
 
 import java.util.Base64;
@@ -13,6 +14,7 @@ import org.eclipse.swt.graphics.Image;
 
 import mesfavoris.bookmarktype.AbstractBookmarkLabelProvider;
 import mesfavoris.model.Bookmark;
+import mesfavoris.url.IconImageDescriptor;
 
 public class UrlBookmarkLabelProvider extends AbstractBookmarkLabelProvider {
 
@@ -27,8 +29,11 @@ public class UrlBookmarkLabelProvider extends AbstractBookmarkLabelProvider {
 	@Override
 	public Image getImage(Object element) {
 		Bookmark bookmark = (Bookmark) element;
-		String favIconAsBase64 = bookmark.getPropertyValue(PROP_FAVICON);
-		if (favIconAsBase64 == null) {
+		String iconAsBase64 = bookmark.getPropertyValue(PROP_FAVICON);
+		if (iconAsBase64 == null) {
+			iconAsBase64 = bookmark.getPropertyValue(PROP_ICON);
+		}
+		if (iconAsBase64 == null) {
 			if (bookmark.getPropertyValue(PROP_URL) != null) {
 				// taken from http://www.famfamfam.com/lab/icons/mini/icons/page_tag_blue.gif
 				ImageDescriptor imageDescriptor = Activator.getImageDescriptor("icons/obj16/page_tag_blue.gif");
@@ -37,11 +42,11 @@ public class UrlBookmarkLabelProvider extends AbstractBookmarkLabelProvider {
 				return null;
 			}
 		}
-		byte[] favIconBytes = Base64.getDecoder().decode(favIconAsBase64);
-		FavIconImageDescriptor imageDescriptor = new FavIconImageDescriptor(favIconBytes);
+		byte[] favIconBytes = Base64.getDecoder().decode(iconAsBase64);
+		IconImageDescriptor imageDescriptor = new IconImageDescriptor(favIconBytes);
 		return resourceManager.createImage(imageDescriptor);
 	}
-
+	
 	@Override
 	public boolean handlesBookmark(Bookmark bookmark) {
 		return bookmark.getPropertyValue(PROP_URL) != null;
