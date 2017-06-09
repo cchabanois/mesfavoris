@@ -85,7 +85,7 @@ public class PluginBookmarkTypes implements IBookmarkPropertyDescriptors {
 		for (PluginBookmarkType bookmarkType : getBookmarkTypes()) {
 			for (BookmarkPropertyDescriptor propertyDescriptor : bookmarkType.getPropertyDescriptors()) {
 				if (propertyDescriptors.containsKey(propertyDescriptor.getName())) {
-					if (!propertyDescriptors.get(propertyDescriptor).getName().equals(propertyDescriptor)) {
+					if (!propertyDescriptors.get(propertyDescriptor.getName()).equals(propertyDescriptor)) {
 						StatusHelper.logWarn(String.format(
 								"Bookmark property '%s' registered several times with different definitions",
 								propertyDescriptor.getName()), null);
