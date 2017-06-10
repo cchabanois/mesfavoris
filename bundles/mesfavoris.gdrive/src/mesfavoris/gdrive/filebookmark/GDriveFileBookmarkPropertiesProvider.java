@@ -34,8 +34,12 @@ public class GDriveFileBookmarkPropertiesProvider extends AbstractBookmarkProper
 	private final GDriveConnectionManager gDriveConnectionManager;
 
 	public GDriveFileBookmarkPropertiesProvider() {
+		this(Activator.getDefault().getGDriveConnectionManager());
+	}
+
+	public GDriveFileBookmarkPropertiesProvider(GDriveConnectionManager gDriveConnectionManager) {
 		this.getFileIdFromUrlOperation = new GetFileIdFromUrlOperation();
-		this.gDriveConnectionManager = Activator.getDefault().getGDriveConnectionManager();
+		this.gDriveConnectionManager = gDriveConnectionManager;
 	}
 
 	@Override
@@ -53,7 +57,7 @@ public class GDriveFileBookmarkPropertiesProvider extends AbstractBookmarkProper
 		}
 		putIfAbsent(bookmarkProperties, UrlBookmarkProperties.PROP_URL, url.toString());
 		putIfAbsent(bookmarkProperties, GDriveBookmarkProperties.PROP_FILE_ID, fileId.get());
-		
+
 		if (gDriveConnectionManager.getState() != State.connected) {
 			return;
 		}
@@ -67,7 +71,7 @@ public class GDriveFileBookmarkPropertiesProvider extends AbstractBookmarkProper
 		}
 		putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME, file.getTitle());
 		putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_COMMENT, file.getDescription());
-		
+
 		if (file.getIconLink() != null) {
 			getIconAsBase64(file.getIconLink())
 					.ifPresent(icon -> putIfAbsent(bookmarkProperties, UrlBookmarkProperties.PROP_ICON, icon));

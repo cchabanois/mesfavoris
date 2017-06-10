@@ -21,6 +21,7 @@ import com.google.api.services.drive.model.File;
 
 import mesfavoris.gdrive.GDriveTestUser;
 import mesfavoris.gdrive.mappings.IBookmarkMappings;
+import mesfavoris.gdrive.operations.BookmarkFileConstants;
 import mesfavoris.gdrive.operations.CreateFileOperation;
 import mesfavoris.gdrive.operations.GetBookmarkFilesOperation;
 import mesfavoris.gdrive.operations.ShareFileOperation;
@@ -46,7 +47,7 @@ public class ImportBookmarksFileDialogTest extends AbstractDialogTest {
 	@Test
 	public void testSelectBookmarksFile() throws Exception {
 		// Given
-		File file = createFile(gdriveConnectionUser1, "bookmarks1", "any");
+		File file = createBookmarksFile(gdriveConnectionUser1, "bookmarks1", "any");
 		openDialog(shell -> createDialog(shell, gdriveConnectionUser1,
 				Optional.of(gdriveConnectionUser1.getApplicationFolderId())));
 
@@ -64,7 +65,7 @@ public class ImportBookmarksFileDialogTest extends AbstractDialogTest {
 	@Ignore("Currently fails when run with maven")
 	public void testAddLinkAndSelectBookmarksFile() throws Exception {
 		// Given
-		File file = createFile(gdriveConnectionUser2, "bookmarks from user2", "any");
+		File file = createBookmarksFile(gdriveConnectionUser2, "bookmarks from user2", "any");
 		shareWithAnyoneWithLink(gdriveConnectionUser2, file.getId());
 		openDialog(shell -> createDialog(shell, gdriveConnectionUser1,
 				Optional.of(gdriveConnectionUser1.getApplicationFolderId())));
@@ -86,11 +87,11 @@ public class ImportBookmarksFileDialogTest extends AbstractDialogTest {
 		bot.button("OK").click();
 	}
 
-	private File createFile(GDriveConnectionRule driveConnection, String name, String contents)
+	private File createBookmarksFile(GDriveConnectionRule driveConnection, String name, String contents)
 			throws UnsupportedEncodingException, IOException {
 		CreateFileOperation createFileOperation = new CreateFileOperation(driveConnection.getDrive());
 		File file = createFileOperation.createFile(driveConnection.getApplicationFolderId(), name,
-				contents.getBytes("UTF-8"), new NullProgressMonitor());
+				BookmarkFileConstants.MESFAVORIS_MIME_TYPE, contents.getBytes("UTF-8"), new NullProgressMonitor());
 		return file;
 	}
 
