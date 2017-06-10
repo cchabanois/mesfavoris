@@ -29,6 +29,13 @@
             </property>
             <property
                   name="favIcon"
+                  obsolescenceSeverity="INFO"
+                  type="string"
+                  updatable="true">
+            </property>
+            <property
+                  name="icon"
+                  obsolescenceSeverity="INFO"
                   type="string"
                   updatable="true">
             </property>

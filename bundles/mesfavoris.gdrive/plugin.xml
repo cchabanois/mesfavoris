@@ -145,8 +145,16 @@
          </labelProvider>
          <propertiesProvider
                class="mesfavoris.gdrive.filebookmark.GDriveFileBookmarkPropertiesProvider"
-               priority="10">
+               priority="0">
          </propertiesProvider>
+         <properties>
+            <property
+                  name="gdrive.fileId"
+                  obsolescenceSeverity="WARNING"
+                  type="string"
+                  updatable="true">
+            </property>
+         </properties>
       </bookmarkType>
    </extension>
    <extension
