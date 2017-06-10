@@ -26,7 +26,7 @@ public class ShareFileOperationTest {
 	@Test
 	public void testShareWithUser() throws Exception {
 		// Given
-		File file = createFile(gdriveConnectionUser1, "myFile.txt", "the contents");
+		File file = createTextFile(gdriveConnectionUser1, "myFile.txt", "the contents");
 		ShareFileOperation shareFileOperation = new ShareFileOperation(gdriveConnectionUser1.getDrive());
 
 		// When
@@ -40,7 +40,7 @@ public class ShareFileOperationTest {
 	@Test
 	public void testShareWithAnyoneWithLink() throws Exception {
 		// Given
-		File file = createFile(gdriveConnectionUser1, "myFile.txt", "the contents");
+		File file = createTextFile(gdriveConnectionUser1, "myFile.txt", "the contents");
 		ShareFileOperation shareFileOperation = new ShareFileOperation(gdriveConnectionUser1.getDrive());
 
 		// When
@@ -51,10 +51,10 @@ public class ShareFileOperationTest {
 		assertEquals("the contents", new String(contentsAsBytes, "UTF-8"));
 	}
 
-	private File createFile(GDriveConnectionRule driveConnection, String name, String contents)
+	private File createTextFile(GDriveConnectionRule driveConnection, String name, String contents)
 			throws UnsupportedEncodingException, IOException {
 		CreateFileOperation createFileOperation = new CreateFileOperation(driveConnection.getDrive());
-		File file = createFileOperation.createFile(driveConnection.getApplicationFolderId(), name,
+		File file = createFileOperation.createFile(driveConnection.getApplicationFolderId(), name, "text/plain",
 				contents.getBytes("UTF-8"), new NullProgressMonitor());
 		return file;
 	}

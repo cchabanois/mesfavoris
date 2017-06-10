@@ -45,6 +45,7 @@ import mesfavoris.remote.ConflictException;
 import mesfavoris.remote.RemoteBookmarkFolder;
 import mesfavoris.remote.RemoteBookmarksTree;
 import mesfavoris.remote.UserInfo;
+import static mesfavoris.gdrive.operations.BookmarkFileConstants.*;
 
 public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 	private final GDriveConnectionManager gDriveConnectionManager;
@@ -133,7 +134,7 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 			byte[] content = serializeBookmarkFolder(bookmarksTree, bookmarkFolderId,
 					new SubProgressMonitor(monitor, 20));
 			com.google.api.services.drive.model.File file = createFileOperation.createFile(bookmarkDirId,
-					bookmarkFolder.getPropertyValue(Bookmark.PROPERTY_NAME), content,
+					bookmarkFolder.getPropertyValue(Bookmark.PROPERTY_NAME), MESFAVORIS_MIME_TYPE, content,
 					new SubProgressMonitor(monitor, 80));
 			BookmarksTree bookmarkFolderTree = bookmarksTree.subTree(bookmarkFolderId);
 			bookmarkMappingsStore.add(bookmarkFolder.getId(), file.getId(),
@@ -205,8 +206,8 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 			BookmarksTree bookmarkFolderTree = deserializer.deserialize(
 					new StringReader(new String(contents.getFileContents(), "UTF-8")),
 					new SubProgressMonitor(monitor, 20));
-			bookmarkMappingsStore.update(contents.getFile().getId(),
-					bookmarkMappingPropertiesProvider.getBookmarkMappingProperties(contents.getFile(), bookmarkFolderTree));
+			bookmarkMappingsStore.update(contents.getFile().getId(), bookmarkMappingPropertiesProvider
+					.getBookmarkMappingProperties(contents.getFile(), bookmarkFolderTree));
 			return new RemoteBookmarksTree(this, bookmarkFolderTree, contents.getFile().getEtag());
 		} finally {
 			monitor.done();
@@ -228,7 +229,8 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 			UpdateFileOperation updateFileOperation = new UpdateFileOperation(drive, durationForNewRevision);
 			byte[] content = serializeBookmarkFolder(bookmarksTree, bookmarkFolderId,
 					new SubProgressMonitor(monitor, 20));
-			File file = updateFileOperation.updateFile(fileId, content, etag, new SubProgressMonitor(monitor, 80));
+			File file = updateFileOperation.updateFile(fileId, MESFAVORIS_MIME_TYPE, content, etag,
+					new SubProgressMonitor(monitor, 80));
 			BookmarksTree bookmarkFolderTree = bookmarksTree.subTree(bookmarkFolderId);
 			bookmarkMappingsStore.update(file.getId(),
 					bookmarkMappingPropertiesProvider.getBookmarkMappingProperties(file, bookmarkFolderTree));

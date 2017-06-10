@@ -27,6 +27,7 @@ import mesfavoris.gdrive.operations.UpdateFileOperation;
 import mesfavoris.gdrive.test.GDriveConnectionRule;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.tests.commons.waits.Waiter;
+import static mesfavoris.gdrive.operations.BookmarkFileConstants.*;
 
 public class BookmarksFileChangeManagerTest {
 
@@ -41,9 +42,9 @@ public class BookmarksFileChangeManagerTest {
 	public void setUp() throws Exception {
 		bookmarkMappings = new BookmarkMappingsStore(mock(IBookmarkMappingsPersister.class));
 		bookmarkMappings.add(new BookmarkId("bookmarkFolder1"),
-				createFile("bookmarks1", "bookmarks for folder1").getId(), Collections.emptyMap());
+				createFile("bookmarks1", MESFAVORIS_MIME_TYPE, "bookmarks for folder1").getId(), Collections.emptyMap());
 		bookmarkMappings.add(new BookmarkId("bookmarkFolder2"),
-				createFile("bookmarks1", "bookmarks for folder2").getId(), Collections.emptyMap());
+				createFile("bookmarks1", MESFAVORIS_MIME_TYPE, "bookmarks for folder2").getId(), Collections.emptyMap());
 		bookmarksFileChangeManager = new BookmarksFileChangeManager(gdriveConnectionRule.getGDriveConnectionManager(),
 				bookmarkMappings, () -> Duration.ofMillis(100));
 		bookmarksFileChangeManager.addListener(listener);
@@ -59,7 +60,7 @@ public class BookmarksFileChangeManagerTest {
 	@Test
 	public void testListenerCalledWhenChangeInBookmarksFile() throws Exception {
 		// When
-		updateFile(bookmarkMappings.getMapping(new BookmarkId("bookmarkFolder1")).get().getFileId(),
+		updateFile(bookmarkMappings.getMapping(new BookmarkId("bookmarkFolder1")).get().getFileId(), MESFAVORIS_MIME_TYPE,
 				"new bookmarks for folder1");
 
 		// Then
@@ -75,7 +76,7 @@ public class BookmarksFileChangeManagerTest {
 		bookmarksFileChangeManager.close();
 
 		// When
-		updateFile(bookmarkMappings.getMapping(new BookmarkId("bookmarkFolder1")).get().getFileId(),
+		updateFile(bookmarkMappings.getMapping(new BookmarkId("bookmarkFolder1")).get().getFileId(), MESFAVORIS_MIME_TYPE,
 				"new bookmarks for folder1");
 
 		// Then
@@ -86,27 +87,28 @@ public class BookmarksFileChangeManagerTest {
 	@Test
 	public void testListenerNotCalledIfChangeInAFileThatIsNotABookmarkFile() throws Exception {
 		// Given
-		File file = createFile("notABookmarkFile", "not bookmarks");
+		File file = createFile("notABookmarkFile", "text/plain", "not bookmarks");
 
 		// When
-		updateFile(file.getId(), "really not bookmarks");
+		updateFile(file.getId(), "text/plain", "really not bookmarks");
 		Thread.sleep(300);
 
 		// Then
 		assertEquals(0, listener.getEvents().size());
 	}
 
-	private File createFile(String name, String contents) throws IOException {
+	private File createFile(String name, String mimeType, String contents) throws IOException {
 		CreateFileOperation createFileOperation = new CreateFileOperation(gdriveConnectionRule.getDrive());
 		byte[] bytes = contents.getBytes("UTF-8");
-		File file = createFileOperation.createFile(gdriveConnectionRule.getApplicationFolderId(), name, bytes,
+		File file = createFileOperation.createFile(gdriveConnectionRule.getApplicationFolderId(), name, mimeType, bytes,
 				new NullProgressMonitor());
 		return file;
 	}
 
-	private void updateFile(String fileId, String newContents) throws IOException {
+	private void updateFile(String fileId, String mimeType, String newContents) throws IOException {
 		UpdateFileOperation updateFileOperation = new UpdateFileOperation(gdriveConnectionRule.getDrive());
-		updateFileOperation.updateFile(fileId, newContents.getBytes(Charsets.UTF_8), null, new NullProgressMonitor());
+		updateFileOperation.updateFile(fileId, mimeType, newContents.getBytes(Charsets.UTF_8), null,
+				new NullProgressMonitor());
 	}
 
 	private static class BookmarksFileChangeListener implements IBookmarksFileChangeListener {

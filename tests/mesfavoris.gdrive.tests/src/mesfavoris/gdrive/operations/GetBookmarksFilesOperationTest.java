@@ -13,6 +13,7 @@ import com.google.api.services.drive.model.File;
 import mesfavoris.gdrive.GDriveTestUser;
 import mesfavoris.gdrive.test.GDriveConnectionRule;
 import mesfavoris.tests.commons.waits.Waiter;
+import static mesfavoris.gdrive.operations.BookmarkFileConstants.MESFAVORIS_MIME_TYPE;
 
 public class GetBookmarksFilesOperationTest {
 
@@ -25,7 +26,7 @@ public class GetBookmarksFilesOperationTest {
 	@Test
 	public void testGetSharedBookmarkFile() throws Exception {
 		// Given
-		File file = createFile(gdriveConnectionUser1, "user1File.txt", "the contents");
+		File file = createBookmarksFile(gdriveConnectionUser1, "user1File.txt", "the contents");
 		share(gdriveConnectionUser1, file.getId(), GDriveTestUser.USER2.getEmail());
 		GetBookmarkFilesOperation operation = new GetBookmarkFilesOperation(gdriveConnectionUser2.getDrive());
 
@@ -34,10 +35,10 @@ public class GetBookmarksFilesOperationTest {
 				.map(f -> f.getId()).collect(Collectors.toList()).contains(file.getId()));
 	}
 
-	private File createFile(GDriveConnectionRule driveConnection, String name, String contents)
+	private File createBookmarksFile(GDriveConnectionRule driveConnection, String name, String contents)
 			throws UnsupportedEncodingException, IOException {
 		CreateFileOperation createFileOperation = new CreateFileOperation(driveConnection.getDrive());
-		File file = createFileOperation.createFile(driveConnection.getApplicationFolderId(), name,
+		File file = createFileOperation.createFile(driveConnection.getApplicationFolderId(), name, MESFAVORIS_MIME_TYPE,
 				contents.getBytes("UTF-8"), new NullProgressMonitor());
 		return file;
 	}

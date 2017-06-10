@@ -28,6 +28,8 @@ import mesfavoris.gdrive.test.GDriveConnectionRule;
 
 public class UpdateFileOperationTest {
 
+	private static final String TEXT_MIMETYPE = "text/plain";
+
 	@Rule
 	public GDriveConnectionRule gdriveConnectionUser1 = new GDriveConnectionRule(GDriveTestUser.USER1, true);
 
@@ -42,7 +44,7 @@ public class UpdateFileOperationTest {
 	@Test
 	public void testUpdateFile() throws Exception {
 		// Given
-		File file = createFile(gdriveConnectionUser1, "myFile.txt", "the contents");
+		File file = createTextFile(gdriveConnectionUser1, "myFile.txt", "the contents");
 		UpdateFileOperation updateFileOperation = new UpdateFileOperation(gdriveConnectionUser1.getDrive(), clock,
 				Duration.ofMinutes(10));
 
@@ -50,7 +52,7 @@ public class UpdateFileOperationTest {
 		// do not set etag. Otherwise it sometimes fails. Looks like the file is
 		// "modified" by gdrive after creation.
 		when(clock.instant()).thenReturn(lastModified(gdriveConnectionUser1, file.getId()).plus(4, ChronoUnit.MINUTES));
-		updateFileOperation.updateFile(file.getId(), "the new contents".getBytes(Charsets.UTF_8), null,
+		updateFileOperation.updateFile(file.getId(), TEXT_MIMETYPE, "the new contents".getBytes(Charsets.UTF_8), null,
 				new NullProgressMonitor());
 
 		// Then
@@ -60,7 +62,7 @@ public class UpdateFileOperationTest {
 	@Test
 	public void testUpdateFileDoesNotCreateNewRevisionIfModificationsAreCloseInTime() throws Exception {
 		// Given
-		File file = createFile(gdriveConnectionUser1, "myFile.txt", "original contents");
+		File file = createTextFile(gdriveConnectionUser1, "myFile.txt", "original contents");
 		UpdateFileOperation updateFileOperation = new UpdateFileOperation(gdriveConnectionUser1.getDrive(), clock,
 				Duration.ofMinutes(10));
 
@@ -68,11 +70,11 @@ public class UpdateFileOperationTest {
 		// do not set etag. Otherwise it sometimes fails. Looks like the file is
 		// "modified" by gdrive after creation.
 		when(clock.instant()).thenReturn(lastModified(gdriveConnectionUser1, file.getId()).plus(4, ChronoUnit.MINUTES));
-		updateFileOperation.updateFile(file.getId(), "first modification".getBytes(Charsets.UTF_8), null,
+		updateFileOperation.updateFile(file.getId(), TEXT_MIMETYPE, "first modification".getBytes(Charsets.UTF_8), null,
 				new NullProgressMonitor());
 		when(clock.instant()).thenReturn(lastModified(gdriveConnectionUser1, file.getId()).plus(4, ChronoUnit.MINUTES));
-		updateFileOperation.updateFile(file.getId(), "second modification".getBytes(Charsets.UTF_8), null,
-				new NullProgressMonitor());
+		updateFileOperation.updateFile(file.getId(), TEXT_MIMETYPE, "second modification".getBytes(Charsets.UTF_8),
+				null, new NullProgressMonitor());
 
 		// Then
 		assertEquals("second modification",
@@ -83,7 +85,7 @@ public class UpdateFileOperationTest {
 	@Test
 	public void testUpdateFileCreatesNewRevisionIfUserIsNotTheSameThanForPreviousModification() throws Exception {
 		// Given
-		File file = createFile(gdriveConnectionUser1, "myFile.txt", "original contents");
+		File file = createTextFile(gdriveConnectionUser1, "myFile.txt", "original contents");
 		share(gdriveConnectionUser1, file.getId(), GDriveTestUser.USER2.getEmail());
 		UpdateFileOperation updateFileOperationUser1 = new UpdateFileOperation(gdriveConnectionUser1.getDrive(), clock,
 				Duration.ofMinutes(10));
@@ -95,10 +97,10 @@ public class UpdateFileOperationTest {
 		// "modified" by gdrive after creation.
 		when(clock.instant()).thenReturn(lastModified(gdriveConnectionUser1, file.getId()).plus(4, ChronoUnit.MINUTES));
 		when(clock.instant()).thenReturn(lastModified(gdriveConnectionUser2, file.getId()).plus(4, ChronoUnit.MINUTES));
-		updateFileOperationUser1.updateFile(file.getId(), "first modification".getBytes(Charsets.UTF_8), null,
-				new NullProgressMonitor());
-		updateFileOperationUser2.updateFile(file.getId(), "second modification".getBytes(Charsets.UTF_8), null,
-				new NullProgressMonitor());
+		updateFileOperationUser1.updateFile(file.getId(), TEXT_MIMETYPE, "first modification".getBytes(Charsets.UTF_8),
+				null, new NullProgressMonitor());
+		updateFileOperationUser2.updateFile(file.getId(), TEXT_MIMETYPE, "second modification".getBytes(Charsets.UTF_8),
+				null, new NullProgressMonitor());
 
 		// Then
 		assertEquals("second modification",
@@ -109,7 +111,7 @@ public class UpdateFileOperationTest {
 	@Test
 	public void testUpdateFileCreatesNewRevisionIfModificationsAreNotCloseInTime() throws Exception {
 		// Given
-		File file = createFile(gdriveConnectionUser1, "myFile.txt", "original contents");
+		File file = createTextFile(gdriveConnectionUser1, "myFile.txt", "original contents");
 		UpdateFileOperation updateFileOperation = new UpdateFileOperation(gdriveConnectionUser1.getDrive(), clock,
 				Duration.ofMinutes(10));
 
@@ -117,12 +119,12 @@ public class UpdateFileOperationTest {
 		// do not set etag. Otherwise it sometimes fails. Looks like the file is
 		// "modified" by gdrive after creation.
 		when(clock.instant()).thenReturn(lastModified(gdriveConnectionUser1, file.getId()).plus(4, ChronoUnit.MINUTES));
-		updateFileOperation.updateFile(file.getId(), "first modification".getBytes(Charsets.UTF_8), null,
+		updateFileOperation.updateFile(file.getId(), TEXT_MIMETYPE, "first modification".getBytes(Charsets.UTF_8), null,
 				new NullProgressMonitor());
 		when(clock.instant())
 				.thenReturn(lastModified(gdriveConnectionUser1, file.getId()).plus(11, ChronoUnit.MINUTES));
-		updateFileOperation.updateFile(file.getId(), "second modification".getBytes(Charsets.UTF_8), null,
-				new NullProgressMonitor());
+		updateFileOperation.updateFile(file.getId(), TEXT_MIMETYPE, "second modification".getBytes(Charsets.UTF_8),
+				null, new NullProgressMonitor());
 
 		// Then
 		assertEquals("second modification",
@@ -133,27 +135,27 @@ public class UpdateFileOperationTest {
 	@Test
 	public void testCannotUpdateFileThatHasBeenUpdatedSince() throws Exception {
 		// Given
-		File file = createFile(gdriveConnectionUser1, "myFile.txt", "the contents");
+		File file = createTextFile(gdriveConnectionUser1, "myFile.txt", "the contents");
 		UpdateFileOperation updateFileOperation = new UpdateFileOperation(gdriveConnectionUser1.getDrive(), clock,
 				Duration.ofMinutes(10));
 		when(clock.instant()).thenReturn(lastModified(gdriveConnectionUser1, file.getId()).plus(4, ChronoUnit.MINUTES));
-		updateFileOperation.updateFile(file.getId(), "the new contents".getBytes(Charsets.UTF_8), file.getEtag(),
-				new NullProgressMonitor());
+		updateFileOperation.updateFile(file.getId(), TEXT_MIMETYPE, "the new contents".getBytes(Charsets.UTF_8),
+				file.getEtag(), new NullProgressMonitor());
 		exception.expect(GoogleJsonResponseException.class);
 		exception.expectMessage("412 Precondition Failed");
 
 		// When
 		when(clock.instant()).thenReturn(lastModified(gdriveConnectionUser1, file.getId()).plus(4, ChronoUnit.MINUTES));
-		updateFileOperation.updateFile(file.getId(), "the newest contents".getBytes(Charsets.UTF_8), file.getEtag(),
-				new NullProgressMonitor());
+		updateFileOperation.updateFile(file.getId(), TEXT_MIMETYPE, "the newest contents".getBytes(Charsets.UTF_8),
+				file.getEtag(), new NullProgressMonitor());
 
 		// Then
 	}
 
-	private File createFile(GDriveConnectionRule connection, String name, String contents)
+	private File createTextFile(GDriveConnectionRule connection, String name, String contents)
 			throws UnsupportedEncodingException, IOException {
 		CreateFileOperation createFileOperation = new CreateFileOperation(connection.getDrive());
-		File file = createFileOperation.createFile(connection.getApplicationFolderId(), name,
+		File file = createFileOperation.createFile(connection.getApplicationFolderId(), name, TEXT_MIMETYPE,
 				contents.getBytes("UTF-8"), new NullProgressMonitor());
 		return file;
 	}

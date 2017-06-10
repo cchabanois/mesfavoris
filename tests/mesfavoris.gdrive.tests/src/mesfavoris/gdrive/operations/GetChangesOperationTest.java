@@ -45,8 +45,8 @@ public class GetChangesOperationTest {
 	@Test
 	public void testFileAddedChange() throws IOException {
 		// Given
-		File file1 = createFile("file1.txt", "the contents");
-		File file2 = createFile("file2.txt", "the contents");
+		File file1 = createTextFile("file1.txt", "the contents");
+		File file2 = createTextFile("file2.txt", "the contents");
 
 		// When
 		// sometimes, we have deleted files (from previous tests ?)
@@ -62,12 +62,12 @@ public class GetChangesOperationTest {
 	@Test
 	public void testGetNextStartChangeId() throws IOException {
 		// Given
-		File file1 = createFile("file1.txt", "the contents");
+		File file1 = createTextFile("file1.txt", "the contents");
 		List<Change> changes = getChangesOperation.getChanges(startChangeId);
 
 		// When
 		startChangeId = changes.get(changes.size() - 1).getId() + 1;
-		File file2 = createFile("file2.txt", "the contents");
+		File file2 = createTextFile("file2.txt", "the contents");
 		// sometimes, we have deleted files (from previous tests ?)
 		changes = getChangesOperation.getChanges(startChangeId).stream().filter(change -> change.getDeleted() == false)
 				.collect(Collectors.toList());
@@ -77,11 +77,11 @@ public class GetChangesOperationTest {
 		assertEquals(file2.getId(), changes.get(0).getFileId());
 	}
 
-	private File createFile(String name, String content) throws IOException {
+	private File createTextFile(String name, String content) throws IOException {
 		CreateFileOperation createFileOperation = new CreateFileOperation(gdriveConnectionRule.getDrive());
 		byte[] contents = content.getBytes("UTF-8");
-		File file = createFileOperation.createFile(gdriveConnectionRule.getApplicationFolderId(), name, contents,
-				new NullProgressMonitor());
+		File file = createFileOperation.createFile(gdriveConnectionRule.getApplicationFolderId(), name, "text/plain",
+				contents, new NullProgressMonitor());
 		return file;
 	}
 

@@ -34,7 +34,7 @@ public class DownloadFileOperationTest {
 	@Test
 	public void testDownloadFile() throws Exception {
 		// Given
-		File file = createFile("myFile.txt", "the contents");
+		File file = createTextFile("myFile.txt", "the contents");
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		DownloadFileOperation downloadFileOperation = new DownloadFileOperation(gdriveConnectionRule.getDrive());
 
@@ -51,7 +51,7 @@ public class DownloadFileOperationTest {
 	@Test
 	public void testETagIsNotTheSameWhenExecuteMedia() throws Exception {
 		// Given
-		File file = createFile("myFile.txt", "the contents");
+		File file = createTextFile("myFile.txt", "the contents");
 
 		// When
 		HttpResponse responseExecute = gdriveConnectionRule.getDrive().files().get(file.getId()).executeUnparsed();
@@ -68,7 +68,7 @@ public class DownloadFileOperationTest {
 	@Test
 	public void testExecuteMediaETagIsNotRevisionETag() throws Exception {
 		// Given
-		File file = createFile("myFile.txt", "the contents");
+		File file = createTextFile("myFile.txt", "the contents");
 		Revision revision = gdriveConnectionRule.getDrive().revisions().get(file.getId(), "head").execute();
 
 		// When
@@ -81,8 +81,8 @@ public class DownloadFileOperationTest {
 	@Test
 	public void testDownloadUsingFileDownloadUrl() throws Exception {
 		// Given
-		File file = createFile("myFile.txt", "the contents");
-		updateFile(file.getId(), "the new contents");
+		File file = createTextFile("myFile.txt", "the contents");
+		updateTextFile(file.getId(), "the new contents");
 
 		// When
 		byte[] contentsAsBytes = download(file.getDownloadUrl());
@@ -95,9 +95,9 @@ public class DownloadFileOperationTest {
 	@Test
 	public void testDownloadUsingRevisionDownloadUrl() throws Exception {
 		// Given
-		File file = createFile("myFile.txt", "the contents");
+		File file = createTextFile("myFile.txt", "the contents");
 		Revision revision = gdriveConnectionRule.getDrive().revisions().get(file.getId(), "head").execute();
-		updateFile(file.getId(), "the new contents");
+		updateTextFile(file.getId(), "the new contents");
 
 		// When
 		byte[] contentsAsBytes = download(revision.getDownloadUrl());
@@ -108,9 +108,9 @@ public class DownloadFileOperationTest {
 		assertNotEquals(file.getEtag(), revision.getEtag());
 	}
 
-	private File createFile(String name, String contents) throws UnsupportedEncodingException, IOException {
+	private File createTextFile(String name, String contents) throws UnsupportedEncodingException, IOException {
 		CreateFileOperation createFileOperation = new CreateFileOperation(gdriveConnectionRule.getDrive());
-		File file = createFileOperation.createFile(gdriveConnectionRule.getApplicationFolderId(), name,
+		File file = createFileOperation.createFile(gdriveConnectionRule.getApplicationFolderId(), name, "text/plain",
 				contents.getBytes("UTF-8"), new NullProgressMonitor());
 		return file;
 	}
@@ -121,9 +121,10 @@ public class DownloadFileOperationTest {
 		return getFileMetadataOperation.getFileMetadata(fileId);
 	}
 
-	private File updateFile(String fileId, String newContents) throws UnsupportedEncodingException, IOException {
+	private File updateTextFile(String fileId, String newContents) throws UnsupportedEncodingException, IOException {
 		UpdateFileOperation updateFileOperation = new UpdateFileOperation(gdriveConnectionRule.getDrive());
-		return updateFileOperation.updateFile(fileId, newContents.getBytes("UTF-8"), null, new NullProgressMonitor());
+		return updateFileOperation.updateFile(fileId, "text/plain", newContents.getBytes("UTF-8"), null,
+				new NullProgressMonitor());
 	}
 
 	private byte[] download(String downloadUrl) throws IOException {

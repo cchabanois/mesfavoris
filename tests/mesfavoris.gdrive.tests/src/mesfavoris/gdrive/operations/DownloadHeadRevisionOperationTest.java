@@ -29,7 +29,7 @@ public class DownloadHeadRevisionOperationTest {
 	@Test
 	public void testDownloadFile() throws Exception {
 		// Given
-		File file = createFile("myFile.txt", "the contents");
+		File file = createTextFile("myFile.txt", "the contents");
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		DownloadHeadRevisionOperation downloadFileOperation = new DownloadHeadRevisionOperation(
 				gdriveConnectionRule.getDrive());
@@ -40,14 +40,14 @@ public class DownloadHeadRevisionOperationTest {
 		// Then
 		assertEquals("the contents", new String(contents.getFileContents(), "UTF-8"));
 		// don't assert etag because sometimes it changes just after creation
-		//		assertEquals(file.getEtag(), contents.getFile().getEtag());
+		// assertEquals(file.getEtag(), contents.getFile().getEtag());
 		verify(monitor).beginTask(anyString(), anyInt());
 		verify(monitor, atLeast(1)).done();
 	}
 
-	private File createFile(String name, String contents) throws UnsupportedEncodingException, IOException {
+	private File createTextFile(String name, String contents) throws UnsupportedEncodingException, IOException {
 		CreateFileOperation createFileOperation = new CreateFileOperation(gdriveConnectionRule.getDrive());
-		File file = createFileOperation.createFile(gdriveConnectionRule.getApplicationFolderId(), name,
+		File file = createFileOperation.createFile(gdriveConnectionRule.getApplicationFolderId(), name, "text/plain",
 				contents.getBytes("UTF-8"), new NullProgressMonitor());
 		return file;
 	}

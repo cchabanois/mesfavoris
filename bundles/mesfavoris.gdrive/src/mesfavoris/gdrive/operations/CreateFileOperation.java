@@ -22,11 +22,11 @@ public class CreateFileOperation extends AbstractGDriveOperation {
 		super(drive);
 	}
 
-	public File createFile(String parentId, String name, byte[] content, IProgressMonitor monitor) throws IOException {
+	public File createFile(String parentId, String name, String mimeType, byte[] content, IProgressMonitor monitor) throws IOException {
 		File fileMetadata = new File();
 		fileMetadata.setTitle(name);
 		fileMetadata.setParents(Arrays.asList(new ParentReference().setId(parentId)));
-		ByteArrayContent mediaContent = new ByteArrayContent(MIME_TYPE, content);
+		ByteArrayContent mediaContent = new ByteArrayContent(mimeType, content);
 
 		Drive.Files.Insert insert = drive.files().insert(fileMetadata, mediaContent);
 		MediaHttpUploader uploader = insert.getMediaHttpUploader();

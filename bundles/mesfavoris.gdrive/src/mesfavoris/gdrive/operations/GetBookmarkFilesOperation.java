@@ -26,7 +26,7 @@ public class GetBookmarkFilesOperation extends AbstractGDriveOperation implement
 		List<File> files = Lists.newArrayList();
 		String pageToken = null;
 		do {
-			StringBuilder query = new StringBuilder("mimeType='"+MIME_TYPE+"' and trashed=false");
+			StringBuilder query = new StringBuilder("mimeType='"+BookmarkFileConstants.MESFAVORIS_MIME_TYPE+"' and trashed=false");
 			if (folderId.isPresent()) {
 				query.append(String.format(" and '%s' in parents", folderId.get()));
 			}

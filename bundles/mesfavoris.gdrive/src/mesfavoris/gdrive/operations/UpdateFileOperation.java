@@ -37,11 +37,11 @@ public class UpdateFileOperation extends AbstractGDriveOperation {
 		this.clock = clock;
 	}	
 	
-	public File updateFile(String fileId, byte[] content, String etag,
+	public File updateFile(String fileId, String mimeType, byte[] content, String etag,
 			IProgressMonitor monitor) throws IOException {
 		boolean needsNewRevision = needsNewRevision(fileId);
 		File fileMetadata = new File();
-		ByteArrayContent mediaContent = new ByteArrayContent(MIME_TYPE, content);
+		ByteArrayContent mediaContent = new ByteArrayContent(mimeType, content);
 		Drive.Files.Update update = drive.files().update(fileId, fileMetadata,
 				mediaContent);
 		update.setNewRevision(needsNewRevision);

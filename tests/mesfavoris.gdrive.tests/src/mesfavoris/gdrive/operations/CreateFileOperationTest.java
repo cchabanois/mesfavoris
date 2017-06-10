@@ -34,7 +34,7 @@ public class CreateFileOperationTest {
 
 		// When
 		File file = createFileOperation.createFile(gdriveConnectionRule.getApplicationFolderId(), "myFile.txt",
-				contents, monitor);
+				"text/plain", contents, monitor);
 
 		// Then
 		assertNotNull(file);
