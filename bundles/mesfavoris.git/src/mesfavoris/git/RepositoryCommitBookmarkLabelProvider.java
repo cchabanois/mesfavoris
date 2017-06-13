@@ -12,13 +12,6 @@ import mesfavoris.bookmarktype.AbstractBookmarkLabelProvider;
 import mesfavoris.model.Bookmark;
 
 public class RepositoryCommitBookmarkLabelProvider extends AbstractBookmarkLabelProvider {
-	private final ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
-
-	@Override
-	public void dispose() {
-		resourceManager.dispose();
-		super.dispose();
-	}
 	
 	@Override
 	public Image getImage(Object element) {

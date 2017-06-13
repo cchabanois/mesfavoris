@@ -3,9 +3,6 @@ package mesfavoris.texteditor.internal;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FILE_PATH;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.resource.LocalResourceManager;
-import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.PlatformUI;
@@ -15,7 +12,6 @@ import mesfavoris.model.Bookmark;
 
 public class TextEditorBookmarkLabelProvider extends AbstractBookmarkLabelProvider {
 	private final IEditorRegistry editorRegistry;
-	private final ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
 	
 	public TextEditorBookmarkLabelProvider() {
 		editorRegistry = PlatformUI.getWorkbench().getEditorRegistry();
@@ -37,12 +33,6 @@ public class TextEditorBookmarkLabelProvider extends AbstractBookmarkLabelProvid
 			return null;
 		}
 		return path.substring(index);
-	}
-	
-	@Override
-	public void dispose() {
-		resourceManager.dispose();
-		super.dispose();
 	}
 	
 	@Override

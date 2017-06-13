@@ -7,9 +7,6 @@ import static mesfavoris.url.UrlBookmarkProperties.PROP_URL;
 import java.util.Base64;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.resource.LocalResourceManager;
-import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.graphics.Image;
 
 import mesfavoris.bookmarktype.AbstractBookmarkLabelProvider;
@@ -17,14 +14,6 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.url.IconImageDescriptor;
 
 public class UrlBookmarkLabelProvider extends AbstractBookmarkLabelProvider {
-
-	private final ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
-
-	@Override
-	public void dispose() {
-		resourceManager.dispose();
-		super.dispose();
-	}
 
 	@Override
 	public Image getImage(Object element) {
