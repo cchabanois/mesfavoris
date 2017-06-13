@@ -203,6 +203,7 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		bookmarkLabelProvider.dispose();
 		remoteBookmarksTreeChangeEventHandler.unsubscribe();
 		bookmarksSaver.close();
 		IAdapterManager adapterManager = Platform.getAdapterManager();

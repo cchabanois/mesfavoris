@@ -129,7 +129,6 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 	@Override
 	public void dispose() {
 		super.dispose();
-		bookmarkLabelProvider.dispose();
 		resourceManager.dispose();
 		commentColor.dispose();
 	}
