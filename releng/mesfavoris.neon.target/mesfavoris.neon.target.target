@@ -10,8 +10,8 @@
 <repository location="https://raw.githubusercontent.com/cchabanois/mesfavoris/master/releng/dependencies/repository"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="com.perforce.team.feature.feature.group" version="2016.1.1409747"/>
-<repository location="http://www.perforce.com/downloads/http/p4-eclipse/install/4.6"/>
+<unit id="com.perforce.team.feature.feature.group" version="2015.1.1318019"/>
+<repository location="http://www.perforce.com/downloads/http/p4-eclipse/install/4.5"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.sdk.ide" version="4.6.0.I20160606-1100"/>
