@@ -1,6 +1,7 @@
 package mesfavoris.tests.commons.waits;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
 public class Waiter {
@@ -35,6 +36,10 @@ public class Waiter {
 				R result = condition.test();
 				if (result != null && Boolean.class.equals(result.getClass())) {
 					if (Boolean.TRUE.equals(result)) {
+						return result;
+					}
+				} else if (result instanceof Optional) {
+					if (((Optional<?>)result).isPresent()) {
 						return result;
 					}
 				} else if (result != null) {
