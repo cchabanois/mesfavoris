@@ -71,14 +71,9 @@ public class GetChangesOperationTest {
 		// When
 		startChangeId = changes.get(changes.size() - 1).getId() + 1;
 		File file2 = createTextFile("file2.txt", "the contents");
-		// sometimes, we have deleted files (from previous tests ?)
-		waitUntilFileChange(startChangeId, file2.getId());
-		changes = getChangesOperation.getChanges(startChangeId).stream().filter(change -> change.getDeleted() == false)
-				.collect(Collectors.toList());
 
 		// Then
-		assertEquals("There is not one change as expected :" + changes, 1, changes.size());
-		assertEquals(file2.getId(), changes.get(0).getFileId());
+		waitUntilFileChange(startChangeId, file2.getId());
 	}
 
 	private Change waitUntilFileChange(Long startChangeId, String fileId) throws TimeoutException {
