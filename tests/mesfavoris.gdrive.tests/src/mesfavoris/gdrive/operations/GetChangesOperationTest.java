@@ -1,5 +1,6 @@
 package mesfavoris.gdrive.operations;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -57,8 +58,8 @@ public class GetChangesOperationTest {
 
 		// Then
 		assertEquals("There is not 2 changes as expected :" + changes, 2, changes.size());
-		assertEquals(file1.getId(), changes.get(0).getFileId());
-		assertEquals(file2.getId(), changes.get(1).getFileId());
+		assertThat(changes).filteredOn(change->change.getFileId().equals(file1.getId())).hasSize(1);
+		assertThat(changes).filteredOn(change->change.getFileId().equals(file2.getId())).hasSize(1);
 	}
 
 	@Test
