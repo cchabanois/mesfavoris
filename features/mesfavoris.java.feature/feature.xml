@@ -2,7 +2,7 @@
 <feature
       id="mesfavoris.java.feature"
       label="mesfavoris for Java"
-      version="1.5.0.qualifier"
+      version="1.6.0.qualifier"
       provider-name="Mes Favoris">
 
    <description>
@@ -26,8 +26,8 @@
       <import plugin="org.eclipse.core.resources" version="3.9.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.9.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.106.0" match="greaterOrEqual"/>
-      <import plugin="mesfavoris.commons" version="1.5.0" match="greaterOrEqual"/>
-      <import plugin="mesfavoris.texteditor" version="1.5.0" match="greaterOrEqual"/>
+      <import plugin="mesfavoris.commons" version="1.6.0" match="greaterOrEqual"/>
+      <import plugin="mesfavoris.texteditor" version="1.6.0" match="greaterOrEqual"/>
       <import plugin="com.google.guava" version="18.0.0" match="greaterOrEqual"/>
    </requires>
 
