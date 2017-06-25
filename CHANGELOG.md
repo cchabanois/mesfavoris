@@ -1,5 +1,25 @@
 # Change Log
 
+## [release-1.5.0](https://github.com/cchabanois/mesfavoris/tree/release-1.5.0) (2017-06-25)
+[Full Changelog](https://github.com/cchabanois/mesfavoris/compare/release-1.4.0...release-1.5.0)
+
+**Implemented enhancements:**
+
+- Update gdrive api sdk [\#31](https://github.com/cchabanois/mesfavoris/issues/31)
+- When adding a bookmark to a gdrive document, use gdrive API to get icon and doc title  [\#28](https://github.com/cchabanois/mesfavoris/issues/28)
+- Add an entry to contextual menu to delete bookmark problems for selected bookmarks [\#25](https://github.com/cchabanois/mesfavoris/issues/25)
+- Add changelog for the project [\#24](https://github.com/cchabanois/mesfavoris/issues/24)
+
+**Fixed bugs:**
+
+- Bookmark label providers disposed at the wrong time [\#29](https://github.com/cchabanois/mesfavoris/issues/29)
+- Tooltip is "Cannot goto bookmark : null" for "cannot goto bookmark" problem [\#27](https://github.com/cchabanois/mesfavoris/issues/27)
+
+**Closed issues:**
+
+- Build failing after update of Travis Ubuntu Trusty 14.04  [\#30](https://github.com/cchabanois/mesfavoris/issues/30)
+- Fix deprecated bookmark property value from the property view [\#26](https://github.com/cchabanois/mesfavoris/issues/26)
+
 ## [release-1.4.0](https://github.com/cchabanois/mesfavoris/tree/release-1.4.0) (2017-04-22)
 [Full Changelog](https://github.com/cchabanois/mesfavoris/compare/release-1.3.0...release-1.4.0)
 
