@@ -121,8 +121,8 @@ public class GDriveConnectionManager {
 		}
 		try {
 			Credential credential = authorize(subMonitor.newChild(85));
-			Drive drive = new Drive.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(applicationName)
-					.build();
+			Drive drive = new Drive.Builder(httpTransport, JSON_FACTORY,
+					new GDriveBackOffHttpRequestInitializer(credential)).setApplicationName(applicationName).build();
 			String bookmarkDirId = getApplicationFolderId(drive);
 			UserInfo authenticatedUser = getAuthenticatedUser(drive, subMonitor.newChild(10));
 			saveUser(authenticatedUser, subMonitor.newChild(5));
@@ -274,12 +274,12 @@ public class GDriveConnectionManager {
 			StatusHelper.logWarn("Could not save gdrive user info", e);
 		}
 	}
-	
+
 	public void deleteCredentials() throws IOException {
 		if (getState() != State.disconnected) {
 			throw new IOException("Cannot delete file store while connected");
 		}
-		synchronized(this) {
+		synchronized (this) {
 			this.userInfo = null;
 		}
 		File file = new File(dataStoreDir, StoredCredential.DEFAULT_DATA_STORE_ID);
@@ -289,6 +289,6 @@ public class GDriveConnectionManager {
 		File userInfoFile = new File(dataStoreDir, GDriveConnectionManager.USER_FILENAME);
 		if (userInfoFile.exists()) {
 			java.nio.file.Files.delete(userInfoFile.toPath());
-		}	
+		}
 	}
 }

@@ -7,13 +7,13 @@
 	<classpathentry exported="true" kind="lib" path="libs/google-api-client-1.22.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/google-api-client-jackson2-1.22.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/google-api-services-drive-v2-rev271-1.22.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/google-api-services-drive-v2-rev271-1.22.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/google-api-services-drive-v2-rev271-1.22.0.jar" sourcepath="libs/google-api-services-drive-v2-rev271-1.22.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/google-http-client-1.22.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/google-http-client-1.22.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/google-http-client-1.22.0.jar" sourcepath="libs/google-http-client-1.22.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/google-http-client-jackson2-1.22.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/google-http-client-jackson2-1.22.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/google-oauth-client-1.22.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/google-oauth-client-1.22.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/google-oauth-client-1.22.0.jar" sourcepath="libs/google-oauth-client-1.22.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/google-oauth-client-java6-1.22.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/google-oauth-client-java6-1.22.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/google-oauth-client-jetty-1.22.0-sources.jar"/>
