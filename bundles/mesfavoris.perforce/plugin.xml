@@ -22,6 +22,10 @@
                class="mesfavoris.perforce.ChangelistEditorBookmarkPropertiesProvider"
                priority="10">
          </propertiesProvider>
+         <propertiesProvider
+               class="mesfavoris.perforce.P4RevisionBookmarkPropertiesProvider"
+               priority="10">
+         </propertiesProvider>
          <labelProvider
                class="mesfavoris.perforce.ChangelistBookmarkLabelProvider"
                priority="10">
