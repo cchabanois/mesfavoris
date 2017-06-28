@@ -700,7 +700,7 @@
             class="mesfavoris.internal.propertytester.BookmarksPropertyTester"
             id="mesfavoris.propertyTesters.bookmark"
             namespace="mesfavoris"
-            properties="canBeModified,isUnderRemoteBookmarkFolder,isDefaultBookmarkFolder,isRemoteBookmarkFolder"
+            properties="canBeModified,isUnderRemoteBookmarkFolder,isDefaultBookmarkFolder,isRemoteBookmarkFolder,hasProperties"
             type="mesfavoris.model.Bookmark">
       </propertyTester>
    </extension>

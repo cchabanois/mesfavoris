@@ -42,5 +42,29 @@
          </properties>
       </bookmarkType>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="mesfavoris.url.internal.handlers.CopyBookmarkUrlHandler"
+            description="Copy url to clipboard"
+            id="mesfavoris.url.commands.copyUrl"
+            name="Copy url">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:mesfavoris.views.BookmarksView?after=additions">
+         <command
+               commandId="mesfavoris.url.commands.copyUrl"
+               label="Copy url"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
 
 </plugin>

@@ -41,7 +41,19 @@ public class BookmarksPropertyTester extends PropertyTester {
 		if ("isRemoteBookmarkFolder".equals(property)) {
 			return isRemoteBookmarkFolder(bookmark);
 		}
+		if ("hasProperties".equals(property)) {
+			return hasProperties(bookmark, args);
+		}
 		return false;
+	}
+
+	private boolean hasProperties(Bookmark bookmark, Object[] args) {
+		for (Object arg : args) {
+			if (bookmark.getPropertyValue(arg.toString()) == null) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private boolean isRemoteBookmarkFolder(Bookmark bookmark) {
