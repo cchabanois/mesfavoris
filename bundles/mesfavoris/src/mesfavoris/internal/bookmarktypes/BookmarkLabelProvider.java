@@ -3,15 +3,14 @@ package mesfavoris.internal.bookmarktypes;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StyledString;
-import org.eclipse.swt.graphics.Image;
 
 import mesfavoris.bookmarktype.AbstractBookmarkLabelProvider;
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
 import mesfavoris.model.Bookmark;
 
-public class BookmarkLabelProvider extends LabelProvider implements IBookmarkLabelProvider {
+public class BookmarkLabelProvider implements IBookmarkLabelProvider {
 	private final List<IBookmarkLabelProvider> bookmarkLabelProviders;
 	
 	public BookmarkLabelProvider() {
@@ -26,24 +25,18 @@ public class BookmarkLabelProvider extends LabelProvider implements IBookmarkLab
 	}
 	
 	@Override
-	public Image getImage(Object element) {
-		return getBookmarkLabelProvider((Bookmark)element).getImage(element);
+	public ImageDescriptor getImageDescriptor(Context context, Bookmark bookmark) {
+		return getBookmarkLabelProvider(context, bookmark).getImageDescriptor(context, bookmark);
 	}
 	
 	@Override
-	public void dispose() {
-		bookmarkLabelProviders.forEach(p -> p.dispose());
-		super.dispose();
-	}
-	
-	@Override
-	public StyledString getStyledText(Object element) {
-		return getBookmarkLabelProvider((Bookmark)element).getStyledText(element);
+	public StyledString getStyledText(Context context, Bookmark bookmark) {
+		return getBookmarkLabelProvider(context, bookmark).getStyledText(context, bookmark);
 	}
 
-	private IBookmarkLabelProvider getBookmarkLabelProvider(Bookmark bookmark) {
+	private IBookmarkLabelProvider getBookmarkLabelProvider(Context context, Bookmark bookmark) {
 		for (IBookmarkLabelProvider bookmarkLabelProvider : bookmarkLabelProviders) {
-			if (bookmarkLabelProvider.handlesBookmark(bookmark)) {
+			if (bookmarkLabelProvider.canHandle(context, bookmark)) {
 				return bookmarkLabelProvider;
 			}
 		}
@@ -52,14 +45,14 @@ public class BookmarkLabelProvider extends LabelProvider implements IBookmarkLab
 	}
 	
 	@Override
-	public boolean handlesBookmark(Bookmark bookmark) {
+	public boolean canHandle(Context context, Bookmark bookmark) {
 		return true;
 	}
 
 	private static class DefaultBookmarkLabelProvider extends AbstractBookmarkLabelProvider {
 
 		@Override
-		public boolean handlesBookmark(Bookmark bookmark) {
+		public boolean canHandle(Context context, Bookmark bookmark) {
 			return true;
 		}
 		

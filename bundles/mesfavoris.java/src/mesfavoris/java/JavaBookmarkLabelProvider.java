@@ -14,7 +14,6 @@ import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.jdt.internal.ui.viewsupport.JavaElementImageProvider;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Image;
 
 import mesfavoris.bookmarktype.AbstractBookmarkLabelProvider;
 import mesfavoris.model.Bookmark;
@@ -22,11 +21,10 @@ import mesfavoris.model.Bookmark;
 public class JavaBookmarkLabelProvider extends AbstractBookmarkLabelProvider {
 
 	@Override
-	public Image getImage(Object element) {
+	public ImageDescriptor getImageDescriptor(Context context, Bookmark bookmark) {
 		ImageDescriptorRegistry registry = JavaPlugin
 				.getImageDescriptorRegistry();
 		ImageDescriptor descriptor = null;
-		Bookmark bookmark = (Bookmark) element;
 		String kind = bookmark.getPropertyValue(PROP_JAVA_ELEMENT_KIND);
 		if (KIND_METHOD.equals(kind)) {
 			descriptor = JavaElementImageProvider
@@ -56,14 +54,11 @@ public class JavaBookmarkLabelProvider extends AbstractBookmarkLabelProvider {
 			descriptor = JavaElementImageProvider
 					.getTypeImageDescriptor(false, false, 0, false);
 		}
-		if (descriptor == null) {
-			return null;
-		}
-		return registry.get(descriptor);
+		return descriptor;
 	}
 
 	@Override
-	public boolean handlesBookmark(Bookmark bookmark) {
+	public boolean canHandle(Context context, Bookmark bookmark) {
 		return bookmark.getPropertyValue(PROP_JAVA_ELEMENT_KIND) != null;
 	}
 

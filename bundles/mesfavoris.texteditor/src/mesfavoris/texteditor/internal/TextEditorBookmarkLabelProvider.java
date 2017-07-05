@@ -8,6 +8,7 @@ import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.PlatformUI;
 
 import mesfavoris.bookmarktype.AbstractBookmarkLabelProvider;
+import mesfavoris.bookmarktype.IBookmarkLabelProvider.Context;
 import mesfavoris.model.Bookmark;
 
 public class TextEditorBookmarkLabelProvider extends AbstractBookmarkLabelProvider {
@@ -18,13 +19,11 @@ public class TextEditorBookmarkLabelProvider extends AbstractBookmarkLabelProvid
 	}
 
 	@Override
-	public Image getImage(Object element) {
-		Bookmark bookmark = (Bookmark) element;
+	public ImageDescriptor getImageDescriptor(Context context, Bookmark bookmark) {
 		String pathValue = bookmark.getPropertyValue(PROP_FILE_PATH);
 		// we do not need to use pathPlaceholderResolver because we are only interested by the fileName
 		String fileName = getFileName(pathValue);
-		ImageDescriptor imageDescriptor = editorRegistry.getImageDescriptor(fileName);
-		return resourceManager.createImage(imageDescriptor);
+		return editorRegistry.getImageDescriptor(fileName);
 	}
 
 	private String getFileName(String path) {
@@ -36,7 +35,7 @@ public class TextEditorBookmarkLabelProvider extends AbstractBookmarkLabelProvid
 	}
 	
 	@Override
-	public boolean handlesBookmark(Bookmark bookmark) {
+	public boolean canHandle(Context context, Bookmark bookmark) {
 		return bookmark.getPropertyValue(PROP_FILE_PATH) != null;
 	}
 

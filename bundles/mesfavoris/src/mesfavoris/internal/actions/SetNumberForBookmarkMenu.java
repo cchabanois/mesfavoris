@@ -7,7 +7,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
-import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -20,11 +19,15 @@ import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.menus.IWorkbenchContribution;
 import org.eclipse.ui.services.IServiceLocator;
 
+import mesfavoris.MesFavoris;
+import mesfavoris.bookmarktype.BookmarkDatabaseLabelProviderContext;
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
+import mesfavoris.bookmarktype.IBookmarkLabelProvider.Context;
+import mesfavoris.commons.ui.jface.OverlayIconImageDescriptor;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
-import mesfavoris.internal.numberedbookmarks.NumberedBookmarksImageDescriptors;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarks;
+import mesfavoris.internal.numberedbookmarks.NumberedBookmarksImageDescriptors;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.service.IBookmarksService;
@@ -34,6 +37,7 @@ public class SetNumberForBookmarkMenu extends ContributionItem implements IWorkb
 	private final ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
 	private final IBookmarkLabelProvider bookmarkLabelProvider;
 	private final IBookmarksService bookmarksService;
+	private final Context context;
 
 	private IServiceLocator serviceLocator;
 
@@ -41,6 +45,8 @@ public class SetNumberForBookmarkMenu extends ContributionItem implements IWorkb
 		this.numberedBookmarks = BookmarksPlugin.getDefault().getNumberedBookmarks();
 		this.bookmarkLabelProvider = BookmarksPlugin.getDefault().getBookmarkLabelProvider();
 		this.bookmarksService = BookmarksPlugin.getDefault().getBookmarksService();
+		context = new BookmarkDatabaseLabelProviderContext(MesFavoris.BOOKMARKS_DATABASE_ID,
+				() -> bookmarksService.getBookmarksTree());
 	}
 
 	@Override
@@ -114,7 +120,7 @@ public class SetNumberForBookmarkMenu extends ContributionItem implements IWorkb
 		if (bookmark == null) {
 			return "Empty";
 		}
-		return bookmarkLabelProvider.getStyledText(bookmark).toString();
+		return bookmarkLabelProvider.getStyledText(context, bookmark).toString();
 	}
 
 	private Image getImage(BookmarkNumber bookmarkNumber, Optional<BookmarkId> bookmarkId) {
@@ -126,10 +132,10 @@ public class SetNumberForBookmarkMenu extends ContributionItem implements IWorkb
 		if (bookmark == null) {
 			return (Image) this.resourceManager.get(numberImageDescriptor);
 		}
-		Image image = bookmarkLabelProvider.getImage(bookmark);
+		ImageDescriptor imageDescriptor = bookmarkLabelProvider.getImageDescriptor(context, bookmark);
 		ImageDescriptor[] overlayImages = new ImageDescriptor[5];
 		overlayImages[IDecoration.TOP_LEFT] = numberImageDescriptor;
-		DecorationOverlayIcon decorated = new DecorationOverlayIcon(image, overlayImages);
+		OverlayIconImageDescriptor decorated = new OverlayIconImageDescriptor(imageDescriptor, overlayImages, 16, 16);
 		return (Image) this.resourceManager.get(decorated);
 	}
 

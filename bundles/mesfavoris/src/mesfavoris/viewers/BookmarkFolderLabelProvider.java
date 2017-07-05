@@ -2,9 +2,9 @@ package mesfavoris.viewers;
 
 import java.util.Optional;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
@@ -28,9 +28,9 @@ public class BookmarkFolderLabelProvider extends AbstractBookmarkLabelProvider {
 	}
 
 	@Override
-	public StyledString getStyledText(Object element) {
-		BookmarkFolder bookmarkFolder = (BookmarkFolder) element;
-		StyledString result = super.getStyledText(element);
+	public StyledString getStyledText(Context context, Bookmark bookmark) {
+		BookmarkFolder bookmarkFolder = (BookmarkFolder) bookmark;
+		StyledString result = super.getStyledText(context, bookmark);
 		RemoteBookmarkFolder remoteBookmarkFolder = remoteBookmarksStoreManager
 				.getRemoteBookmarkFolder(bookmarkFolder.getId());
 		if (remoteBookmarkFolder != null) {
@@ -68,13 +68,13 @@ public class BookmarkFolderLabelProvider extends AbstractBookmarkLabelProvider {
 	}
 
 	@Override
-	public Image getImage(Object element) {
+	public ImageDescriptor getImageDescriptor(Context context, Bookmark bookmark) {
 		String imageKey = ISharedImages.IMG_OBJ_FOLDER;
-		return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
+		return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(imageKey);
 	}
 
 	@Override
-	public boolean handlesBookmark(Bookmark bookmark) {
+	public boolean canHandle(Context context, Bookmark bookmark) {
 		return bookmark instanceof BookmarkFolder;
 	}
 

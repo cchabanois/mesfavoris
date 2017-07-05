@@ -9,7 +9,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
-import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -23,7 +22,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import mesfavoris.bookmarktype.BookmarkDatabaseLabelProviderContext;
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
+import mesfavoris.bookmarktype.IBookmarkLabelProvider.Context;
+import mesfavoris.commons.ui.jface.OverlayIconImageDescriptor;
 import mesfavoris.commons.ui.viewers.StylerProvider;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.IUIConstants;
@@ -56,6 +58,7 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 	private final Color disabledColor;
 	private final IDirtyBookmarksProvider dirtyBookmarksProvider;
 	private final IBookmarkProblems bookmarkProblems;
+	private final Context context;
 
 	public BookmarksLabelProvider(BookmarkDatabase bookmarkDatabase,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager, IDirtyBookmarksProvider dirtyBookmarksProvider,
@@ -70,6 +73,7 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 		this.disabledColor = PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_GRAY);
 
 		this.commentColor = new Color(PlatformUI.getWorkbench().getDisplay(), 63, 127, 95);
+		this.context = new BookmarkDatabaseLabelProviderContext(bookmarkDatabase);
 	}
 
 	@Override
@@ -90,7 +94,7 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 		if (dirtyBookmarksProvider.getDirtyBookmarks().contains(bookmark.getId())) {
 			styledString.append("> ");
 		}
-		styledString.append(bookmarkLabelProvider.getStyledText(bookmark));
+		styledString.append(bookmarkLabelProvider.getStyledText(context, bookmark));
 		if (isDisabled) {
 			Color color = null;
 			Font font = null;
@@ -136,13 +140,13 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 	@Override
 	public Image getImage(final Object element) {
 		Bookmark bookmark = (Bookmark) Adapters.adapt(element, Bookmark.class);
-		Image image = bookmarkLabelProvider.getImage(bookmark);
-		if (image == null) {
+		ImageDescriptor imageDescriptor = bookmarkLabelProvider.getImageDescriptor(context, bookmark);
+		if (imageDescriptor == null) {
 			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
-			image = PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
+			imageDescriptor = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(imageKey);
 		}
 		ImageDescriptor[] overlayImages = getOverlayImages(element);
-		DecorationOverlayIcon decorated = new DecorationOverlayIcon(image, overlayImages);
+		OverlayIconImageDescriptor decorated = new OverlayIconImageDescriptor(imageDescriptor, overlayImages, 16, 16);
 		return (Image) this.resourceManager.get(decorated);
 	}
 

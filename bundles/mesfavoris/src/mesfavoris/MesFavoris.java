@@ -3,6 +3,7 @@ package mesfavoris;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.placeholders.PathPlaceholderResolver;
 import mesfavoris.internal.views.BookmarksView;
+import mesfavoris.internal.workspace.BookmarksWorkspaceFactory;
 import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.BookmarkDatabase;
@@ -24,6 +25,7 @@ import mesfavoris.service.IBookmarksService;
 public final class MesFavoris {
 	public final static BookmarkId DEFAULT_BOOKMARKFOLDER_ID = DefaultBookmarkFolderProvider.DEFAULT_BOOKMARKFOLDER_ID;
 	public final static String VIEW_ID = BookmarksView.ID;
+	public final static String BOOKMARKS_DATABASE_ID = BookmarksWorkspaceFactory.BOOKMARKS_DATABASE_ID;
 	
 	public static BookmarkDatabase getBookmarkDatabase() {
 		if (BookmarksPlugin.getDefault() == null) {

@@ -2,15 +2,14 @@ package mesfavoris.internal.bookmarktypes.extension;
 
 import java.util.List;
 
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StyledString;
-import org.eclipse.swt.graphics.Image;
 
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
 import mesfavoris.internal.bookmarktypes.BookmarkLabelProvider;
 import mesfavoris.model.Bookmark;
 
-public class PluginBookmarkLabelProvider extends LabelProvider implements
+public class PluginBookmarkLabelProvider implements
 		IBookmarkLabelProvider {
 	private final PluginBookmarkTypes pluginBookmarkTypes;
 	private BookmarkLabelProvider bookmarkLabelProvider;
@@ -29,32 +28,18 @@ public class PluginBookmarkLabelProvider extends LabelProvider implements
 	}
 
 	@Override
-	public Image getImage(Object element) {
-		return getBookmarkLabelProvider().getImage(element);
+	public ImageDescriptor getImageDescriptor(Context context, Bookmark bookmark) {
+		return getBookmarkLabelProvider().getImageDescriptor(context, bookmark);
 	}
 
 	@Override
-	public String getText(Object element) {
-		return getBookmarkLabelProvider().getText(element);
+	public StyledString getStyledText(Context context, Bookmark bookmark) {
+		return getBookmarkLabelProvider().getStyledText(context, bookmark);
 	}
 
 	@Override
-	public void dispose() {
-		try {
-			getBookmarkLabelProvider().dispose();
-		} finally {
-			super.dispose();
-		}
-	}
-
-	@Override
-	public StyledString getStyledText(Object element) {
-		return getBookmarkLabelProvider().getStyledText(element);
-	}
-
-	@Override
-	public boolean handlesBookmark(Bookmark bookmark) {
-		return getBookmarkLabelProvider().handlesBookmark(bookmark);
+	public boolean canHandle(Context context, Bookmark bookmark) {
+		return getBookmarkLabelProvider().canHandle(context, bookmark);
 	}
 
 }

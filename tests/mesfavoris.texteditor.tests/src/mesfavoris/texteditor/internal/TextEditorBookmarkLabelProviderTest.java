@@ -3,9 +3,7 @@ package mesfavoris.texteditor.internal;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_FILE_PATH;
 import static org.junit.Assert.assertNotNull;
 
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
-import org.junit.After;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,12 +17,7 @@ public class TextEditorBookmarkLabelProviderTest {
 
 	@Before
 	public void setUp() {
-		labelProvider = UIThreadRunnable.syncExec(()->new TextEditorBookmarkLabelProvider());
-	}
-
-	@After
-	public void tearDown() {
-		UIThreadRunnable.syncExec(()->labelProvider.dispose());
+		labelProvider = new TextEditorBookmarkLabelProvider();
 	}
 	
 	@Test
@@ -33,7 +26,7 @@ public class TextEditorBookmarkLabelProviderTest {
 		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(PROP_FILE_PATH, "${PLACEHOLDER}/myFile.txt"));
 		
 		// When
-		Image image = UIThreadRunnable.syncExec(()->labelProvider.getImage(bookmark));
+		ImageDescriptor image = labelProvider.getImageDescriptor(null, bookmark);
 		
 		// Then
 		assertNotNull(image);
