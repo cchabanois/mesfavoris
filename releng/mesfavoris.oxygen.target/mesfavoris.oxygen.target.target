@@ -2,7 +2,7 @@
 <?pde version="3.8"?><target name="mes favoris Target Content" sequenceNumber="59">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.egit.feature.group" version="4.8.0.201705170830-rc1"/>
+<unit id="org.eclipse.egit.feature.group" version="4.8.0.201706111038-r"/>
 <repository location="http://download.eclipse.org/releases/oxygen"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
@@ -10,12 +10,12 @@
 <repository location="https://raw.githubusercontent.com/cchabanois/mesfavoris/master/releng/dependencies/repository"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.swtbot.eclipse.feature.group" version="2.6.0.201705241802"/>
-<unit id="org.eclipse.swtbot.feature.group" version="2.6.0.201705241802"/>
+<unit id="org.eclipse.swtbot.eclipse.feature.group" version="2.6.0.201706141832"/>
+<unit id="org.eclipse.swtbot.feature.group" version="2.6.0.201706141832"/>
 <repository location="http://download.eclipse.org/releases/oxygen"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.sdk.ide" version="4.7.0.I20170524-2000"/>
+<unit id="org.eclipse.sdk.ide" version="4.7.0.I20170612-0950"/>
 <repository location="http://download.eclipse.org/releases/oxygen"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
