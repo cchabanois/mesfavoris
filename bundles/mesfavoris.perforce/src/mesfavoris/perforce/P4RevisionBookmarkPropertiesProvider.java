@@ -27,6 +27,9 @@ public class P4RevisionBookmarkPropertiesProvider extends AbstractBookmarkProper
 		selection = getSelection(part, selection);
 		Object selected = getFirstElement(selection);
 		IP4Revision p4Revision = Adapters.adapt(selected, IP4Revision.class);
+		if (p4Revision == null) {
+			return;
+		}
 		bookmarkProperties.put(PROP_PORT, p4Revision.getConnection().getParameters().getPort());
 		bookmarkProperties.put(PROP_CHANGELIST, Integer.toString(p4Revision.getChangelist()));
 		putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME, "Changelist "+ p4Revision.getChangelist());
