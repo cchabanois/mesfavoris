@@ -127,6 +127,13 @@
             id="mesfavoris.command.deleteBookmarkProblems"
             name="Delete Bookmark problems">
       </command>
+      <command
+            categoryId="mesfavoris.category"
+            defaultHandler="mesfavoris.internal.handlers.AddShortcutBookmarkHandler"
+            description="Create a Shortcut Bookmark"
+            id="mesfavoris.command.addShortcutFavori"
+            name="Add Shorcut">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -519,6 +526,10 @@
                </parameter>
             </command>
          </menu>
+         <command
+               commandId="mesfavoris.command.addShortcutFavori"
+               style="push">
+         </command>
       </menuContribution>
       <menuContribution
             allPopups="false"
@@ -819,6 +830,45 @@
                   updatable="false">
             </property>
          </properties>
+         <gotoBookmark
+               class="mesfavoris.internal.shortcuts.GotoShortcutBookmark"
+               priority="10">
+         </gotoBookmark>
+         <gotoBookmark
+               class="mesfavoris.internal.shortcuts.GotoShortcutBookmark"
+               priority="10">
+         </gotoBookmark>
+      </bookmarkType>
+      <bookmarkType
+            name="bookmarkShortcut">
+         <gotoBookmark
+               class="mesfavoris.internal.shortcuts.GotoShortcutBookmark"
+               priority="10">
+         </gotoBookmark>
+         <labelProvider
+               class="mesfavoris.internal.shortcuts.ShortcutBookmarkLabelProvider"
+               priority="10">
+         </labelProvider>
+         <properties>
+            <property
+                  name="shortcut.bookmarkId"
+                  obsolescenceSeverity="WARNING"
+                  type="string"
+                  updatable="false">
+            </property>
+         </properties>
+         <propertiesProvider
+               class="mesfavoris.internal.shortcuts.ShortcutBookmarkPropertiesProvider"
+               priority="10">
+         </propertiesProvider>
+         <locationProvider
+               class="mesfavoris.internal.shortcuts.ShortcutBookmarkLocationProvider"
+               priority="10">
+         </locationProvider>
+         <labelProvider
+               class="mesfavoris.internal.shortcuts.ShortcutBookmarkLabelProvider"
+               priority="10">
+         </labelProvider>
       </bookmarkType>
    </extension>
    <extension
