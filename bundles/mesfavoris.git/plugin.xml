@@ -69,6 +69,12 @@
                   type="string"
                   updatable="true">
             </property>
+            <property
+                  name="git.resourcePath"
+                  obsolescenceSeverity="WARNING"
+                  type="string"
+                  updatable="true">
+            </property>
          </properties>
       </bookmarkType>
    </extension>
