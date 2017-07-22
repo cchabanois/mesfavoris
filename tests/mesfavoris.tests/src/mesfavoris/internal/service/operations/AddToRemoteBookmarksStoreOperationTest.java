@@ -1,5 +1,6 @@
 package mesfavoris.internal.service.operations;
 
+import static mesfavoris.MesFavoris.DEFAULT_BOOKMARKFOLDER_ID;
 import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmark;
 import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmarkFolder;
 import static mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder.bookmarksTree;
@@ -18,7 +19,6 @@ import com.google.common.collect.Lists;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.internal.remote.InMemoryRemoteBookmarksStore;
-import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
@@ -67,7 +67,7 @@ public class AddToRemoteBookmarksStoreOperationTest {
 
 		// When
 		assertThatThrownBy(() -> {
-			operation.addToRemoteBookmarksStore(storeId, DefaultBookmarkFolderProvider.DEFAULT_BOOKMARKFOLDER_ID,
+			operation.addToRemoteBookmarksStore(storeId, DEFAULT_BOOKMARKFOLDER_ID,
 					new NullProgressMonitor());
 		}).isInstanceOf(BookmarksException.class).withFailMessage("Could not add bookmark folder to remote store");
 	}
@@ -100,7 +100,7 @@ public class AddToRemoteBookmarksStoreOperationTest {
 	private BookmarksTree createBookmarksTree() {
 		BookmarksTreeBuilder bookmarksTreeBuilder = bookmarksTree("root");
 		bookmarksTreeBuilder.addBookmarks("root", bookmarkFolder("folder1"), bookmarkFolder("folder2"),
-				bookmarkFolder(DefaultBookmarkFolderProvider.DEFAULT_BOOKMARKFOLDER_ID, "default"));
+				bookmarkFolder(DEFAULT_BOOKMARKFOLDER_ID, "default"));
 		bookmarksTreeBuilder.addBookmarks("folder1", bookmarkFolder("folder11"), bookmark("bookmark11"),
 				bookmark("bookmark12").withProperty(Bookmark.PROPERTY_COMMENT, "comment for bookmark12")
 						.withProperty("customProperty", "custom value"));

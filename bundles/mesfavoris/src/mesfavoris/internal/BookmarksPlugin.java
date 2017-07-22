@@ -49,11 +49,12 @@ import mesfavoris.internal.remote.RemoteBookmarksTreeChangeEventHandler;
 import mesfavoris.internal.service.BookmarksService;
 import mesfavoris.internal.service.operations.CheckBookmarkPropertiesOperation;
 import mesfavoris.internal.service.operations.RefreshRemoteFolderOperation;
+import mesfavoris.internal.service.operations.utils.INewBookmarkPositionProvider;
+import mesfavoris.internal.service.operations.utils.NewBookmarkPositionProvider;
 import mesfavoris.internal.validation.BookmarksModificationValidator;
 import mesfavoris.internal.views.virtual.BookmarkLink;
 import mesfavoris.internal.visited.VisitedBookmarksDatabase;
 import mesfavoris.internal.workspace.BookmarksWorkspaceFactory;
-import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
@@ -135,8 +136,6 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		bookmarksSaver = new BookmarksAutoSaver(bookmarkDatabase, localBookmarksSaver, remoteBookmarksSaver);
 		bookmarksSaver.init();
 		IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode(PLUGIN_ID);
-		DefaultBookmarkFolderProvider defaultBookmarkFolderProvider = new DefaultBookmarkFolderProvider(
-				bookmarkDatabase);
 		File mostVisitedBookmarksFile = new File(getStateLocation().toFile(), "mostVisitedBookmarks.json");
 		IEventBroker eventBroker = (IEventBroker) getWorkbench().getService(IEventBroker.class);
 		mostVisitedBookmarks = new VisitedBookmarksDatabase(eventBroker, bookmarkDatabase, mostVisitedBookmarksFile);
@@ -164,8 +163,9 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 				pathPlaceholdersStore.add(new PathPlaceholder(PLACEHOLDER_HOME_NAME, userHome));
 			}
 		}
+		INewBookmarkPositionProvider newBookmarkPositionProvider = new NewBookmarkPositionProvider(bookmarkDatabase);
 		bookmarksService = new BookmarksService(bookmarkDatabase, bookmarkPropertiesProvider,
-				defaultBookmarkFolderProvider, remoteBookmarksStoreManager, bookmarksSaver, bookmarkLocationProvider,
+				newBookmarkPositionProvider, remoteBookmarksStoreManager, bookmarksSaver, bookmarkLocationProvider,
 				gotoBookmark, numberedBookmarks, pluginBookmarkTypes, bookmarksMarkers, pathPlaceholdersStore,
 				bookmarkProblems, eventBroker);
 		CheckBookmarkPropertiesOperation checkBookmarkPropertiesOperation = new CheckBookmarkPropertiesOperation(

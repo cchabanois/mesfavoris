@@ -1,11 +1,12 @@
 package mesfavoris.internal.service.operations;
 
+import static mesfavoris.internal.Constants.DEFAULT_BOOKMARKFOLDER_ID;
+
 import java.io.IOException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
@@ -63,7 +64,7 @@ public class AddToRemoteBookmarksStoreOperation {
 		if (isUnderRemoteBookmarksFolder(bookmarkFolderId)) {
 			return false;
 		}
-		if (DefaultBookmarkFolderProvider.DEFAULT_BOOKMARKFOLDER_ID.equals(bookmarkFolderId)) {
+		if (DEFAULT_BOOKMARKFOLDER_ID.equals(bookmarkFolderId)) {
 			return false;
 		}
 		return true;

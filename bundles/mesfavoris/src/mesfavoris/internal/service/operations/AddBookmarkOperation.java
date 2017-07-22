@@ -12,21 +12,22 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
-import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
+import mesfavoris.internal.service.operations.utils.INewBookmarkPositionProvider;
+import mesfavoris.internal.service.operations.utils.NewBookmarkPosition;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 
 public class AddBookmarkOperation {
 	private final BookmarkDatabase bookmarkDatabase;
-	private final DefaultBookmarkFolderProvider defaultBookmarkFolderProvider;
+	private final INewBookmarkPositionProvider newBookmarkPositionProvider;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
 
 	public AddBookmarkOperation(BookmarkDatabase bookmarkDatabase,
 			IBookmarkPropertiesProvider bookmarkPropertiesProvider,
-			DefaultBookmarkFolderProvider defaultBookmarkFolderProvider) {
+			INewBookmarkPositionProvider newBookmarkPositionProvider) {
 		this.bookmarkDatabase = bookmarkDatabase;
-		this.defaultBookmarkFolderProvider = defaultBookmarkFolderProvider;
+		this.newBookmarkPositionProvider = newBookmarkPositionProvider;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 	}
 
@@ -45,9 +46,14 @@ public class AddBookmarkOperation {
 	}
 
 	private void addBookmark(final IWorkbenchPage page, final Bookmark bookmark) throws BookmarksException {
-		BookmarkId folderId = defaultBookmarkFolderProvider.getDefaultBookmarkFolder(page);
+		NewBookmarkPosition newBookmarkPosition = newBookmarkPositionProvider.getNewBookmarkPosition(page);
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
-			bookmarksTreeModifier.addBookmarks(folderId, Arrays.asList(bookmark));
+			if (newBookmarkPosition.getBookmarkId().isPresent()) {
+				bookmarksTreeModifier.addBookmarksAfter(newBookmarkPosition.getParentBookmarkId(),
+						newBookmarkPosition.getBookmarkId().get(), Arrays.asList(bookmark));
+			} else {
+				bookmarksTreeModifier.addBookmarks(newBookmarkPosition.getParentBookmarkId(), Arrays.asList(bookmark));
+			}
 		});
 	}
 

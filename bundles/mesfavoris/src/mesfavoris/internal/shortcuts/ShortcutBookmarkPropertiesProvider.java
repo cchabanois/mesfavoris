@@ -20,8 +20,9 @@ public class ShortcutBookmarkPropertiesProvider extends AbstractBookmarkProperti
 		if (!(selected instanceof Bookmark)) {
 			return;
 		}
-		Bookmark bookmark = (Bookmark)selected;
-		putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME, bookmark.getPropertyValue(Bookmark.PROPERTY_NAME));
+		Bookmark bookmark = (Bookmark) selected;
+		putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME,
+				bookmark.getPropertyValue(Bookmark.PROPERTY_NAME) + " shortcut");
 		putIfAbsent(bookmarkProperties, ShortcutBookmarkProperties.PROP_BOOKMARK_ID, bookmark.getId().toString());
 	}
 

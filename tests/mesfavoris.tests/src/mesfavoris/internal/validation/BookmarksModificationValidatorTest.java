@@ -1,5 +1,6 @@
 package mesfavoris.internal.validation;
 
+import static mesfavoris.MesFavoris.DEFAULT_BOOKMARKFOLDER_ID;
 import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmark;
 import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmarkFolder;
 import static mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder.bookmarksTree;
@@ -19,7 +20,6 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 
 import mesfavoris.internal.remote.InMemoryRemoteBookmarksStore;
-import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.model.modification.BookmarksModification;
@@ -124,7 +124,7 @@ public class BookmarksModificationValidatorTest {
 	private BookmarksTree createBookmarksTree() {
 		BookmarksTreeBuilder bookmarksTreeBuilder = bookmarksTree("root");
 		bookmarksTreeBuilder.addBookmarks("root", bookmarkFolder("folder1"), bookmarkFolder("folder2"),
-				bookmarkFolder(DefaultBookmarkFolderProvider.DEFAULT_BOOKMARKFOLDER_ID, "default"));
+				bookmarkFolder(DEFAULT_BOOKMARKFOLDER_ID, "default"));
 		bookmarksTreeBuilder.addBookmarks("folder1", bookmarkFolder("folder11"), bookmark("bookmark11"),
 				bookmark("bookmark12"));
 		bookmarksTreeBuilder.addBookmarks("folder2", bookmarkFolder("folder21"), bookmark("bookmark21"),

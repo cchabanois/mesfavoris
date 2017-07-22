@@ -1,5 +1,7 @@
 package mesfavoris.internal.workspace;
 
+import static mesfavoris.MesFavoris.DEFAULT_BOOKMARKFOLDER_ID;
+import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmark;
 import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmarkFolder;
 import static mesfavoris.tests.commons.ui.SWTBotViewHelper.closeWelcomeView;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,16 +18,19 @@ import org.junit.Test;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.MesFavoris;
+import mesfavoris.internal.service.operations.utils.INewBookmarkPositionProvider;
+import mesfavoris.internal.service.operations.utils.NewBookmarkPosition;
+import mesfavoris.internal.service.operations.utils.NewBookmarkPositionProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.tests.commons.ui.BookmarksViewDriver;
 
-public class DefaultBookmarkFolderProviderTest {
+public class NewBookmarkPositionProviderTest {
 	private SWTWorkbenchBot bot;
 	private BookmarksViewDriver bookmarksViewDriver;
-	private DefaultBookmarkFolderProvider defaultBookmarkFolderProvider;
+	private INewBookmarkPositionProvider newBookmarkPositionProvider;
 
 	@Before
 	public void setUp() throws BookmarksException {
@@ -33,7 +38,7 @@ public class DefaultBookmarkFolderProviderTest {
 		closeWelcomeView();
 		bookmarksViewDriver = new BookmarksViewDriver(bot);
 		bookmarksViewDriver.showView();
-		defaultBookmarkFolderProvider = new DefaultBookmarkFolderProvider(MesFavoris.getBookmarkDatabase());
+		newBookmarkPositionProvider = new NewBookmarkPositionProvider(MesFavoris.getBookmarkDatabase());
 	}
 
 	@After
@@ -42,42 +47,62 @@ public class DefaultBookmarkFolderProviderTest {
 	}
 
 	@Test
-	public void testDefaultBookmarkWhenNothingIsSelected() {
+	public void testNewBookmarkPositionWhenNothingIsSelected() {
 		// Given
 		bookmarksViewDriver.tree().unselect();
 
 		// When
-		BookmarkId bookmarkId = defaultBookmarkFolderProvider.getDefaultBookmarkFolder(getActivePage());
+		NewBookmarkPosition position = newBookmarkPositionProvider.getNewBookmarkPosition(getActivePage());
 
 		// Then
-		assertThat(bookmarkId).isEqualTo(DefaultBookmarkFolderProvider.DEFAULT_BOOKMARKFOLDER_ID);
+		assertThat(position.getParentBookmarkId()).isEqualTo(DEFAULT_BOOKMARKFOLDER_ID);
+		assertThat(position.getBookmarkId()).isEmpty();
 	}
 
 	@Test
-	public void testDefaultBookmarkWhenFolderIsSelected() throws Exception {
+	public void testNewBookmarkPositionWhenFolderIsSelected() throws Exception {
 		// Given
 		BookmarkFolder bookmarkFolder = bookmarkFolder("myFolder").build();
 		addBookmark(getBookmarksRootFolderId(), bookmarkFolder);
 		bookmarksViewDriver.tree().select("myFolder");
 
 		// When
-		BookmarkId bookmarkId = defaultBookmarkFolderProvider.getDefaultBookmarkFolder(getActivePage());
+		NewBookmarkPosition position = newBookmarkPositionProvider.getNewBookmarkPosition(getActivePage());
 
 		// Then
-		assertThat(bookmarkId).isEqualTo(bookmarkFolder.getId());
+		assertThat(position.getParentBookmarkId()).isEqualTo(bookmarkFolder.getId());
+		assertThat(position.getBookmarkId()).isEmpty();
 	}
 
 	@Test
-	public void testDefaultBookmarkWhenDefaultBookmarkFolderDoesNotExist() throws Exception {
+	public void testNewBookmarkPositionWhenBookmarkIsSelected() throws Exception {
 		// Given
-		deleteBookmark(DefaultBookmarkFolderProvider.DEFAULT_BOOKMARKFOLDER_ID);
+		BookmarkFolder bookmarkFolder = bookmarkFolder("myFolder").build();
+		Bookmark bookmark = bookmark("myBookmark").build();
+		addBookmark(getBookmarksRootFolderId(), bookmarkFolder);
+		addBookmark(bookmarkFolder.getId(), bookmark);
+		bookmarksViewDriver.tree().expandNode("myFolder").select("myBookmark");
+
+		// When
+		NewBookmarkPosition position = newBookmarkPositionProvider.getNewBookmarkPosition(getActivePage());
+
+		// Then
+		assertThat(position.getParentBookmarkId()).isEqualTo(bookmarkFolder.getId());
+		assertThat(position.getBookmarkId()).contains(bookmark.getId());
+	}	
+	
+	@Test
+	public void testNewBookmarkPositionWhenDefaultBookmarkFolderDoesNotExist() throws Exception {
+		// Given
+		deleteBookmark(DEFAULT_BOOKMARKFOLDER_ID);
 		bookmarksViewDriver.tree().unselect();
 
 		// When
-		BookmarkId bookmarkId = defaultBookmarkFolderProvider.getDefaultBookmarkFolder(getActivePage());
+		NewBookmarkPosition position = newBookmarkPositionProvider.getNewBookmarkPosition(getActivePage());
 
 		// Then
-		assertThat(bookmarkId).isEqualTo(DefaultBookmarkFolderProvider.DEFAULT_BOOKMARKFOLDER_ID);
+		assertThat(position.getParentBookmarkId()).isEqualTo(DEFAULT_BOOKMARKFOLDER_ID);
+		assertThat(position.getBookmarkId()).isEmpty();
 	}
 
 	private IWorkbenchPage getActivePage() {

@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
+import mesfavoris.MesFavoris;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
@@ -61,7 +61,7 @@ public class AddBookmarksTreeOperationTest {
 	private BookmarksTree createBookmarksTree() {
 		BookmarksTreeBuilder bookmarksTreeBuilder = bookmarksTree("root");
 		bookmarksTreeBuilder.addBookmarks("root", bookmarkFolder("folder1"), bookmarkFolder("folder2"),
-				bookmarkFolder(DefaultBookmarkFolderProvider.DEFAULT_BOOKMARKFOLDER_ID, "default"));
+				bookmarkFolder(MesFavoris.DEFAULT_BOOKMARKFOLDER_ID, "default"));
 		bookmarksTreeBuilder.addBookmarks("folder1", bookmarkFolder("folder11"), bookmark("bookmark11"),
 				bookmark("bookmark12").withProperty(Bookmark.PROPERTY_COMMENT, "comment for bookmark12")
 						.withProperty("customProperty", "custom value"));

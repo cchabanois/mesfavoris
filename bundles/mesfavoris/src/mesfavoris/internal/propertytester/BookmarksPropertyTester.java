@@ -1,10 +1,11 @@
 package mesfavoris.internal.propertytester;
 
+import static mesfavoris.internal.Constants.DEFAULT_BOOKMARKFOLDER_ID;
+
 import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.core.runtime.IStatus;
 
 import mesfavoris.internal.BookmarksPlugin;
-import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
@@ -61,7 +62,7 @@ public class BookmarksPropertyTester extends PropertyTester {
 	}
 
 	private boolean isDefaultBookmarkFolder(Bookmark bookmark) {
-		return DefaultBookmarkFolderProvider.DEFAULT_BOOKMARKFOLDER_ID.equals(bookmark.getId());
+		return DEFAULT_BOOKMARKFOLDER_ID.equals(bookmark.getId());
 	}
 
 	private boolean isUnderRemoteBookmarkFolder(Bookmark bookmark) {

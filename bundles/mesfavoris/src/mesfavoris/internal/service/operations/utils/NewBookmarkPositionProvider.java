@@ -1,4 +1,4 @@
-package mesfavoris.internal.workspace;
+package mesfavoris.internal.service.operations.utils;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -13,39 +13,37 @@ import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
+import static mesfavoris.internal.Constants.DEFAULT_BOOKMARKFOLDER_ID;
 
 /**
- * Provides the default bookmark folder where to add a new bookmark.
+ * Provides the position where to add a new bookmark.
  * 
  * If bookmarks view is opened, the selected bookmark is used to determine the
- * bookmark folder, otherwise the "default" bookmark folder is returned.
+ * position, otherwise the "default" bookmark folder is returned.
  * 
  * @author cchabanois
  *
  */
-public class DefaultBookmarkFolderProvider {
-	public final static BookmarkId DEFAULT_BOOKMARKFOLDER_ID = new BookmarkId("default");
+public class NewBookmarkPositionProvider implements INewBookmarkPositionProvider {
 	private final BookmarkDatabase bookmarkDatabase;
 
-	public DefaultBookmarkFolderProvider(BookmarkDatabase bookmarkDatabase) {
+	public NewBookmarkPositionProvider(BookmarkDatabase bookmarkDatabase) {
 		this.bookmarkDatabase = bookmarkDatabase;
 	}
 
-	public BookmarkId getDefaultBookmarkFolder(IWorkbenchPage workbenchPage) {
-		BookmarkFolder bookmarkFolder = getCurrentBookmarkFolderFromBookmarksView(workbenchPage);
-		if (bookmarkFolder == null || !isModifiable(bookmarkFolder.getId())) {
-			bookmarkFolder = (BookmarkFolder) bookmarkDatabase.getBookmarksTree()
-					.getBookmark(DEFAULT_BOOKMARKFOLDER_ID);
+	@Override
+	public NewBookmarkPosition getNewBookmarkPosition(IWorkbenchPage workbenchPage) {
+		NewBookmarkPosition bookmarkPosition = getCurrentBookmarkPositionFromBookmarksView(workbenchPage);
+		if (bookmarkPosition != null && isModifiable(bookmarkPosition.getParentBookmarkId())) {
+			return bookmarkPosition;
 		}
-		if (bookmarkFolder == null || !isModifiable(bookmarkFolder.getId())) {
+		if (!exists(DEFAULT_BOOKMARKFOLDER_ID)) {
 			createDefaultBookmarkFolder();
-			bookmarkFolder = (BookmarkFolder) bookmarkDatabase.getBookmarksTree()
-					.getBookmark(DEFAULT_BOOKMARKFOLDER_ID);
 		}
-		if (bookmarkFolder == null || !isModifiable(bookmarkFolder.getId())) {
-			bookmarkFolder = bookmarkDatabase.getBookmarksTree().getRootFolder();
+		if (exists(DEFAULT_BOOKMARKFOLDER_ID) && isModifiable(DEFAULT_BOOKMARKFOLDER_ID)) {
+			return new NewBookmarkPosition(DEFAULT_BOOKMARKFOLDER_ID);
 		}
-		return bookmarkFolder.getId();
+		return new NewBookmarkPosition(bookmarkDatabase.getBookmarksTree().getRootFolder().getId());
 	}
 
 	private void createDefaultBookmarkFolder() {
@@ -60,19 +58,24 @@ public class DefaultBookmarkFolderProvider {
 		}
 	}
 
+	private boolean exists(BookmarkId bookmarkId) {
+		return bookmarkDatabase.getBookmarksTree().getBookmark(bookmarkId) != null;
+	}
+
 	private boolean isModifiable(BookmarkId bookmarkId) {
 		return bookmarkDatabase.getBookmarksModificationValidator()
 				.validateModification(bookmarkDatabase.getBookmarksTree(), bookmarkId).isOK();
 	}
 
-	private BookmarkFolder getCurrentBookmarkFolderFromBookmarksView(IWorkbenchPage page) {
+	private NewBookmarkPosition getCurrentBookmarkPositionFromBookmarksView(IWorkbenchPage page) {
 		Object firstSelectedElement = getBookmarksViewSelection(page).getFirstElement();
 		if (firstSelectedElement instanceof BookmarkFolder) {
 			BookmarkFolder bookmarkFolder = (BookmarkFolder) firstSelectedElement;
-			return bookmarkFolder;
+			return new NewBookmarkPosition(bookmarkFolder.getId());
 		} else if (firstSelectedElement instanceof Bookmark) {
 			Bookmark bookmark = (Bookmark) firstSelectedElement;
-			return bookmarkDatabase.getBookmarksTree().getParentBookmark(bookmark.getId());
+			BookmarkFolder parentBookmark = bookmarkDatabase.getBookmarksTree().getParentBookmark(bookmark.getId());
+			return new NewBookmarkPosition(parentBookmark.getId(), bookmark.getId());
 		}
 		return null;
 	}

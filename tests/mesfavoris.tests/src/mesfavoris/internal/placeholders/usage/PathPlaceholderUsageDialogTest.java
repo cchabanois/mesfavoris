@@ -22,10 +22,10 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
+import mesfavoris.MesFavoris;
 import mesfavoris.internal.placeholders.PathPlaceholdersMap;
 import mesfavoris.internal.remote.InMemoryRemoteBookmarksStore;
 import mesfavoris.internal.validation.BookmarksModificationValidator;
-import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
 import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
@@ -130,7 +130,7 @@ public class PathPlaceholderUsageDialogTest extends AbstractDialogTest {
 	private BookmarksTree createBookmarksTree() {
 		BookmarksTreeBuilder bookmarksTreeBuilder = bookmarksTree("root");
 		bookmarksTreeBuilder.addBookmarks("root", bookmarkFolder("folder1"), bookmarkFolder("folder2"),
-				bookmarkFolder(DefaultBookmarkFolderProvider.DEFAULT_BOOKMARKFOLDER_ID, "default"));
+				bookmarkFolder(MesFavoris.DEFAULT_BOOKMARKFOLDER_ID, "default"));
 		bookmarksTreeBuilder.addBookmarks("folder1",
 				bookmark("bookmark1").withProperty(PROP_FILE_PATH, "${MY_PROJECT}/file1.txt"),
 				bookmark("bookmark2").withProperty(PROP_FILE_PATH, "${MY_PROJECT}/file2.txt"),

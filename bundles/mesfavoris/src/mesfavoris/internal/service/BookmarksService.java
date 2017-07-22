@@ -39,7 +39,7 @@ import mesfavoris.internal.service.operations.SetBookmarkCommentOperation;
 import mesfavoris.internal.service.operations.ShowInBookmarksViewOperation;
 import mesfavoris.internal.service.operations.SortByNameOperation;
 import mesfavoris.internal.service.operations.UpdateBookmarkOperation;
-import mesfavoris.internal.workspace.DefaultBookmarkFolderProvider;
+import mesfavoris.internal.service.operations.utils.INewBookmarkPositionProvider;
 import mesfavoris.markers.IBookmarksMarkers;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
@@ -55,7 +55,7 @@ import mesfavoris.service.IBookmarksService;
 public class BookmarksService implements IBookmarksService {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
-	private final DefaultBookmarkFolderProvider defaultBookmarkFolderProvider;
+	private final INewBookmarkPositionProvider newBookmarkPositionProvider;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IBookmarksDirtyStateTracker bookmarksDirtyStateTracker;
 	private final IBookmarkLocationProvider bookmarkLocationProvider;
@@ -69,7 +69,7 @@ public class BookmarksService implements IBookmarksService {
 	private final IPathPlaceholderResolver pathPlaceholderResolver;
 
 	public BookmarksService(BookmarkDatabase bookmarkDatabase, IBookmarkPropertiesProvider bookmarkPropertiesProvider,
-			DefaultBookmarkFolderProvider defaultBookmarkFolderProvider,
+			INewBookmarkPositionProvider newBookmarkPositionProvider,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
 			IBookmarksDirtyStateTracker bookmarksDirtyStateTracker, IBookmarkLocationProvider bookmarkLocationProvider,
 			IGotoBookmark gotoBookmark, NumberedBookmarks numberedBookmarks,
@@ -77,7 +77,7 @@ public class BookmarksService implements IBookmarksService {
 			IPathPlaceholders pathPlaceholders, IBookmarkProblems bookmarkProblems, IEventBroker eventBroker) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
-		this.defaultBookmarkFolderProvider = defaultBookmarkFolderProvider;
+		this.newBookmarkPositionProvider = newBookmarkPositionProvider;
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
 		this.bookmarksDirtyStateTracker = bookmarksDirtyStateTracker;
 		this.bookmarkLocationProvider = bookmarkLocationProvider;
@@ -106,7 +106,7 @@ public class BookmarksService implements IBookmarksService {
 	public BookmarkId addBookmark(IWorkbenchPart part, ISelection selection, IProgressMonitor monitor)
 			throws BookmarksException {
 		AddBookmarkOperation operation = new AddBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider,
-				defaultBookmarkFolderProvider);
+				newBookmarkPositionProvider);
 		return operation.addBookmark(part, selection, monitor);
 	}
 
