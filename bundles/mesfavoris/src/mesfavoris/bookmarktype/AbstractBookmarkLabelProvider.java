@@ -1,8 +1,11 @@
 package mesfavoris.bookmarktype;
 
+import static mesfavoris.internal.IUIConstants.IMG_BOOKMARK;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StyledString;
 
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.model.Bookmark;
 
 public abstract class AbstractBookmarkLabelProvider implements IBookmarkLabelProvider {
@@ -18,7 +21,7 @@ public abstract class AbstractBookmarkLabelProvider implements IBookmarkLabelPro
 	
 	@Override
 	public ImageDescriptor getImageDescriptor(Context context, Bookmark bookmark) {
-		return null;
+		return BookmarksPlugin.getImageDescriptor(IMG_BOOKMARK);
 	}
 	
 }
