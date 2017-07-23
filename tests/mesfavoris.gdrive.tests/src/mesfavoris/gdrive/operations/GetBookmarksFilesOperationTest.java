@@ -2,6 +2,7 @@ package mesfavoris.gdrive.operations;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.time.Duration;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -32,7 +33,7 @@ public class GetBookmarksFilesOperationTest {
 
 		// Then
 		Waiter.waitUntil("Bookmark files does not contain shared file", () -> operation.getBookmarkFiles().stream()
-				.map(f -> f.getId()).collect(Collectors.toList()).contains(file.getId()));
+				.map(f -> f.getId()).collect(Collectors.toList()).contains(file.getId()), Duration.ofSeconds(10));
 	}
 
 	private File createBookmarksFile(GDriveConnectionRule driveConnection, String name, String contents)
