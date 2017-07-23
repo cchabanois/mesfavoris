@@ -1,5 +1,8 @@
 package mesfavoris.gdrive.test;
 
+import static com.google.api.client.auth.oauth2.StoredCredential.DEFAULT_DATA_STORE_ID;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
@@ -7,6 +10,9 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.TemporaryFolder;
 
+import com.google.api.client.auth.oauth2.StoredCredential;
+import com.google.api.client.util.store.DataStore;
+import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 
 import mesfavoris.gdrive.GDriveTestUser;
@@ -18,8 +24,10 @@ public class GDriveConnectionRule extends ExternalResource {
 	private final TemporaryFolder temporaryFolder = new TemporaryFolder();
 	private final boolean connect;
 	private final HtmlUnitAuthorizationCodeInstalledApp.Provider authorizationCodeProvider;
+	private final GDriveTestUser user;
 	
 	public GDriveConnectionRule(GDriveTestUser user, boolean connect) {
+		this.user = user;
 		this.connect = connect;
 		this.authorizationCodeProvider = new HtmlUnitAuthorizationCodeInstalledApp.Provider(user.getUserName(),
 				user.getPassword(), user.getRecoveryEmail());
@@ -29,6 +37,11 @@ public class GDriveConnectionRule extends ExternalResource {
 	protected void before() throws Throwable {
 		temporaryFolder.create();
 		java.io.File dataStoreDir = temporaryFolder.newFolder();
+		
+		if (user.getCredential().isPresent()) {
+			addCredentialToDataStore(dataStoreDir, user.getCredential().get());
+		}
+		
 		String applicationFolderName = "gdriveConnectionManagerTest" + new Random().nextInt(1000);
 		gDriveConnectionManager = new GDriveConnectionManager(dataStoreDir, authorizationCodeProvider, "mes favoris",
 				applicationFolderName);
@@ -38,6 +51,12 @@ public class GDriveConnectionRule extends ExternalResource {
 		}
 	}
 
+	private void addCredentialToDataStore(File dataStoreDir, StoredCredential credential) throws IOException {
+		FileDataStoreFactory dataStoreFactory = new FileDataStoreFactory(dataStoreDir);
+		DataStore<StoredCredential> dataStore = dataStoreFactory.getDataStore(DEFAULT_DATA_STORE_ID);
+		dataStore.set("user", credential);		
+	}
+	
 	public void setAuthorizationListener(IAuthorizationListener authorizationListener) {
 		this.authorizationCodeProvider.setAuthorizationListener(authorizationListener);
 	}

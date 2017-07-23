@@ -2,6 +2,8 @@ package mesfavoris.gdrive;
 
 import java.util.Optional;
 
+import com.google.api.client.auth.oauth2.StoredCredential;
+
 public enum GDriveTestUser {
 
 	USER1,
@@ -25,6 +27,18 @@ public enum GDriveTestUser {
 			throw new IllegalStateException("Could not get test password from env for "+name());
 		}
 		return password;
+	}
+	
+	public Optional<StoredCredential> getCredential() {
+		String accessToken =  System.getenv(name() +"_GDRIVE_ACCESS_TOKEN");
+		String refreshToken = System.getenv(name() +"_GDRIVE_REFRESH_TOKEN");
+		if (accessToken == null && refreshToken == null) {
+			return Optional.empty();
+		}
+		StoredCredential credential = new StoredCredential();
+		credential.setAccessToken(accessToken);
+		credential.setRefreshToken(refreshToken);
+		return Optional.of(credential);
 	}
 	
 	public Optional<String> getRecoveryEmail() {

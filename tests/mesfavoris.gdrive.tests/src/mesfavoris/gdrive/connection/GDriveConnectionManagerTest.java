@@ -1,5 +1,6 @@
 package mesfavoris.gdrive.connection;
 
+import static com.google.api.client.auth.oauth2.StoredCredential.DEFAULT_DATA_STORE_ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -16,6 +17,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import com.google.api.client.auth.oauth2.StoredCredential;
+import com.google.api.client.util.store.DataStore;
+import com.google.api.client.util.store.FileDataStoreFactory;
+
 import mesfavoris.gdrive.GDriveTestUser;
 import mesfavoris.gdrive.test.HtmlUnitAuthorizationCodeInstalledApp;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
@@ -27,19 +32,29 @@ public class GDriveConnectionManagerTest {
 
 	private GDriveConnectionManager gDriveConnectionManager;
 	private IConnectionListener connectionListener = mock(IConnectionListener.class);
-
+	private GDriveTestUser user = GDriveTestUser.USER1;
+	
 	@Before
 	public void setUp() throws Exception {
 		File dataStoreDir = temporaryFolder.newFolder();
+		if (user.getCredential().isPresent()) {
+			addCredentialToDataStore(dataStoreDir, user.getCredential().get());
+		}
 		String applicationFolderName = "gdriveConnectionManagerTest" + new Random().nextInt(1000);
 		gDriveConnectionManager = new GDriveConnectionManager(dataStoreDir,
-				new HtmlUnitAuthorizationCodeInstalledApp.Provider(GDriveTestUser.USER1.getUserName(),
-						GDriveTestUser.USER1.getPassword(), GDriveTestUser.USER1.getRecoveryEmail()),
+				new HtmlUnitAuthorizationCodeInstalledApp.Provider(user.getUserName(),
+						user.getPassword(), user.getRecoveryEmail()),
 				"mes favoris", applicationFolderName);
 		gDriveConnectionManager.init();
 		gDriveConnectionManager.addConnectionListener(connectionListener);
 	}
 
+	private void addCredentialToDataStore(File dataStoreDir, StoredCredential credential) throws IOException {
+		FileDataStoreFactory dataStoreFactory = new FileDataStoreFactory(dataStoreDir);
+		DataStore<StoredCredential> dataStore = dataStoreFactory.getDataStore(DEFAULT_DATA_STORE_ID);
+		dataStore.set("user", credential);		
+	}	
+	
 	@After
 	public void tearDown() throws IOException {
 		deleteApplicationFolder();
@@ -63,7 +78,7 @@ public class GDriveConnectionManagerTest {
 		assertEquals(State.connected, gDriveConnectionManager.getState());
 		verify(connectionListener).connected();
 		assertNotNull(gDriveConnectionManager.getApplicationFolderId());
-		assertEquals(GDriveTestUser.USER1.getEmail(), gDriveConnectionManager.getUserInfo().getEmailAddress());
+		assertEquals(user.getEmail(), gDriveConnectionManager.getUserInfo().getEmailAddress());
 		assertNotNull(gDriveConnectionManager.getUserInfo().getDisplayName());
 	}
 
