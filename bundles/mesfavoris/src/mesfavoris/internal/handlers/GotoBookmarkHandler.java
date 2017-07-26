@@ -32,7 +32,8 @@ public class GotoBookmarkHandler extends AbstractBookmarkHandler {
 
 			});
 		} catch (InvocationTargetException e) {
-			StatusHelper.showError("Could not go to bookmark", e.getCause(), false);
+			boolean log = !(e.getCause() instanceof BookmarksException);
+			StatusHelper.showError("Could not go to bookmark", e.getCause(), log);
 		} catch (InterruptedException e) {
 			throw new ExecutionException("Could not go to bookmark : cancelled");
 		}
