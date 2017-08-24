@@ -504,9 +504,7 @@ public class BookmarksView extends ViewPart {
 	@Override
 	public Object getAdapter(Class adapter) {
 		if (adapter == IPropertySheetPage.class) {
-			if (propertyPage == null) {
-				propertyPage = new PropertySheetPage();
-			}
+			propertyPage = new PropertySheetPage();
 			return propertyPage;
 		}
 		if (adapter == IShowInSource.class) {
