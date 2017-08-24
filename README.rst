@@ -59,7 +59,7 @@ Currently, 4 features are available :
 - mesfavoris : you need to install at least this feature
 - mesfavoris for Java : better support for java files
 - mesfavoris for Git
-- mesfavoris for Perforce
+- mesfavoris for Perforce (you will need P4Eclipse to be installed)
 
 =====
 Usage
