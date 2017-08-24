@@ -136,6 +136,7 @@ The available bookmarks types are :
 .. image:: /docs/urlBookmarks.png?raw=true
     :alt: Url bookmarks in the *Mes Favoris* view
 
+- url bookmark to gdrive file : Copy the url and paste it to the *Mes Favoris* view. The file title and icon will be used for the bookmark.
 - git bookmark : will add information from the git project to the bookmark
 - git commit bookmark : bookmark to a git commit. To add a bookmark to a commit, open it in the commit viewer and add your favori as usual
 
