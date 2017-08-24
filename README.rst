@@ -17,6 +17,7 @@ Mesfavoris is an **eclipse plugin** that allows you to **bookmark** your files a
 Features
 ========
 - bookmark files and urls
+- use bookmark folders to organize your bookmarks
 - save your bookmarks on GDrive so that you can use them from your desktop and laptop computer.
 - share some of your bookmarks
 - bookmarks can resist changes in the files thanks to Bitap algorithm 
