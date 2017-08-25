@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Texteditor
 Bundle-SymbolicName: mesfavoris.texteditor;singleton:=true
-Bundle-Version: 1.6.0.qualifier
+Bundle-Version: 1.7.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: mesfavoris;bundle-version="1.6.0",
+Require-Bundle: mesfavoris;bundle-version="1.7.0",
  org.eclipse.ui;bundle-version="3.108.0",
  org.eclipse.jface.text;bundle-version="3.11.0",
- org.eclipse.core.filesystem;bundle-version="1.6.0",
+ org.eclipse.core.filesystem;bundle-version="1.7.0",
  org.eclipse.core.runtime;bundle-version="3.12.0",
  org.eclipse.ui.ide;bundle-version="3.12.0",
  org.eclipse.ui.workbench.texteditor;bundle-version="3.10.0",
@@ -15,9 +15,9 @@ Require-Bundle: mesfavoris;bundle-version="1.6.0",
  com.google.gson;bundle-version="2.7.0",
  com.google.guava;bundle-version="21.0.0",
  org.eclipse.jface;bundle-version="3.12.0",
- mesfavoris.commons;bundle-version="1.6.0",
+ mesfavoris.commons;bundle-version="1.7.0",
  org.eclipse.core.filebuffers;bundle-version="3.6.0",
- mesfavoris.path;bundle-version="1.6.0"
+ mesfavoris.path;bundle-version="1.7.0"
 Bundle-Activator: mesfavoris.texteditor.internal.Activator
 Bundle-ActivationPolicy: lazy
 Export-Package: mesfavoris.texteditor,
