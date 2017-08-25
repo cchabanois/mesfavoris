@@ -72,7 +72,7 @@ public class PluginBookmarkTypes implements IBookmarkPropertyDescriptors {
 		if (propertyDescriptors.isEmpty()) {
 			return null;
 		}
-		if (propertyDescriptors.size() > 0) {
+		if (propertyDescriptors.size() > 1) {
 			StatusHelper.logWarn(String.format(
 					"Bookmark property '%s' registered several times with different definitions", propertyName), null);
 		}
