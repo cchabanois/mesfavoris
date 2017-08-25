@@ -29,6 +29,8 @@ import mesfavoris.model.Bookmark;
 
 public class UrlBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {
 
+	private static final int MAX_BODY_SIZE = 32768;
+
 	public UrlBookmarkPropertiesProvider() {
 
 	}
@@ -55,7 +57,7 @@ public class UrlBookmarkPropertiesProvider extends AbstractBookmarkPropertiesPro
 	private Optional<Document> parse(URL url, IProgressMonitor monitor) {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, "Getting html document", 100);
 		try {
-			Response response = Jsoup.connect(url.toString()).followRedirects(false).timeout(2000).maxBodySize(8192).execute();
+			Response response = Jsoup.connect(url.toString()).followRedirects(false).timeout(2000).maxBodySize(MAX_BODY_SIZE).execute();
 			if (response.statusCode() != 200) {
 				return Optional.empty();
 			}
@@ -71,7 +73,7 @@ public class UrlBookmarkPropertiesProvider extends AbstractBookmarkPropertiesPro
 		String favIconUrl;
 		try {
 			favIconUrl = getFavIconUrl(document)
-					.orElse(new URL(url.getProtocol(), url.getHost(), url.getPort(), "favicon.ico").toString());
+					.orElse(new URL(url.getProtocol(), url.getHost(), url.getPort(), "/favicon.ico").toString());
 		} catch (MalformedURLException e) {
 			return Optional.empty();
 		}
