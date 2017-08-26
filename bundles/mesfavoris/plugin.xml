@@ -830,14 +830,6 @@
                   updatable="false">
             </property>
          </properties>
-         <gotoBookmark
-               class="mesfavoris.internal.shortcuts.GotoShortcutBookmark"
-               priority="10">
-         </gotoBookmark>
-         <gotoBookmark
-               class="mesfavoris.internal.shortcuts.GotoShortcutBookmark"
-               priority="10">
-         </gotoBookmark>
       </bookmarkType>
       <bookmarkType
             name="bookmarkShortcut">
