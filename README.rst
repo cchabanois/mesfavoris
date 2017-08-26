@@ -95,8 +95,8 @@ We use the  `Bitap algorithm <https://en.wikipedia.org/wiki/Bitap_algorithm>`_ f
 
 When adding a new bookmark on a text file, be careful to add this bookmark on a line :
 
-- that does not contain a password or any other confidential information
-- that contains text that is relevant and does not appear elsewhere around the line (do not put a bookmark on an empty line for example
+- that does not contain a password or any other confidential information (if you share the bookmark later)
+- that contains text that is relevant and does not appear elsewhere around the line (do not put a bookmark on an empty line for example)
 
 
 You can add a bookmark from the edit menu or using the shortcut : ``M1+B B``. If you are in a text editor, a marker will be added :
@@ -178,7 +178,6 @@ The first time your click on it, this will open your browser and start the OAuth
 
 .. image:: /docs/gdriveOAuth.png?raw=true
     :alt: Gdrive oauth flow
-
 
 .. note::  Currently, you cannot connect to multiple accounts. However, you can share bookmarks between accounts. You can also delete your current credentials if you selected the wrong account during authentication (Preferences/Mes Favoris/GDrive : delete credentials).
 
