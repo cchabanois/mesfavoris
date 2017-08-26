@@ -437,6 +437,8 @@ public class BookmarksView extends ViewPart {
 			if (bookmark instanceof BookmarkFolder) {
 				bookmarksTreeViewer.setExpandedState(firstElement, !bookmarksTreeViewer.getExpandedState(firstElement));
 			} else {
+				// sometimes, selection and part in the command handler are not set to the boomarks view when we double-click on a bookmark
+				getSite().getWorkbenchWindow().getActivePage().activate(this);
 				IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
 				try {
 					handlerService.executeCommand(COMMAND_ID_GOTO_FAVORI, null);
