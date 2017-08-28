@@ -33,7 +33,7 @@ public class GetBookmarksFilesOperationTest {
 
 		// Then
 		Waiter.waitUntil("Bookmark files does not contain shared file", () -> operation.getBookmarkFiles().stream()
-				.map(f -> f.getId()).collect(Collectors.toList()).contains(file.getId()), Duration.ofSeconds(10));
+				.map(f -> f.getId()).collect(Collectors.toList()).contains(file.getId()), Duration.ofSeconds(20));
 	}
 
 	private File createBookmarksFile(GDriveConnectionRule driveConnection, String name, String contents)
