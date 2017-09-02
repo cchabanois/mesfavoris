@@ -170,6 +170,12 @@ public class BookmarksService implements IBookmarksService {
 	}
 
 	@Override
+	public void pasteAfter(BookmarkId parentBookmarkId, BookmarkId bookmarkId, IProgressMonitor monitor) throws BookmarksException {
+		PasteBookmarkOperation operation = new PasteBookmarkOperation(bookmarkDatabase, bookmarkPropertiesProvider);
+		operation.pasteAfter(parentBookmarkId, bookmarkId, monitor);
+	}	
+	
+	@Override
 	public void refresh(BookmarkId bookmarkFolderId, IProgressMonitor monitor) throws BookmarksException {
 		RefreshRemoteFolderOperation operation = new RefreshRemoteFolderOperation(bookmarkDatabase,
 				remoteBookmarksStoreManager, bookmarksDirtyStateTracker);

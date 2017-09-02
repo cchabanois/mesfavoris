@@ -46,8 +46,7 @@ public class PasteBookmarkOperation {
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;
 	}
 
-	public void paste(BookmarkId parentBookmarkId, IProgressMonitor monitor)
-			throws BookmarksException {
+	public void paste(BookmarkId parentBookmarkId, IProgressMonitor monitor) throws BookmarksException {
 		Display display = PlatformUI.getWorkbench().getDisplay();
 		String clipboardContents = getClipboardContentsFromUIThread(display);
 		BookmarksTree bookmarksTree = getBookmarksTree(clipboardContents);
@@ -58,6 +57,22 @@ public class PasteBookmarkOperation {
 		IStructuredSelection selection = getStructuredSelectionFromClipboardFromUIThread(display);
 		if (!selection.isEmpty()) {
 			paste(parentBookmarkId, selection, monitor);
+			return;
+		}
+	}
+
+	public void pasteAfter(BookmarkId parentBookmarkId, BookmarkId bookmarkId, IProgressMonitor monitor)
+			throws BookmarksException {
+		Display display = PlatformUI.getWorkbench().getDisplay();
+		String clipboardContents = getClipboardContentsFromUIThread(display);
+		BookmarksTree bookmarksTree = getBookmarksTree(clipboardContents);
+		if (bookmarksTree != null) {
+			pasteAfter(parentBookmarkId, bookmarkId, bookmarksTree, monitor);
+			return;
+		}
+		IStructuredSelection selection = getStructuredSelectionFromClipboardFromUIThread(display);
+		if (!selection.isEmpty()) {
+			pasteAfter(parentBookmarkId, bookmarkId, selection, monitor);
 			return;
 		}
 	}
@@ -134,11 +149,31 @@ public class PasteBookmarkOperation {
 		});
 	}
 
+	private void pasteAfter(BookmarkId parentBookmarkId, BookmarkId bookmarkId, BookmarksTree sourceBookmarksTree, IProgressMonitor monitor)
+			throws BookmarksException {
+		SubMonitor.convert(monitor, "Pasting bookmarks", 100);
+		bookmarkDatabase.modify(bookmarksTreeModifier -> {
+			BookmarksCopier bookmarksCopier = new BookmarksCopier(sourceBookmarksTree,
+					new NonExistingBookmarkIdProvider(bookmarksTreeModifier.getCurrentTree()));
+			List<BookmarkId> bookmarkIds = sourceBookmarksTree.getChildren(sourceBookmarksTree.getRootFolder().getId())
+					.stream().map(b -> b.getId()).collect(Collectors.toList());
+			bookmarksCopier.copyAfter(bookmarksTreeModifier, parentBookmarkId, bookmarkId, bookmarkIds);
+		});
+	}	
+	
 	private void paste(BookmarkId parentBookmarkId, IStructuredSelection selection, IProgressMonitor monitor)
 			throws BookmarksException {
 		List<Bookmark> bookmarks = getBookmarks(selection, monitor);
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
 			bookmarksTreeModifier.addBookmarks(parentBookmarkId, bookmarks);
+		});
+	}
+
+	private void pasteAfter(BookmarkId parentBookmarkId, BookmarkId bookmarkId, IStructuredSelection selection,
+			IProgressMonitor monitor) throws BookmarksException {
+		List<Bookmark> bookmarks = getBookmarks(selection, monitor);
+		bookmarkDatabase.modify(bookmarksTreeModifier -> {
+			bookmarksTreeModifier.addBookmarksAfter(parentBookmarkId, bookmarkId, bookmarks);
 		});
 	}
 

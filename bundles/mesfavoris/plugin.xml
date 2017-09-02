@@ -611,7 +611,7 @@
                   variable="selection">
                <iterate>
                   <instanceof
-                        value="mesfavoris.model.BookmarkFolder">
+                        value="mesfavoris.model.Bookmark">
                   </instanceof>
                </iterate>
                <count

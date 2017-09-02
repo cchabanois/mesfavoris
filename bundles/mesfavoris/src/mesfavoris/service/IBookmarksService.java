@@ -43,6 +43,9 @@ public interface IBookmarksService {
 
 	void paste(BookmarkId parentBookmarkId, IProgressMonitor monitor) throws BookmarksException;
 
+	void pasteAfter(BookmarkId parentBookmarkId, BookmarkId bookmarkId, IProgressMonitor monitor)
+			throws BookmarksException;
+
 	void refresh(BookmarkId bookmarkFolderId, IProgressMonitor monitor) throws BookmarksException;
 
 	void refresh(IProgressMonitor monitor) throws BookmarksException;
@@ -66,7 +69,7 @@ public interface IBookmarksService {
 	void gotoBookmark(BookmarkId bookmarkId, IProgressMonitor monitor) throws BookmarksException;
 
 	void addNumberedBookmark(BookmarkId bookmarkId, BookmarkNumber bookmarkNumber);
-	
+
 	void gotoNumberedBookmark(BookmarkNumber bookmarkNumber, IProgressMonitor monitor) throws BookmarksException;
 
 }
