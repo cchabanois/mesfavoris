@@ -1,5 +1,29 @@
 # Change Log
 
+## [release-1.7.0](https://github.com/cchabanois/mesfavoris/tree/release-1.7.0) (2017-08-28)
+[Full Changelog](https://github.com/cchabanois/mesfavoris/compare/release-1.6.0...release-1.7.0)
+
+**Implemented enhancements:**
+
+- Add new bookmark just after the selected one [\#36](https://github.com/cchabanois/mesfavoris/issues/36)
+
+**Fixed bugs:**
+
+- NPE when double-clicking on a bookmark \(sometimes\) [\#40](https://github.com/cchabanois/mesfavoris/issues/40)
+- log : Bookmark property 'lineNumber' registered several times with different definitions [\#39](https://github.com/cchabanois/mesfavoris/issues/39)
+- Favicon not downloaded when on the root directory and link cannot be retrieved from the html document [\#38](https://github.com/cchabanois/mesfavoris/issues/38)
+- Bookmark properties not displayed anymore if properties view is closed then re-opened [\#37](https://github.com/cchabanois/mesfavoris/issues/37)
+
+## [release-1.6.0](https://github.com/cchabanois/mesfavoris/tree/release-1.6.0) (2017-08-24)
+[Full Changelog](https://github.com/cchabanois/mesfavoris/compare/release-1.5.0...release-1.6.0)
+
+**Implemented enhancements:**
+
+- Add shortcuts : bookmark to bookmark or bookmark folder [\#35](https://github.com/cchabanois/mesfavoris/issues/35)
+- For url bookmarks, add command  to copy the url to clipboard [\#34](https://github.com/cchabanois/mesfavoris/issues/34)
+- Cannot bookmark perforce changelist from the history view [\#33](https://github.com/cchabanois/mesfavoris/issues/33)
+- Use exponential backoff for gDrive [\#32](https://github.com/cchabanois/mesfavoris/issues/32)
+
 ## [release-1.5.0](https://github.com/cchabanois/mesfavoris/tree/release-1.5.0) (2017-06-25)
 [Full Changelog](https://github.com/cchabanois/mesfavoris/compare/release-1.4.0...release-1.5.0)
 
