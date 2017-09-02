@@ -31,11 +31,9 @@ public class WorkspaceFileBookmarkMarkerAttributesProvider extends AbstractBookm
 			return null;
 		}
 		WorkspaceFileBookmarkLocation workspaceFileBookmarkLocation = (WorkspaceFileBookmarkLocation) location;
-		if (workspaceFileBookmarkLocation.getLineNumber() == null) {
-			return null;
-		}
+		int lineNumber = workspaceFileBookmarkLocation.getLineNumber() != null ? workspaceFileBookmarkLocation.getLineNumber() : 0;
 		Map attributes = new HashMap();
-		attributes.put(IMarker.LINE_NUMBER, new Integer(workspaceFileBookmarkLocation.getLineNumber() + 1));
+		attributes.put(IMarker.LINE_NUMBER, lineNumber + 1);
 		if (workspaceFileBookmarkLocation.getLineOffset() != null) {
 			attributes.put(IMarker.CHAR_START, Integer.valueOf(workspaceFileBookmarkLocation.getLineOffset()));
 			attributes.put(IMarker.CHAR_END, Integer.valueOf(workspaceFileBookmarkLocation.getLineOffset()));
