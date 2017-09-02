@@ -106,7 +106,12 @@ public class BookmarksMarkers implements IBookmarksMarkers {
 			if (marker == null) {
 				createMarker(descriptor.getResource(), attributes, subMonitor.newChild(5));
 			} else {
-				updateMarker(marker, attributes, subMonitor.newChild(5));
+				if (descriptor.getResource().equals(marker.getResource())) {
+					updateMarker(marker, attributes, subMonitor.newChild(5));
+				} else {
+					deleteMarker(marker, subMonitor.newChild(2));
+					createMarker(descriptor.getResource(), attributes, subMonitor.newChild(3));
+				}
 			}
 		} catch (CoreException e) {
 			StatusHelper.logWarn("Could not update marker for bookmark", e);
