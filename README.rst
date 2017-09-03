@@ -61,6 +61,8 @@ Currently, 4 features are available :
 - mesfavoris for Git
 - mesfavoris for Perforce (you will need P4Eclipse to be installed)
 
+Both Eclipse Neon and Oxygen are supported.
+
 =====
 Usage
 =====
