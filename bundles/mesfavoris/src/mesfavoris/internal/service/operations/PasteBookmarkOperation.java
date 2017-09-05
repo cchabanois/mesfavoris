@@ -48,11 +48,13 @@ public class PasteBookmarkOperation {
 
 	public void paste(BookmarkId parentBookmarkId, IProgressMonitor monitor) throws BookmarksException {
 		Display display = PlatformUI.getWorkbench().getDisplay();
-		String clipboardContents = getClipboardContentsFromUIThread(display);
-		BookmarksTree bookmarksTree = getBookmarksTree(clipboardContents);
-		if (bookmarksTree != null) {
-			paste(parentBookmarkId, bookmarksTree, monitor);
-			return;
+		String textClipboardContents = getTextClipboardContentsFromUIThread(display);
+		if (textClipboardContents != null) {
+			BookmarksTree bookmarksTree = getBookmarksTree(textClipboardContents);
+			if (bookmarksTree != null) {
+				paste(parentBookmarkId, bookmarksTree, monitor);
+				return;
+			}
 		}
 		IStructuredSelection selection = getStructuredSelectionFromClipboardFromUIThread(display);
 		if (!selection.isEmpty()) {
@@ -64,7 +66,7 @@ public class PasteBookmarkOperation {
 	public void pasteAfter(BookmarkId parentBookmarkId, BookmarkId bookmarkId, IProgressMonitor monitor)
 			throws BookmarksException {
 		Display display = PlatformUI.getWorkbench().getDisplay();
-		String clipboardContents = getClipboardContentsFromUIThread(display);
+		String clipboardContents = getTextClipboardContentsFromUIThread(display);
 		BookmarksTree bookmarksTree = getBookmarksTree(clipboardContents);
 		if (bookmarksTree != null) {
 			pasteAfter(parentBookmarkId, bookmarkId, bookmarksTree, monitor);
@@ -77,13 +79,13 @@ public class PasteBookmarkOperation {
 		}
 	}
 
-	private String getClipboardContentsFromUIThread(Display display) {
+	private String getTextClipboardContentsFromUIThread(Display display) {
 		String[] result = new String[1];
-		display.syncExec(() -> result[0] = getClipboardContents(display));
+		display.syncExec(() -> result[0] = getTextClipboardContents(display));
 		return result[0];
 	}
 
-	private String getClipboardContents(Display display) {
+	private String getTextClipboardContents(Display display) {
 		Clipboard clipboard = new Clipboard(display);
 		String textData;
 		try {
@@ -104,7 +106,7 @@ public class PasteBookmarkOperation {
 	private IStructuredSelection getStructuredSelectionFromClipboard(Display display) {
 		Clipboard clipboard = new Clipboard(display);
 		try {
-			String text = (String)clipboard.getContents(URLTransfer.getInstance());
+			String text = (String) clipboard.getContents(URLTransfer.getInstance());
 			if (text == null) {
 				text = (String) clipboard.getContents(TextTransfer.getInstance());
 			}
@@ -148,8 +150,8 @@ public class PasteBookmarkOperation {
 		});
 	}
 
-	private void pasteAfter(BookmarkId parentBookmarkId, BookmarkId bookmarkId, BookmarksTree sourceBookmarksTree, IProgressMonitor monitor)
-			throws BookmarksException {
+	private void pasteAfter(BookmarkId parentBookmarkId, BookmarkId bookmarkId, BookmarksTree sourceBookmarksTree,
+			IProgressMonitor monitor) throws BookmarksException {
 		SubMonitor.convert(monitor, "Pasting bookmarks", 100);
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
 			BookmarksCopier bookmarksCopier = new BookmarksCopier(sourceBookmarksTree,
@@ -158,8 +160,8 @@ public class PasteBookmarkOperation {
 					.stream().map(b -> b.getId()).collect(Collectors.toList());
 			bookmarksCopier.copyAfter(bookmarksTreeModifier, parentBookmarkId, bookmarkId, bookmarkIds);
 		});
-	}	
-	
+	}
+
 	private void paste(BookmarkId parentBookmarkId, IStructuredSelection selection, IProgressMonitor monitor)
 			throws BookmarksException {
 		List<Bookmark> bookmarks = getBookmarks(selection, monitor);
