@@ -2,6 +2,7 @@ package mesfavoris.url.internal;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -11,13 +12,13 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.junit.Test;
-
-import com.google.common.io.ByteStreams;
 
 import mesfavoris.model.Bookmark;
 import mesfavoris.url.UrlBookmarkProperties;
-import mesfavoris.url.internal.UrlBookmarkPropertiesProvider;
 
 public class UrlBookmarkPropertiesProviderTest {
 	private final UrlBookmarkPropertiesProvider provider = new UrlBookmarkPropertiesProvider();
@@ -31,7 +32,7 @@ public class UrlBookmarkPropertiesProviderTest {
 	@Test
 	public void testUrlIsUsedAsTitleWhenAuthenticationIsNeeded() throws IOException {
 		String url = "https://docs.google.com/a/salesforce.com/file/d/0B97G1IRAgxIEanhJTmkyS0NFem8/edit";
-		assertTitleAndFavIcon(url, null, url);
+		assertTitleAndFavIcon(url, "infinite_arrow_favicon_4.ico", url);
 	}
 
 	private void assertTitleAndFavIcon(String expectedTitle, String expectedIcon, String url) throws IOException {
@@ -39,14 +40,26 @@ public class UrlBookmarkPropertiesProviderTest {
 		provider.addBookmarkProperties(bookmarkProperties, null, new StructuredSelection(new URL(url)),
 				new NullProgressMonitor());
 		assertEquals(expectedTitle, bookmarkProperties.get(Bookmark.PROPERTY_NAME));
-		assertEquals(expectedIcon == null ? null : getImageAsBase64(expectedIcon),
+		assertEquals(expectedIcon == null ? null : getImageAsIconBase64(expectedIcon),
 				bookmarkProperties.get(UrlBookmarkProperties.PROP_FAVICON));
 	}
 
-	private String getImageAsBase64(String resourceName) throws IOException {
+	private String getImageAsIconBase64(String resourceName) throws IOException {
 		try (InputStream is = getClass().getResourceAsStream(resourceName)) {
-			return Base64.getEncoder().encodeToString(ByteStreams.toByteArray(is));
+			ImageData[] imageDatas = new ImageLoader().load(is);
+			ImageData imageData = imageDatas[0].scaledTo(16, 16);
+			return Base64.getEncoder().encodeToString(asBytes(imageData, SWT.IMAGE_ICO));
 		}
 	}
 
+	private byte[] asBytes(ImageData imageData, int format) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			ImageLoader loader = new ImageLoader();
+			loader.data = new ImageData[] { imageData };
+			loader.save(baos, format);
+			return baos.toByteArray();
+		} catch (IOException e) {
+			return new byte[0];
+		}
+	}
 }
