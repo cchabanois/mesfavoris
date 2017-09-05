@@ -104,14 +104,13 @@ public class PasteBookmarkOperation {
 	private IStructuredSelection getStructuredSelectionFromClipboard(Display display) {
 		Clipboard clipboard = new Clipboard(display);
 		try {
-			URL url = (URL) clipboard.getContents(URLTransfer.getInstance());
-			if (url != null) {
-				return new StructuredSelection(url);
+			String text = (String)clipboard.getContents(URLTransfer.getInstance());
+			if (text == null) {
+				text = (String) clipboard.getContents(TextTransfer.getInstance());
 			}
-			String text = (String) clipboard.getContents(TextTransfer.getInstance());
 			if (text != null) {
 				try {
-					url = new URL(text);
+					URL url = new URL(text);
 					return new StructuredSelection(url);
 				} catch (MalformedURLException e) {
 

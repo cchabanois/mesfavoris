@@ -14,6 +14,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.URLTransfer;
 import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
 import org.eclipse.ui.IWorkbenchPart;
 import org.junit.Before;
@@ -61,7 +62,7 @@ public class PasteBookmarkOperationTest {
 	@Test
 	public void testPasteInvalidString() throws BookmarksException {
 		// Given
-		copyToClipboard("Not a bookmark");
+		copyToClipboard("Not a bookmark", TextTransfer.getInstance());
 		BookmarksTree previousTree = bookmarkDatabase.getBookmarksTree();
 
 		// When
@@ -73,9 +74,10 @@ public class PasteBookmarkOperationTest {
 	}
 
 	@Test
-	public void testPasteUrl() throws Exception {
+	public void testPasteUrlAsText() throws Exception {
 		// Given
-		copyToClipboard("http://www.google.com");
+		// on mac, when you copy from firefox
+		copyToClipboard("http://www.google.com", TextTransfer.getInstance());
 		int numberOfBookmarksBefore = bookmarkDatabase.getBookmarksTree().size();
 
 		// When
@@ -86,19 +88,33 @@ public class PasteBookmarkOperationTest {
 		assertEquals(numberOfBookmarksBefore + 1, bookmarkDatabase.getBookmarksTree().size());
 	}
 
+	@Test
+	public void testPasteUrl() throws BookmarksException {
+		// Given
+		// on mac, when you copy from chrome
+		copyToClipboard("http://www.google.com", URLTransfer.getInstance());
+		int numberOfBookmarksBefore = bookmarkDatabase.getBookmarksTree().size();
+
+		// When
+		pasteBookmarkOperation.paste(getBookmarkFolder(bookmarkDatabase.getBookmarksTree(), 0, 0, 0).getId(),
+				new NullProgressMonitor());
+
+		// Then
+		assertEquals(numberOfBookmarksBefore + 1, bookmarkDatabase.getBookmarksTree().size());		
+	}
+	
 	private void copyToClipboard(BookmarkId... bookmarkIds) {
 		CopyBookmarkOperation copyBookmarkOperation = new CopyBookmarkOperation();
 		copyBookmarkOperation.copyToClipboard(bookmarkDatabase.getBookmarksTree(), Lists.newArrayList(bookmarkIds));
 	}
 
-	public void copyToClipboard(String text) {
+	public void copyToClipboard(Object data, Transfer transfer) {
 		UIThreadRunnable.syncExec(() -> {
 			Clipboard clipboard = new Clipboard(null);
 			try {
-				TextTransfer textTransfer = TextTransfer.getInstance();
-				Transfer[] transfers = new Transfer[] { textTransfer };
-				Object[] data = new Object[] { text };
-				clipboard.setContents(data, transfers);
+				Transfer[] transfers = new Transfer[] { transfer };
+				Object[] contents = new Object[] { data };
+				clipboard.setContents(contents, transfers);
 			} finally {
 				clipboard.dispose();
 			}
