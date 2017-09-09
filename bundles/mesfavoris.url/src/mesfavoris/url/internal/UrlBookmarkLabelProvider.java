@@ -14,11 +14,12 @@ import mesfavoris.url.IconImageDescriptor;
 
 public class UrlBookmarkLabelProvider extends AbstractBookmarkLabelProvider {
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public ImageDescriptor getImageDescriptor(Context context, Bookmark bookmark) {
-		String iconAsBase64 = bookmark.getPropertyValue(PROP_FAVICON);
+		String iconAsBase64 = bookmark.getPropertyValue(PROP_ICON);
 		if (iconAsBase64 == null) {
-			iconAsBase64 = bookmark.getPropertyValue(PROP_ICON);
+			iconAsBase64 = bookmark.getPropertyValue(PROP_FAVICON);
 		}
 		if (iconAsBase64 == null) {
 			if (bookmark.getPropertyValue(PROP_URL) != null) {

@@ -1,7 +1,8 @@
 package mesfavoris.url.internal;
 
 import static mesfavoris.bookmarktype.BookmarkPropertiesProviderUtil.getFirstElement;
-import static mesfavoris.url.UrlBookmarkProperties.PROP_FAVICON;
+import static mesfavoris.model.Bookmark.PROPERTY_NAME;
+import static mesfavoris.url.UrlBookmarkProperties.PROP_ICON;
 import static mesfavoris.url.UrlBookmarkProperties.PROP_URL;
 
 import java.io.ByteArrayInputStream;
@@ -49,16 +50,18 @@ public class UrlBookmarkPropertiesProvider extends AbstractBookmarkPropertiesPro
 		URL url = (URL) selected;
 		putIfAbsent(bookmarkProperties, PROP_URL, url.toString());
 
-		Optional<Document> document = parse(url, subMonitor.newChild(50));
-		if (document.isPresent()) {
-			getTitle(document.get()).ifPresent(title -> putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME, title));
-			getFavIconAsBase64(url, document.get(), subMonitor.newChild(50))
-					.ifPresent(favIcon -> putIfAbsent(bookmarkProperties, PROP_FAVICON, favIcon));
-		} else {
-			getFavIconUrl(url).flatMap(u -> getFavIconAsBase64(u, subMonitor.newChild(50)))
-					.ifPresent(favIcon -> putIfAbsent(bookmarkProperties, PROP_FAVICON, favIcon));
+		if (!isPresent(bookmarkProperties, PROPERTY_NAME) || !isPresent(bookmarkProperties, PROP_ICON)) {
+			Optional<Document> document = parse(url, subMonitor.newChild(50));
+			if (document.isPresent()) {
+				getTitle(document.get()).ifPresent(title -> putIfAbsent(bookmarkProperties, PROPERTY_NAME, title));
+				getFavIconAsBase64(url, document.get(), subMonitor.newChild(50))
+						.ifPresent(favIcon -> putIfAbsent(bookmarkProperties, PROP_ICON, favIcon));
+			} else {
+				getFavIconUrl(url).flatMap(u -> getFavIconAsBase64(u, subMonitor.newChild(50)))
+						.ifPresent(favIcon -> putIfAbsent(bookmarkProperties, PROP_ICON, favIcon));
+			}
 		}
-		putIfAbsent(bookmarkProperties, Bookmark.PROPERTY_NAME, url.toString());
+		putIfAbsent(bookmarkProperties, PROPERTY_NAME, url.toString());
 	}
 
 	private Optional<Document> parse(URL url, IProgressMonitor monitor) {
@@ -103,7 +106,7 @@ public class UrlBookmarkPropertiesProvider extends AbstractBookmarkPropertiesPro
 		byte[] bytes = resultImageResponse.bodyAsBytes();
 		Optional<ImageData> imageData = get16x16ImageData(bytes);
 		// Issue with transparent color when using SWT.IMAGE_PNG
-		return imageData.map(imgData->Base64.getEncoder().encodeToString(asBytes(imgData, SWT.IMAGE_ICO)));
+		return imageData.map(imgData -> Base64.getEncoder().encodeToString(asBytes(imgData, SWT.IMAGE_ICO)));
 	}
 
 	private byte[] asBytes(ImageData imageData, int format) {
@@ -116,7 +119,7 @@ public class UrlBookmarkPropertiesProvider extends AbstractBookmarkPropertiesPro
 			return new byte[0];
 		}
 	}
-	
+
 	private Optional<ImageData> get16x16ImageData(byte[] favIconBytes) {
 		ImageData[] imageDatas;
 		try {
@@ -139,8 +142,8 @@ public class UrlBookmarkPropertiesProvider extends AbstractBookmarkPropertiesPro
 
 	private int distanceFrom16x16ImageData(ImageData imageData) {
 		return imageData.width * imageData.height - 16 * 16;
-	}	
-	
+	}
+
 	private Optional<String> getFavIconUrl(Document document) {
 		Element head = document.head();
 		if (head == null) {

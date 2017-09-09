@@ -9,6 +9,10 @@ public abstract class AbstractBookmarkPropertiesProvider implements IBookmarkPro
 		putIfAbsent(bookmarkProperties, name, () -> value);
 	}
 
+	protected boolean isPresent(Map<String, String> bookmarkProperties, String name) {
+		return bookmarkProperties.containsKey(name);
+	}
+	
 	protected void putIfAbsent(Map<String, String> bookmarkProperties, String name, Supplier<String> valueProvider) {
 		if (bookmarkProperties.containsKey(name)) {
 			return;
