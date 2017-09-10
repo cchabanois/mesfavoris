@@ -1,7 +1,6 @@
 package mesfavoris.url.internal;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,23 +30,23 @@ public class UrlBookmarkLabelProviderTest {
 		// Given
 		// lemonde-favicon.ico has 2 images in it : one 32x32 and one 16x16
 		Bookmark bookmark = new Bookmark(new BookmarkId(),
-				ImmutableMap.of(UrlBookmarkProperties.PROP_FAVICON, getImageAsBase64("lemonde-favicon.ico")));
+				ImmutableMap.of(UrlBookmarkProperties.PROP_ICON, getImageAsBase64("lemonde-favicon.ico")));
 
 		// When
 		ImageDescriptor image = urlBookmarkLabelProvider.getImageDescriptor(null, bookmark);
 		
 		// Then
-		assertEquals(16, image.getImageData().width);
-		assertEquals(16, image.getImageData().height);
+		assertEquals(16, image.getImageData(100).width);
+		assertEquals(16, image.getImageData(100).height);
 	}
 
 	@Test
 	public void testSameImageInstanceIfSameFavIcon() throws IOException {
 		// Given
 		Bookmark bookmark1 = new Bookmark(new BookmarkId(),
-				ImmutableMap.of(UrlBookmarkProperties.PROP_FAVICON, getImageAsBase64("lemonde-favicon.ico")));
+				ImmutableMap.of(UrlBookmarkProperties.PROP_ICON, getImageAsBase64("lemonde-favicon.ico")));
 		Bookmark bookmark2 = new Bookmark(new BookmarkId(),
-				ImmutableMap.of(UrlBookmarkProperties.PROP_FAVICON, getImageAsBase64("lemonde-favicon.ico")));
+				ImmutableMap.of(UrlBookmarkProperties.PROP_ICON, getImageAsBase64("lemonde-favicon.ico")));
 		
 		// When
 		ImageDescriptor image1 = urlBookmarkLabelProvider.getImageDescriptor(null, bookmark1);

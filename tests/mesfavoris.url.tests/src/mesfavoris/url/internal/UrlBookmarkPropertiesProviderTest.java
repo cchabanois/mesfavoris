@@ -41,7 +41,7 @@ public class UrlBookmarkPropertiesProviderTest {
 				new NullProgressMonitor());
 		assertEquals(expectedTitle, bookmarkProperties.get(Bookmark.PROPERTY_NAME));
 		assertEquals(expectedIcon == null ? null : getImageAsIconBase64(expectedIcon),
-				bookmarkProperties.get(UrlBookmarkProperties.PROP_FAVICON));
+				bookmarkProperties.get(UrlBookmarkProperties.PROP_ICON));
 	}
 
 	private String getImageAsIconBase64(String resourceName) throws IOException {
