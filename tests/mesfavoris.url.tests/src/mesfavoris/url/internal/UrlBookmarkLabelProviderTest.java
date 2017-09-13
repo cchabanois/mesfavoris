@@ -36,8 +36,8 @@ public class UrlBookmarkLabelProviderTest {
 		ImageDescriptor image = urlBookmarkLabelProvider.getImageDescriptor(null, bookmark);
 		
 		// Then
-		assertEquals(16, image.getImageData(100).width);
-		assertEquals(16, image.getImageData(100).height);
+		assertEquals(16, image.getImageData().width);
+		assertEquals(16, image.getImageData().height);
 	}
 
 	@Test
