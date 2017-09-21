@@ -47,7 +47,6 @@ import mesfavoris.remote.RemoteBookmarkFolder;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 
 public class BookmarksLabelProvider extends StyledCellLabelProvider implements ILabelProvider, IStyledLabelProvider {
-	private static final String ICON_ERROR = "icons/ovr16/error.png";
 	private final BookmarkDatabase bookmarkDatabase;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IBookmarkLabelProvider bookmarkLabelProvider;
@@ -146,7 +145,7 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 			imageDescriptor = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(imageKey);
 		}
 		ImageDescriptor[] overlayImages = getOverlayImages(element);
-		OverlayIconImageDescriptor decorated = new OverlayIconImageDescriptor(imageDescriptor, overlayImages, 16, 16);
+		OverlayIconImageDescriptor decorated = new OverlayIconImageDescriptor(imageDescriptor, overlayImages);
 		return (Image) this.resourceManager.get(decorated);
 	}
 

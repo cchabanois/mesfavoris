@@ -137,7 +137,7 @@ public class BookmarksTableLabelProvider extends StyledCellLabelProvider impleme
 			imageDescriptor = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(imageKey);
 		}
 		ImageDescriptor[] overlayImages = getOverlayImages(element);
-		OverlayIconImageDescriptor decorated = new OverlayIconImageDescriptor(imageDescriptor, overlayImages, 16, 16);
+		OverlayIconImageDescriptor decorated = new OverlayIconImageDescriptor(imageDescriptor, overlayImages);
 		return (Image) this.resourceManager.get(decorated);
 	}
 

@@ -8,11 +8,13 @@ import org.eclipse.jface.viewers.StyledString;
 
 import mesfavoris.bookmarktype.AbstractBookmarkLabelProvider;
 import mesfavoris.bookmarktype.IBookmarkLabelProvider;
+import mesfavoris.internal.BookmarksPlugin;
+import mesfavoris.internal.IUIConstants;
 import mesfavoris.model.Bookmark;
 
 public class BookmarkLabelProvider implements IBookmarkLabelProvider {
 	private final List<IBookmarkLabelProvider> bookmarkLabelProviders;
-	
+
 	public BookmarkLabelProvider() {
 		this.bookmarkLabelProviders = new ArrayList<IBookmarkLabelProvider>();
 		this.bookmarkLabelProviders.add(new DefaultBookmarkLabelProvider());
@@ -26,7 +28,11 @@ public class BookmarkLabelProvider implements IBookmarkLabelProvider {
 	
 	@Override
 	public ImageDescriptor getImageDescriptor(Context context, Bookmark bookmark) {
-		return getBookmarkLabelProvider(context, bookmark).getImageDescriptor(context, bookmark);
+		ImageDescriptor imageDescriptor = getBookmarkLabelProvider(context, bookmark).getImageDescriptor(context, bookmark);
+		if (imageDescriptor == null) {
+			imageDescriptor = BookmarksPlugin.getImageDescriptor(IUIConstants.IMG_BOOKMARK); 
+		}
+		return imageDescriptor;
 	}
 	
 	@Override

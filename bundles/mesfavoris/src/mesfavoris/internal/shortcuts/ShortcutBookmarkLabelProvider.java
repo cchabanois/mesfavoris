@@ -36,7 +36,7 @@ public class ShortcutBookmarkLabelProvider extends AbstractBookmarkLabelProvider
 		ImageDescriptor overlayImageDescriptor = BookmarksPlugin.getImageDescriptor(IUIConstants.IMG_BOOKMARK_LINK);
 		ImageDescriptor[] overlayImages = new ImageDescriptor[5];
 		overlayImages[IDecoration.BOTTOM_LEFT] = overlayImageDescriptor;
-		return new OverlayIconImageDescriptor(imageDescriptor, overlayImages, 16, 16);
+		return new OverlayIconImageDescriptor(imageDescriptor, overlayImages);
 	}
 
 	@Override

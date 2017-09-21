@@ -135,7 +135,7 @@ public class SetNumberForBookmarkMenu extends ContributionItem implements IWorkb
 		ImageDescriptor imageDescriptor = bookmarkLabelProvider.getImageDescriptor(context, bookmark);
 		ImageDescriptor[] overlayImages = new ImageDescriptor[5];
 		overlayImages[IDecoration.TOP_LEFT] = numberImageDescriptor;
-		OverlayIconImageDescriptor decorated = new OverlayIconImageDescriptor(imageDescriptor, overlayImages, 16, 16);
+		OverlayIconImageDescriptor decorated = new OverlayIconImageDescriptor(imageDescriptor, overlayImages);
 		return (Image) this.resourceManager.get(decorated);
 	}
 
