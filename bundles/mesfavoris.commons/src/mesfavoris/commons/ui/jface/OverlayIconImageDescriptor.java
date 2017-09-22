@@ -3,7 +3,6 @@ package mesfavoris.commons.ui.jface;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
-import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
