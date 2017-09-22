@@ -15,3 +15,11 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Mes Favoris
 Export-Package: mesfavoris.url
+Bundle-ClassPath: lib/common-image-3.3.2.jar,
+ lib/common-io-3.3.2.jar,
+ lib/common-lang-3.3.2.jar,
+ lib/imageio-bmp-3.3.2.jar,
+ lib/imageio-core-3.3.2.jar,
+ lib/imageio-metadata-3.3.2.jar,
+ .,
+ lib/imgscalr-lib-4.2.jar

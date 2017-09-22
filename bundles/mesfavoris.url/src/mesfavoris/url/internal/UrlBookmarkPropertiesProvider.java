@@ -5,34 +5,42 @@ import static mesfavoris.model.Bookmark.PROPERTY_NAME;
 import static mesfavoris.url.UrlBookmarkProperties.PROP_ICON;
 import static mesfavoris.url.UrlBookmarkProperties.PROP_URL;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.ui.IWorkbenchPart;
+import org.imgscalr.Scalr;
+import org.imgscalr.Scalr.Method;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import mesfavoris.bookmarktype.AbstractBookmarkPropertiesProvider;
-import mesfavoris.model.Bookmark;
 
 public class UrlBookmarkPropertiesProvider extends AbstractBookmarkPropertiesProvider {
 
+	private static final int TARGET_ICON_SIZE = 32;
+	private static final String PNG_FORMAT_NAME = "png";
 	private static final int MAX_BODY_SIZE = 32768;
 
 	public UrlBookmarkPropertiesProvider() {
@@ -104,44 +112,73 @@ public class UrlBookmarkPropertiesProvider extends AbstractBookmarkPropertiesPro
 			return Optional.empty();
 		}
 		byte[] bytes = resultImageResponse.bodyAsBytes();
-		Optional<ImageData> imageData = get16x16ImageData(bytes);
-		// Issue with transparent color when using SWT.IMAGE_PNG
-		return imageData.map(imgData -> Base64.getEncoder().encodeToString(asBytes(imgData, SWT.IMAGE_ICO)));
+		Optional<BufferedImage> bufferedImage = getBufferedImage(bytes, TARGET_ICON_SIZE);
+		return bufferedImage.map(imgData -> Base64.getEncoder().encodeToString(asBytes(imgData, PNG_FORMAT_NAME)));
 	}
 
-	private byte[] asBytes(ImageData imageData, int format) {
+	private byte[] asBytes(BufferedImage imageData, String formatName) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			ImageLoader loader = new ImageLoader();
-			loader.data = new ImageData[] { imageData };
-			loader.save(baos, format);
+			ImageIO.write(imageData, formatName, baos);
 			return baos.toByteArray();
 		} catch (IOException e) {
 			return new byte[0];
 		}
 	}
 
-	private Optional<ImageData> get16x16ImageData(byte[] favIconBytes) {
-		ImageData[] imageDatas;
-		try {
-			imageDatas = new ImageLoader().load(new ByteArrayInputStream(favIconBytes));
-		} catch (SWTException e) {
-			return Optional.empty();
+	private List<BufferedImage> getBufferedImages(byte[] favIconBytes) throws IOException {
+		try (ImageInputStream stream = ImageIO.createImageInputStream(new ByteArrayInputStream(favIconBytes))) {
+			Iterator<ImageReader> iter = ImageIO.getImageReaders(stream);
+			if (!iter.hasNext()) {
+				return Collections.emptyList();
+			}
+			ImageReader reader = (ImageReader) iter.next();
+			try {
+				ImageReadParam param = reader.getDefaultReadParam();
+				reader.setInput(stream, true, true);
+				List<BufferedImage> bufferedImages = new ArrayList<>();
+				int i = 0;
+				while (true) {
+					try {
+						BufferedImage bufferedImage = reader.read(i, param);
+						bufferedImages.add(bufferedImage);
+					} catch (IndexOutOfBoundsException e) {
+						return bufferedImages;
+					}
+					i++;
+				}
+			} finally {
+				reader.dispose();
+			}
 		}
-		Optional<ImageData> optionalImageData = Arrays.stream(imageDatas).sorted((imageData1,
-				imageData2) -> distanceFrom16x16ImageData(imageData1) - distanceFrom16x16ImageData(imageData2))
-				.findFirst();
-		if (!optionalImageData.isPresent()) {
-			return Optional.empty();
-		}
-		ImageData imageData = optionalImageData.get();
-		if (imageData.width <= 16 && imageData.height <= 16) {
-			return Optional.of(imageData);
-		}
-		return Optional.of(imageData.scaledTo(16, 16));
 	}
 
-	private int distanceFrom16x16ImageData(ImageData imageData) {
-		return imageData.width * imageData.height - 16 * 16;
+	private Optional<BufferedImage> getBufferedImage(byte[] favIconBytes, int targetImageSize) {
+		List<BufferedImage> bufferedImages;
+		try {
+			bufferedImages = getBufferedImages(favIconBytes);
+		} catch (IOException e) {
+			return Optional.empty();
+		}
+		Optional<BufferedImage> optionalBufferedImage = bufferedImages.stream()
+				.sorted((image1, image2) -> distanceFromTargetImageSize(image1, targetImageSize)
+						- distanceFromTargetImageSize(image2, targetImageSize))
+				.findFirst();
+		if (!optionalBufferedImage.isPresent()) {
+			return Optional.empty();
+		}
+		BufferedImage bufferedImage = optionalBufferedImage.get();
+		if (bufferedImage.getWidth() <= targetImageSize && bufferedImage.getHeight() <= targetImageSize) {
+			return Optional.of(bufferedImage);
+		}
+		return Optional.of(resizeImage(bufferedImage, TARGET_ICON_SIZE, TARGET_ICON_SIZE));
+	}
+
+	private int distanceFromTargetImageSize(BufferedImage image, int targetImageSize) {
+		return image.getWidth() * image.getHeight() - targetImageSize * targetImageSize;
+	}
+
+	private static BufferedImage resizeImage(BufferedImage originalImage, int width, int height) {
+		return Scalr.resize(originalImage, Method.ULTRA_QUALITY, width, height);
 	}
 
 	private Optional<String> getFavIconUrl(Document document) {
