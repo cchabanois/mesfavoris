@@ -10,83 +10,48 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 
 public class IconImageDescriptor extends ImageDescriptor {
-	private final byte[] iconBytes;
-	private ImageData[] iconImageData;
-	private ImageData imageData100;
-	private ImageData imageData150;
-	private ImageData imageData200;
+	private final byte[] favIconBytes;
+	private ImageData imageData;
 
-	public IconImageDescriptor(byte[] iconBytes) {
-		this.iconBytes = iconBytes;
+	public IconImageDescriptor(byte[] favIconBytes) {
+		this.favIconBytes = favIconBytes;
 	}
 
 	@Override
-	public ImageData getImageData(int zoom) {
-		if (iconImageData == null) {
-			iconImageData = loadIconImageData(iconBytes);
+	public ImageData getImageData() {
+		if (imageData == null) {
+			imageData = loadImageData();
 		}
-		switch (zoom) {
-		case 100:
-			return getImageData100(iconImageData);
-		case 150:
-			return getImageData150(iconImageData);
-		case 200:
-			return getImageData200(iconImageData);
-		default:
-			return getImageData100(iconImageData);
-		}
+		return imageData;
 	}
 
-	private ImageData getImageData100(ImageData[] iconImageData) {
-		if (imageData100 == null) {
-			imageData100 = getImageData(iconImageData, 16);
+	private ImageData loadImageData() {
+		ImageData[] imageDatas;
+		try {
+			imageDatas = new ImageLoader().load(new ByteArrayInputStream(favIconBytes));
+		} catch (SWTException e) {
+			return null;
 		}
-		return imageData100;
-	}
-
-	private ImageData getImageData150(ImageData[] iconImageData) {
-		if (imageData150 == null) {
-			imageData150 = getImageData(iconImageData, 24);
-		}
-		return imageData150;
-	}
-
-	private ImageData getImageData200(ImageData[] iconImageData) {
-		if (imageData200 == null) {
-			imageData200 = getImageData(iconImageData, 32);
-		}
-		return imageData200;
-	}
-
-	private ImageData getImageData(ImageData[] iconImageData, int size) {
-		Optional<ImageData> optionalImageData = Arrays.stream(iconImageData).sorted((imageData1,
-				imageData2) -> distanceFromTargetSize(imageData1, size) - distanceFromTargetSize(imageData2, size))
+		Optional<ImageData> optionalImageData = Arrays.stream(imageDatas).sorted((imageData1,
+				imageData2) -> distanceFrom16x16ImageData(imageData1) - distanceFrom16x16ImageData(imageData2))
 				.findFirst();
 		if (!optionalImageData.isPresent()) {
 			return null;
 		}
 		ImageData imageData = optionalImageData.get();
-		if (imageData.width == size && imageData.height == size) {
+		if (imageData.width <= 16 && imageData.height <= 16) {
 			return imageData;
 		}
-		return imageData.scaledTo(size, size);
+		return imageData.scaledTo(16, 16);
 	}
 
-	private ImageData[] loadIconImageData(byte[] iconBytes) {
-		try {
-			return new ImageLoader().load(new ByteArrayInputStream(iconBytes));
-		} catch (SWTException e) {
-			return new ImageData[0];
-		}
-	}
-
-	private int distanceFromTargetSize(ImageData imageData, int targetSize) {
-		return imageData.width * imageData.height - targetSize * targetSize;
+	private int distanceFrom16x16ImageData(ImageData imageData) {
+		return imageData.width * imageData.height - 16 * 16;
 	}
 
 	@Override
 	public int hashCode() {
-		return Arrays.hashCode(iconBytes);
+		return Arrays.hashCode(favIconBytes);
 	}
 
 	@Override
@@ -95,7 +60,7 @@ public class IconImageDescriptor extends ImageDescriptor {
 			return false;
 		}
 		IconImageDescriptor descriptor = (IconImageDescriptor) obj;
-		return Arrays.equals(descriptor.iconBytes, iconBytes);
+		return Arrays.equals(descriptor.favIconBytes, favIconBytes);
 	}
 
 }
