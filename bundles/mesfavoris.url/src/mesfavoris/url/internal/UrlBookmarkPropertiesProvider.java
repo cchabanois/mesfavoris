@@ -174,7 +174,7 @@ public class UrlBookmarkPropertiesProvider extends AbstractBookmarkPropertiesPro
 	}
 
 	private int distanceFromTargetImageSize(BufferedImage image, int targetImageSize) {
-		return image.getWidth() * image.getHeight() - targetImageSize * targetImageSize;
+		return Math.abs(image.getWidth() * image.getHeight() - targetImageSize * targetImageSize);
 	}
 
 	private static BufferedImage resizeImage(BufferedImage originalImage, int width, int height) {
