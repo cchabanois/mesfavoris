@@ -134,6 +134,13 @@
             id="mesfavoris.command.addShortcutFavori"
             name="Add Shorcut">
       </command>
+      <command
+            categoryId="mesfavoris.category"
+            defaultHandler="mesfavoris.internal.handlers.ImportTeamProjectHandler"
+            description="Import project"
+            id="mesfavoris.command.importTeamProject"
+            name="Import project">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -529,6 +536,13 @@
          <command
                commandId="mesfavoris.command.addShortcutFavori"
                style="push">
+         </command>
+         <command
+               commandId="mesfavoris.command.importTeamProject"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
          </command>
       </menuContribution>
       <menuContribution

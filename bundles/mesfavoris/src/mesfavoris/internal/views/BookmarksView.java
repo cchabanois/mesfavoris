@@ -85,7 +85,6 @@ import mesfavoris.internal.actions.ConnectToRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.RefreshRemoteFoldersAction;
 import mesfavoris.internal.actions.RemoveFromRemoteBookmarksStoreAction;
 import mesfavoris.internal.actions.ToggleLinkAction;
-import mesfavoris.internal.jobs.ImportTeamProjectFromBookmarkJob;
 import mesfavoris.internal.numberedbookmarks.NumberedBookmarksVirtualFolder;
 import mesfavoris.internal.problems.extension.BookmarkProblemDescriptors;
 import mesfavoris.internal.problems.ui.BookmarkProblemsTooltip;
@@ -110,6 +109,7 @@ import mesfavoris.topics.BookmarksEvents;
 
 public class BookmarksView extends ViewPart {
 	private static final String COMMAND_ID_GOTO_FAVORI = "mesfavoris.command.gotoFavori";
+	private static final String COMMAND_ID_IMPORT_TEAM_PROJECT = "mesfavoris.command.importTeamProject";
 
 	public static final String ID = "mesfavoris.views.BookmarksView";
 
@@ -228,8 +228,12 @@ public class BookmarksView extends ViewPart {
 			Action importProjectAction = new Action("Import project", IAction.AS_PUSH_BUTTON) {
 
 				public void run() {
-					ImportTeamProjectFromBookmarkJob job = new ImportTeamProjectFromBookmarkJob(bookmark);
-					job.schedule();
+					IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
+					try {
+						handlerService.executeCommand(COMMAND_ID_IMPORT_TEAM_PROJECT, null);
+					} catch (ExecutionException | NotDefinedException | NotEnabledException | NotHandledException e) {
+						StatusHelper.logError("Could not Import project", e);
+					}					
 				}
 			};
 			importProjectAction.setImageDescriptor(importTeamProject.get().getIcon());
