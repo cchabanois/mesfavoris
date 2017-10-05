@@ -578,10 +578,18 @@
          <activeWhen>
          <with
                variable="selection">
-            <iterate>
-               <instanceof
-                     value="mesfavoris.model.Bookmark">
-               </instanceof>
+            <iterate
+                  ifEmpty="false">
+                  <and>
+                     <instanceof
+                           value="mesfavoris.model.Bookmark">
+                     </instanceof>
+                     <not>
+                        <test
+                              property="mesfavoris.isRemoteBookmarkFolder">
+                        </test>
+                     </not>
+                  </and>
             </iterate>
          </with>
           </activeWhen>
@@ -589,16 +597,9 @@
             <with
                   variable="selection">
                <iterate>
-                  <or>
-                     <test
-                           property="mesfavoris.canBeModified"
-                           value="true">
-                     </test>
-                     <test
-                           property="mesfavoris.isRemoteBookmarkFolder"
-                           value="true">
-                     </test>
-                  </or>
+                  <test
+                        property="mesfavoris.canBeModified">
+                  </test>
                </iterate>
             </with>
          </enabledWhen>
@@ -715,6 +716,37 @@
                         value="0">
                   </count>
                </or>
+            </with>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="mesfavoris.internal.handlers.DeleteSharedBookmarkFolderHandler"
+            commandId="org.eclipse.ui.edit.delete">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false">
+                  <test
+                        property="mesfavoris.isRemoteBookmarkFolder">
+                  </test>
+               </iterate>
+            </with>
+         </activeWhen>
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <and>
+                  <iterate>
+                     <test
+                           property="mesfavoris.isRemoteBookmarkFolder"
+                           value="true">
+                     </test>
+                  </iterate>
+                  <count
+                        value="1">
+                  </count>
+               </and>
             </with>
          </enabledWhen>
       </handler>
