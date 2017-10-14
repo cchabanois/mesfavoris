@@ -18,7 +18,7 @@ Features
 ========
 - bookmark files and urls
 - use bookmark folders to organize your bookmarks
-- save your bookmarks on GDrive so that you can use them from your desktop and laptop computer.
+- save your bookmarks on Google Drive™ so that you can use them from your desktop and laptop computer.
 - share some of your bookmarks
 - bookmarks can resist changes in the files thanks to Bitap algorithm 
 - numbered bookmarks
@@ -138,7 +138,7 @@ The available bookmarks types are :
 .. image:: /docs/urlBookmarks.png?raw=true
     :alt: Url bookmarks in the *Mes Favoris* view
 
-- url bookmark to gdrive file : Copy the url and paste it to the *Mes Favoris* view. The file title and icon will be used for the bookmark.
+- url bookmark to Google Drive file : Copy the url and paste it to the *Mes Favoris* view. The file title and icon will be used for the bookmark.
 - git bookmark : will add information from the git project to the bookmark
 - git commit bookmark : bookmark to a git commit. To add a bookmark to a commit, open it in the commit viewer and add your favori as usual
 
@@ -164,14 +164,14 @@ A number can also be set on a bookmark folder so that you can quickly goto it.
 ---------------
 Share bookmarks
 ---------------
-You can save some of your bookmarks to gDrive. It can be useful
+You can save some of your bookmarks to Google Drive. It can be useful
 
 - when you work on the same projects on both your laptop computer and desktop computer
 - if you want to share some bookmarks with your team
 
-Connecting to GDrive
+Connecting to Google Drive
 ~~~~~~~~~~~~~~~~~~~~
-Click on the GDrive icon in the *Mes favoris* view.
+Click on the Google Drive icon in the *Mes favoris* view.
 
 .. image:: /docs/connectToGdriveIcon.png?raw=true
     :alt: Connect to Gdrive
@@ -181,18 +181,18 @@ The first time your click on it, this will open your browser and start the OAuth
 .. image:: /docs/gdriveOAuth.png?raw=true
     :alt: Gdrive oauth flow
 
-.. note::  Currently, you cannot connect to multiple accounts. However, you can share bookmarks between accounts. You can also delete your current credentials if you selected the wrong account during authentication (Preferences/Mes Favoris/GDrive : delete credentials).
+.. note::  Currently, you cannot connect to multiple accounts. However, you can share bookmarks between accounts. You can also delete your current credentials if you selected the wrong account during authentication (Preferences/Mes Favoris/Google Drive : delete credentials).
 
-Add bookmark folder to GDrive
+Add bookmark folder to Google Drive
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Select the bookmark folder you want to add to gDrive and click on *Add to GDrive* :
+Select the bookmark folder you want to add to gDrive and click on *Add to Google Drive* :
 
 .. image:: /docs/gdriveMenu.png?raw=true
     :alt: Gdrive Menu
 
-.. note::  The bookmarks you added to gDrive are still available when you are not connected but are read-only.
+.. note::  The bookmarks you added to Google Drive are still available when you are not connected but are read-only.
 
-Bookmark files are available in the *eclipse-bookmarks* folder in your google drive :
+Bookmark files are available in the *eclipse-bookmarks* folder in your Google Drive :
 
 .. image:: /docs/eclipse-bookmarks-gdrive.png?raw=true
     :alt: eclipse-bookmarks folder in your google drive
@@ -203,7 +203,7 @@ You can share your bookmark files from the google drive web app or directly from
 
 Import bookmarks file
 ~~~~~~~~~~~~~~~~~~~~~
-You can import bookmarks files that are already on your gDrive or that are shared with you. It is also possible to add a link when a bookmarks file is shared by link.
+You can import bookmarks files that are already on your Google Drive or that are shared with you. It is also possible to add a link when a bookmarks file is shared by link.
 
 .. image:: /docs/importBookmarksFile.png?raw=true
     :alt: import bookmarks file
