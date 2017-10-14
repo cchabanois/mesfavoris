@@ -248,6 +248,8 @@ Some icons by Yusuke Kamiyamane. Licensed under a Creative Commons Attribution 3
 
 Logo is adapted from https://commons.wikimedia.org/wiki/File:Spin_(Bookmark)1.jpg by sirooziya [GFDL (http://www.gnu.org/copyleft/fdl.html) or CC BY-SA 3.0 (http://creativecommons.org/licenses/by-sa/3.0)
 
+Google Drive is a trademark of Google Inc. Use of this trademark is subject to Google Permissions.
+
 .. |build| image:: https://travis-ci.org/cchabanois/mesfavoris.svg?branch=master
     :target: https://travis-ci.org/cchabanois/mesfavoris
     :alt: Build status of the master branch
