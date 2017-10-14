@@ -175,7 +175,7 @@ public class BookmarkMappingsStore implements IBookmarksListener, IBookmarkMappi
 				bookmarkMappingsPersister.save(new HashSet<>(mappings.values()), monitor);
 				return Status.OK_STATUS;
 			} catch (IOException e) {
-				return new Status(IStatus.ERROR, Activator.PLUGIN_ID, 0, "Could save GDrive bookmarks store", e);
+				return new Status(IStatus.ERROR, Activator.PLUGIN_ID, 0, "Could not save Google Drive bookmarks store", e);
 			} finally {
 				monitor.done();
 			}

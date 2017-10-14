@@ -63,7 +63,7 @@ public class AuthorizationCodeEclipseApp extends AuthorizationCodeInstalledApp {
 					.createBrowser(
 							IWorkbenchBrowserSupport.AS_EXTERNAL,
 							browserId,
-							"Authorizes the application to access user's protected data on GDrive",
+							"Authorizes the application to access user's protected data on Google Drive",
 							null);
 			browser.openURL(url.toURL());
 		} catch (PartInitException e) {

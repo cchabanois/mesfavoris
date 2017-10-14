@@ -7,7 +7,7 @@
             class="mesfavoris.gdrive.GDriveRemoteBookmarksStore"
             icon="icons/gdrive.png"
             id="mesfavoris.remoteStorage.gdrive"
-            label="GDrive"
+            label="Google Drive"
             overlayIcon="icons/gdrive_overlay.png">
       </storage>
    </extension>
@@ -29,7 +29,7 @@
          </command>
          <command
                commandId="mesfavoris.gdrive.commands.ViewInGDrive"
-               label="View In GDrive"
+               label="View In Google Drive"
                style="push">
          </command>
       </menuContribution>
@@ -37,7 +37,7 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            description="Import bookmarks from a Gdrive file"
+            description="Import bookmarks from a Google Drive file"
             id="mesfavoris.gdrive.commands.ImportBookmarks"
             name="Import bookmarks">
       </command>
@@ -47,9 +47,9 @@
             name="Share">
       </command>
       <command
-            description="View in GDrive"
+            description="View in Google Drive"
             id="mesfavoris.gdrive.commands.ViewInGDrive"
-            name="View in GDrive">
+            name="View in Google Drive">
       </command>
    </extension>
    <extension
@@ -132,7 +132,7 @@
             category="mesfavoris.bookmarksPreferencePage"
             class="mesfavoris.gdrive.preferences.GDriveBookmarksStorePreferencePage"
             id="mesfavoris.gdrive.preferencePage"
-            name="GDrive">
+            name="Google Drive">
       </page>
    </extension>
    <extension

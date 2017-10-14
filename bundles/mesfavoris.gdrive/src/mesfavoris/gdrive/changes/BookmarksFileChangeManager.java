@@ -112,7 +112,7 @@ public class BookmarksFileChangeManager {
 		private Long startChangeId;
 
 		public BookmarksFileChangeJob() {
-			super("Get changes from GDrive");
+			super("Get changes from Google Drive");
 			setSystem(true);
 		}
 

@@ -209,7 +209,7 @@ public class GDriveConnectionManager {
 
 	private Credential authorize(final IProgressMonitor monitor) throws IOException {
 		try {
-			monitor.beginTask("Authorizes the application to access user's protected data on GDrive", 100);
+			monitor.beginTask("Authorizes the application to access user's protected data on Google Drive", 100);
 			// load client secrets
 			// In this context, the client secret is obviously not treated as a
 			// secret.
