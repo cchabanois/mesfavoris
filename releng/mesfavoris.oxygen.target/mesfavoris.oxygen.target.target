@@ -20,7 +20,7 @@
 <repository location="http://download.eclipse.org/releases/oxygen/201706281000/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="com.perforce.team.feature.feature.group" version="2016.1.1409747"/>
+<unit id="com.perforce.team.feature.feature.group" version="2017.1.1583678"/>
 <repository location="http://www.perforce.com/downloads/http/p4-eclipse/install/4.6"/>
 </location>
 </locations>
