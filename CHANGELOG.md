@@ -1,5 +1,24 @@
 # Change Log
 
+## [release-1.8.0](https://github.com/cchabanois/mesfavoris/tree/release-1.8.0) (2017-10-30)
+[Full Changelog](https://github.com/cchabanois/mesfavoris/compare/release-1.7.0...release-1.8.0)
+
+**Implemented enhancements:**
+
+- Add a popup menu to import team project for concerned bookmarks  [\#49](https://github.com/cchabanois/mesfavoris/issues/49)
+- Add a bookmark properties provider for github urls [\#48](https://github.com/cchabanois/mesfavoris/issues/48)
+- Allow pasting after a given bookmark, not only on folders [\#43](https://github.com/cchabanois/mesfavoris/issues/43)
+
+**Closed issues:**
+
+- Make sure we respect guidelines for use of Google trademarks everywhere [\#51](https://github.com/cchabanois/mesfavoris/issues/51)
+- Use a different handler to delete bookmarks and remove shared bookmark folder [\#50](https://github.com/cchabanois/mesfavoris/issues/50)
+- Some favicons icons cannot be loaded [\#47](https://github.com/cchabanois/mesfavoris/issues/47)
+- Icon for url bookmarks should be stored as 16x16 icon [\#45](https://github.com/cchabanois/mesfavoris/issues/45)
+- A bookmark is not created when pasting an url from chrome [\#44](https://github.com/cchabanois/mesfavoris/issues/44)
+- Marker not correctly updated when file associated to bookmark changes [\#42](https://github.com/cchabanois/mesfavoris/issues/42)
+- ClassNotFoundException due to Automated Error Reporting not configured correctly [\#41](https://github.com/cchabanois/mesfavoris/issues/41)
+
 ## [release-1.7.0](https://github.com/cchabanois/mesfavoris/tree/release-1.7.0) (2017-08-28)
 [Full Changelog](https://github.com/cchabanois/mesfavoris/compare/release-1.6.0...release-1.7.0)
 
