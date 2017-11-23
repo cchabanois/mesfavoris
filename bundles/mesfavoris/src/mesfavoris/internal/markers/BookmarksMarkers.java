@@ -113,7 +113,7 @@ public class BookmarksMarkers implements IBookmarksMarkers {
 					createMarker(descriptor.getResource(), attributes, subMonitor.newChild(3));
 				}
 			}
-		} catch (CoreException e) {
+		} catch (Throwable e) {
 			StatusHelper.logWarn("Could not update marker for bookmark", e);
 		}
 	}
@@ -129,7 +129,7 @@ public class BookmarksMarkers implements IBookmarksMarkers {
 		attributes.put(BOOKMARK_ID, bookmarkAdded.getId().toString());
 		try {
 			createMarker(descriptor.getResource(), attributes, subMonitor.newChild(10));
-		} catch (CoreException e) {
+		} catch (Throwable e) {
 			StatusHelper.logWarn("Could not create marker for bookmark", e);
 		}
 	}
@@ -143,7 +143,7 @@ public class BookmarksMarkers implements IBookmarksMarkers {
 		}
 		try {
 			deleteMarker(marker, subMonitor.newChild(50));
-		} catch (CoreException e) {
+		} catch (Throwable e) {
 			StatusHelper.logWarn("Could not delete marker", e);
 		}
 	}

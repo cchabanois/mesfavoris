@@ -42,6 +42,9 @@ public class WorkspaceFileBookmarkLocationProvider extends AbstractFileBookmarkL
 	private Optional<IDocument> getDocument(IFile workspaceFile) {
 		try {
 			IPath filePath = workspaceFile.getLocation();
+			if (filePath == null) {
+				return Optional.empty();
+			}
 			return Optional.of(DocumentUtils.getDocument(filePath));
 		} catch (CoreException e) {
 			StatusHelper.logWarn("Could not get document", e);
