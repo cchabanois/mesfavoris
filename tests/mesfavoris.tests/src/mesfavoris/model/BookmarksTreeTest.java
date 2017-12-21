@@ -115,6 +115,18 @@ public class BookmarksTreeTest {
 	}
 
 	@Test
+	public void testMoveBookmarksToSamePlace() {
+		// Given
+
+		// When
+		BookmarksTree newBookmarksTree = bookmarksTree.move(Lists.newArrayList(bookmark1.getId(), bookmark2.getId(), bookmark3.getId()),
+				bookmarkFolder1.getId());		
+		
+		// Then
+		assertSame(bookmarksTree, newBookmarksTree);
+	}
+	
+	@Test
 	public void testMoveBookmarksAfter() {
 		// Given
 
@@ -155,6 +167,18 @@ public class BookmarksTreeTest {
 	}
 
 	@Test
+	public void testMoveBookmarksAfterToSamePlace() {
+		// Given
+
+		// When
+		BookmarksTree newBookmarksTree = bookmarksTree.moveAfter(Lists.newArrayList(bookmark2.getId(), bookmark3.getId()),
+				bookmarkFolder1.getId(), bookmark1.getId());
+		
+		// Then
+		assertSame(bookmarksTree, newBookmarksTree);
+	}
+	
+	@Test
 	public void testMoveBookmarksBefore() {
 		// Given
 
@@ -168,6 +192,18 @@ public class BookmarksTreeTest {
 				bookmarksTree.getChildren(bookmarkFolder2.getId()));
 	}
 
+	@Test
+	public void testMoveBookmarksBeforeToSamePlace() {
+		// Given
+
+		// When
+		BookmarksTree newBookmarksTree = bookmarksTree.moveBefore(Lists.newArrayList(bookmark1.getId(), bookmark2.getId()),
+				bookmarkFolder1.getId(), bookmark3.getId());
+
+		// Then
+		assertSame(bookmarksTree, newBookmarksTree);
+	}	
+	
 	@Test
 	public void testMoveBookmarksBeforeNull() {
 		// Given

@@ -8,7 +8,7 @@ import org.javimmutable.collections.util.JImmutables;
 import mesfavoris.model.BookmarkId;
 
 /**
- * Persistent map bookmarId -> parent id
+ * Persistent map bookmarkId -> parent id
  * 
  * @author cchabanois
  *

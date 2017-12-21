@@ -289,6 +289,10 @@ public class BookmarksTree implements Iterable<Bookmark> {
 		}
 		newParentsMap = newParentsMap.setParent(bookmarkIds, newParentId);
 		newChildrenMap = newChildrenMap.add(newParentId, bookmarkIds);
+		if (childrenMap.getChildren(newParentId).equals(newChildrenMap.getChildren(newParentId))) {
+			// bookmarks moved to the same place
+			return this;
+		}
 		return createBookmarksTree(rootFolderId, bookmarksMap, newChildrenMap, newParentsMap);
 	}
 
@@ -324,11 +328,14 @@ public class BookmarksTree implements Iterable<Bookmark> {
 			checkNotBookmark(bookmarkId, existingBookmarkId);
 			checkNotRootFolder(bookmarkId);
 			BookmarkFolder oldParent = getParentBookmark(bookmarkId);
-			newParentsMap = newParentsMap.delete(bookmarkId);
 			newChildrenMap = newChildrenMap.delete(oldParent.getId(), Lists.newArrayList(bookmarkId));
 		}
 		newParentsMap = newParentsMap.setParent(bookmarkIds, newParentId);
 		newChildrenMap = newChildrenMap.addAfter(newParentId, bookmarkIds, existingBookmarkId);
+		if (childrenMap.getChildren(newParentId).equals(newChildrenMap.getChildren(newParentId))) {
+			// bookmarks moved to the same place
+			return this;
+		}
 		return createBookmarksTree(rootFolderId, bookmarksMap, newChildrenMap, newParentsMap);
 	}
 
@@ -351,6 +358,10 @@ public class BookmarksTree implements Iterable<Bookmark> {
 		}
 		newParentsMap = newParentsMap.setParent(bookmarkIds, newParentId);
 		newChildrenMap = newChildrenMap.addBefore(newParentId, bookmarkIds, existingBookmarkId);
+		if (childrenMap.getChildren(newParentId).equals(newChildrenMap.getChildren(newParentId))) {
+			// bookmarks moved to the same place
+			return this;
+		}
 		return createBookmarksTree(rootFolderId, bookmarksMap, newChildrenMap, newParentsMap);
 	}
 
