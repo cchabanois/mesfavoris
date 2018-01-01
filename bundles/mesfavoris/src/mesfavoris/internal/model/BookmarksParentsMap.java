@@ -56,4 +56,30 @@ public class BookmarksParentsMap {
 		return "BookmarksParentsMap [idToParent=" + idToParent + "]";
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((idToParent == null) ? 0 : idToParent.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BookmarksParentsMap other = (BookmarksParentsMap) obj;
+		if (idToParent == null) {
+			if (other.idToParent != null)
+				return false;
+		} else if (!idToParent.equals(other.idToParent))
+			return false;
+		return true;
+	}
+
+
 }

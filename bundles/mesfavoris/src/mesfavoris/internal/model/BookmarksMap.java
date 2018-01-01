@@ -82,4 +82,29 @@ public class BookmarksMap implements Iterable<Bookmark> {
 		return "BookmarksMap [idToBookmark=" + idToBookmark + "]";
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((idToBookmark == null) ? 0 : idToBookmark.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BookmarksMap other = (BookmarksMap) obj;
+		if (idToBookmark == null) {
+			if (other.idToBookmark != null)
+				return false;
+		} else if (!idToBookmark.equals(other.idToBookmark))
+			return false;
+		return true;
+	}
+
 }

@@ -129,4 +129,29 @@ public class BookmarksChildrenMap {
 		return "BookmarksChildrenMap [idToChildren=" + idToChildren + "]";
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((idToChildren == null) ? 0 : idToChildren.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BookmarksChildrenMap other = (BookmarksChildrenMap) obj;
+		if (idToChildren == null) {
+			if (other.idToChildren != null)
+				return false;
+		} else if (!idToChildren.equals(other.idToChildren))
+			return false;
+		return true;
+	}
+
 }
