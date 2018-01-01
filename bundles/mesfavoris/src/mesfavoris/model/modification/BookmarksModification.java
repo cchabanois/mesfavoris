@@ -3,8 +3,8 @@ package mesfavoris.model.modification;
 import mesfavoris.model.BookmarksTree;
 
 public abstract class BookmarksModification {
-	private final BookmarksTree sourceTree;
-	private final BookmarksTree targetTree;
+	protected final BookmarksTree sourceTree;
+	protected final BookmarksTree targetTree;
 
 	public BookmarksModification(BookmarksTree sourceTree,
 			BookmarksTree targetTree) {
