@@ -1,5 +1,6 @@
 package mesfavoris.internal.model.optimize;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,19 +14,26 @@ import mesfavoris.model.modification.BookmarksAddedModification;
 import mesfavoris.model.modification.BookmarksModification;
 import mesfavoris.model.modification.BookmarksMovedModification;
 
+/**
+ * Optimize bookmarks modifications (removing / merging when possible)
+ * 
+ * @author cchabanois
+ *
+ */
 public class BookmarksModificationsOptimizer {
 	private final BookmarkComparer bookmarkComparer = new BookmarkComparer();
 	
 	public List<BookmarksModification> optimize(List<BookmarksModification> modifications) {
 		if (modifications.isEmpty()) {
-			return modifications;
+			return new ArrayList<BookmarksModification>(modifications);
 		}
 		BookmarksTree sourceTree = modifications.get(0).getSourceTree();
 		BookmarksTree targetTree = modifications.get(modifications.size() - 1).getTargetTree();
+		// for now we only check if tree has been modified
 		if (isSameTree(sourceTree, targetTree, modifications)) {
 			return Collections.emptyList();
 		} else {
-			return modifications;
+			return new ArrayList<BookmarksModification>(modifications);
 		}
 	}
 
