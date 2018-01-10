@@ -91,6 +91,7 @@ public class BookmarkDatabase {
 				// tree has been modified ...
 				throw new OptimisticLockException();
 			}
+			bookmarksTreeModifier.optimize();
 			this.bookmarksTree = bookmarksTreeModifier.getCurrentTree();
 			modifications = bookmarksTreeModifier.getModifications();
 			afterCommit.accept(this.bookmarksTree);

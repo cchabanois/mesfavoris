@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import mesfavoris.internal.model.optimize.BookmarksModificationsOptimizer;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
@@ -13,7 +14,8 @@ public class BookmarksTreeModifier implements IBookmarksTreeModifier {
 	private final BookmarksTree originalTree;
 	private BookmarksTree currentTree;
 	private final List<BookmarksModification> modifications = new ArrayList<BookmarksModification>();
-
+	private final BookmarksModificationsOptimizer bookmarksModificationsOptimizer = new BookmarksModificationsOptimizer();
+	
 	public BookmarksTreeModifier(BookmarksTree bookmarksTree) {
 		this.originalTree = bookmarksTree;
 		this.currentTree = bookmarksTree;
@@ -114,6 +116,16 @@ public class BookmarksTreeModifier implements IBookmarksTreeModifier {
 		currentTree = currentTree.setProperties(bookmarkId, properties);
 		if (currentTree != sourceTree) {
 			modifications.add(new BookmarkPropertiesModification(sourceTree, currentTree, bookmarkId));
+		}
+	}
+	
+	public void optimize() {
+		this.modifications.clear();
+		this.modifications.addAll(bookmarksModificationsOptimizer.optimize(modifications));
+		if (modifications.size() > 0) {
+			currentTree = modifications.get(modifications.size()-1).getTargetTree();
+		} else {
+			currentTree = originalTree;
 		}
 	}
 	

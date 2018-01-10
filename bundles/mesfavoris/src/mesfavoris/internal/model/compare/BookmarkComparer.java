@@ -63,6 +63,10 @@ public class BookmarkComparer {
 			return modifiedProperties;
 		}
 		
+		public boolean isEmpty() {
+			return addedProperties.isEmpty() && deletedProperties.isEmpty() && getModifiedProperties().isEmpty();
+		}
+		
 	}
 
 }

@@ -29,16 +29,16 @@ import mesfavoris.model.modification.IBookmarksTreeModifier;
  */
 public class BookmarksTreeMerger {
 	private final BookmarksTree sourceTree;
-
+	
 	public BookmarksTreeMerger(BookmarksTree sourceTree) {
 		this.sourceTree = sourceTree;
 	}
 
 	public void merge(IBookmarksTreeModifier bookmarksTreeModifier) {
 		// ordering is important
-		handleBookmarksMovedToSameFolder(bookmarksTreeModifier);
 		handleNewBookmarks(bookmarksTreeModifier);
 		handleBookmarksMovedToOtherFolder(bookmarksTreeModifier);
+		handleBookmarksMovedToSameFolder(bookmarksTreeModifier);
 		handleDeletedOrUpdatedBookmarks(bookmarksTreeModifier);
 	}
 
@@ -101,12 +101,13 @@ public class BookmarksTreeMerger {
 
 	private void handleBookmarksMovedToOtherFolder(IBookmarksTreeModifier bookmarksTreeModifier) {
 		BookmarkId folderId = sourceTree.getRootFolder().getId();
-		BookmarksTreeIterable postOrderTargetBookmarksTreeIterable = new BookmarksTreeIterable(
-				bookmarksTreeModifier.getCurrentTree(), folderId, Algorithm.POST_ORDER);
-		for (Bookmark targetBookmark : postOrderTargetBookmarksTreeIterable) {
-			BookmarkId bookmarkId = targetBookmark.getId();
-			Bookmark sourceBookmark = getSourceBookmark(bookmarkId);
-			if (sourceBookmark != null) {
+		// it's better to iterate over the sourceTree to minimize the changes
+		BookmarksTreeIterable preOrderSourceBookmarksTreeIterable = new BookmarksTreeIterable(
+				sourceTree, folderId, Algorithm.PRE_ORDER);
+		for (Bookmark sourceBookmark : preOrderSourceBookmarksTreeIterable) {
+			BookmarkId bookmarkId = sourceBookmark.getId();
+			Bookmark targetBookmark = bookmarksTreeModifier.getCurrentTree().getBookmark(bookmarkId);
+			if (targetBookmark != null) {
 				BookmarkFolder targetParent = bookmarksTreeModifier.getCurrentTree().getParentBookmark(bookmarkId);
 				BookmarkFolder sourceParent = sourceTree.getParentBookmark(bookmarkId);
 				if (sourceParent != null && !sourceParent.getId().equals(targetParent.getId())) {
