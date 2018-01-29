@@ -15,7 +15,7 @@ import mesfavoris.gdrive.mappings.IBookmarkMappings;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
-import mesfavoris.viewers.BookmarkFolderLabelProvider;
+import mesfavoris.ui.viewers.BookmarkFolderLabelProvider;
 
 public class GDriveBookmarkFolderLabelProvider extends BookmarkFolderLabelProvider {
 	private final IBookmarkMappings bookmarkMappings;

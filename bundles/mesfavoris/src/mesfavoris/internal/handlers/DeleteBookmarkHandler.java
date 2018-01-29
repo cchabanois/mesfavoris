@@ -30,7 +30,7 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
-import mesfavoris.viewers.BookmarksTableLabelProvider;
+import mesfavoris.ui.viewers.BookmarksTableLabelProvider;
 
 public class DeleteBookmarkHandler extends AbstractBookmarkHandler {
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;

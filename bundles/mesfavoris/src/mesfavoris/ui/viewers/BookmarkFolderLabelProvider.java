@@ -1,4 +1,4 @@
-package mesfavoris.viewers;
+package mesfavoris.ui.viewers;
 
 import java.util.Optional;
 

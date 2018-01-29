@@ -31,9 +31,9 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
+import mesfavoris.ui.viewers.BookmarksTableLabelProvider;
 import mesfavoris.remote.RemoteBookmarkFolder;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
-import mesfavoris.viewers.BookmarksTableLabelProvider;
 
 public class DeleteSharedBookmarkFolderHandler extends AbstractBookmarkHandler {
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;

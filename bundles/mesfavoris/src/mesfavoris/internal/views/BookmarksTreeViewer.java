@@ -32,7 +32,7 @@ import mesfavoris.persistence.IBookmarksDirtyStateTracker;
 import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.topics.BookmarksEvents;
-import mesfavoris.viewers.BookmarksLabelProvider;
+import mesfavoris.ui.viewers.BookmarksLabelProvider;
 
 public class BookmarksTreeViewer extends TreeViewer {
 	private final IEventBroker eventBroker;

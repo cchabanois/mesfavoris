@@ -1,16 +1,21 @@
 package mesfavoris.url.internal.handlers;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import mesfavoris.handlers.AbstractBookmarkHandler;
 import mesfavoris.model.Bookmark;
 import mesfavoris.url.UrlBookmarkProperties;
+import mesfavoris.url.internal.StatusHelper;
 
 public class CopyBookmarkUrlHandler extends AbstractBookmarkHandler {
 
@@ -28,10 +33,22 @@ public class CopyBookmarkUrlHandler extends AbstractBookmarkHandler {
 			Transfer[] transfers = new Transfer[] { textTransfer };
 			Object[] data = new Object[] { url };
 			clipboard.setContents(data, transfers);
+			displayNotification(url);
 		} finally {
 			clipboard.dispose();
 		}
 		return null;
+	}
+
+	private void displayNotification(String url) {
+		Display.getDefault().asyncExec(() -> {
+			try {
+				UrlCopiedNotificationPopup popup = new UrlCopiedNotificationPopup(Display.getDefault(), new URL(url));
+				popup.open();
+			} catch (MalformedURLException e) {
+				StatusHelper.logError("Cannot display notification", e);
+			}
+		});
 	}
 
 	private String getBookmarkUrl(IStructuredSelection selection) {

@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -301,6 +302,12 @@ public class BookmarksPlugin extends AbstractUIPlugin {
 		return pluginBookmarkTypes;
 	}
 
+	@Override
+	protected void initializeImageRegistry(ImageRegistry registry) {
+		registry.put(IUIConstants.IMG_BOOKMARKS, getImageDescriptor(IUIConstants.IMG_BOOKMARKS));
+		registry.put(IUIConstants.IMG_BOOKMARK, getImageDescriptor(IUIConstants.IMG_BOOKMARK));
+	}
+	
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in
 	 * relative path
