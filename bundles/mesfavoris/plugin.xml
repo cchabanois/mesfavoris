@@ -853,7 +853,7 @@
                priority="0">
          </locationProvider>
          <labelProvider
-               class="mesfavoris.viewers.BookmarkFolderLabelProvider"
+               class="mesfavoris.ui.viewers.BookmarkFolderLabelProvider"
                priority="10">
          </labelProvider>
          <properties>
