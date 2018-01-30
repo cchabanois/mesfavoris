@@ -2,6 +2,7 @@ package mesfavoris.internal.actions;
 
 import java.util.Optional;
 
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
@@ -80,11 +81,12 @@ public class SetNumberForBookmarkMenu extends ContributionItem implements IWorkb
 			return null;
 		}
 		IStructuredSelection selection = (IStructuredSelection) selectionService.getSelection();
-		Object first = selection.getFirstElement();
-		if (!(first instanceof Bookmark)) {
+		Bookmark bookmark = Adapters.adapt(selection.getFirstElement(), Bookmark.class);
+		
+		if (bookmark == null) {
 			return null;
 		}
-		return ((Bookmark) first).getId();
+		return bookmark.getId();
 	}
 
 	private void createMenuItem(Menu menu, BookmarkId selectedBookmarkId, BookmarkNumber bookmarkNumber) {

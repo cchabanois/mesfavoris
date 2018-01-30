@@ -1,5 +1,7 @@
 package mesfavoris.internal.numberedbookmarks;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -23,9 +25,12 @@ public class NumberedBookmarks {
 			if (!bookmarkNumber.isPresent()) {
 				return;
 			}
+			// null if number removed
 			String newValue = (String) event.getNewValue();
-			eventBroker.post(BookmarksEvents.TOPIC_NUMBERED_BOOKMARKS_CHANGED,
-					ImmutableMap.of("bookmarkId", newValue, "bookmarkNumber", bookmarkNumber.get().toString()));
+			Map<String, String> map = new HashMap<>();
+			map.put("bookmarkId", newValue);
+			map.put("bookmarkNumber", bookmarkNumber.get().toString());
+			eventBroker.post(BookmarksEvents.TOPIC_NUMBERED_BOOKMARKS_CHANGED, map);
 		};
 	}
 
