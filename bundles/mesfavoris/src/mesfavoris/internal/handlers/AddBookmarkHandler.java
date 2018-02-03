@@ -12,9 +12,7 @@ public class AddBookmarkHandler extends AbstractAddBookmarkHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		BookmarkPartOperationContext operationContext = getOperationContext(event);
-		if (operationContext == null) {
-			return null;
-		}
+
 		BookmarkId bookmarkId = addBookmark(operationContext);
 		IWorkbenchPage page = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage();
 		if (page != null) {

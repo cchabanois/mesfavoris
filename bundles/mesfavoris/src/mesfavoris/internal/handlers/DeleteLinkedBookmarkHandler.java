@@ -16,9 +16,7 @@ public class DeleteLinkedBookmarkHandler extends AbstractBookmarkPartOperationHa
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		BookmarkPartOperationContext operationContext = getOperationContext(event);
-		if (operationContext == null) {
-			return null;
-		}
+
 		List<Bookmark> linkedBookmarks = bookmarksService.getLinkedBookmarks(operationContext.part, operationContext.selection);
 		if (linkedBookmarks.isEmpty()) {
 			return null;

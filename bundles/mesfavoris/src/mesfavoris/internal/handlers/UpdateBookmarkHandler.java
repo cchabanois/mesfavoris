@@ -22,9 +22,7 @@ public class UpdateBookmarkHandler extends AbstractBookmarkPartOperationHandler 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		BookmarkPartOperationContext operationContext = getOperationContext(event);
-		if (operationContext == null) {
-			return null;
-		}
+
 		IWorkbenchPage page = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage();
 		if (page == null) {
 			return null;

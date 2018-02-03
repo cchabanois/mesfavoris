@@ -10,4 +10,5 @@ public interface IUIConstants {
 	public String IMG_BOOKMARKS = "icons/bookmarks-16.png";
 	public String IMG_COLLAPSEALL = "icons/elcl16/collapseall.gif";
 	public String IMG_REFRESH = "icons/refresh.gif";
+	public String IMG_SNIPPET = "icons/snippet.png";
 }

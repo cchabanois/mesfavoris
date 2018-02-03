@@ -141,6 +141,13 @@
             id="mesfavoris.command.importTeamProject"
             name="Import project">
       </command>
+      <command
+            categoryId="mesfavoris.category"
+            defaultHandler="mesfavoris.internal.handlers.PasteAsSnippetHandler"
+            description="Paste As Snippet"
+            id="mesfavoris.command.pasteAsSnippet"
+            name="Paste As Snippet">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -386,6 +393,12 @@
           value="ZERO">
     </parameter>
  </key>
+  <key
+        commandId="mesfavoris.command.pasteAsSnippet"
+        contextId="org.eclipse.ui.contexts.window"
+        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        sequence="M1+B V">
+  </key>
    </extension>
    <extension
          point="org.eclipse.core.expressions.definitions">
@@ -462,6 +475,14 @@
                commandId="org.eclipse.ui.edit.cut"
                style="push">
          </command>
+         <menu
+               label="Paste As">
+            <command
+                  commandId="mesfavoris.command.pasteAsSnippet"
+                  label="Paste As Snippet"
+                  style="push">
+            </command>
+         </menu>
          <separator
                name="mesfavoris.separator2"
                visible="true">
@@ -558,6 +579,10 @@
          </command>
          <command
                commandId="mesfavoris.command.deleteLinkedFavori"
+               style="push">
+         </command>
+         <command
+               commandId="mesfavoris.command.pasteAsSnippet"
                style="push">
          </command>
       </menuContribution>
@@ -905,6 +930,33 @@
          </locationProvider>
          <labelProvider
                class="mesfavoris.internal.shortcuts.ShortcutBookmarkLabelProvider"
+               priority="10">
+         </labelProvider>
+      </bookmarkType>
+      <bookmarkType
+            name="snippet">
+         <properties>
+            <property
+                  name="snippet.content"
+                  obsolescenceSeverity="WARNING"
+                  type="string"
+                  updatable="false">
+            </property>
+         </properties>
+         <gotoBookmark
+               class="mesfavoris.internal.snippets.GotoSnippetBookmark"
+               priority="10">
+         </gotoBookmark>
+         <locationProvider
+               class="mesfavoris.internal.snippets.SnippetBookmarkLocationProvider"
+               priority="10">
+         </locationProvider>
+         <propertiesProvider
+               class="mesfavoris.internal.snippets.SnippetBookmarkPropertiesProvider"
+               priority="10">
+         </propertiesProvider>
+         <labelProvider
+               class="mesfavoris.internal.snippets.SnippetBookmarkLabelProvider"
                priority="10">
          </labelProvider>
       </bookmarkType>

@@ -14,9 +14,7 @@ public class AddNumberedBookmarkHandler extends AbstractAddBookmarkHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		BookmarkPartOperationContext operationContext = getOperationContext(event);
-		if (operationContext == null) {
-			return null;
-		}
+
 		BookmarkNumber bookmarkNumber = getBookmarkNumber(event);
 		BookmarkId bookmarkId = addBookmark(operationContext);
 		bookmarksService.addNumberedBookmark(bookmarkId, bookmarkNumber);
