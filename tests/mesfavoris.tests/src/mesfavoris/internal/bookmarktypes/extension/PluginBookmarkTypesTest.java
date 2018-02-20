@@ -10,8 +10,7 @@ import org.junit.Test;
 import mesfavoris.bookmarktype.BookmarkPropertyDescriptor;
 import mesfavoris.bookmarktype.BookmarkPropertyDescriptor.BookmarkPropertyType;
 import mesfavoris.bookmarktype.IGotoBookmark;
-import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkType;
-import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkTypes;
+import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkType.PrioritizedElement;
 import mesfavoris.internal.markers.GotoFileMarkerBookmark;
 import mesfavoris.model.Bookmark;
 
@@ -31,12 +30,11 @@ public class PluginBookmarkTypesTest {
 		// Then
 		assertNotNull(bookmarkType);
 		assertEquals("default", bookmarkType.getName());
-		assertEquals(0,
-				bookmarkType.getPriority(getGotoBookmark(bookmarkType, GotoFileMarkerBookmark.class)));
+		assertEquals(0, getPrioritizedGotoBookmark(bookmarkType, GotoFileMarkerBookmark.class).getPriority());
 		BookmarkPropertyDescriptor propertyDescriptor = bookmarkType.getPropertyDescriptor(Bookmark.PROPERTY_NAME);
 		assertEquals(BookmarkPropertyType.STRING, propertyDescriptor.getType());
 		assertFalse(propertyDescriptor.isUpdatable());
-		
+
 	}
 
 	@Test
@@ -50,9 +48,10 @@ public class PluginBookmarkTypesTest {
 		assertFalse(propertyDescriptor.isUpdatable());
 	}
 
-	private IGotoBookmark getGotoBookmark(PluginBookmarkType bookmarkType, Class<? extends IGotoBookmark> type) {
-		for (IGotoBookmark gotoBookmark : bookmarkType.getGotoBookmarks()) {
-			if (type.isInstance(gotoBookmark)) {
+	private PrioritizedElement<IGotoBookmark> getPrioritizedGotoBookmark(PluginBookmarkType bookmarkType,
+			Class<? extends IGotoBookmark> type) {
+		for (PrioritizedElement<IGotoBookmark> gotoBookmark : bookmarkType.getGotoBookmarks()) {
+			if (type.isInstance(gotoBookmark.getElement())) {
 				return gotoBookmark;
 			}
 		}
