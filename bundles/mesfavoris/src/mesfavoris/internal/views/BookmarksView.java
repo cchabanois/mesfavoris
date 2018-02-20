@@ -25,8 +25,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ISelection;
@@ -58,10 +56,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.forms.HyperlinkSettings;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.IShowInSource;
@@ -89,7 +85,7 @@ import mesfavoris.internal.numberedbookmarks.NumberedBookmarksVirtualFolder;
 import mesfavoris.internal.problems.extension.BookmarkProblemDescriptors;
 import mesfavoris.internal.problems.ui.BookmarkProblemsTooltip;
 import mesfavoris.internal.recent.RecentBookmarksVirtualFolder;
-import mesfavoris.internal.views.comment.BookmarkCommentArea;
+import mesfavoris.internal.views.details.BookmarkDetailsPart;
 import mesfavoris.internal.visited.LatestVisitedBookmarksVirtualFolder;
 import mesfavoris.internal.visited.MostVisitedBookmarksVirtualFolder;
 import mesfavoris.model.Bookmark;
@@ -107,6 +103,12 @@ import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.topics.BookmarksEvents;
 
+/**
+ * View to display all bookmarks
+ * 
+ * @author cchabanois
+ *
+ */
 public class BookmarksView extends ViewPart {
 	private static final String COMMAND_ID_GOTO_FAVORI = "mesfavoris.command.gotoFavori";
 	private static final String COMMAND_ID_IMPORT_TEAM_PROJECT = "mesfavoris.command.importTeamProject";
@@ -121,22 +123,20 @@ public class BookmarksView extends ViewPart {
 	private final BookmarkProblemDescriptors bookmarkProblemDescriptors;
 	private final EventHandler bookmarkProblemsEventHandler;
 	private BookmarksTreeViewer bookmarksTreeViewer;
-	private BookmarkCommentArea bookmarkCommentViewer;
 	private DrillDownAdapter drillDownAdapter;
 	private Action refreshAction;
 	private Action collapseAllAction;
 	private ToggleLinkAction toggleLinkAction;
-	private FormToolkit toolkit;
+	private FormToolkit formToolkit;
 	private Form form;
 	private IMemento memento;
 	private PreviousActivePartListener previousActivePartListener = new PreviousActivePartListener();
-	private Composite commentsComposite;
-	private Section commentsSection;
 	private BookmarkProblemsTooltip bookmarkProblemsTooltip;
 	private Image icon;
 	private PropertySheetPage propertyPage;
 	private final IBookmarksListener bookmarksListener = (modifications) -> refreshPropertyPage();
 	private final ProxySelectionProvider proxySelectionProvider = new ProxySelectionProvider();
+	private final BookmarkDetailsPart bookmarkDetailsPart;
 
 	public BookmarksView() {
 		this.bookmarkDatabase = BookmarksPlugin.getDefault().getBookmarkDatabase();
@@ -150,24 +150,27 @@ public class BookmarksView extends ViewPart {
 			updateFormBookmarkProblems(bookmarksTreeViewer.getSelectedBookmark());
 			refreshPropertyPage();
 		};
+		this.bookmarkDetailsPart = new BookmarkDetailsPart(
+				BookmarksPlugin.getDefault().getPluginBookmarkTypes().getBookmarkDetailParts());
 	}
 
 	public void createPartControl(Composite parent) {
 		GridLayoutFactory.fillDefaults().applyTo(parent);
-		toolkit = new FormToolkit(parent.getDisplay());
-		toolkit.getHyperlinkGroup().setHyperlinkUnderlineMode(HyperlinkSettings.UNDERLINE_HOVER);
-		form = toolkit.createForm(parent);
+		formToolkit = new FormToolkit(parent.getDisplay());
+		formToolkit.getHyperlinkGroup().setHyperlinkUnderlineMode(HyperlinkSettings.UNDERLINE_HOVER);
+		form = formToolkit.createForm(parent);
 		icon = BookmarksPlugin.getImageDescriptor(IUIConstants.IMG_BOOKMARKS).createImage();
 		form.setImage(icon);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(form);
 		form.setText("Mes Favoris");
-		toolkit.decorateFormHeading(form);
+		formToolkit.decorateFormHeading(form);
 		GridLayoutFactory.swtDefaults().applyTo(form.getBody());
 		SashForm sashForm = new SashForm(form.getBody(), SWT.VERTICAL);
-		toolkit.adapt(sashForm, true, true);
+		formToolkit.adapt(sashForm, true, true);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(sashForm);
 		createTreeControl(sashForm);
-		createCommentsSection(sashForm);
+		bookmarkDetailsPart.initialize(this);
+		bookmarkDetailsPart.createControl(sashForm);
 		makeActions();
 		hookContextMenu();
 		contributeToActionBars();
@@ -177,36 +180,6 @@ public class BookmarksView extends ViewPart {
 		restoreState(memento);
 		bookmarkDatabase.addListener(bookmarksListener);
 		eventBroker.subscribe(BookmarksEvents.TOPIC_BOOKMARK_PROBLEMS_CHANGED, bookmarkProblemsEventHandler);
-	}
-
-	private void createCommentsSection(Composite parent) {
-		commentsSection = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR);
-		commentsSection.setText("Comments");
-		commentsSection.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
-
-		commentsComposite = toolkit.createComposite(commentsSection);
-		toolkit.paintBordersFor(commentsComposite);
-		commentsSection.setClient(commentsComposite);
-		GridLayoutFactory.fillDefaults().extendedMargins(2, 2, 2, 2).applyTo(commentsComposite);
-		bookmarkCommentViewer = new BookmarkCommentArea(commentsComposite,
-				SWT.MULTI | SWT.V_SCROLL | SWT.WRAP | toolkit.getBorderStyle(), bookmarkDatabase);
-		bookmarkCommentViewer.getTextWidget().setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(bookmarkCommentViewer);
-		addBulbDecorator(bookmarkCommentViewer.getTextWidget(), "Content assist available");
-		bookmarkCommentViewer.setBookmark(null);
-		bookmarkCommentViewer.getSourceViewer().getControl().addFocusListener(new FocusListener() {
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				proxySelectionProvider.setCurrentSelectionProvider(bookmarksTreeViewer);
-
-			}
-
-			@Override
-			public void focusGained(FocusEvent e) {
-				proxySelectionProvider.setCurrentSelectionProvider(bookmarkCommentViewer.getSourceViewer());
-			}
-		});
 	}
 
 	private void updateFormToolbar(final Bookmark bookmark) {
@@ -233,7 +206,7 @@ public class BookmarksView extends ViewPart {
 						handlerService.executeCommand(COMMAND_ID_IMPORT_TEAM_PROJECT, null);
 					} catch (ExecutionException | NotDefinedException | NotEnabledException | NotHandledException e) {
 						StatusHelper.logError("Could not Import project", e);
-					}					
+					}
 				}
 			};
 			importProjectAction.setImageDescriptor(importTeamProject.get().getIcon());
@@ -268,25 +241,14 @@ public class BookmarksView extends ViewPart {
 		return status.isOK();
 	}
 
-	private void addBulbDecorator(final Control control, final String tooltip) {
-		ControlDecoration dec = new ControlDecoration(control, SWT.TOP | SWT.LEFT);
-
-		dec.setImage(FieldDecorationRegistry.getDefault()
-				.getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage());
-
-		dec.setShowOnlyOnFocus(true);
-		dec.setShowHover(true);
-
-		dec.setDescriptionText(tooltip);
-	}
-
 	@Override
 	public void dispose() {
 		getSite().getPage().removePartListener(previousActivePartListener);
 		bookmarkDatabase.removeListener(bookmarksListener);
 		eventBroker.unsubscribe(bookmarkProblemsEventHandler);
 		toggleLinkAction.dispose();
-		toolkit.dispose();
+		bookmarkDetailsPart.dispose();
+		formToolkit.dispose();
 		if (icon != null) {
 			icon.dispose();
 		}
@@ -330,8 +292,20 @@ public class BookmarksView extends ViewPart {
 			public void selectionChanged(SelectionChangedEvent event) {
 				final Bookmark bookmark = bookmarksTreeViewer.getSelectedBookmark();
 				updateFormToolbar(bookmark);
-				bookmarkCommentViewer.setBookmark(bookmark);
+				bookmarkDetailsPart.setBookmark(bookmark);
 				updateFormBookmarkProblems(bookmark);
+			}
+		});
+		bookmarksTreeViewer.getControl().addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				proxySelectionProvider.setCurrentSelectionProvider(bookmarkDetailsPart.getSelectionProvider());
+			}
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				proxySelectionProvider.setCurrentSelectionProvider(bookmarksTreeViewer);
 			}
 		});
 		hookDoubleClickAction();
@@ -441,7 +415,8 @@ public class BookmarksView extends ViewPart {
 			if (bookmark instanceof BookmarkFolder) {
 				bookmarksTreeViewer.setExpandedState(firstElement, !bookmarksTreeViewer.getExpandedState(firstElement));
 			} else {
-				// sometimes, selection and part in the command handler are not set to the boomarks view when we double-click on a bookmark
+				// sometimes, selection and part in the command handler are not set to the
+				// boomarks view when we double-click on a bookmark
 				getSite().getWorkbenchWindow().getActivePage().activate(this);
 				IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
 				try {
@@ -477,7 +452,7 @@ public class BookmarksView extends ViewPart {
 			// bug in form ? Without this line, background for the message is
 			// sometimes gray
 			control.setBackground(getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_TRANSPARENT));
-			bookmarkProblemsTooltip = new BookmarkProblemsTooltip(toolkit, control, ToolTip.NO_RECREATE,
+			bookmarkProblemsTooltip = new BookmarkProblemsTooltip(formToolkit, control, ToolTip.NO_RECREATE,
 					bookmarkProblems) {
 				public Point getLocation(Point tipSize, Event event) {
 					Rectangle bounds = control.getBounds();
@@ -505,6 +480,10 @@ public class BookmarksView extends ViewPart {
 				propertyPage.refresh();
 			}
 		});
+	}
+
+	public FormToolkit getFormToolkit() {
+		return formToolkit;
 	}
 
 	@Override

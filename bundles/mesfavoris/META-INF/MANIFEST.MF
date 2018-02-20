@@ -55,6 +55,7 @@ Export-Package: mesfavoris;
    org.eclipse.swt.widgets,
    org.eclipse.jface.viewers",
  mesfavoris.topics,
+ mesfavoris.ui.details,
  mesfavoris.ui.dialogs,
  mesfavoris.ui.viewers
 Require-Bundle: org.eclipse.ui;bundle-version="3.108.0",

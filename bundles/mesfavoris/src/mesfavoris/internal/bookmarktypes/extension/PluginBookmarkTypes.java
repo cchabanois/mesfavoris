@@ -23,6 +23,8 @@ import mesfavoris.bookmarktype.IBookmarkPropertyDescriptors;
 import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.bookmarktype.IImportTeamProject;
 import mesfavoris.internal.StatusHelper;
+import mesfavoris.internal.bookmarktypes.extension.PluginBookmarkType.PrioritizedElement;
+import mesfavoris.ui.details.IBookmarkDetailPart;
 
 public class PluginBookmarkTypes implements IBookmarkPropertyDescriptors {
 	private final static String EXTENSION_POINT = "mesfavoris.bookmarkTypes";
@@ -100,7 +102,7 @@ public class PluginBookmarkTypes implements IBookmarkPropertyDescriptors {
 
 	public List<IGotoBookmark> getGotoBookmarks() {
 		return getBookmarkTypes().stream().flatMap(bookmarkType -> bookmarkType.getGotoBookmarks().stream())
-				.sorted((obj1, obj2) -> getPriority(obj1) - getPriority(obj2)).collect(Collectors.toList());
+				.sorted((obj1, obj2) -> obj1.getPriority() - obj2.getPriority()).map(PrioritizedElement::getElement).collect(Collectors.toList());
 	}
 
 	/**
@@ -109,38 +111,32 @@ public class PluginBookmarkTypes implements IBookmarkPropertyDescriptors {
 	 */
 	public List<IBookmarkLabelProvider> getLabelProviders() {
 		return getBookmarkTypes().stream().flatMap(bookmarkType -> bookmarkType.getLabelProviders().stream())
-				.sorted((obj1, obj2) -> getPriority(obj1) - getPriority(obj2)).collect(Collectors.toList());
+				.sorted((obj1, obj2) -> obj1.getPriority() - obj2.getPriority()).map(PrioritizedElement::getElement).collect(Collectors.toList());
 	}
 
 	public List<IBookmarkPropertiesProvider> getPropertiesProviders() {
 		return getBookmarkTypes().stream().flatMap(bookmarkType -> bookmarkType.getPropertiesProviders().stream())
-				.sorted((obj1, obj2) -> getPriority(obj1) - getPriority(obj2)).collect(Collectors.toList());
+				.sorted((obj1, obj2) -> obj1.getPriority() - obj2.getPriority()).map(PrioritizedElement::getElement).collect(Collectors.toList());
 	}
 
 	public List<IBookmarkLocationProvider> getLocationsProviders() {
 		return getBookmarkTypes().stream().flatMap(bookmarkType -> bookmarkType.getLocationProviders().stream())
-				.sorted((obj1, obj2) -> getPriority(obj1) - getPriority(obj2)).collect(Collectors.toList());
+				.sorted((obj1, obj2) -> obj1.getPriority() - obj2.getPriority()).map(PrioritizedElement::getElement).collect(Collectors.toList());
 	}
 
 	public List<IBookmarkMarkerAttributesProvider> getMarkerAttributesProviders() {
 		return getBookmarkTypes().stream().flatMap(bookmarkType -> bookmarkType.getMarkerAttributesProviders().stream())
-				.sorted((obj1, obj2) -> getPriority(obj1) - getPriority(obj2)).collect(Collectors.toList());
+				.sorted((obj1, obj2) -> obj1.getPriority() - obj2.getPriority()).map(PrioritizedElement::getElement).collect(Collectors.toList());
 	}
 
 	public List<IImportTeamProject> getImportTeamProjects() {
 		return getBookmarkTypes().stream().flatMap(bookmarkType -> bookmarkType.getImportTeamProjects().stream())
-				.sorted((obj1, obj2) -> getPriority(obj1) - getPriority(obj2)).collect(Collectors.toList());
+				.sorted((obj1, obj2) -> obj1.getPriority() - obj2.getPriority()).map(PrioritizedElement::getElement).collect(Collectors.toList());
 	}
 
-	private int getPriority(Object object) {
-		int priority = Integer.MAX_VALUE;
-		for (PluginBookmarkType bookmarkType : getBookmarkTypes()) {
-			int newPriority = bookmarkType.getPriority(object);
-			if (newPriority < priority) {
-				priority = newPriority;
-			}
-		}
-		return priority;
+	public List<IBookmarkDetailPart> getBookmarkDetailParts() {
+		return getBookmarkTypes().stream().flatMap(bookmarkType -> bookmarkType.getBookmarkDetailParts().stream())
+				.sorted((obj1, obj2) -> obj1.getPriority() - obj2.getPriority()).map(PrioritizedElement::getElement).collect(Collectors.toList());
 	}
 
 }

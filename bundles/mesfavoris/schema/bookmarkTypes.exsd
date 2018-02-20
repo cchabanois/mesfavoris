@@ -189,6 +189,7 @@
             <element ref="locationProvider" minOccurs="0" maxOccurs="unbounded"/>
             <element ref="gotoBookmark" minOccurs="0" maxOccurs="unbounded"/>
             <element ref="importTeamProject" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="detailPart" minOccurs="0" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="name" type="string" use="required">
             <annotation>
@@ -287,6 +288,28 @@
          <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="property"/>
          </sequence>
+      </complexType>
+   </element>
+
+   <element name="detailPart">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":mesfavoris.ui.details.IBookmarkDetailPart"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="priority" type="string" use="default" value="10">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

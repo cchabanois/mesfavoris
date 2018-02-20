@@ -1,10 +1,10 @@
 package mesfavoris.internal.bookmarktypes.extension;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,18 +25,18 @@ import mesfavoris.bookmarktype.IGotoBookmark;
 import mesfavoris.bookmarktype.IImportTeamProject;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.StatusHelper;
+import mesfavoris.ui.details.IBookmarkDetailPart;
 
 public class PluginBookmarkType {
 	private final String name;
 	private final ImageDescriptor imageDescriptor;
 	private final IConfigurationElement bookmarkTypeConfigurationElement;
-	private final IdentityHashMap<Object, Integer> priorities = new IdentityHashMap<>();
-	private Set<IGotoBookmark> gotoBookmarks;
-	private Set<IBookmarkPropertiesProvider> propertiesProviders;
-	private Set<IBookmarkLabelProvider> labelProviders;
-	private Set<IBookmarkLocationProvider> locationProviders;
-	private Set<IBookmarkMarkerAttributesProvider> markerAttributesProviders;
-	private Set<IImportTeamProject> importTeamProjects;
+	private Collection<PrioritizedElement<IGotoBookmark>> gotoBookmarks;
+	private Collection<PrioritizedElement<IBookmarkPropertiesProvider>> propertiesProviders;
+	private Collection<PrioritizedElement<IBookmarkLabelProvider>> labelProviders;
+	private Collection<PrioritizedElement<IBookmarkLocationProvider>> locationProviders;
+	private Collection<PrioritizedElement<IBookmarkMarkerAttributesProvider>> markerAttributesProviders;
+	private Collection<PrioritizedElement<IImportTeamProject>> importTeamProjects;
 	private final Map<String, BookmarkPropertyDescriptor> properties = new HashMap<>();
 
 	public PluginBookmarkType(IConfigurationElement bookmarkTypeConfigurationElement) {
@@ -52,16 +52,15 @@ public class PluginBookmarkType {
 		loadAttributes(bookmarkTypeConfigurationElement);
 	}
 
-	private <T> Set<T> load(IConfigurationElement bookmarkTypeConfigurationElement, String elementName) {
-		Set<T> set = new HashSet<>();
+	private <T> Collection<PrioritizedElement<T>> load(IConfigurationElement bookmarkTypeConfigurationElement, String elementName) {
+		Set<PrioritizedElement<T>> set = new HashSet<>();
 		IConfigurationElement[] elements = bookmarkTypeConfigurationElement.getChildren(elementName);
 		for (IConfigurationElement configurationElement : elements) {
 			String className = configurationElement.getAttribute("class");
 			try {
 				T instance = (T) configurationElement.createExecutableExtension("class");
-				set.add(instance);
 				int priority = getPriority(configurationElement);
-				priorities.put(instance, priority);
+				set.add(new PrioritizedElement<T>(instance, priority));
 			} catch (CoreException e) {
 				StatusHelper.logWarn("Could not create bookmark type element " + className, e);
 			}
@@ -120,7 +119,7 @@ public class PluginBookmarkType {
 		}
 	}
 
-	public synchronized Set<IGotoBookmark> getGotoBookmarks() {
+	public synchronized Collection<PrioritizedElement<IGotoBookmark>> getGotoBookmarks() {
 		if (gotoBookmarks == null) {
 			gotoBookmarks = load(bookmarkTypeConfigurationElement, "gotoBookmark");
 		}
@@ -135,7 +134,7 @@ public class PluginBookmarkType {
 		return name;
 	}
 
-	public synchronized Set<IImportTeamProject> getImportTeamProjects() {
+	public synchronized Collection<PrioritizedElement<IImportTeamProject>> getImportTeamProjects() {
 		if (importTeamProjects == null) {
 			importTeamProjects = load(bookmarkTypeConfigurationElement, "importTeamProject");
 		}
@@ -147,41 +146,37 @@ public class PluginBookmarkType {
 	 * 
 	 * @return
 	 */
-	public synchronized Set<IBookmarkLabelProvider> getLabelProviders() {
+	public synchronized Collection<PrioritizedElement<IBookmarkLabelProvider>> getLabelProviders() {
 		if (labelProviders == null) {
 			labelProviders = load(bookmarkTypeConfigurationElement, "labelProvider");
 		}
 		return labelProviders;
 	}
 
-	public synchronized Set<IBookmarkLocationProvider> getLocationProviders() {
+	public synchronized Collection<PrioritizedElement<IBookmarkLocationProvider>> getLocationProviders() {
 		if (locationProviders == null) {
 			locationProviders = load(bookmarkTypeConfigurationElement, "locationProvider");
 		}
 		return locationProviders;
 	}
 
-	public synchronized Set<IBookmarkMarkerAttributesProvider> getMarkerAttributesProviders() {
+	public Collection<PrioritizedElement<IBookmarkDetailPart>> getBookmarkDetailParts() {
+		// we want a new instance each time
+		return load(bookmarkTypeConfigurationElement, "detailPart");
+	}
+	
+	public synchronized Collection<PrioritizedElement<IBookmarkMarkerAttributesProvider>> getMarkerAttributesProviders() {
 		if (markerAttributesProviders == null) {
 			markerAttributesProviders = load(bookmarkTypeConfigurationElement, "markerAttributesProvider");
 		}
 		return markerAttributesProviders;
 	}
 
-	public synchronized Set<IBookmarkPropertiesProvider> getPropertiesProviders() {
+	public synchronized Collection<PrioritizedElement<IBookmarkPropertiesProvider>> getPropertiesProviders() {
 		if (propertiesProviders == null) {
 			propertiesProviders = load(bookmarkTypeConfigurationElement, "propertiesProvider");
 		}
 		return propertiesProviders;
-	}
-
-	public int getPriority(Object object) {
-		Integer priority = priorities.get(object);
-		if (priority == null) {
-			return Integer.MAX_VALUE;
-		} else {
-			return priority;
-		}
 	}
 
 	public List<BookmarkPropertyDescriptor> getPropertyDescriptors() {
@@ -191,5 +186,24 @@ public class PluginBookmarkType {
 	public BookmarkPropertyDescriptor getPropertyDescriptor(String propertyName) {
 		return properties.get(propertyName);
 	}
-
+	                    
+	public static class PrioritizedElement<T> {
+		private final T element;
+		private final int priority;
+		
+		public PrioritizedElement(T element, int priority) {
+			this.element = element;
+			this.priority = priority;
+		}
+		
+		public T getElement() {
+			return element;
+		}
+		
+		public int getPriority() {
+			return priority;
+		}
+		
+	}
+	
 }

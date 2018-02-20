@@ -1,7 +1,7 @@
 package mesfavoris.internal.views.comment;
 
 import org.eclipse.jface.text.ITextListener;
-import org.eclipse.jface.text.TextEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Composite;
 
 import mesfavoris.BookmarksException;
@@ -20,22 +20,28 @@ public class BookmarkCommentArea extends SpellcheckableMessageArea {
 		getSourceViewer().addTextListener(getTextListener());
 	}
 
+	@Override
+	public void addFocusListener(FocusListener listener) {
+		getSourceViewer().getControl().addFocusListener(listener);
+	}
+	
+	@Override
+	public void removeFocusListener(FocusListener listener) {
+		getSourceViewer().getControl().removeFocusListener(listener);
+	}
+	
 	private ITextListener getTextListener() {
-		return new ITextListener() {
-
-			@Override
-			public void textChanged(final TextEvent event) {
-				if (bookmark == null || !getSourceViewer().isEditable()) {
-					return;
-				}
-				final String newComment = getDocument().get();
-				try {
-					SetBookmarkCommentOperation operation = new SetBookmarkCommentOperation(bookmarkDatabase);
-					operation.setComment(bookmark.getId(), newComment);
-				} catch (BookmarksException e) {
-					// never happen
-				}
+		return event->{
+			if (bookmark == null || !getSourceViewer().isEditable()) {
+				return;
 			}
+			final String newComment = getDocument().get();
+			try {
+				SetBookmarkCommentOperation operation = new SetBookmarkCommentOperation(bookmarkDatabase);
+				operation.setComment(bookmark.getId(), newComment);
+			} catch (BookmarksException e) {
+				// never happen
+			}			
 		};
 	}
 

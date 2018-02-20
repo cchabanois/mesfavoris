@@ -901,6 +901,10 @@
                   updatable="false">
             </property>
          </properties>
+         <detailPart
+               class="mesfavoris.internal.views.comment.CommentBookmarkDetailPart"
+               priority="0">
+         </detailPart>
       </bookmarkType>
       <bookmarkType
             name="bookmarkShortcut">
@@ -959,6 +963,10 @@
                class="mesfavoris.internal.snippets.SnippetBookmarkLabelProvider"
                priority="10">
          </labelProvider>
+         <detailPart
+               class="mesfavoris.internal.snippets.SnippetBookmarkDetailPart"
+               priority="10">
+         </detailPart>
       </bookmarkType>
    </extension>
    <extension
