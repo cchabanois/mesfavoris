@@ -36,6 +36,9 @@ Presentation
     :alt: YouTube presentation
     :target: https://youtu.be/sbpUu-ABFKc
 
+See also `Bookmark Your Code: a New Approach <https://dzone.com/articles/bookmark-your-code>`_
+
+
 ============
 Installation
 ============
