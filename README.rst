@@ -22,6 +22,7 @@ Features
 - share some of your bookmarks
 - bookmarks can resist changes in the files thanks to Bitap algorithm 
 - numbered bookmarks
+Check out what's new in the `latest releases <CHANGELOG.md>`_ !
 
 .. image:: /docs/screenshot.png?raw=true
     :align: center
