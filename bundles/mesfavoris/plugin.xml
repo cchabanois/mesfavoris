@@ -905,6 +905,10 @@
                class="mesfavoris.internal.views.comment.CommentBookmarkDetailPart"
                priority="0">
          </detailPart>
+         <detailPart
+               class="mesfavoris.internal.views.properties.PropertiesBookmarkDetailPart"
+               priority="1">
+         </detailPart>
       </bookmarkType>
       <bookmarkType
             name="bookmarkShortcut">
