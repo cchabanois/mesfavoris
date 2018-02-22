@@ -36,8 +36,6 @@ import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -45,6 +43,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
@@ -169,8 +168,7 @@ public class BookmarksView extends ViewPart {
 		formToolkit.adapt(sashForm, true, true);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(sashForm);
 		createTreeControl(sashForm);
-		bookmarkDetailsPart.initialize(this);
-		bookmarkDetailsPart.createControl(sashForm);
+		createBookmarkDetailPart(sashForm);
 		makeActions();
 		hookContextMenu();
 		contributeToActionBars();
@@ -180,6 +178,23 @@ public class BookmarksView extends ViewPart {
 		restoreState(memento);
 		bookmarkDatabase.addListener(bookmarksListener);
 		eventBroker.subscribe(BookmarksEvents.TOPIC_BOOKMARK_PROBLEMS_CHANGED, bookmarkProblemsEventHandler);
+	}
+
+	private void createBookmarkDetailPart(Composite parent) {
+		bookmarkDetailsPart.initialize(this);
+		bookmarkDetailsPart.createControl(parent);
+		Listener listener = event -> {
+			switch (event.type) {
+			case SWT.Activate :
+				proxySelectionProvider.setCurrentSelectionProvider(bookmarkDetailsPart.getSelectionProvider());
+				break;
+			case SWT.Deactivate :
+				proxySelectionProvider.setCurrentSelectionProvider(bookmarksTreeViewer);
+				break;
+			}
+		};
+		bookmarkDetailsPart.getControl().addListener(SWT.Activate, listener);
+		bookmarkDetailsPart.getControl().addListener(SWT.Deactivate, listener);
 	}
 
 	private void updateFormToolbar(final Bookmark bookmark) {
@@ -296,7 +311,7 @@ public class BookmarksView extends ViewPart {
 				updateFormBookmarkProblems(bookmark);
 			}
 		});
-		bookmarksTreeViewer.getControl().addFocusListener(new FocusListener() {
+/*		bookmarksTreeViewer.getControl().addFocusListener(new FocusListener() {
 
 			@Override
 			public void focusLost(FocusEvent e) {
@@ -307,7 +322,7 @@ public class BookmarksView extends ViewPart {
 			public void focusGained(FocusEvent e) {
 				proxySelectionProvider.setCurrentSelectionProvider(bookmarksTreeViewer);
 			}
-		});
+		}); */
 		hookDoubleClickAction();
 	}
 
