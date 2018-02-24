@@ -1,5 +1,6 @@
 package mesfavoris.internal.handlers;
 
+import static mesfavoris.tests.commons.bookmarks.MainBookmarkDatabaseHelper.deleteAllBookmarksExceptDefaultBookmarkFolder;
 import static mesfavoris.tests.commons.ui.SWTBotViewHelper.closeWelcomeView;
 
 import java.lang.reflect.InvocationTargetException;
@@ -36,7 +37,7 @@ public class AddBookmarkHandlerTest {
 
 	@After
 	public void tearDown() throws BookmarksException {
-		bookmarksViewDriver.deleteAllBookmarksExceptDefaultBookmarkFolder();
+		deleteAllBookmarksExceptDefaultBookmarkFolder();
 	}
 	
 	@Test

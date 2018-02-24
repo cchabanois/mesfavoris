@@ -3,6 +3,7 @@ package mesfavoris.internal.service.operations;
 import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmark;
 import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmarkFolder;
 import static mesfavoris.tests.commons.bookmarks.BookmarksTreeBuilder.bookmarksTree;
+import static mesfavoris.tests.commons.bookmarks.MainBookmarkDatabaseHelper.deleteAllBookmarksExceptDefaultBookmarkFolder;
 import static mesfavoris.tests.commons.ui.SWTBotViewHelper.closeWelcomeView;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
@@ -52,7 +53,7 @@ public class ShowInBookmarksViewOperationTest {
 
 	@After
 	public void tearDown() throws BookmarksException {
-		bookmarksViewDriver.deleteAllBookmarksExceptDefaultBookmarkFolder();
+		deleteAllBookmarksExceptDefaultBookmarkFolder();
 	}
 
 	@Test

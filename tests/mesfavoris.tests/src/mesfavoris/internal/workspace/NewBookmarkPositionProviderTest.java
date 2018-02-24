@@ -3,10 +3,12 @@ package mesfavoris.internal.workspace;
 import static mesfavoris.MesFavoris.DEFAULT_BOOKMARKFOLDER_ID;
 import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmark;
 import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmarkFolder;
+import static mesfavoris.tests.commons.bookmarks.MainBookmarkDatabaseHelper.addBookmark;
+import static mesfavoris.tests.commons.bookmarks.MainBookmarkDatabaseHelper.deleteAllBookmarksExceptDefaultBookmarkFolder;
+import static mesfavoris.tests.commons.bookmarks.MainBookmarkDatabaseHelper.deleteBookmark;
+import static mesfavoris.tests.commons.bookmarks.MainBookmarkDatabaseHelper.getBookmarksRootFolderId;
 import static mesfavoris.tests.commons.ui.SWTBotViewHelper.closeWelcomeView;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Arrays;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
@@ -23,8 +25,6 @@ import mesfavoris.internal.service.operations.utils.NewBookmarkPosition;
 import mesfavoris.internal.service.operations.utils.NewBookmarkPositionProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkFolder;
-import mesfavoris.model.BookmarkId;
-import mesfavoris.model.BookmarksTree;
 import mesfavoris.tests.commons.ui.BookmarksViewDriver;
 
 public class NewBookmarkPositionProviderTest {
@@ -43,7 +43,7 @@ public class NewBookmarkPositionProviderTest {
 
 	@After
 	public void tearDown() throws BookmarksException {
-		bookmarksViewDriver.deleteAllBookmarksExceptDefaultBookmarkFolder();
+		deleteAllBookmarksExceptDefaultBookmarkFolder();
 	}
 
 	@Test
@@ -109,23 +109,5 @@ public class NewBookmarkPositionProviderTest {
 		return UIThreadRunnable.syncExec(() -> PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage());
 	}
 
-	private void addBookmark(BookmarkId parentId, Bookmark... bookmark) throws BookmarksException {
-		MesFavoris.getBookmarkDatabase()
-				.modify(bookmarksTreeModifier -> bookmarksTreeModifier.addBookmarks(parentId, Arrays.asList(bookmark)));
-	}
-
-	private void deleteBookmark(BookmarkId bookmarkId) throws BookmarksException {
-		MesFavoris.getBookmarkDatabase()
-				.modify(bookmarksTreeModifier -> bookmarksTreeModifier.deleteBookmark(bookmarkId, true));
-
-	}
-
-	private BookmarkId getBookmarksRootFolderId() {
-		return getBookmarksTree().getRootFolder().getId();
-	}
-
-	private BookmarksTree getBookmarksTree() {
-		return MesFavoris.getBookmarkDatabase().getBookmarksTree();
-	}
 
 }

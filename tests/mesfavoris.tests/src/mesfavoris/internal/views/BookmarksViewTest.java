@@ -1,6 +1,7 @@
 package mesfavoris.internal.views;
 
 import static mesfavoris.tests.commons.bookmarks.BookmarkBuilder.bookmark;
+import static mesfavoris.tests.commons.bookmarks.MainBookmarkDatabaseHelper.deleteAllBookmarksExceptDefaultBookmarkFolder;
 import static mesfavoris.tests.commons.ui.SWTBotViewHelper.closeWelcomeView;
 import static mesfavoris.tests.commons.waits.Waiter.waitUntil;
 import static mesfavoris.texteditor.TextEditorBookmarkProperties.PROP_LINE_CONTENT;
@@ -61,7 +62,7 @@ public class BookmarksViewTest {
 
 	@After
 	public void tearDown() throws BookmarksException {
-		bookmarksViewDriver.deleteAllBookmarksExceptDefaultBookmarkFolder();
+		deleteAllBookmarksExceptDefaultBookmarkFolder();
 	}
 
 	@Test
