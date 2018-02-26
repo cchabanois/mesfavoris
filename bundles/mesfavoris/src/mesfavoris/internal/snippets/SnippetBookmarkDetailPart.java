@@ -1,5 +1,7 @@
 package mesfavoris.internal.snippets;
 
+import static mesfavoris.internal.snippets.SnippetBookmarkProperties.PROP_SNIPPET_CONTENT;
+
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.ITextListener;
@@ -9,16 +11,17 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.themes.ITheme;
 import org.eclipse.ui.themes.IThemeManager;
 
+import com.google.common.base.Objects;
+
 import mesfavoris.BookmarksException;
-import mesfavoris.internal.BookmarksPlugin;
-import mesfavoris.internal.views.BookmarksView;
+import mesfavoris.internal.views.details.AbstractBookmarkDetailPart;
 import mesfavoris.model.Bookmark;
-import mesfavoris.model.BookmarkDatabase;
-import mesfavoris.ui.details.IBookmarkDetailPart;
 
 /**
  * Create component to display bookmark snippet
@@ -26,15 +29,8 @@ import mesfavoris.ui.details.IBookmarkDetailPart;
  * @author cchabanois
  *
  */
-public class SnippetBookmarkDetailPart implements IBookmarkDetailPart {
-	private final BookmarkDatabase bookmarkDatabase;
-	private BookmarksView bookmarksView;
+public class SnippetBookmarkDetailPart extends AbstractBookmarkDetailPart {
 	private TextViewer textViewer;
-	private Bookmark bookmark;
-
-	public SnippetBookmarkDetailPart() {
-		this.bookmarkDatabase = BookmarksPlugin.getDefault().getBookmarkDatabase();
-	}
 
 	@Override
 	public String getTitle() {
@@ -42,13 +38,9 @@ public class SnippetBookmarkDetailPart implements IBookmarkDetailPart {
 	}
 
 	@Override
-	public void initialize(BookmarksView bookmarksView) {
-		this.bookmarksView = bookmarksView;
-	}
-
-	@Override
-	public void createControl(Composite parent) {
-		textViewer = new TextViewer(parent, SWT.V_SCROLL | SWT.WRAP | bookmarksView.getFormToolkit().getBorderStyle());
+	public void createControl(Composite parent, FormToolkit formToolkit) {
+		super.createControl(parent, formToolkit);
+		textViewer = new TextViewer(parent, SWT.V_SCROLL | SWT.WRAP | formToolkit.getBorderStyle());
 		textViewer.setDocument(new Document());
 		textViewer.getTextWidget().setFont(getFont());
 		textViewer.addTextListener(getTextListener());
@@ -70,9 +62,9 @@ public class SnippetBookmarkDetailPart implements IBookmarkDetailPart {
 			final String newSnippet = textViewer.getDocument().get();
 			try {
 				bookmarkDatabase.modify(bookmarksTreeModifier -> {
-					bookmarksTreeModifier.setPropertyValue(bookmark.getId(),
-							SnippetBookmarkProperties.PROP_SNIPPET_CONTENT, newSnippet);
+					bookmarksTreeModifier.setPropertyValue(bookmark.getId(), PROP_SNIPPET_CONTENT, newSnippet);
 				});
+				bookmark = bookmarkDatabase.getBookmarksTree().getBookmark(bookmark.getId());
 			} catch (BookmarksException e) {
 				// never happen
 			}
@@ -91,13 +83,13 @@ public class SnippetBookmarkDetailPart implements IBookmarkDetailPart {
 
 	@Override
 	public void setBookmark(Bookmark bookmark) {
-		this.bookmark = bookmark;
+		super.setBookmark(bookmark);
 		if (bookmark == null) {
 			textViewer.getDocument().set("");
 			textViewer.setEditable(false);
 			return;
 		}
-		String snippet = bookmark.getPropertyValue(SnippetBookmarkProperties.PROP_SNIPPET_CONTENT);
+		String snippet = bookmark.getPropertyValue(PROP_SNIPPET_CONTENT);
 		if (snippet == null) {
 			snippet = "";
 		}
@@ -108,13 +100,19 @@ public class SnippetBookmarkDetailPart implements IBookmarkDetailPart {
 
 	@Override
 	public boolean canHandle(Bookmark bookmark) {
-		String snippetContent = bookmark.getPropertyValue(SnippetBookmarkProperties.PROP_SNIPPET_CONTENT);
+		if (bookmark == null) {
+			return false;
+		}
+		String snippetContent = bookmark.getPropertyValue(PROP_SNIPPET_CONTENT);
 		return snippetContent != null;
 	}
 
 	@Override
-	public void dispose() {
-
+	protected void bookmarkModified(Bookmark oldBookmark, Bookmark newBookmark) {
+		if (!Objects.equal(oldBookmark.getPropertyValue(PROP_SNIPPET_CONTENT),
+				newBookmark.getPropertyValue(PROP_SNIPPET_CONTENT))) {
+			Display.getDefault().asyncExec(() -> setBookmark(newBookmark));
+		}
 	}
 
 }

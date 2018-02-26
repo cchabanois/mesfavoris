@@ -15,9 +15,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import mesfavoris.internal.views.BookmarksView;
+import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.views.ProxySelectionProvider;
 import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.ui.details.IBookmarkDetailPart;
 
 /**
@@ -27,28 +28,22 @@ import mesfavoris.ui.details.IBookmarkDetailPart;
  */
 public class BookmarkDetailsPart implements IBookmarkDetailPart {
 	private final List<IBookmarkDetailPart> bookmarkDetailParts;
-	private BookmarksView bookmarksView;
+	private final BookmarkDatabase bookmarkDatabase;
 	private CTabFolder tabFolder;
-	private FormToolkit formToolkit;
 	private final ProxySelectionProvider proxySelectionProvider = new ProxySelectionProvider();
 	private final IdentityHashMap<CTabItem, IBookmarkDetailPart> tabItem2BookmarkDetailPart = new IdentityHashMap<>();
 	
 	public BookmarkDetailsPart(List<IBookmarkDetailPart> bookmarkDetailParts) {
 		this.bookmarkDetailParts = bookmarkDetailParts;
+		this.bookmarkDatabase = BookmarksPlugin.getDefault().getBookmarkDatabase();
 	}
-
-	@Override
-	public void initialize(BookmarksView bookmarksView) {
-		this.bookmarksView = bookmarksView;
-		this.formToolkit = bookmarksView.getFormToolkit();
-	}	
 	
 	@Override
-	public void createControl(Composite parent) {
+	public void createControl(Composite parent, FormToolkit formToolkit) {
 		this.tabFolder = new CTabFolder(parent, SWT.FLAT|SWT.TOP);
 		formToolkit.adapt(tabFolder, true, true);	
 		for (IBookmarkDetailPart bookmarkDetailPart : bookmarkDetailParts) {
-			createControl(tabFolder, bookmarkDetailPart);
+			createControl(tabFolder, formToolkit, bookmarkDetailPart);
 		}
 	}
 
@@ -59,12 +54,11 @@ public class BookmarkDetailsPart implements IBookmarkDetailPart {
 		return item;
 	}
 	
-	private void createControl(CTabFolder parent, IBookmarkDetailPart bookmarkDetailPart) {
+	private void createControl(CTabFolder parent, FormToolkit formToolkit, IBookmarkDetailPart bookmarkDetailPart) {
 		Composite composite =  formToolkit.createComposite(parent);
 		GridLayoutFactory.fillDefaults().extendedMargins(3, 3, 3, 3).applyTo(composite);
 		
-		bookmarkDetailPart.initialize(bookmarksView);
-		bookmarkDetailPart.createControl(composite);
+		bookmarkDetailPart.createControl(composite, formToolkit);
 		Control control = bookmarkDetailPart.getControl();
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(control);
 		control.addFocusListener(new FocusListener() {
@@ -94,6 +88,9 @@ public class BookmarkDetailsPart implements IBookmarkDetailPart {
 
 	@Override
 	public void setBookmark(Bookmark bookmark) {
+		if (bookmark != null && bookmarkDatabase.getBookmarksTree().getBookmark(bookmark.getId()) == null) {
+			bookmark = null;
+		}
 		IBookmarkDetailPart previouslySelectedBookmarkDetailsPart = tabItem2BookmarkDetailPart.get(tabFolder.getSelection());
 		for (CTabItem tabItem : tabFolder.getItems()) {
 			tabItem.dispose();

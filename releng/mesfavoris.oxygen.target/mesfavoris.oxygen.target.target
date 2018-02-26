@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="mes favoris Target Content" sequenceNumber="64">
+<?pde version="3.8"?><target name="mes favoris Target Content" sequenceNumber="65">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="third-party.feature.feature.group" version="1.3.0"/>
@@ -16,7 +16,7 @@
 <repository location="http://download.eclipse.org/releases/oxygen/201706281000/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="com.perforce.team.feature.feature.group" version="2018.1.1621143"/>
+<unit id="com.perforce.team.feature.feature.group" version="2018.1.1612236"/>
 <repository location="http://www.perforce.com/downloads/http/p4-eclipse/install/4.6"/>
 </location>
 </locations>

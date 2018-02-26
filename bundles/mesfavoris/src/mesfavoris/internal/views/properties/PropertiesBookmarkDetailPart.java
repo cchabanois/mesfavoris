@@ -1,5 +1,6 @@
 package mesfavoris.internal.views.properties;
 
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.events.ControlAdapter;
@@ -7,15 +8,16 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.views.properties.PropertySheetPage;
 
-import mesfavoris.internal.views.BookmarksView;
+import mesfavoris.internal.views.details.AbstractBookmarkDetailPart;
 import mesfavoris.model.Bookmark;
-import mesfavoris.ui.details.IBookmarkDetailPart;
 
-public class PropertiesBookmarkDetailPart implements IBookmarkDetailPart {
+public class PropertiesBookmarkDetailPart extends AbstractBookmarkDetailPart {
 	private PropertySheetPage propertySheetPage;
 
 	@Override
@@ -24,14 +26,14 @@ public class PropertiesBookmarkDetailPart implements IBookmarkDetailPart {
 	}
 
 	@Override
-	public void initialize(BookmarksView bookmarksView) {
+	public void createControl(Composite parent, FormToolkit formToolkit) {
+		super.createControl(parent, formToolkit);
 		propertySheetPage = new PropertySheetPage();
-
+		propertySheetPage.createControl(parent);
+		resizeTreeColumns();
 	}
 
-	@Override
-	public void createControl(Composite parent) {
-		propertySheetPage.createControl(parent);
+	private void resizeTreeColumns() {
 		Tree tree = (Tree) propertySheetPage.getControl();
 		tree.addControlListener(new ControlAdapter() {
 			@Override
@@ -47,7 +49,6 @@ public class PropertiesBookmarkDetailPart implements IBookmarkDetailPart {
 				}
 			}
 		});
-
 	}
 
 	@Override
@@ -62,7 +63,14 @@ public class PropertiesBookmarkDetailPart implements IBookmarkDetailPart {
 
 	@Override
 	public void setBookmark(Bookmark bookmark) {
-		propertySheetPage.selectionChanged(null, new StructuredSelection(bookmark));
+		super.setBookmark(bookmark);
+		ISelection selection;
+		if (bookmark == null) {
+			selection = new StructuredSelection();
+		} else {
+			selection = new StructuredSelection(bookmark);
+		}
+		propertySheetPage.selectionChanged(null, selection);
 	}
 
 	@Override
@@ -72,7 +80,13 @@ public class PropertiesBookmarkDetailPart implements IBookmarkDetailPart {
 
 	@Override
 	public void dispose() {
+		super.dispose();
 		propertySheetPage.dispose();
+	}
+
+	@Override
+	protected void bookmarkModified(Bookmark oldBookmark, Bookmark newBookmark) {
+		Display.getDefault().asyncExec(() -> setBookmark(newBookmark));
 	}
 
 }

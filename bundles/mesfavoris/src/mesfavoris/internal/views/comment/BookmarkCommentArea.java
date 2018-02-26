@@ -39,6 +39,7 @@ public class BookmarkCommentArea extends SpellcheckableMessageArea {
 			try {
 				SetBookmarkCommentOperation operation = new SetBookmarkCommentOperation(bookmarkDatabase);
 				operation.setComment(bookmark.getId(), newComment);
+				bookmark = bookmarkDatabase.getBookmarksTree().getBookmark(bookmark.getId());
 			} catch (BookmarksException e) {
 				// never happen
 			}			
@@ -59,6 +60,10 @@ public class BookmarkCommentArea extends SpellcheckableMessageArea {
 		setText(comment);
 		getSourceViewer().setEditable(bookmarkDatabase.getBookmarksModificationValidator()
 				.validateModification(bookmarkDatabase.getBookmarksTree(), bookmark.getId()).isOK());
+	}
+	
+	public Bookmark getBookmark() {
+		return bookmark;
 	}
 
 }

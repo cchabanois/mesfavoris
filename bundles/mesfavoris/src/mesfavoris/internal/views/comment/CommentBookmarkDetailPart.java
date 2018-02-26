@@ -4,13 +4,13 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import mesfavoris.internal.BookmarksPlugin;
-import mesfavoris.internal.views.BookmarksView;
+import com.google.common.base.Objects;
+
+import mesfavoris.internal.views.details.AbstractBookmarkDetailPart;
 import mesfavoris.model.Bookmark;
-import mesfavoris.model.BookmarkDatabase;
-import mesfavoris.ui.details.IBookmarkDetailPart;
 
 /**
  * Create component to display bookmarks comments
@@ -18,24 +18,14 @@ import mesfavoris.ui.details.IBookmarkDetailPart;
  * @author cchabanois
  *
  */
-public class CommentBookmarkDetailPart implements IBookmarkDetailPart {
-	private final BookmarkDatabase bookmarkDatabase;
-	private BookmarksView bookmarksView;
+public class CommentBookmarkDetailPart extends AbstractBookmarkDetailPart {
 	private BookmarkCommentArea bookmarkCommentArea;
-	
-	public CommentBookmarkDetailPart() {
-		this.bookmarkDatabase = BookmarksPlugin.getDefault().getBookmarkDatabase();
-	}
 
 	@Override
-	public void initialize(BookmarksView bookmarksView) {
-		this.bookmarksView = bookmarksView;
-	}
-
-	@Override
-	public void createControl(Composite parent) {
+	public void createControl(Composite parent, FormToolkit formToolkit) {
+		super.createControl(parent, formToolkit);
 		bookmarkCommentArea = new BookmarkCommentArea(parent,
-				SWT.MULTI | SWT.V_SCROLL | SWT.WRAP | bookmarksView.getFormToolkit().getBorderStyle(),
+				SWT.MULTI | SWT.V_SCROLL | SWT.WRAP | formToolkit.getBorderStyle(),
 				bookmarkDatabase);
 		bookmarkCommentArea.getTextWidget().setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 		bookmarkCommentArea.setBookmark(null);
@@ -53,6 +43,7 @@ public class CommentBookmarkDetailPart implements IBookmarkDetailPart {
 
 	@Override
 	public void setBookmark(Bookmark bookmark) {
+		super.setBookmark(bookmark);
 		bookmarkCommentArea.setBookmark(bookmark);
 	}
 
@@ -63,12 +54,16 @@ public class CommentBookmarkDetailPart implements IBookmarkDetailPart {
 	}
 
 	@Override
-	public void dispose() {
+	public String getTitle() {
+		return "Comments";
 	}
 
 	@Override
-	public String getTitle() {
-		return "Comments";
+	protected void bookmarkModified(Bookmark oldBookmark, Bookmark newBookmark) {
+		if (!Objects.equal(bookmarkCommentArea.getBookmark().getPropertyValue(Bookmark.PROPERTY_COMMENT),
+				newBookmark.getPropertyValue(Bookmark.PROPERTY_COMMENT))) {
+			Display.getDefault().asyncExec(() -> setBookmark(newBookmark));
+		}
 	}
 
 }

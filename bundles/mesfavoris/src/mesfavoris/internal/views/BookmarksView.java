@@ -181,8 +181,7 @@ public class BookmarksView extends ViewPart {
 	}
 
 	private void createBookmarkDetailPart(Composite parent) {
-		bookmarkDetailsPart.initialize(this);
-		bookmarkDetailsPart.createControl(parent);
+		bookmarkDetailsPart.createControl(parent, formToolkit);
 		Listener listener = event -> {
 			switch (event.type) {
 			case SWT.Activate :
