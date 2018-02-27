@@ -1,5 +1,6 @@
 package mesfavoris.internal.views.properties;
 
+import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -11,15 +12,31 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.views.properties.PropertySheetPage;
+import org.osgi.service.event.EventHandler;
 
 import mesfavoris.internal.views.details.AbstractBookmarkDetailPart;
 import mesfavoris.model.Bookmark;
+import mesfavoris.topics.BookmarksEvents;
 
 public class PropertiesBookmarkDetailPart extends AbstractBookmarkDetailPart {
-	private PropertySheetPage propertySheetPage;
-
+	private final PropertySheetPage propertySheetPage;
+	private final IEventBroker eventBroker;
+	private final EventHandler bookmarkProblemsEventHandler;
+	
+	public PropertiesBookmarkDetailPart() {
+		this.propertySheetPage = new PropertySheetPage();
+		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
+		bookmarkProblemsEventHandler = (event)->{
+			if (!canHandle(bookmark) || bookmark == null) {
+				return;
+			}
+			Display.getDefault().asyncExec(() -> setBookmark(bookmark));
+		};
+	}
+	
 	@Override
 	public String getTitle() {
 		return "Properties";
@@ -28,9 +45,9 @@ public class PropertiesBookmarkDetailPart extends AbstractBookmarkDetailPart {
 	@Override
 	public void createControl(Composite parent, FormToolkit formToolkit) {
 		super.createControl(parent, formToolkit);
-		propertySheetPage = new PropertySheetPage();
 		propertySheetPage.createControl(parent);
 		resizeTreeColumns();
+		eventBroker.subscribe(BookmarksEvents.TOPIC_BOOKMARK_PROBLEMS_CHANGED, bookmarkProblemsEventHandler);
 	}
 
 	private void resizeTreeColumns() {
@@ -80,6 +97,7 @@ public class PropertiesBookmarkDetailPart extends AbstractBookmarkDetailPart {
 
 	@Override
 	public void dispose() {
+		eventBroker.unsubscribe(bookmarkProblemsEventHandler);
 		super.dispose();
 		propertySheetPage.dispose();
 	}

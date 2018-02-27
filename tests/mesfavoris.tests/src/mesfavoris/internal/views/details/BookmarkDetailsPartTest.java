@@ -22,13 +22,11 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableMap;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.MesFavoris;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.snippets.SnippetBookmarkProperties;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.tests.commons.ui.AbstractControlTest;
-import mesfavoris.tests.commons.waits.Waiter;
 
 public class BookmarkDetailsPartTest extends AbstractControlTest {
 	private BookmarkDetailsPart bookmarkDetailsPart;
@@ -146,26 +144,6 @@ public class BookmarkDetailsPartTest extends AbstractControlTest {
 		treeItem.getNode(PROPERTY_NAME);
 		treeItem = bot.tree().expandNode("snippet");
 		assertThat(treeItem.getNode(PROP_SNIPPET_CONTENT).cell(1)).isEqualTo("my snippet");
-	}
-
-	@Test
-	public void testPropertiesUpdatedWhenBookmarkIsModified() throws Exception {
-		// Given
-		Bookmark bookmark = new Bookmark(new BookmarkId(),
-				ImmutableMap.of(PROPERTY_NAME, "my bookmark", PROPERTY_COMMENT, "my comment"));
-		addBookmark(getBookmarksRootFolderId(), bookmark);
-		setBookmark(bookmark);
-		bot.cTabItem("Properties").activate();
-		SWTBotTreeItem treeItem = bot.tree().expandNode("default");
-		assertThat(treeItem.getNode(PROPERTY_COMMENT).cell(1)).isEqualTo("my comment");
-
-		// When
-		MesFavoris.getBookmarksService().setComment(bookmark.getId(), "my comment modified");
-		
-		// Then
-		Waiter.waitUntil("Property not modified", ()-> {
-			return treeItem.getNode(PROPERTY_COMMENT).cell(1).equals("my comment modified");
-		});
 	}
 
 }
