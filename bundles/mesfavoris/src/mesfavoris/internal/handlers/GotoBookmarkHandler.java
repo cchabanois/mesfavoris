@@ -21,6 +21,9 @@ public class GotoBookmarkHandler extends AbstractBookmarkHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil.getCurrentSelection(event);
 		Bookmark bookmark = getSelectedBookmark(selection);
+		if (bookmark == null) {
+			return null;
+		}
 		IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
 		try {
 			progressService.busyCursorWhile(monitor -> {
