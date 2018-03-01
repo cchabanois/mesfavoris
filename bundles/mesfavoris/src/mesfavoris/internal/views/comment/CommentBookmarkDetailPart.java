@@ -1,5 +1,7 @@
 package mesfavoris.internal.views.comment;
 
+import static mesfavoris.model.Bookmark.PROPERTY_COMMENT;
+
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -25,8 +27,7 @@ public class CommentBookmarkDetailPart extends AbstractBookmarkDetailPart {
 	public void createControl(Composite parent, FormToolkit formToolkit) {
 		super.createControl(parent, formToolkit);
 		bookmarkCommentArea = new BookmarkCommentArea(parent,
-				SWT.MULTI | SWT.V_SCROLL | SWT.WRAP | formToolkit.getBorderStyle(),
-				bookmarkDatabase);
+				SWT.MULTI | SWT.V_SCROLL | SWT.WRAP | formToolkit.getBorderStyle(), bookmarkDatabase);
 		bookmarkCommentArea.getTextWidget().setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 		bookmarkCommentArea.setBookmark(null);
 	}
@@ -60,8 +61,8 @@ public class CommentBookmarkDetailPart extends AbstractBookmarkDetailPart {
 
 	@Override
 	protected void bookmarkModified(Bookmark oldBookmark, Bookmark newBookmark) {
-		if (!Objects.equal(bookmarkCommentArea.getBookmark().getPropertyValue(Bookmark.PROPERTY_COMMENT),
-				newBookmark.getPropertyValue(Bookmark.PROPERTY_COMMENT))) {
+		if (!Objects.equal(bookmarkCommentArea.getBookmark().getPropertyValue(PROPERTY_COMMENT),
+				newBookmark.getPropertyValue(PROPERTY_COMMENT))) {
 			Display.getDefault().asyncExec(() -> setBookmark(newBookmark));
 		}
 	}

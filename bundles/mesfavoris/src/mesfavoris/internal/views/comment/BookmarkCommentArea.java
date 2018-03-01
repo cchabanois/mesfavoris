@@ -1,11 +1,12 @@
 package mesfavoris.internal.views.comment;
 
+import static mesfavoris.model.Bookmark.PROPERTY_COMMENT;
+
 import org.eclipse.jface.text.ITextListener;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Composite;
 
 import mesfavoris.BookmarksException;
-import mesfavoris.internal.service.operations.SetBookmarkCommentOperation;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 
@@ -24,25 +25,31 @@ public class BookmarkCommentArea extends SpellcheckableMessageArea {
 	public void addFocusListener(FocusListener listener) {
 		getSourceViewer().getControl().addFocusListener(listener);
 	}
-	
+
 	@Override
 	public void removeFocusListener(FocusListener listener) {
 		getSourceViewer().getControl().removeFocusListener(listener);
 	}
-	
+
 	private ITextListener getTextListener() {
-		return event->{
+		return event -> {
 			if (bookmark == null || !getSourceViewer().isEditable()) {
 				return;
 			}
 			final String newComment = getDocument().get();
 			try {
-				SetBookmarkCommentOperation operation = new SetBookmarkCommentOperation(bookmarkDatabase);
-				operation.setComment(bookmark.getId(), newComment);
-				bookmark = bookmarkDatabase.getBookmarksTree().getBookmark(bookmark.getId());
+				bookmarkDatabase.modify(bookmarksTreeModifier -> {
+					if (newComment.length() == 0) {
+						bookmarksTreeModifier.setPropertyValue(bookmark.getId(), PROPERTY_COMMENT, null);
+					} else {
+						bookmarksTreeModifier.setPropertyValue(bookmark.getId(), PROPERTY_COMMENT, newComment);
+					}
+				}, (bookmarksTree) -> {
+					bookmark = bookmarksTree.getBookmark(bookmark.getId());
+				});
 			} catch (BookmarksException e) {
 				// never happen
-			}			
+			}
 		};
 	}
 
@@ -53,7 +60,7 @@ public class BookmarkCommentArea extends SpellcheckableMessageArea {
 			getSourceViewer().setEditable(false);
 			return;
 		}
-		String comment = bookmark.getPropertyValue(Bookmark.PROPERTY_COMMENT);
+		String comment = bookmark.getPropertyValue(PROPERTY_COMMENT);
 		if (comment == null) {
 			comment = "";
 		}
@@ -61,7 +68,7 @@ public class BookmarkCommentArea extends SpellcheckableMessageArea {
 		getSourceViewer().setEditable(bookmarkDatabase.getBookmarksModificationValidator()
 				.validateModification(bookmarkDatabase.getBookmarksTree(), bookmark.getId()).isOK());
 	}
-	
+
 	public Bookmark getBookmark() {
 		return bookmark;
 	}

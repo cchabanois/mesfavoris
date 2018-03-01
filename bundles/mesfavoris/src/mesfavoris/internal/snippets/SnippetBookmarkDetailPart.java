@@ -63,8 +63,10 @@ public class SnippetBookmarkDetailPart extends AbstractBookmarkDetailPart {
 			try {
 				bookmarkDatabase.modify(bookmarksTreeModifier -> {
 					bookmarksTreeModifier.setPropertyValue(bookmark.getId(), PROP_SNIPPET_CONTENT, newSnippet);
+				}, (bookmarksTree) -> {
+					bookmark = bookmarksTree.getBookmark(bookmark.getId());
 				});
-				bookmark = bookmarkDatabase.getBookmarksTree().getBookmark(bookmark.getId());
+
 			} catch (BookmarksException e) {
 				// never happen
 			}
