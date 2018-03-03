@@ -1,12 +1,10 @@
 package mesfavoris.gdrive.operations;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Before;
@@ -46,20 +44,14 @@ public class GetChangesOperationTest {
 	}
 
 	@Test
-	public void testFileAddedChange() throws IOException {
+	public void testFileAddedChange() throws Exception {
 		// Given
 		File file1 = createTextFile("file1.txt", "the contents");
 		File file2 = createTextFile("file2.txt", "the contents");
 
-		// When
-		// sometimes, we have deleted files (from previous tests ?)
-		List<Change> changes = getChangesOperation.getChanges(startChangeId).stream()
-				.filter(change -> change.getDeleted() == false).collect(Collectors.toList());
-
 		// Then
-		assertEquals("There is not 2 changes as expected :" + changes, 2, changes.size());
-		assertThat(changes).filteredOn(change->change.getFileId().equals(file1.getId())).hasSize(1);
-		assertThat(changes).filteredOn(change->change.getFileId().equals(file2.getId())).hasSize(1);
+		waitUntilFileChange(startChangeId, file1.getId());
+		waitUntilFileChange(startChangeId, file2.getId());
 	}
 
 	@Test

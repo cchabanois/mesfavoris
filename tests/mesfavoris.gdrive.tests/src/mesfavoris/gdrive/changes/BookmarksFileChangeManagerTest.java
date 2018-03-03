@@ -1,5 +1,6 @@
 package mesfavoris.gdrive.changes;
 
+import static mesfavoris.gdrive.operations.BookmarkFileConstants.MESFAVORIS_MIME_TYPE;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
@@ -27,7 +28,6 @@ import mesfavoris.gdrive.operations.UpdateFileOperation;
 import mesfavoris.gdrive.test.GDriveConnectionRule;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.tests.commons.waits.Waiter;
-import static mesfavoris.gdrive.operations.BookmarkFileConstants.*;
 
 public class BookmarksFileChangeManagerTest {
 
@@ -44,7 +44,9 @@ public class BookmarksFileChangeManagerTest {
 		bookmarkMappings.add(new BookmarkId("bookmarkFolder1"),
 				createFile("bookmarks1", MESFAVORIS_MIME_TYPE, "bookmarks for folder1").getId(), Collections.emptyMap());
 		bookmarkMappings.add(new BookmarkId("bookmarkFolder2"),
-				createFile("bookmarks1", MESFAVORIS_MIME_TYPE, "bookmarks for folder2").getId(), Collections.emptyMap());
+				createFile("bookmarks2", MESFAVORIS_MIME_TYPE, "bookmarks for folder2").getId(), Collections.emptyMap());
+		// wait a few seconds to make sure we don't get events related to previous file creation
+		Thread.sleep(10000);
 		bookmarksFileChangeManager = new BookmarksFileChangeManager(gdriveConnectionRule.getGDriveConnectionManager(),
 				bookmarkMappings, () -> Duration.ofMillis(100));
 		bookmarksFileChangeManager.addListener(listener);
