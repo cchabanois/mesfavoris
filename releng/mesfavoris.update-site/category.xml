@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/mesfavoris.feature_1.9.0.qualifier.jar" id="mesfavoris.feature" version="1.9.0.qualifier">
+   <feature url="features/mesfavoris.feature_2.0.0.qualifier.jar" id="mesfavoris.feature" version="2.0.0.qualifier">
       <category name="mesfavoris"/>
    </feature>
-   <feature url="features/mesfavoris.perforce.feature_1.9.0.qualifier.jar" id="mesfavoris.perforce.feature" version="1.9.0.qualifier">
+   <feature url="features/mesfavoris.perforce.feature_2.0.0.qualifier.jar" id="mesfavoris.perforce.feature" version="2.0.0.qualifier">
       <category name="mesfavoris"/>
    </feature>
-   <feature url="features/mesfavoris.git.feature_1.9.0.qualifier.jar" id="mesfavoris.git.feature" version="1.9.0.qualifier">
+   <feature url="features/mesfavoris.git.feature_2.0.0.qualifier.jar" id="mesfavoris.git.feature" version="2.0.0.qualifier">
       <category name="mesfavoris"/>
    </feature>
-   <feature url="features/mesfavoris.java.feature_1.9.0.qualifier.jar" id="mesfavoris.java.feature" version="1.9.0.qualifier">
+   <feature url="features/mesfavoris.java.feature_2.0.0.qualifier.jar" id="mesfavoris.java.feature" version="2.0.0.qualifier">
       <category name="mesfavoris"/>
    </feature>
    <category-def name="mesfavoris" label="mesfavoris">
