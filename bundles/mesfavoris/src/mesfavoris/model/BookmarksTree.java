@@ -18,6 +18,8 @@ import com.google.common.collect.Sets;
 import mesfavoris.internal.model.BookmarksChildrenMap;
 import mesfavoris.internal.model.BookmarksMap;
 import mesfavoris.internal.model.BookmarksParentsMap;
+import mesfavoris.internal.model.merge.BookmarksTreeIterator;
+import mesfavoris.internal.model.merge.BookmarksTreeIterator.Algorithm;
 
 /**
  * Persistent (immutable) tree of bookmarks
@@ -388,7 +390,7 @@ public class BookmarksTree implements Iterable<Bookmark> {
 
 	@Override
 	public Iterator<Bookmark> iterator() {
-		return bookmarksMap.iterator();
+		return new BookmarksTreeIterator(this, rootFolderId, Algorithm.PRE_ORDER);
 	}
 
 	public int size() {
