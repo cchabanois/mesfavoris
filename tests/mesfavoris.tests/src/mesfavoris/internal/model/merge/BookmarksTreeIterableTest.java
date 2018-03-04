@@ -9,8 +9,7 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
-import mesfavoris.internal.model.merge.BookmarksTreeIterable;
-import mesfavoris.internal.model.merge.BookmarksTreeIterable.Algorithm;
+import mesfavoris.internal.model.merge.BookmarksTreeIterator.Algorithm;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
@@ -18,27 +17,35 @@ import mesfavoris.model.BookmarksTree;
 
 public class BookmarksTreeIterableTest {
 	private BookmarksTree bookmarksTree;
-	private BookmarkFolder rootFolder = new BookmarkFolder(new BookmarkId("rootId"), "root");
-	private BookmarkFolder bookmarkFolder1 = new BookmarkFolder(new BookmarkId("folder1Id"), "folder1");
-	private BookmarkFolder bookmarkFolder2 = new BookmarkFolder(new BookmarkId("folder2Id"), "folder2");
-	private Bookmark bookmark1 = new Bookmark(new BookmarkId("id1"));
-	private Bookmark bookmark2 = new Bookmark(new BookmarkId("id2"));
-	private Bookmark bookmark3 = new Bookmark(new BookmarkId("id3"));
-	private Bookmark bookmark4 = new Bookmark(new BookmarkId("id4"));
-	private Bookmark bookmark5 = new Bookmark(new BookmarkId("id5"));
-	private Bookmark bookmark6 = new Bookmark(new BookmarkId("id6"));
+	private BookmarkFolder f = new BookmarkFolder(new BookmarkId("f"), "f");
+	private BookmarkFolder b = new BookmarkFolder(new BookmarkId("b"), "b");
+	private BookmarkFolder g = new BookmarkFolder(new BookmarkId("g"), "g");
+	private BookmarkFolder d = new BookmarkFolder(new BookmarkId("d"), "d");
+	private BookmarkFolder i = new BookmarkFolder(new BookmarkId("i"), "i");
+	private Bookmark a = new Bookmark(new BookmarkId("a"));
+	private Bookmark c = new Bookmark(new BookmarkId("c"));
+	private Bookmark e = new Bookmark(new BookmarkId("e"));
+	private Bookmark h = new Bookmark(new BookmarkId("h"));
 
 	@Before
 	public void setUp() {
-		bookmarksTree = new BookmarksTree(rootFolder);
-		bookmarksTree = bookmarksTree.addBookmarks(rootFolder.getId(),
-				Lists.newArrayList(bookmarkFolder1, bookmarkFolder2));
-		bookmarksTree = bookmarksTree.addBookmarks(bookmarkFolder1.getId(),
-				Lists.newArrayList(bookmark1, bookmark2, bookmark3));
-		bookmarksTree = bookmarksTree.addBookmarks(bookmarkFolder2.getId(),
-				Lists.newArrayList(bookmark4, bookmark5, bookmark6));
+		bookmarksTree = new BookmarksTree(f);
+		bookmarksTree = bookmarksTree.addBookmarks(f.getId(),
+				Lists.newArrayList(b, g));
+		bookmarksTree = bookmarksTree.addBookmarks(b.getId(),
+				Lists.newArrayList(a, d));
+		bookmarksTree = bookmarksTree.addBookmarks(d.getId(),
+				Lists.newArrayList(c, e));
+		bookmarksTree = bookmarksTree.addBookmarks(g.getId(),
+				Lists.newArrayList(i));
+		bookmarksTree = bookmarksTree.addBookmarks(i.getId(),
+				Lists.newArrayList(h));
 	}
 
+	/**
+	 * <img src="doc-files/Sorted_binary_tree_preorder.png" />
+	 * Pre-order: F, B, A, D, C, E, G, I, H.
+	 */
 	@Test
 	public void testPreOrder() {
 		// Given
@@ -49,10 +56,14 @@ public class BookmarksTreeIterableTest {
 		List<Bookmark> orderedBookmarks = Lists.newArrayList(bookmarksTreeIterable);
 
 		// Then
-		assertEquals(Lists.newArrayList(rootFolder, bookmarkFolder1, bookmark1, bookmark2, bookmark3, bookmarkFolder2,
-				bookmark4, bookmark5, bookmark6), orderedBookmarks);
+		assertEquals(Lists.newArrayList(f, b, a, d, c, e,
+				g, i, h), orderedBookmarks);
 	}
 
+	/**
+	 * <img src="doc-files/Sorted_binary_tree_postorder.png" />
+	 * Post-order: A, C, E, D, B, H, I, G, F.
+	 */
 	@Test
 	public void testPostOrder() {
 		// Given
@@ -63,8 +74,8 @@ public class BookmarksTreeIterableTest {
 		List<Bookmark> orderedBookmarks = Lists.newArrayList(bookmarksTreeIterable);
 
 		// Then
-		assertEquals(Lists.newArrayList(bookmark1, bookmark2, bookmark3, bookmarkFolder1, bookmark4, bookmark5,
-				bookmark6, bookmarkFolder2, rootFolder), orderedBookmarks);
+		assertEquals(Lists.newArrayList(a, c, e, d, b, h,
+				i, g, f), orderedBookmarks);
 	}
 
 }

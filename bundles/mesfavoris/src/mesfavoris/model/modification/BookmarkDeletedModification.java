@@ -1,7 +1,7 @@
 package mesfavoris.model.modification;
 
 import mesfavoris.internal.model.merge.BookmarksTreeIterable;
-import mesfavoris.internal.model.merge.BookmarksTreeIterable.Algorithm;
+import mesfavoris.internal.model.merge.BookmarksTreeIterator.Algorithm;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;

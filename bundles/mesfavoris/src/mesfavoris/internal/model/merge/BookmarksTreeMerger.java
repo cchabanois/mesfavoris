@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 
 import com.google.common.collect.Lists;
 
-import mesfavoris.internal.model.merge.BookmarksTreeIterable.Algorithm;
+import mesfavoris.internal.model.merge.BookmarksTreeIterator.Algorithm;
 import mesfavoris.internal.model.merge.MinimumMovesSolver.Move;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkFolder;

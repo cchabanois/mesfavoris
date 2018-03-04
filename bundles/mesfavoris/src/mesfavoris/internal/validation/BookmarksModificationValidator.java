@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.Status;
 
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.model.merge.BookmarksTreeIterable;
-import mesfavoris.internal.model.merge.BookmarksTreeIterable.Algorithm;
+import mesfavoris.internal.model.merge.BookmarksTreeIterator.Algorithm;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
@@ -18,9 +18,9 @@ import mesfavoris.model.modification.BookmarksModification;
 import mesfavoris.model.modification.BookmarksMovedModification;
 import mesfavoris.model.modification.IBookmarksModificationValidator;
 import mesfavoris.remote.IRemoteBookmarksStore;
+import mesfavoris.remote.IRemoteBookmarksStore.State;
 import mesfavoris.remote.RemoteBookmarkFolder;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
-import mesfavoris.remote.IRemoteBookmarksStore.State;
 
 public class BookmarksModificationValidator implements IBookmarksModificationValidator {
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;

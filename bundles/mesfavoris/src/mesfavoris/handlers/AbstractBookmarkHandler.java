@@ -16,7 +16,7 @@ import org.eclipse.ui.ISources;
 
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.internal.model.merge.BookmarksTreeIterable;
-import mesfavoris.internal.model.merge.BookmarksTreeIterable.Algorithm;
+import mesfavoris.internal.model.merge.BookmarksTreeIterator.Algorithm;
 import mesfavoris.internal.views.virtual.BookmarkLink;
 import mesfavoris.internal.views.virtual.VirtualBookmarkFolder;
 import mesfavoris.model.Bookmark;
