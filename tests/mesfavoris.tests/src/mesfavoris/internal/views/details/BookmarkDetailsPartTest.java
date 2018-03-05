@@ -4,6 +4,7 @@ import static mesfavoris.internal.snippets.SnippetBookmarkProperties.PROP_SNIPPE
 import static mesfavoris.model.Bookmark.PROPERTY_COMMENT;
 import static mesfavoris.model.Bookmark.PROPERTY_NAME;
 import static mesfavoris.tests.commons.bookmarks.MainBookmarkDatabaseHelper.addBookmark;
+import static mesfavoris.tests.commons.bookmarks.MainBookmarkDatabaseHelper.deleteBookmark;
 import static mesfavoris.tests.commons.bookmarks.MainBookmarkDatabaseHelper.getBookmarksRootFolderId;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widgetOfType;
@@ -23,7 +24,6 @@ import com.google.common.collect.ImmutableMap;
 
 import mesfavoris.BookmarksException;
 import mesfavoris.internal.BookmarksPlugin;
-import mesfavoris.internal.snippets.SnippetBookmarkProperties;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.tests.commons.ui.AbstractControlTest;
@@ -120,8 +120,8 @@ public class BookmarkDetailsPartTest extends AbstractControlTest {
 	@Test
 	public void testBookmarkWithSnippetSelected() throws BookmarksException {
 		// Given
-		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(PROPERTY_NAME, "my bookmark",
-				SnippetBookmarkProperties.PROP_SNIPPET_CONTENT, "my snippet"));
+		Bookmark bookmark = new Bookmark(new BookmarkId(),
+				ImmutableMap.of(PROPERTY_NAME, "my bookmark", PROP_SNIPPET_CONTENT, "my snippet"));
 		addBookmark(getBookmarksRootFolderId(), bookmark);
 
 		// When
@@ -144,6 +144,37 @@ public class BookmarkDetailsPartTest extends AbstractControlTest {
 		treeItem.getNode(PROPERTY_NAME);
 		treeItem = bot.tree().expandNode("snippet");
 		assertThat(treeItem.getNode(PROP_SNIPPET_CONTENT).cell(1)).isEqualTo("my snippet");
+	}
+
+	@Test
+	public void testDeleteSelectedBookmark() throws BookmarksException {
+		// Given
+		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(PROPERTY_NAME, "my bookmark",
+				PROPERTY_COMMENT, "my comment", PROP_SNIPPET_CONTENT, "my snippet"));
+		addBookmark(getBookmarksRootFolderId(), bookmark);
+		setBookmark(bookmark);
+		bot.cTabItem("Comments");
+		bot.cTabItem("Properties");
+		bot.cTabItem("Snippet");
+		
+		// When
+		deleteBookmark(bookmark.getId());
+
+		// Then
+		bot.cTabItem("Comments").activate();
+		SWTBotStyledText commentsControl = bot.styledText();
+		assertThat(commentsControl.getText()).isEmpty();
+		assertThat(UIThreadRunnable.syncExec(() -> commentsControl.widget.getEditable())).isFalse();
+
+		bot.cTabItem("Properties").activate();
+		SWTBotTree treeControl = bot.tree();
+		assertThat(treeControl.rowCount()).isEqualTo(0);
+		
+		bot.cTabItem("Snippet").activate();
+		SWTBotStyledText snippetControl = bot.styledText();
+		assertThat(snippetControl.getText()).isEqualTo("");
+		assertThat(UIThreadRunnable.syncExec(() -> snippetControl.widget.getEditable())).isFalse();
+
 	}
 
 }

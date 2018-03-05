@@ -111,7 +111,7 @@ public class SnippetBookmarkDetailPart extends AbstractBookmarkDetailPart {
 
 	@Override
 	protected void bookmarkModified(Bookmark oldBookmark, Bookmark newBookmark) {
-		if (!Objects.equal(oldBookmark.getPropertyValue(PROP_SNIPPET_CONTENT),
+		if (newBookmark == null || !Objects.equal(oldBookmark.getPropertyValue(PROP_SNIPPET_CONTENT),
 				newBookmark.getPropertyValue(PROP_SNIPPET_CONTENT))) {
 			Display.getDefault().asyncExec(() -> setBookmark(newBookmark));
 		}
