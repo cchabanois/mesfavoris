@@ -1,5 +1,23 @@
 # Change Log
 
+## [release-1.9.0](https://github.com/cchabanois/mesfavoris/tree/release-1.9.0) (2018-03-03)
+[Full Changelog](https://github.com/cchabanois/mesfavoris/compare/release-1.8.0...release-1.9.0)
+
+**Implemented enhancements:**
+
+- Add support for snippet bookmarks [\#56](https://github.com/cchabanois/mesfavoris/issues/56)
+- Display notification when url is copied to clipboard \(mesfavoris.url\) [\#54](https://github.com/cchabanois/mesfavoris/issues/54)
+
+**Fixed bugs:**
+
+- NPE when setting a number shortcut on a virtual folder child [\#55](https://github.com/cchabanois/mesfavoris/issues/55)
+- "Could not save bookmarks" after connecting when shared folder is read-only [\#53](https://github.com/cchabanois/mesfavoris/issues/53)
+- NPE while updating markers [\#52](https://github.com/cchabanois/mesfavoris/issues/52)
+
+**Closed issues:**
+
+- Display bookmark properties in the bookmarks view in a CTabItem [\#57](https://github.com/cchabanois/mesfavoris/issues/57)
+
 ## [release-1.8.0](https://github.com/cchabanois/mesfavoris/tree/release-1.8.0) (2017-10-30)
 [Full Changelog](https://github.com/cchabanois/mesfavoris/compare/release-1.7.0...release-1.8.0)
 
