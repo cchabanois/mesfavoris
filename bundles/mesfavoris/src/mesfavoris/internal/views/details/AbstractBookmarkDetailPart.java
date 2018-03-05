@@ -27,7 +27,7 @@ public abstract class AbstractBookmarkDetailPart implements IBookmarkDetailPart 
 	public void createControl(Composite parent, FormToolkit formToolkit) {
 		bookmarkDatabase.addListener(bookmarksListener);
 	}
-	
+
 	@Override
 	public void setBookmark(Bookmark bookmark) {
 		this.bookmark = bookmark;
@@ -43,16 +43,27 @@ public abstract class AbstractBookmarkDetailPart implements IBookmarkDetailPart 
 			return;
 		}
 		Bookmark newBookmark = bookmarkDatabase.getBookmarksTree().getBookmark(bookmark.getId());
-		BookmarkComparer bookmarkComparer = new BookmarkComparer();
-		BookmarkDifferences bookmarkDifferences = bookmarkComparer.compare(bookmark, newBookmark);
-		if (bookmarkDifferences.isEmpty()) {
-			return;
+		if (newBookmark != null) {
+			BookmarkComparer bookmarkComparer = new BookmarkComparer();
+			BookmarkDifferences bookmarkDifferences = bookmarkComparer.compare(bookmark, newBookmark);
+			if (bookmarkDifferences.isEmpty()) {
+				return;
+			}
 		}
 		Bookmark oldBookmark = bookmark;
 		bookmark = newBookmark;
 		bookmarkModified(oldBookmark, bookmark);
 	}
 
+	/**
+	 * Called when bookmark has been modified
+	 * 
+	 * @param oldBookmark
+	 *            the bookmark before the modification
+	 * @param newBookmark
+	 *            the bookmark after the modification. Null if bookmark has been
+	 *            deleted
+	 */
 	protected abstract void bookmarkModified(Bookmark oldBookmark, Bookmark newBookmark);
 
 }

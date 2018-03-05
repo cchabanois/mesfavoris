@@ -61,7 +61,7 @@ public class CommentBookmarkDetailPart extends AbstractBookmarkDetailPart {
 
 	@Override
 	protected void bookmarkModified(Bookmark oldBookmark, Bookmark newBookmark) {
-		if (!Objects.equal(bookmarkCommentArea.getBookmark().getPropertyValue(PROPERTY_COMMENT),
+		if (newBookmark == null || !Objects.equal(bookmarkCommentArea.getBookmark().getPropertyValue(PROPERTY_COMMENT),
 				newBookmark.getPropertyValue(PROPERTY_COMMENT))) {
 			Display.getDefault().asyncExec(() -> setBookmark(newBookmark));
 		}
