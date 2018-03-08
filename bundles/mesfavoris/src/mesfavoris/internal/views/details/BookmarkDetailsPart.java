@@ -3,6 +3,8 @@ package mesfavoris.internal.views.details;
 import java.util.IdentityHashMap;
 import java.util.List;
 
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -16,6 +18,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import mesfavoris.internal.BookmarksPlugin;
+import mesfavoris.internal.StatusHelper;
 import mesfavoris.internal.views.ProxySelectionProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
@@ -121,7 +124,19 @@ public class BookmarkDetailsPart implements IBookmarkDetailPart {
 
 	@Override
 	public void dispose() {
+		for (IBookmarkDetailPart bookmarkDetailPart : bookmarkDetailParts) {
+			SafeRunner.run(new ISafeRunnable() {
 
+				public void run() throws Exception {
+					bookmarkDetailPart.dispose();
+				}
+
+				public void handleException(Throwable exception) {
+					StatusHelper.logError("Error while disposing bookmarkDetailPart", exception);
+				}
+			});
+
+		}
 	}
 
 	@Override
