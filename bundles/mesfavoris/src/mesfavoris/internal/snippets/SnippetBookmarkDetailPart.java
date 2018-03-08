@@ -1,6 +1,7 @@
 package mesfavoris.internal.snippets;
 
 import static mesfavoris.internal.snippets.SnippetBookmarkProperties.PROP_SNIPPET_CONTENT;
+import static mesfavoris.model.Bookmark.PROPERTY_NAME;
 
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.text.Document;
@@ -59,10 +60,18 @@ public class SnippetBookmarkDetailPart extends AbstractBookmarkDetailPart {
 			if (bookmark == null || !textViewer.isEditable()) {
 				return;
 			}
-			final String newSnippet = textViewer.getDocument().get();
+			final Snippet newSnippet = new Snippet(textViewer.getDocument().get());
 			try {
 				bookmarkDatabase.modify(bookmarksTreeModifier -> {
-					bookmarksTreeModifier.setPropertyValue(bookmark.getId(), PROP_SNIPPET_CONTENT, newSnippet);
+					String previousName = bookmark.getPropertyValue(PROPERTY_NAME);
+					String previousSnippetContent = bookmark.getPropertyValue(PROP_SNIPPET_CONTENT);
+					bookmarksTreeModifier.setPropertyValue(bookmark.getId(), PROP_SNIPPET_CONTENT,
+							newSnippet.getContent());					
+					if (previousName != null && previousSnippetContent != null && previousName.equals(SnippetBookmarkPropertiesProvider.getName(new Snippet(previousSnippetContent)))) {
+						// only change name if it has not been modified
+						bookmarksTreeModifier.setPropertyValue(bookmark.getId(), PROPERTY_NAME,
+								SnippetBookmarkPropertiesProvider.getName(newSnippet));
+					}
 				}, (bookmarksTree) -> {
 					bookmark = bookmarksTree.getBookmark(bookmark.getId());
 				});

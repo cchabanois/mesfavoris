@@ -27,7 +27,7 @@ public class SnippetBookmarkPropertiesProvider extends AbstractBookmarkPropertie
 		putIfAbsent(bookmarkProperties, SnippetBookmarkProperties.PROP_SNIPPET_CONTENT, snippet.getContent());
 	}
 
-	private String getName(Snippet snippet) {
+	public static String getName(Snippet snippet) {
 		String firstLine = getFirstNonEmptyLine(snippet).orElse("Empty snippet");
 		if (firstLine.length() > NAME_LENGTH_LIMIT) {
 			String ellipsis = "...";
@@ -38,7 +38,7 @@ public class SnippetBookmarkPropertiesProvider extends AbstractBookmarkPropertie
 
 	}
 
-	private Optional<String> getFirstNonEmptyLine(Snippet snippet) {
+	private static Optional<String> getFirstNonEmptyLine(Snippet snippet) {
 		String content = snippet.getContent();
 		String[] lines = content.split("\\r?\\n");
 		for (String line : lines) {

@@ -31,8 +31,7 @@ public class MainBookmarkDatabaseHelper {
 	}
 
 	public static void deleteBookmark(BookmarkId bookmarkId) throws BookmarksException {
-		getBookmarkDatabase().modify(bookmarksTreeModifier -> bookmarksTreeModifier.deleteBookmark(bookmarkId, true));
-
+		getBookmarksService().deleteBookmarks(Arrays.asList(bookmarkId), false);
 	}
 
 	public static BookmarkId getBookmarksRootFolderId() {
@@ -40,7 +39,7 @@ public class MainBookmarkDatabaseHelper {
 	}
 
 	public static BookmarksTree getBookmarksTree() {
-		return getBookmarkDatabase().getBookmarksTree();
+		return getBookmarksService().getBookmarksTree();
 	}
 
 }
