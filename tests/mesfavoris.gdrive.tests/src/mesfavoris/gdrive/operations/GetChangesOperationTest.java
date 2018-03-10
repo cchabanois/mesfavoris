@@ -33,8 +33,12 @@ public class GetChangesOperationTest {
 	}
 
 	@Test
-	public void testNoChanges() throws IOException {
+	public void testNoChanges() throws Exception {
 		// Given
+		// wait a few seconds to make sure we don't get events related to previous file creation
+		Thread.sleep(8000);
+		startChangeId = getChangesOperation.getLargestChangeId() + 1;
+		Thread.sleep(2000);
 
 		// When
 		List<Change> changes = getChangesOperation.getChanges(startChangeId);
