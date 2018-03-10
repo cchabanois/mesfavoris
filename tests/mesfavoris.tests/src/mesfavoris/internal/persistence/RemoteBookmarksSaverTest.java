@@ -106,10 +106,10 @@ public class RemoteBookmarksSaverTest {
 	}
 
 	private void randomModification(BookmarksTreeModifier bookmarksTreeModifier) {
-		Predicate<Bookmark> onlyUnderRemoteBookmarkFolder = bookmark -> remoteBookmarksStoreManager
-				.getRemoteBookmarkFolder(bookmark.getId()) == null
+		Predicate<Bookmark> onlyUnderRemoteBookmarkFolder = bookmark -> !remoteBookmarksStoreManager
+				.getRemoteBookmarkFolder(bookmark.getId()).isPresent()
 				&& remoteBookmarksStoreManager.getRemoteBookmarkFolderContaining(bookmarksTreeModifier.getCurrentTree(),
-						bookmark.getId()) != null;
+						bookmark.getId()).isPresent();
 		RandomModificationApplier randomModificationApplier = new RandomModificationApplier(incrementalIDGenerator,
 				onlyUnderRemoteBookmarkFolder);
 		randomModificationApplier.applyRandomModification(bookmarksTreeModifier, new PrintWriter(new StringWriter()));

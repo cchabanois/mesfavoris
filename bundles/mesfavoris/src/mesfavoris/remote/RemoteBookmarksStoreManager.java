@@ -27,10 +27,10 @@ public class RemoteBookmarksStoreManager {
 				.findAny().orElse(null);
 	}
 
-	public RemoteBookmarkFolder getRemoteBookmarkFolderContaining(BookmarksTree bookmarksTree, BookmarkId bookmarkId) {
+	public Optional<RemoteBookmarkFolder> getRemoteBookmarkFolderContaining(BookmarksTree bookmarksTree, BookmarkId bookmarkId) {
 		Bookmark bookmark = bookmarksTree.getBookmark(bookmarkId);
 		if (bookmark == null) {
-			return null;
+			return Optional.empty();
 		}
 		BookmarkFolder bookmarkFolder;
 		if (bookmark instanceof BookmarkFolder) {
@@ -41,28 +41,28 @@ public class RemoteBookmarksStoreManager {
 		return getRemoteBookmarkFolderContaining(bookmarksTree, bookmarkFolder);
 	}
 
-	private RemoteBookmarkFolder getRemoteBookmarkFolderContaining(BookmarksTree bookmarksTree,
+	private Optional<RemoteBookmarkFolder> getRemoteBookmarkFolderContaining(BookmarksTree bookmarksTree,
 			BookmarkFolder bookmarkFolder) {
-		RemoteBookmarkFolder remoteBookmarkFolder = getRemoteBookmarkFolder(bookmarkFolder.getId());
-		if (remoteBookmarkFolder != null) {
+		Optional<RemoteBookmarkFolder> remoteBookmarkFolder = getRemoteBookmarkFolder(bookmarkFolder.getId());
+		if (remoteBookmarkFolder.isPresent()) {
 			return remoteBookmarkFolder;
 		}
 		BookmarkFolder parent = bookmarksTree.getParentBookmark(bookmarkFolder.getId());
 		if (parent == null) {
-			return null;
+			return Optional.empty();
 		} else {
 			return getRemoteBookmarkFolderContaining(bookmarksTree, parent);
 		}
 	}
 
-	public RemoteBookmarkFolder getRemoteBookmarkFolder(BookmarkId bookmarkFolderId) {
+	public Optional<RemoteBookmarkFolder> getRemoteBookmarkFolder(BookmarkId bookmarkFolderId) {
 		for (IRemoteBookmarksStore store : getRemoteBookmarksStores()) {
 			Optional<RemoteBookmarkFolder> remoteBookmarkFolder = store.getRemoteBookmarkFolder(bookmarkFolderId);
 			if (remoteBookmarkFolder.isPresent()) {
-				return remoteBookmarkFolder.get();
+				return remoteBookmarkFolder;
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 }

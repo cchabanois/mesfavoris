@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
@@ -112,34 +113,34 @@ public class RemoteBookmarksSaver {
 		for (BookmarksModification event : modifications) {
 			if (event instanceof BookmarkDeletedModification) {
 				BookmarkDeletedModification modification = (BookmarkDeletedModification) event;
-				RemoteBookmarkFolder remoteBookmarkFolder = remoteBookmarksStoreManager
+				Optional<RemoteBookmarkFolder> remoteBookmarkFolder = remoteBookmarksStoreManager
 						.getRemoteBookmarkFolderContaining(modification.getSourceTree(), modification.getBookmarkId());
-				if (remoteBookmarkFolder != null) {
-					add(result, remoteBookmarkFolder, modification);
+				if (remoteBookmarkFolder.isPresent()) {
+					add(result, remoteBookmarkFolder.get(), modification);
 				}
 			} else if (event instanceof BookmarksAddedModification) {
 				BookmarksAddedModification modification = (BookmarksAddedModification) event;
-				RemoteBookmarkFolder remoteBookmarkFolder = remoteBookmarksStoreManager
+				Optional<RemoteBookmarkFolder> remoteBookmarkFolder = remoteBookmarksStoreManager
 						.getRemoteBookmarkFolderContaining(modification.getSourceTree(), modification.getParentId());
-				if (remoteBookmarkFolder != null) {
-					add(result, remoteBookmarkFolder, modification);
+				if (remoteBookmarkFolder.isPresent()) {
+					add(result, remoteBookmarkFolder.get(), modification);
 				}
 			} else if (event instanceof BookmarkPropertiesModification) {
 				BookmarkPropertiesModification modification = (BookmarkPropertiesModification) event;
-				RemoteBookmarkFolder remoteBookmarkFolder = remoteBookmarksStoreManager
+				Optional<RemoteBookmarkFolder> remoteBookmarkFolder = remoteBookmarksStoreManager
 						.getRemoteBookmarkFolderContaining(modification.getSourceTree(), modification.getBookmarkId());
-				if (remoteBookmarkFolder != null) {
-					add(result, remoteBookmarkFolder, modification);
+				if (remoteBookmarkFolder.isPresent()) {
+					add(result, remoteBookmarkFolder.get(), modification);
 				}
 			} else if (event instanceof BookmarksMovedModification) {
 				BookmarksMovedModification modification = (BookmarksMovedModification) event;
-				RemoteBookmarkFolder remoteBookmarkFolderSource = getSourceRemoteBookmarkFolder(modification);
-				RemoteBookmarkFolder remoteBookmarkFolderTarget = remoteBookmarksStoreManager
+				Optional<RemoteBookmarkFolder> remoteBookmarkFolderSource = getSourceRemoteBookmarkFolder(modification);
+				Optional<RemoteBookmarkFolder> remoteBookmarkFolderTarget = remoteBookmarksStoreManager
 						.getRemoteBookmarkFolderContaining(modification.getSourceTree(), modification.getNewParentId());
-				if (remoteBookmarkFolderSource != null
-						&& remoteBookmarkFolderSource.equals(remoteBookmarkFolderTarget)) {
-					add(result, remoteBookmarkFolderSource, modification);
-				} else if (remoteBookmarkFolderSource != null || remoteBookmarkFolderTarget != null) {
+				if (remoteBookmarkFolderSource.isPresent() && remoteBookmarkFolderTarget.isPresent()
+						&& remoteBookmarkFolderSource.get().equals(remoteBookmarkFolderTarget.get())) {
+					add(result, remoteBookmarkFolderSource.get(), modification);
+				} else if (remoteBookmarkFolderSource.isPresent() || remoteBookmarkFolderTarget.isPresent()) {
 					getRemoteBookmarkFolders(movedModificationToDeleteAddModifications(modification))
 							.forEach((remoteBookmarkFolder, deleteAddModifications) -> add(result, remoteBookmarkFolder,
 									deleteAddModifications));
@@ -149,10 +150,10 @@ public class RemoteBookmarksSaver {
 		return result;
 	}
 
-	private RemoteBookmarkFolder getSourceRemoteBookmarkFolder(BookmarksMovedModification modification) {
-		if (remoteBookmarksStoreManager.getRemoteBookmarkFolder(modification.getBookmarkIds().get(0)) != null) {
+	private Optional<RemoteBookmarkFolder> getSourceRemoteBookmarkFolder(BookmarksMovedModification modification) {
+		if (remoteBookmarksStoreManager.getRemoteBookmarkFolder(modification.getBookmarkIds().get(0)).isPresent()) {
 			// the remote bookmark folder has been moved
-			return null;
+			return Optional.empty();
 		} else {
 			return remoteBookmarksStoreManager.getRemoteBookmarkFolderContaining(modification.getSourceTree(),
 					modification.getBookmarkIds().get(0));

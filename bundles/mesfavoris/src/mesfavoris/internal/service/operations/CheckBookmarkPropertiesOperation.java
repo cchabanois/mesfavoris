@@ -175,7 +175,7 @@ public class CheckBookmarkPropertiesOperation {
 
 	private boolean isUnderRemoteBookmarkFolder(BookmarkId bookmarkId) {
 		return remoteBookmarksStoreManager.getRemoteBookmarkFolderContaining(bookmarkDatabase.getBookmarksTree(),
-				bookmarkId) != null;
+				bookmarkId).isPresent();
 	}
 
 	private Set<BookmarkProblem> getObsoletePropertiesBookmarkProblems(BookmarkId bookmarkId,

@@ -50,10 +50,8 @@ public class DeleteSharedBookmarkFolderHandler extends AbstractBookmarkHandler {
 			return null;
 		}
 		RemoteBookmarkFolder remoteBookmarkFolder = remoteBookmarksStoreManager
-				.getRemoteBookmarkFolder(bookmarkFolder.getId());
-		if (remoteBookmarkFolder == null) {
-			return null;
-		}
+				.getRemoteBookmarkFolder(bookmarkFolder.getId())
+				.orElseThrow(() -> new ExecutionException("Not a remote bookmark folder"));
 		ConfirmDeleteDialog dialog = new ConfirmDeleteDialog(HandlerUtil.getActiveShell(event), remoteBookmarkFolder);
 		if (dialog.open() != Window.OK) {
 			return null;
@@ -77,7 +75,7 @@ public class DeleteSharedBookmarkFolderHandler extends AbstractBookmarkHandler {
 			StatusHelper.showError("Could not remove shared bookmark folder", e.getCause(), false);
 		} catch (InterruptedException e) {
 			throw new ExecutionException("Could not remove shared bookmark folder : cancelled");
-		}		
+		}
 
 		return null;
 	}

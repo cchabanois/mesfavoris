@@ -67,7 +67,7 @@ public class BookmarksPropertyTester extends PropertyTester {
 
 	private boolean isUnderRemoteBookmarkFolder(Bookmark bookmark) {
 		return remoteBookmarksStoreManager.getRemoteBookmarkFolderContaining(bookmarkDatabase.getBookmarksTree(),
-				bookmark.getId()) != null;
+				bookmark.getId()).isPresent();
 	}
 
 	private boolean canBeModified(final Bookmark bookmark) {

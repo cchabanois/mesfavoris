@@ -97,10 +97,9 @@ public class RefreshRemoteFolderOperation {
 
 	public void refresh(BookmarkId bookmarkFolderId, IProgressMonitor monitor) throws BookmarksException {
 		RemoteBookmarkFolder remoteBookmarkFolder = remoteBookmarksStoreManager
-				.getRemoteBookmarkFolder(bookmarkFolderId);
-		if (remoteBookmarkFolder == null) {
-			throw new BookmarksException("Not a remote boomark folder");
-		}
+				.getRemoteBookmarkFolder(bookmarkFolderId)
+				.orElseThrow(() -> new BookmarksException("Not a remote boomark folder"));
+
 		String storeId = remoteBookmarkFolder.getRemoteBookmarkStoreId();
 		IRemoteBookmarksStore store = remoteBookmarksStoreManager.getRemoteBookmarksStore(storeId);
 		do {
