@@ -72,7 +72,7 @@ public class AddToRemoteBookmarksStoreOperation {
 
 	private boolean isUnderRemoteBookmarksFolder(BookmarkId bookmarkFolderId) {
 		return remoteBookmarksStoreManager.getRemoteBookmarkFolderContaining(bookmarkDatabase.getBookmarksTree(),
-				bookmarkFolderId) != null;
+				bookmarkFolderId).isPresent();
 	}
 
 }

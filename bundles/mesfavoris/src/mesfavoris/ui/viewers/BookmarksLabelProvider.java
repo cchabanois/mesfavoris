@@ -43,7 +43,6 @@ import mesfavoris.problems.IBookmarkProblemDescriptor.Severity;
 import mesfavoris.problems.IBookmarkProblems;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
-import mesfavoris.remote.RemoteBookmarkFolder;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 
 public class BookmarksLabelProvider extends StyledCellLabelProvider implements ILabelProvider, IStyledLabelProvider {
@@ -115,18 +114,11 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 	}
 
 	private boolean isUnderDisconnectedRemoteBookmarkFolder(Bookmark bookmark) {
-		RemoteBookmarkFolder remoteBookmarkFolder = remoteBookmarksStoreManager
-				.getRemoteBookmarkFolderContaining(bookmarkDatabase.getBookmarksTree(), bookmark.getId());
-		if (remoteBookmarkFolder == null) {
-			return false;
-		}
-		IRemoteBookmarksStore remoteBookmarksStore = remoteBookmarksStoreManager
-				.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId());
-		if (remoteBookmarksStore.getState() != State.connected) {
-			return true;
-		} else {
-			return false;
-		}
+		return remoteBookmarksStoreManager
+				.getRemoteBookmarkFolderContaining(bookmarkDatabase.getBookmarksTree(), bookmark.getId())
+				.map(remoteBookmarkFolder -> remoteBookmarksStoreManager
+						.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId()))
+				.map(remoteBookmarksStore -> remoteBookmarksStore.getState() != State.connected).orElse(false);
 	}
 
 	@Override
@@ -153,10 +145,9 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 		Bookmark bookmark = (Bookmark) Adapters.adapt(element, Bookmark.class);
 		ImageDescriptor[] overlayImages = new ImageDescriptor[5];
 		if (bookmark instanceof BookmarkFolder) {
-			IRemoteBookmarksStore store = getRemoteBookmarkStore(bookmark.getId());
-			if (store != null && store.getDescriptor() != null) {
-				overlayImages[IDecoration.TOP_RIGHT] = store.getDescriptor().getImageOverlayDescriptor();
-			}
+			getRemoteBookmarkStore(bookmark.getId()).map(store->store.getDescriptor()).ifPresent(descriptor->{
+				overlayImages[IDecoration.TOP_RIGHT] = descriptor.getImageOverlayDescriptor();
+			});
 		}
 		Optional<BookmarkNumber> bookmarkNumber = numberedBookmarks.getBookmarkNumber(bookmark.getId());
 		if (bookmarkNumber.isPresent()) {
@@ -197,13 +188,9 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 				.findFirst();
 	}
 
-	private IRemoteBookmarksStore getRemoteBookmarkStore(BookmarkId bookmarkFolderId) {
-		for (IRemoteBookmarksStore store : remoteBookmarksStoreManager.getRemoteBookmarksStores()) {
-			if (store.getRemoteBookmarkFolder(bookmarkFolderId).isPresent()) {
-				return store;
-			}
-		}
-		return null;
+	private Optional<IRemoteBookmarksStore> getRemoteBookmarkStore(BookmarkId bookmarkFolderId) {
+		return remoteBookmarksStoreManager.getRemoteBookmarkFolder(bookmarkFolderId)
+				.map(f -> remoteBookmarksStoreManager.getRemoteBookmarksStore(f.getRemoteBookmarkStoreId()));
 	}
 
 	private String getFirstCommentLine(Bookmark bookmark) {

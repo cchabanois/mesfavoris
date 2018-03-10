@@ -27,9 +27,7 @@ import mesfavoris.commons.ui.jface.OverlayIconImageDescriptor;
 import mesfavoris.commons.ui.viewers.StylerProvider;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
-import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
-import mesfavoris.remote.RemoteBookmarkFolder;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 
 /**
@@ -108,18 +106,11 @@ public class BookmarksPathLabelProvider extends StyledCellLabelProvider
 	}
 
 	private boolean isUnderDisconnectedRemoteBookmarkFolder(Bookmark bookmark) {
-		RemoteBookmarkFolder remoteBookmarkFolder = remoteBookmarksStoreManager
-				.getRemoteBookmarkFolderContaining(bookmarkDatabase.getBookmarksTree(), bookmark.getId());
-		if (remoteBookmarkFolder == null) {
-			return false;
-		}
-		IRemoteBookmarksStore remoteBookmarksStore = remoteBookmarksStoreManager
-				.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId());
-		if (remoteBookmarksStore.getState() != State.connected) {
-			return true;
-		} else {
-			return false;
-		}
+		return remoteBookmarksStoreManager
+				.getRemoteBookmarkFolderContaining(bookmarkDatabase.getBookmarksTree(), bookmark.getId())
+				.map(remoteBookmarkFolder -> remoteBookmarksStoreManager
+						.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId()))
+				.map(remoteBookmarksStore -> remoteBookmarksStore.getState() != State.connected).orElse(false);
 	}
 
 	@Override
@@ -145,13 +136,14 @@ public class BookmarksPathLabelProvider extends StyledCellLabelProvider
 	private ImageDescriptor[] getOverlayImages(final Object element) {
 		Bookmark bookmark = (Bookmark) Adapters.adapt(element, Bookmark.class);
 		ImageDescriptor[] overlayImages = new ImageDescriptor[5];
-		RemoteBookmarkFolder remoteBookmarkFolder = remoteBookmarksStoreManager
-				.getRemoteBookmarkFolderContaining(bookmarkDatabase.getBookmarksTree(), bookmark.getId());
-		if (remoteBookmarkFolder != null) {
-			IRemoteBookmarksStore remoteBookmarksStore = remoteBookmarksStoreManager
-					.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId());
-			overlayImages[IDecoration.TOP_RIGHT] = remoteBookmarksStore.getDescriptor().getImageOverlayDescriptor();
-		}
+		
+		remoteBookmarksStoreManager
+				.getRemoteBookmarkFolderContaining(bookmarkDatabase.getBookmarksTree(), bookmark.getId())
+				.map(remoteBookmarkFolder -> remoteBookmarksStoreManager
+						.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId()))
+				.map(remoteBookmarksStore -> remoteBookmarksStore.getDescriptor().getImageOverlayDescriptor())
+				.ifPresent(overlayImage -> overlayImages[IDecoration.TOP_RIGHT] = overlayImage);
+
 		return overlayImages;
 	}
 

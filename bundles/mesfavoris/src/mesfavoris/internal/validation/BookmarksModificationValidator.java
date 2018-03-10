@@ -1,5 +1,6 @@
 package mesfavoris.internal.validation;
 
+import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 import org.eclipse.core.runtime.IStatus;
@@ -67,9 +68,8 @@ public class BookmarksModificationValidator implements IBookmarksModificationVal
 		if (!status.isOK()) {
 			return status;
 		}
-		RemoteBookmarkFolder remoteBookmarkFolder = remoteBookmarksStoreManager.getRemoteBookmarkFolderContaining(
-				bookmarksMovedModification.getSourceTree(), bookmarksMovedModification.getNewParentId());
-		if (remoteBookmarkFolder == null) {
+		if (!remoteBookmarksStoreManager.getRemoteBookmarkFolderContaining(bookmarksMovedModification.getSourceTree(),
+				bookmarksMovedModification.getNewParentId()).isPresent()) {
 			return Status.OK_STATUS;
 		}
 		for (BookmarkId bookmarkId : bookmarksMovedModification.getBookmarkIds()) {
@@ -92,15 +92,16 @@ public class BookmarksModificationValidator implements IBookmarksModificationVal
 		if (bookmark == null) {
 			return errorStatus("Cannot find bookmark");
 		}
-		RemoteBookmarkFolder remoteBookmarkFolder = remoteBookmarksStoreManager
+		Optional<RemoteBookmarkFolder> remoteBookmarkFolder = remoteBookmarksStoreManager
 				.getRemoteBookmarkFolderContaining(bookmarksTree, bookmarkId);
-		if (remoteBookmarkFolder == null) {
+		if (!remoteBookmarkFolder.isPresent()) {
 			return Status.OK_STATUS;
 		}
-		IRemoteBookmarksStore remoteBookmarksStore = remoteBookmarksStoreManager
-				.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId());
-		boolean connected = remoteBookmarksStore.getState() == State.connected;
-		if (connected && !isReadOnly(remoteBookmarkFolder)) {
+		boolean connected = remoteBookmarkFolder
+				.map(f -> remoteBookmarksStoreManager.getRemoteBookmarksStore(f.getRemoteBookmarkStoreId()))
+				.map(remoteBookmarksStore -> remoteBookmarksStore.getState() == State.connected).orElse(false);
+
+		if (connected && !isReadOnly(remoteBookmarkFolder.get())) {
 			return Status.OK_STATUS;
 		} else {
 			return errorStatus(

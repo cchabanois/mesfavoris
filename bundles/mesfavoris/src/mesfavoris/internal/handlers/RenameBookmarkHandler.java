@@ -1,5 +1,7 @@
 package mesfavoris.internal.handlers;
 
+import java.util.Optional;
+
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -65,13 +67,14 @@ public class RenameBookmarkHandler extends AbstractBookmarkHandler {
 		if (bookmark == null) {
 			return false;
 		}
-		RemoteBookmarkFolder remoteBookmarkFolder = remoteBookmarksStoreManager
+		
+		Optional<RemoteBookmarkFolder> remoteBookmarkFolder = remoteBookmarksStoreManager
 				.getRemoteBookmarkFolderContaining(bookmarksService.getBookmarksTree(), bookmark.getId());
-		if (remoteBookmarkFolder == null) {
+		if (remoteBookmarkFolder.isPresent()) {
 			return true;
 		}
 		IRemoteBookmarksStore remoteBookmarksStore = remoteBookmarksStoreManager
-				.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId());
+				.getRemoteBookmarksStore(remoteBookmarkFolder.get().getRemoteBookmarkStoreId());
 		return remoteBookmarksStore.getState() == State.connected;
 	}
 
