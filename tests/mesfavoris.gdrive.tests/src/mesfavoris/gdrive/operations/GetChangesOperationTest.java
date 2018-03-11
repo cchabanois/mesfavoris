@@ -1,7 +1,5 @@
 package mesfavoris.gdrive.operations;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -30,21 +28,6 @@ public class GetChangesOperationTest {
 	public void setUp() throws Exception {
 		getChangesOperation = new GetChangesOperation(gdriveConnectionRule.getDrive());
 		startChangeId = getChangesOperation.getLargestChangeId() + 1;
-	}
-
-	@Test
-	public void testNoChanges() throws Exception {
-		// Given
-		// wait a few seconds to make sure we don't get events related to previous file creation
-		Thread.sleep(8000);
-		startChangeId = getChangesOperation.getLargestChangeId() + 1;
-		Thread.sleep(2000);
-
-		// When
-		List<Change> changes = getChangesOperation.getChanges(startChangeId);
-
-		// Then
-		assertEquals(0, changes.size());
 	}
 
 	@Test
