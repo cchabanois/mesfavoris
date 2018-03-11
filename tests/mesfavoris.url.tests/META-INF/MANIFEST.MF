@@ -6,7 +6,7 @@ Bundle-Version: 2.0.0.qualifier
 Fragment-Host: mesfavoris.url;bundle-version="2.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit;bundle-version="4.11.0",
- com.google.guava;bundle-version="19.0.0",
+ com.google.guava;bundle-version="24.0.0",
  org.eclipse.swtbot.swt.finder;bundle-version="2.3.0",
  org.eclipse.core.expressions
 Bundle-Vendor: Mes Favoris
