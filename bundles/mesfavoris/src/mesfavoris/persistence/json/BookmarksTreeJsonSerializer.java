@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 
 import com.google.gson.stream.JsonWriter;
 
@@ -36,8 +37,8 @@ public class BookmarksTreeJsonSerializer implements IBookmarksTreeSerializer {
 	}
 
 	@Override
-	public void serialize(BookmarksTree bookmarksTree, BookmarkId bookmarkFolderId, Writer writer, IProgressMonitor monitor)
-			throws IOException {
+	public void serialize(BookmarksTree bookmarksTree, BookmarkId bookmarkFolderId, Writer writer,
+			IProgressMonitor monitor) throws IOException {
 		JsonWriter jsonWriter = new JsonWriter(writer);
 		if (indent) {
 			jsonWriter.setIndent("  ");
@@ -61,12 +62,14 @@ public class BookmarksTreeJsonSerializer implements IBookmarksTreeSerializer {
 
 	private void serializeBookmarkFolder(JsonWriter writer, BookmarksTree bookmarksTree, BookmarkFolder bookmarkFolder,
 			IProgressMonitor monitor) throws IOException {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
 		writer.beginObject();
 		writer.name(NAME_ID).value(bookmarkFolder.getId().toString());
 		writer.name(NAME_PROPERTIES);
-		serializeProperties(writer, bookmarkFolder.getProperties(), monitor);
+		serializeProperties(writer, bookmarkFolder.getProperties(), subMonitor.split(10));
 		writer.name(NAME_CHILDREN);
-		serializeBookmarks(writer, bookmarksTree, bookmarksTree.getChildren(bookmarkFolder.getId()), monitor);
+		serializeBookmarks(writer, bookmarksTree, bookmarksTree.getChildren(bookmarkFolder.getId()),
+				subMonitor.split(90));
 		writer.endObject();
 	}
 
@@ -81,12 +84,13 @@ public class BookmarksTreeJsonSerializer implements IBookmarksTreeSerializer {
 
 	private void serializeBookmarks(JsonWriter writer, BookmarksTree bookmarksTree, List<Bookmark> bookmarks,
 			IProgressMonitor monitor) throws IOException {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, bookmarks.size());
 		writer.beginArray();
 		for (Bookmark bookmark : bookmarks) {
 			if (bookmark instanceof BookmarkFolder) {
-				serializeBookmarkFolder(writer, bookmarksTree, (BookmarkFolder) bookmark, monitor);
+				serializeBookmarkFolder(writer, bookmarksTree, (BookmarkFolder) bookmark, subMonitor.split(1));
 			} else {
-				serializeBookmark(writer, bookmarksTree, bookmark, monitor);
+				serializeBookmark(writer, bookmarksTree, bookmark, subMonitor.split(1));
 			}
 		}
 		writer.endArray();

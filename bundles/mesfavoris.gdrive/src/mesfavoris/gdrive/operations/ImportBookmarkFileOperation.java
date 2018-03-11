@@ -5,7 +5,7 @@ import java.io.StringReader;
 import java.util.Optional;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 
 import com.google.api.services.drive.Drive;
 
@@ -37,26 +37,20 @@ public class ImportBookmarkFileOperation extends AbstractGDriveOperation {
 
 	public void importBookmarkFile(BookmarkId parentId, String fileId, IProgressMonitor monitor)
 			throws BookmarksException, IOException {
-		try {
-			monitor.beginTask("Importing bookmark folder", 100);
-			if (applicationFolderId.isPresent()) {
-				// add it to the application folder
-				AddFileToFolderOperation addFileToFolderOperation = new AddFileToFolderOperation(drive);
-				addFileToFolderOperation.addToFolder(applicationFolderId.get(), fileId);
-			}
-			DownloadHeadRevisionOperation downloadFileOperation = new DownloadHeadRevisionOperation(drive);
-			FileContents contents = downloadFileOperation.downloadFile(fileId, new SubProgressMonitor(monitor, 80));
-			IBookmarksTreeDeserializer deserializer = new BookmarksTreeJsonDeserializer();
-			BookmarksTree bookmarksTree = deserializer.deserialize(
-					new StringReader(new String(contents.getFileContents(), "UTF-8")),
-					new SubProgressMonitor(monitor, 20));
-			bookmarksService.addBookmarksTree(parentId, bookmarksTree, newBookmarksTree -> bookmarkMappingsStore.add(
-					bookmarksTree.getRootFolder().getId(), contents.getFile().getId(),
-					bookmarkMappingPropertiesProvider.getBookmarkMappingProperties(contents.getFile(), bookmarksTree)));
-		} finally {
-			monitor.done();
+		SubMonitor subMonitor = SubMonitor.convert(monitor, "Importing bookmark folder", 100);
+		if (applicationFolderId.isPresent()) {
+			// add it to the application folder
+			AddFileToFolderOperation addFileToFolderOperation = new AddFileToFolderOperation(drive);
+			addFileToFolderOperation.addToFolder(applicationFolderId.get(), fileId);
 		}
-
+		DownloadHeadRevisionOperation downloadFileOperation = new DownloadHeadRevisionOperation(drive);
+		FileContents contents = downloadFileOperation.downloadFile(fileId, subMonitor.split(80));
+		IBookmarksTreeDeserializer deserializer = new BookmarksTreeJsonDeserializer();
+		BookmarksTree bookmarksTree = deserializer
+				.deserialize(new StringReader(new String(contents.getFileContents(), "UTF-8")), subMonitor.split(20));
+		bookmarksService.addBookmarksTree(parentId, bookmarksTree, newBookmarksTree -> bookmarkMappingsStore.add(
+				bookmarksTree.getRootFolder().getId(), contents.getFile().getId(),
+				bookmarkMappingPropertiesProvider.getBookmarkMappingProperties(contents.getFile(), bookmarksTree)));
 	}
 
 }

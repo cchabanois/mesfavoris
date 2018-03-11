@@ -11,7 +11,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -132,12 +132,12 @@ public class BookmarksAutoSaver implements IBookmarksDirtyStateTracker {
 		@Override
 		public void handle(List<BookmarksModification> modifications, IProgressMonitor monitor)
 				throws BookmarksException {
+			SubMonitor subMonitor = SubMonitor.convert(monitor);
 			try {
 				BookmarksModification latestModification = modifications.get(modifications.size() - 1);
 				BookmarksTree bookmarksTree = latestModification.getTargetTree();
-				localBookmarksSaver.saveBookmarks(bookmarksTree, new SubProgressMonitor(monitor, 20));
-				remoteBookmarksSaver.applyModificationsToRemoteBookmarksStores(modifications,
-						new SubProgressMonitor(monitor, 80));
+				localBookmarksSaver.saveBookmarks(bookmarksTree, subMonitor.split(20));
+				remoteBookmarksSaver.applyModificationsToRemoteBookmarksStores(modifications, subMonitor.split(80));
 			} finally {
 				computeDirtyBookmarks();
 				fireDirtyBookmarksChanged(getDirtyBookmarks());

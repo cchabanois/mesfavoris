@@ -1,5 +1,7 @@
 package mesfavoris.gdrive;
 
+import static mesfavoris.gdrive.operations.BookmarkFileConstants.MESFAVORIS_MIME_TYPE;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -9,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.ui.PlatformUI;
 
@@ -45,7 +47,6 @@ import mesfavoris.remote.ConflictException;
 import mesfavoris.remote.RemoteBookmarkFolder;
 import mesfavoris.remote.RemoteBookmarksTree;
 import mesfavoris.remote.UserInfo;
-import static mesfavoris.gdrive.operations.BookmarkFileConstants.*;
 
 public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 	private final GDriveConnectionManager gDriveConnectionManager;
@@ -119,6 +120,7 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 	@Override
 	public RemoteBookmarksTree add(BookmarksTree bookmarksTree, BookmarkId bookmarkFolderId, IProgressMonitor monitor)
 			throws IOException {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, "Saving bookmark folder", 100);
 		Drive drive = gDriveConnectionManager.getDrive();
 		String bookmarkDirId = gDriveConnectionManager.getApplicationFolderId();
 		if (drive == null || bookmarkDirId == null) {
@@ -128,21 +130,15 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 		if (bookmarkFolder == null) {
 			throw new IllegalArgumentException("Cannot find folder with id " + bookmarkFolderId);
 		}
-		try {
-			monitor.beginTask("Saving bookmark folder", 100);
-			CreateFileOperation createFileOperation = new CreateFileOperation(drive);
-			byte[] content = serializeBookmarkFolder(bookmarksTree, bookmarkFolderId,
-					new SubProgressMonitor(monitor, 20));
-			com.google.api.services.drive.model.File file = createFileOperation.createFile(bookmarkDirId,
-					bookmarkFolder.getPropertyValue(Bookmark.PROPERTY_NAME), MESFAVORIS_MIME_TYPE, content,
-					new SubProgressMonitor(monitor, 80));
-			BookmarksTree bookmarkFolderTree = bookmarksTree.subTree(bookmarkFolderId);
-			bookmarkMappingsStore.add(bookmarkFolder.getId(), file.getId(),
-					bookmarkMappingPropertiesProvider.getBookmarkMappingProperties(file, bookmarkFolderTree));
-			return new RemoteBookmarksTree(this, bookmarkFolderTree, file.getEtag());
-		} finally {
-			monitor.done();
-		}
+		CreateFileOperation createFileOperation = new CreateFileOperation(drive);
+		byte[] content = serializeBookmarkFolder(bookmarksTree, bookmarkFolderId, subMonitor.split(20));
+		com.google.api.services.drive.model.File file = createFileOperation.createFile(bookmarkDirId,
+				bookmarkFolder.getPropertyValue(Bookmark.PROPERTY_NAME), MESFAVORIS_MIME_TYPE, content,
+				subMonitor.split(80));
+		BookmarksTree bookmarkFolderTree = bookmarksTree.subTree(bookmarkFolderId);
+		bookmarkMappingsStore.add(bookmarkFolder.getId(), file.getId(),
+				bookmarkMappingPropertiesProvider.getBookmarkMappingProperties(file, bookmarkFolderTree));
+		return new RemoteBookmarksTree(this, bookmarkFolderTree, file.getEtag());
 	}
 
 	private byte[] serializeBookmarkFolder(BookmarksTree bookmarksTree, BookmarkId bookmarkFolderId,
@@ -156,22 +152,18 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 
 	@Override
 	public void remove(BookmarkId bookmarkFolderId, IProgressMonitor monitor) throws IOException {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, "Removing bookmark folder from gDrive", 100);
 		Drive drive = gDriveConnectionManager.getDrive();
 		if (drive == null) {
 			throw new IllegalStateException("Not connected");
 		}
 		String fileId = bookmarkMappingsStore.getMapping(bookmarkFolderId).map(mapping -> mapping.getFileId())
 				.orElseThrow(() -> new IllegalArgumentException("This folder has not been added to gDrive"));
-		monitor.beginTask("Removing bookmark folder from gDrive", 100);
-		try {
-			bookmarkMappingsStore.remove(bookmarkFolderId);
-			monitor.worked(10);
-			TrashFileOperation trashFileOperation = new TrashFileOperation(drive);
-			trashFileOperation.trashFile(fileId);
-			monitor.worked(90);
-		} finally {
-			monitor.done();
-		}
+		bookmarkMappingsStore.remove(bookmarkFolderId);
+		subMonitor.worked(10);
+		TrashFileOperation trashFileOperation = new TrashFileOperation(drive);
+		trashFileOperation.trashFile(fileId);
+		subMonitor.worked(90);
 	}
 
 	@Override
@@ -191,6 +183,7 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 
 	@Override
 	public RemoteBookmarksTree load(BookmarkId bookmarkFolderId, IProgressMonitor monitor) throws IOException {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, "Loading bookmark folder", 100);
 		Drive drive = gDriveConnectionManager.getDrive();
 		String bookmarkDirId = gDriveConnectionManager.getApplicationFolderId();
 		if (drive == null || bookmarkDirId == null) {
@@ -198,25 +191,20 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 		}
 		String fileId = bookmarkMappingsStore.getMapping(bookmarkFolderId).map(mapping -> mapping.getFileId())
 				.orElseThrow(() -> new IllegalArgumentException("This folder has not been added to gDrive"));
-		try {
-			monitor.beginTask("Loading bookmark folder", 100);
-			DownloadHeadRevisionOperation downloadFileOperation = new DownloadHeadRevisionOperation(drive);
-			FileContents contents = downloadFileOperation.downloadFile(fileId, new SubProgressMonitor(monitor, 80));
-			IBookmarksTreeDeserializer deserializer = new BookmarksTreeJsonDeserializer();
-			BookmarksTree bookmarkFolderTree = deserializer.deserialize(
-					new StringReader(new String(contents.getFileContents(), "UTF-8")),
-					new SubProgressMonitor(monitor, 20));
-			bookmarkMappingsStore.update(contents.getFile().getId(), bookmarkMappingPropertiesProvider
-					.getBookmarkMappingProperties(contents.getFile(), bookmarkFolderTree));
-			return new RemoteBookmarksTree(this, bookmarkFolderTree, contents.getFile().getEtag());
-		} finally {
-			monitor.done();
-		}
+		DownloadHeadRevisionOperation downloadFileOperation = new DownloadHeadRevisionOperation(drive);
+		FileContents contents = downloadFileOperation.downloadFile(fileId, subMonitor.split(80));
+		IBookmarksTreeDeserializer deserializer = new BookmarksTreeJsonDeserializer();
+		BookmarksTree bookmarkFolderTree = deserializer
+				.deserialize(new StringReader(new String(contents.getFileContents(), "UTF-8")), subMonitor.split(20));
+		bookmarkMappingsStore.update(contents.getFile().getId(),
+				bookmarkMappingPropertiesProvider.getBookmarkMappingProperties(contents.getFile(), bookmarkFolderTree));
+		return new RemoteBookmarksTree(this, bookmarkFolderTree, contents.getFile().getEtag());
 	}
 
 	@Override
 	public RemoteBookmarksTree save(BookmarksTree bookmarksTree, BookmarkId bookmarkFolderId, String etag,
 			IProgressMonitor monitor) throws IOException, ConflictException {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, "Saving bookmark folder", 100);
 		Drive drive = gDriveConnectionManager.getDrive();
 		String bookmarkDirId = gDriveConnectionManager.getApplicationFolderId();
 		if (drive == null || bookmarkDirId == null) {
@@ -225,12 +213,10 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 		String fileId = bookmarkMappingsStore.getMapping(bookmarkFolderId).map(mapping -> mapping.getFileId())
 				.orElseThrow(() -> new IllegalArgumentException("This folder has not been added to gDrive"));
 		try {
-			monitor.beginTask("Saving bookmark folder", 100);
 			UpdateFileOperation updateFileOperation = new UpdateFileOperation(drive, durationForNewRevision);
-			byte[] content = serializeBookmarkFolder(bookmarksTree, bookmarkFolderId,
-					new SubProgressMonitor(monitor, 20));
+			byte[] content = serializeBookmarkFolder(bookmarksTree, bookmarkFolderId, subMonitor.split(20));
 			File file = updateFileOperation.updateFile(fileId, MESFAVORIS_MIME_TYPE, content, etag,
-					new SubProgressMonitor(monitor, 80));
+					subMonitor.split(80));
 			BookmarksTree bookmarkFolderTree = bookmarksTree.subTree(bookmarkFolderId);
 			bookmarkMappingsStore.update(file.getId(),
 					bookmarkMappingPropertiesProvider.getBookmarkMappingProperties(file, bookmarkFolderTree));
@@ -242,8 +228,6 @@ public class GDriveRemoteBookmarksStore extends AbstractRemoteBookmarksStore {
 			} else {
 				throw new IOException(e);
 			}
-		} finally {
-			monitor.done();
 		}
 	}
 

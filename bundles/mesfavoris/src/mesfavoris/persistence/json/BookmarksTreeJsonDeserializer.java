@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 
 import com.google.gson.stream.JsonReader;
 
@@ -60,6 +61,7 @@ public class BookmarksTreeJsonDeserializer implements IBookmarksTreeDeserializer
 	}
 
 	private BookmarksTree deserializeBookmarksTree(JsonReader reader, IProgressMonitor monitor) throws IOException {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
 		reader.beginObject();
 		BookmarkId id = null;
 		Map<String, String> properties = Collections.emptyMap();
@@ -73,7 +75,7 @@ public class BookmarksTreeJsonDeserializer implements IBookmarksTreeDeserializer
 				isFolder = true;
 				break;
 			} else if (name.equals(NAME_PROPERTIES)) {
-				properties = deserializeProperties(reader, monitor);
+				properties = deserializeProperties(reader, subMonitor.split(1));
 			} else {
 				reader.skipValue();
 			}
@@ -83,13 +85,14 @@ public class BookmarksTreeJsonDeserializer implements IBookmarksTreeDeserializer
 		}
 		BookmarkFolder bookmarkFolder = new BookmarkFolder(id, properties);
 		BookmarksTree bookmarksTree = new BookmarksTree(bookmarkFolder);
-		bookmarksTree = deserializeBookmarksArray(reader, bookmarksTree, bookmarkFolder.getId(), monitor);
+		bookmarksTree = deserializeBookmarksArray(reader, bookmarksTree, bookmarkFolder.getId(), subMonitor.split(99));
 		reader.endObject();
 		return bookmarksTree;
 	}
 
 	private BookmarksTree deserializeBookmark(JsonReader reader, BookmarksTree bookmarksTree, BookmarkId parentId,
 			IProgressMonitor monitor) throws IOException {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
 		reader.beginObject();
 		BookmarkId id = null;
 		Map<String, String> properties = Collections.emptyMap();
@@ -103,7 +106,7 @@ public class BookmarksTreeJsonDeserializer implements IBookmarksTreeDeserializer
 				isFolder = true;
 				break;
 			} else if (name.equals(NAME_PROPERTIES)) {
-				properties = deserializeProperties(reader, monitor);
+				properties = deserializeProperties(reader, subMonitor.split(50));
 			} else {
 				reader.skipValue();
 			}
@@ -111,7 +114,7 @@ public class BookmarksTreeJsonDeserializer implements IBookmarksTreeDeserializer
 		if (isFolder) {
 			BookmarkFolder bookmarkFolder = new BookmarkFolder(id, properties);
 			bookmarksTree = bookmarksTree.addBookmarks(parentId, Arrays.<Bookmark> asList(bookmarkFolder));
-			bookmarksTree = deserializeBookmarksArray(reader, bookmarksTree, bookmarkFolder.getId(), monitor);
+			bookmarksTree = deserializeBookmarksArray(reader, bookmarksTree, bookmarkFolder.getId(), subMonitor.split(50));
 		} else {
 			Bookmark bookmark = new Bookmark(id, properties);
 			bookmarksTree = bookmarksTree.addBookmarks(parentId, Arrays.asList(bookmark));
@@ -122,9 +125,10 @@ public class BookmarksTreeJsonDeserializer implements IBookmarksTreeDeserializer
 
 	private BookmarksTree deserializeBookmarksArray(JsonReader reader, BookmarksTree bookmarksTree, BookmarkId parentId,
 			IProgressMonitor monitor) throws IOException {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
 		reader.beginArray();
 		while (reader.hasNext()) {
-			bookmarksTree = deserializeBookmark(reader, bookmarksTree, parentId, monitor);
+			bookmarksTree = deserializeBookmark(reader, bookmarksTree, parentId, subMonitor.setWorkRemaining(100).split(1));
 		}
 		reader.endArray();
 		return bookmarksTree;
