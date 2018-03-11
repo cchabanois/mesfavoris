@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 
 import com.google.common.collect.Lists;
 
@@ -83,10 +82,10 @@ public class RemoteBookmarksSaver {
 			List<BookmarksModification> modifications, IProgressMonitor monitor) throws IOException {
 		IRemoteBookmarksStore store = remoteBookmarksStoreManager
 				.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId());
-		monitor.beginTask("Saving to remote bookmark folder", 100);
+		SubMonitor subMonitor = SubMonitor.convert(monitor, "Saving to remote bookmark folder", 100);
 		while (true) {
 			RemoteBookmarksTree remoteBookmarksTree = store.load(remoteBookmarkFolder.getBookmarkFolderId(),
-					new SubProgressMonitor(monitor, 50));
+					subMonitor.split(50));
 			ModificationsReplayer modificationsReplayer = new ModificationsReplayer(modifications);
 			BookmarksTreeModifier remoteBookmarksTreeModifier = new BookmarksTreeModifier(
 					remoteBookmarksTree.getBookmarksTree());
@@ -98,7 +97,7 @@ public class RemoteBookmarksSaver {
 			try {
 				store.save(remoteBookmarksTreeModifier.getCurrentTree(),
 						remoteBookmarksTreeModifier.getCurrentTree().getRootFolder().getId(),
-						remoteBookmarksTree.getEtag(), new SubProgressMonitor(monitor, 50));
+						remoteBookmarksTree.getEtag(), subMonitor.split(50));
 				return;
 			} catch (ConflictException e) {
 				// conflict occurred, reload and retry

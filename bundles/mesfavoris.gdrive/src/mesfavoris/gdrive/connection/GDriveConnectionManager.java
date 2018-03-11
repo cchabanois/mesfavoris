@@ -208,26 +208,22 @@ public class GDriveConnectionManager {
 	}
 
 	private Credential authorize(final IProgressMonitor monitor) throws IOException {
-		try {
-			monitor.beginTask("Authorizes the application to access user's protected data on Google Drive", 100);
-			// load client secrets
-			// In this context, the client secret is obviously not treated as a
-			// secret.
-			GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
-					new InputStreamReader(GDriveConnectionManager.class.getResourceAsStream("client_secrets.json")));
-			// set up authorization code flow
-			FileDataStoreFactory dataStoreFactory = new FileDataStoreFactory(dataStoreDir);
-			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY,
-					clientSecrets, Collections.singleton(DriveScopes.DRIVE)).setDataStoreFactory(dataStoreFactory)
-							.build();
-			// authorize
-			LocalServerReceiver localServerReceiver = new CancellableLocalServerReceiver(monitor);
-			AuthorizationCodeInstalledApp authorizationCodeInstalledApp = authorizationCodeInstalledAppProvider
-					.get(flow, localServerReceiver, monitor);
-			return authorizationCodeInstalledApp.authorize("user");
-		} finally {
-			monitor.done();
-		}
+		SubMonitor subMonitor = SubMonitor.convert(monitor,
+				"Authorizes the application to access user's protected data on Google Drive", 100);
+		// load client secrets
+		// In this context, the client secret is obviously not treated as a
+		// secret.
+		GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
+				new InputStreamReader(GDriveConnectionManager.class.getResourceAsStream("client_secrets.json")));
+		// set up authorization code flow
+		FileDataStoreFactory dataStoreFactory = new FileDataStoreFactory(dataStoreDir);
+		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY,
+				clientSecrets, Collections.singleton(DriveScopes.DRIVE)).setDataStoreFactory(dataStoreFactory).build();
+		// authorize
+		LocalServerReceiver localServerReceiver = new CancellableLocalServerReceiver(subMonitor);
+		AuthorizationCodeInstalledApp authorizationCodeInstalledApp = authorizationCodeInstalledAppProvider.get(flow,
+				localServerReceiver, subMonitor);
+		return authorizationCodeInstalledApp.authorize("user");
 	}
 
 	private UserInfo getAuthenticatedUser(Drive drive, IProgressMonitor monitor) throws IOException {
