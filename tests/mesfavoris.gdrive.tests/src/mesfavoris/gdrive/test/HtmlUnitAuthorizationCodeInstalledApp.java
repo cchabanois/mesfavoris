@@ -35,9 +35,10 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 	private final IProgressMonitor monitor;
 	private IAuthorizationListener authorizationListener;
 
-	public static final String INTERNET_EXPLORER = "Microsoft Internet Explorer";
-	public static final BrowserVersion INTERNET_EXPLORER_6 = new BrowserVersion(INTERNET_EXPLORER,
-			"4.0 (compatible; MSIE 6.0b; Windows 98)", "Mozilla/4.0 (compatible; MSIE 6.0; Windows 98)", 6, null);
+	// public static final String INTERNET_EXPLORER = "Microsoft Internet Explorer";
+	public static final BrowserVersion INTERNET_EXPLORER_6 = new BrowserVersion.BrowserVersionBuilder(
+			BrowserVersion.INTERNET_EXPLORER).setUserAgent("Mozilla/4.0 (compatible; MSIE 6.0; Windows 98)")
+					.setApplicationVersion("6.0").build();
 
 	static {
 		java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.SEVERE);
@@ -131,7 +132,7 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 		webClient.waitForBackgroundJavaScriptStartingBefore(WAIT_DELAY_MS);
 		HtmlForm form = (HtmlForm) page.getElementById("gaia_loginform");
 		if (form == null) {
-			throw new RuntimeException("Cannot find login form :\n" + authorizationUrl+"\n"+page.asXml());
+			throw new RuntimeException("Cannot find login form :\n" + authorizationUrl + "\n" + page.asXml());
 		}
 		HtmlSubmitInput signInButton = (HtmlSubmitInput) form.getInputByName("signIn");
 		HtmlEmailInput userNameField = (HtmlEmailInput) form.getInputByName("Email");
@@ -145,8 +146,8 @@ public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInst
 		HtmlPage allowAccessPage = signInButton.click();
 		webClient.waitForBackgroundJavaScriptStartingBefore(WAIT_DELAY_MS);
 		return allowAccessPage;
-	}	
-	
+	}
+
 	private HtmlPage allowAccess(WebClient webClient, HtmlPage allowAccessPage) throws IOException {
 		HtmlButton allowAccessButton = (HtmlButton) allowAccessPage.getElementById("submit_approve_access");
 		if (allowAccessButton == null) {
