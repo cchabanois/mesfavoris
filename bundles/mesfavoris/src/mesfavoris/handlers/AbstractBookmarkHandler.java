@@ -28,6 +28,10 @@ import mesfavoris.service.IBookmarksService;
 public abstract class AbstractBookmarkHandler extends AbstractHandler{
 	protected IEvaluationContext evaluationContext;
 	protected final IBookmarksService bookmarksService;
+
+	public AbstractBookmarkHandler(IBookmarksService bookmarksService) {
+		this.bookmarksService = bookmarksService;
+	}	
 	
 	public AbstractBookmarkHandler() {
 		this.bookmarksService = BookmarksPlugin.getDefault().getBookmarksService();
