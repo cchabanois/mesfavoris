@@ -18,6 +18,7 @@ import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
 import mesfavoris.remote.RemoteBookmarkFolder;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
+import mesfavoris.service.IBookmarksService;
 
 public class RenameBookmarkHandler extends AbstractBookmarkHandler {
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
@@ -26,6 +27,11 @@ public class RenameBookmarkHandler extends AbstractBookmarkHandler {
 		this.remoteBookmarksStoreManager = BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager();
 	}
 
+	public RenameBookmarkHandler(IBookmarksService bookmarksService, RemoteBookmarksStoreManager remoteBookmarksStoreManager) {
+		super(bookmarksService);
+		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
+	}
+	
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil.getCurrentSelection(event);
@@ -70,7 +76,7 @@ public class RenameBookmarkHandler extends AbstractBookmarkHandler {
 		
 		Optional<RemoteBookmarkFolder> remoteBookmarkFolder = remoteBookmarksStoreManager
 				.getRemoteBookmarkFolderContaining(bookmarksService.getBookmarksTree(), bookmark.getId());
-		if (remoteBookmarkFolder.isPresent()) {
+		if (!remoteBookmarkFolder.isPresent()) {
 			return true;
 		}
 		IRemoteBookmarksStore remoteBookmarksStore = remoteBookmarksStoreManager
