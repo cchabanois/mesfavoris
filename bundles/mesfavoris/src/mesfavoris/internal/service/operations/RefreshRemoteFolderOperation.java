@@ -69,10 +69,8 @@ public class RefreshRemoteFolderOperation {
 	}
 
 	public void refresh(String storeId, IProgressMonitor monitor) throws BookmarksException {
-		IRemoteBookmarksStore store = remoteBookmarksStoreManager.getRemoteBookmarksStore(storeId);
-		if (store == null) {
-			throw new BookmarksException("Remore bookmarks store not found");
-		}
+		IRemoteBookmarksStore store = remoteBookmarksStoreManager.getRemoteBookmarksStore(storeId)
+				.orElseThrow(() -> new BookmarksException("Remore bookmarks store not found"));
 		Set<RemoteBookmarkFolder> remoteBookmarkFolders = store.getRemoteBookmarkFolders();
 		SubMonitor subMonitor = SubMonitor.convert(monitor,
 				"Loading bookmark folders from " + store.getDescriptor().getLabel(), remoteBookmarkFolders.size());
@@ -96,12 +94,9 @@ public class RefreshRemoteFolderOperation {
 	}
 
 	public void refresh(BookmarkId bookmarkFolderId, IProgressMonitor monitor) throws BookmarksException {
-		RemoteBookmarkFolder remoteBookmarkFolder = remoteBookmarksStoreManager
-				.getRemoteBookmarkFolder(bookmarkFolderId)
+		IRemoteBookmarksStore store = remoteBookmarksStoreManager.getRemoteBookmarkFolder(bookmarkFolderId)
+				.flatMap(remoteBookmarkFolder -> remoteBookmarksStoreManager.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId()))
 				.orElseThrow(() -> new BookmarksException("Not a remote boomark folder"));
-
-		String storeId = remoteBookmarkFolder.getRemoteBookmarkStoreId();
-		IRemoteBookmarksStore store = remoteBookmarksStoreManager.getRemoteBookmarksStore(storeId);
 		do {
 			try {
 				bookmarkDatabase.modify(LockMode.OPTIMISTIC, (bookmarksTreeModifier) -> {
@@ -119,7 +114,7 @@ public class RefreshRemoteFolderOperation {
 					}
 				}, /* validateModifications */ false);
 				return;
-			} catch (OptimisticLockException|DirtyBookmarksDatabaseException e) {
+			} catch (OptimisticLockException | DirtyBookmarksDatabaseException e) {
 				try {
 					// sleep and retry later
 					Thread.sleep(200);
@@ -141,5 +136,5 @@ public class RefreshRemoteFolderOperation {
 		}
 
 	}
-	
+
 }

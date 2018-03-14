@@ -39,7 +39,7 @@ public class BookmarkFolderLabelProvider extends AbstractBookmarkLabelProvider {
 					stylerProvider.getStyler(null, Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW), null));
 		});
 		Optional<IRemoteBookmarksStore> remoteBookmarksStore = remoteBookmarkFolder
-				.map(f -> remoteBookmarksStoreManager.getRemoteBookmarksStore(f.getRemoteBookmarkStoreId()));
+				.flatMap(f -> remoteBookmarksStoreManager.getRemoteBookmarksStore(f.getRemoteBookmarkStoreId()));
 		if (remoteBookmarksStore.filter(store -> store.getState() == State.connected).isPresent()
 				&& remoteBookmarkFolder.filter(f -> isReadOnly(f)).isPresent()) {
 			result.append(" [readonly]",

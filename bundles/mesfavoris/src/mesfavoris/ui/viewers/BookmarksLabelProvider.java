@@ -116,7 +116,7 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 	private boolean isUnderDisconnectedRemoteBookmarkFolder(Bookmark bookmark) {
 		return remoteBookmarksStoreManager
 				.getRemoteBookmarkFolderContaining(bookmarkDatabase.getBookmarksTree(), bookmark.getId())
-				.map(remoteBookmarkFolder -> remoteBookmarksStoreManager
+				.flatMap(remoteBookmarkFolder -> remoteBookmarksStoreManager
 						.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId()))
 				.map(remoteBookmarksStore -> remoteBookmarksStore.getState() != State.connected).orElse(false);
 	}
@@ -190,7 +190,7 @@ public class BookmarksLabelProvider extends StyledCellLabelProvider implements I
 
 	private Optional<IRemoteBookmarksStore> getRemoteBookmarkStore(BookmarkId bookmarkFolderId) {
 		return remoteBookmarksStoreManager.getRemoteBookmarkFolder(bookmarkFolderId)
-				.map(f -> remoteBookmarksStoreManager.getRemoteBookmarksStore(f.getRemoteBookmarkStoreId()));
+				.flatMap(f -> remoteBookmarksStoreManager.getRemoteBookmarksStore(f.getRemoteBookmarkStoreId()));
 	}
 
 	private String getFirstCommentLine(Bookmark bookmark) {

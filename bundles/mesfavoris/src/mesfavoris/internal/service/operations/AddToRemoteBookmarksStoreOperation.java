@@ -31,10 +31,8 @@ public class AddToRemoteBookmarksStoreOperation {
 
 	public void addToRemoteBookmarksStore(String storeId, final BookmarkId bookmarkFolderId,
 			final IProgressMonitor monitor) throws BookmarksException {
-		final IRemoteBookmarksStore store = remoteBookmarksStoreManager.getRemoteBookmarksStore(storeId);
-		if (store == null) {
-			throw new BookmarksException("Unknown store id");
-		}
+		final IRemoteBookmarksStore store = remoteBookmarksStoreManager.getRemoteBookmarksStore(storeId)
+				.orElseThrow(() -> new BookmarksException("Unknown store id"));
 
 		if (!canAddToRemoteBookmarkStore(store, bookmarkFolderId)) {
 			throw new BookmarksException("Could not add bookmark folder to remote store");
@@ -49,11 +47,8 @@ public class AddToRemoteBookmarksStoreOperation {
 	}
 
 	public boolean canAddToRemoteBookmarkStore(String storeId, BookmarkId bookmarkFolderId) {
-		final IRemoteBookmarksStore store = remoteBookmarksStoreManager.getRemoteBookmarksStore(storeId);
-		if (store == null) {
-			return false;
-		}
-		return canAddToRemoteBookmarkStore(store, bookmarkFolderId);
+		return remoteBookmarksStoreManager.getRemoteBookmarksStore(storeId)
+				.map(store -> canAddToRemoteBookmarkStore(store, bookmarkFolderId)).orElse(false);
 	}
 
 	private boolean canAddToRemoteBookmarkStore(IRemoteBookmarksStore remoteBookmarksStore,
@@ -71,8 +66,8 @@ public class AddToRemoteBookmarksStoreOperation {
 	}
 
 	private boolean isUnderRemoteBookmarksFolder(BookmarkId bookmarkFolderId) {
-		return remoteBookmarksStoreManager.getRemoteBookmarkFolderContaining(bookmarkDatabase.getBookmarksTree(),
-				bookmarkFolderId).isPresent();
+		return remoteBookmarksStoreManager
+				.getRemoteBookmarkFolderContaining(bookmarkDatabase.getBookmarksTree(), bookmarkFolderId).isPresent();
 	}
 
 }

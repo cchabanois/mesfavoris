@@ -82,7 +82,7 @@ public class RemoteBookmarksSaver {
 	private void applyModificationsToRemoteBookmarkFolder(RemoteBookmarkFolder remoteBookmarkFolder,
 			List<BookmarksModification> modifications, IProgressMonitor monitor) throws IOException {
 		IRemoteBookmarksStore store = remoteBookmarksStoreManager
-				.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId());
+				.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId()).get();
 		SubMonitor subMonitor = SubMonitor.convert(monitor, "Saving to remote bookmark folder", 100);
 		while (true) {
 			RemoteBookmarksTree remoteBookmarksTree = store.load(remoteBookmarkFolder.getBookmarkFolderId(),

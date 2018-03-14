@@ -107,7 +107,7 @@ public class BookmarksTableLabelProvider extends StyledCellLabelProvider impleme
 	private boolean isUnderDisconnectedRemoteBookmarkFolder(Bookmark bookmark) {
 		return remoteBookmarksStoreManager
 				.getRemoteBookmarkFolderContaining(bookmarkDatabase.getBookmarksTree(), bookmark.getId())
-				.map(remoteBookmarkFolder -> remoteBookmarksStoreManager
+				.flatMap(remoteBookmarkFolder -> remoteBookmarksStoreManager
 						.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId()))
 				.map(remoteBookmarksStore -> remoteBookmarksStore.getState() != State.connected).orElse(false);
 	}
@@ -138,7 +138,7 @@ public class BookmarksTableLabelProvider extends StyledCellLabelProvider impleme
 		
 		remoteBookmarksStoreManager
 				.getRemoteBookmarkFolderContaining(bookmarkDatabase.getBookmarksTree(), bookmark.getId())
-				.map(remoteBookmarkFolder -> remoteBookmarksStoreManager
+				.flatMap(remoteBookmarkFolder -> remoteBookmarksStoreManager
 						.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId()))
 				.map(remoteBookmarksStore -> remoteBookmarksStore.getDescriptor().getImageOverlayDescriptor())
 				.ifPresent(overlayImage -> overlayImages[IDecoration.TOP_RIGHT] = overlayImage);
