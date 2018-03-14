@@ -22,10 +22,8 @@ public class RemoveFromRemoteBookmarksStoreOperation {
 
 	public void removeFromRemoteBookmarksStore(String storeId, final BookmarkId bookmarkFolderId,
 			final IProgressMonitor monitor) throws BookmarksException {
-		final IRemoteBookmarksStore store = remoteBookmarksStoreManager.getRemoteBookmarksStore(storeId);
-		if (store == null) {
-			throw new BookmarksException("Unknown store id");
-		}
+		final IRemoteBookmarksStore store = remoteBookmarksStoreManager.getRemoteBookmarksStore(storeId)
+				.orElseThrow(() -> new BookmarksException("Unknown store id"));
 		bookmarkDatabase.modify(bookmarksTreeModifier -> {
 			try {
 				store.remove(bookmarkFolderId, monitor);

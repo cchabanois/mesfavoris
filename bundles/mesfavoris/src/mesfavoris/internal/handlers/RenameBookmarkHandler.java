@@ -1,7 +1,5 @@
 package mesfavoris.internal.handlers;
 
-import java.util.Optional;
-
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -14,9 +12,7 @@ import mesfavoris.BookmarksException;
 import mesfavoris.handlers.AbstractBookmarkHandler;
 import mesfavoris.internal.BookmarksPlugin;
 import mesfavoris.model.Bookmark;
-import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
-import mesfavoris.remote.RemoteBookmarkFolder;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 import mesfavoris.service.IBookmarksService;
 
@@ -27,11 +23,12 @@ public class RenameBookmarkHandler extends AbstractBookmarkHandler {
 		this.remoteBookmarksStoreManager = BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager();
 	}
 
-	public RenameBookmarkHandler(IBookmarksService bookmarksService, RemoteBookmarksStoreManager remoteBookmarksStoreManager) {
+	public RenameBookmarkHandler(IBookmarksService bookmarksService,
+			RemoteBookmarksStoreManager remoteBookmarksStoreManager) {
 		super(bookmarksService);
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
 	}
-	
+
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil.getCurrentSelection(event);
@@ -73,15 +70,12 @@ public class RenameBookmarkHandler extends AbstractBookmarkHandler {
 		if (bookmark == null) {
 			return false;
 		}
-		
-		Optional<RemoteBookmarkFolder> remoteBookmarkFolder = remoteBookmarksStoreManager
-				.getRemoteBookmarkFolderContaining(bookmarksService.getBookmarksTree(), bookmark.getId());
-		if (!remoteBookmarkFolder.isPresent()) {
-			return true;
-		}
-		IRemoteBookmarksStore remoteBookmarksStore = remoteBookmarksStoreManager
-				.getRemoteBookmarksStore(remoteBookmarkFolder.get().getRemoteBookmarkStoreId());
-		return remoteBookmarksStore.getState() == State.connected;
+
+		return remoteBookmarksStoreManager
+				.getRemoteBookmarkFolderContaining(bookmarksService.getBookmarksTree(), bookmark.getId())
+				.flatMap(remoteBookmarkFolder -> remoteBookmarksStoreManager
+						.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId()))
+				.map(store -> store.getState() == State.connected).orElse(true);
 	}
 
 }

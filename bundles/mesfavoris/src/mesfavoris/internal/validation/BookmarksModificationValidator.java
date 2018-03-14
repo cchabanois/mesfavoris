@@ -18,7 +18,6 @@ import mesfavoris.model.modification.BookmarksAddedModification;
 import mesfavoris.model.modification.BookmarksModification;
 import mesfavoris.model.modification.BookmarksMovedModification;
 import mesfavoris.model.modification.IBookmarksModificationValidator;
-import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.IRemoteBookmarksStore.State;
 import mesfavoris.remote.RemoteBookmarkFolder;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
@@ -98,7 +97,7 @@ public class BookmarksModificationValidator implements IBookmarksModificationVal
 			return Status.OK_STATUS;
 		}
 		boolean connected = remoteBookmarkFolder
-				.map(f -> remoteBookmarksStoreManager.getRemoteBookmarksStore(f.getRemoteBookmarkStoreId()))
+				.flatMap(f -> remoteBookmarksStoreManager.getRemoteBookmarksStore(f.getRemoteBookmarkStoreId()))
 				.map(remoteBookmarksStore -> remoteBookmarksStore.getState() == State.connected).orElse(false);
 
 		if (connected && !isReadOnly(remoteBookmarkFolder.get())) {

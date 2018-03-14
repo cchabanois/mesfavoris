@@ -32,10 +32,8 @@ public class ConnectToRemoteBookmarksStoreOperation {
 	public void connect(String storeId, IProgressMonitor monitor) throws BookmarksException {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, "Connecting to remote bookmarks store", 100);
 		try {
-			IRemoteBookmarksStore store = remoteBookmarksStoreManager.getRemoteBookmarksStore(storeId);
-			if (store == null) {
-				throw new BookmarksException("Unknown store id");
-			}
+			IRemoteBookmarksStore store = remoteBookmarksStoreManager.getRemoteBookmarksStore(storeId)
+					.orElseThrow(() -> new BookmarksException("Unknown store id"));
 			store.connect(subMonitor.newChild(50));
 			refreshRemoteFolderOperation.refresh(store.getDescriptor().getId(), subMonitor.newChild(50));
 		} catch (IOException e) {
@@ -46,10 +44,8 @@ public class ConnectToRemoteBookmarksStoreOperation {
 	public void disconnect(String storeId, IProgressMonitor monitor) throws BookmarksException {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, "Disconnecting from remote bookmarks store", 100);
 		try {
-			IRemoteBookmarksStore store = remoteBookmarksStoreManager.getRemoteBookmarksStore(storeId);
-			if (store == null) {
-				throw new BookmarksException("Unknown store id");
-			}
+			IRemoteBookmarksStore store = remoteBookmarksStoreManager.getRemoteBookmarksStore(storeId)
+					.orElseThrow(() -> new BookmarksException("Unknown store id"));
 			store.disconnect(subMonitor.newChild(50));
 		} catch (IOException e) {
 			throw new BookmarksException("Could not disconnect from remote bookmarks store", e);

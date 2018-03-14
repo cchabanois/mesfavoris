@@ -116,9 +116,8 @@ public class DeleteSharedBookmarkFolderHandler extends AbstractBookmarkHandler {
 			tableViewer.setInput(new BookmarkFolder[] { bookmarkFolder });
 
 			IRemoteBookmarksStore remoteBookmarkStore = remoteBookmarksStoreManager
-					.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId());
+					.getRemoteBookmarksStore(remoteBookmarkFolder.getRemoteBookmarkStoreId()).get();
 			deleteFromRemoteStoreButton = new Button(area, SWT.CHECK);
-			remoteBookmarkStore.getDescriptor().getLabel();
 			deleteFromRemoteStoreButton.setText("Delete from " + remoteBookmarkStore.getDescriptor().getLabel());
 			deleteFromRemoteStoreButton
 					.setEnabled(remoteBookmarkStore.getState() == State.connected && !isReadOnly(remoteBookmarkFolder));
