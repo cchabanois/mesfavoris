@@ -34,7 +34,7 @@ public class BookmarkFolderLabelProvider extends AbstractBookmarkLabelProvider {
 
 		Optional<RemoteBookmarkFolder> remoteBookmarkFolder = remoteBookmarksStoreManager
 				.getRemoteBookmarkFolder(bookmarkFolder.getId());
-		remoteBookmarkFolder.map(f -> getBookmarksCount(f)).ifPresent(bookmarksCount -> {
+		remoteBookmarkFolder.flatMap(f -> getBookmarksCount(f)).ifPresent(bookmarksCount -> {
 			result.append(String.format(" (%d)", bookmarksCount),
 					stylerProvider.getStyler(null, Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW), null));
 		});
