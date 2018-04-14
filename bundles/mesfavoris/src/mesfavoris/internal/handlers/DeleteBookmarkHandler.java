@@ -67,7 +67,7 @@ public class DeleteBookmarkHandler extends AbstractBookmarkHandler {
 		for (Bookmark bookmark : ((List<Bookmark>) (selection.toList()))) {
 			bookmarks.add(bookmark);
 			if (bookmark instanceof BookmarkFolder
-					&& remoteBookmarksStoreManager.getRemoteBookmarkFolder(bookmark.getId()) == null) {
+					&& remoteBookmarksStoreManager.getRemoteBookmarkFolder(bookmark.getId()).isPresent()) {
 				bookmarks.addAll(getBookmarksRecursively(bookmarksTree, bookmark.getId(), b->true));
 			}
 		}
