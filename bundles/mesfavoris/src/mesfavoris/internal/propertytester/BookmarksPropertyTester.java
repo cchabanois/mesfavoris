@@ -11,6 +11,11 @@ import mesfavoris.model.BookmarkDatabase;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
 
 public class BookmarksPropertyTester extends PropertyTester {
+	public static final String PROPERTY_HAS_PROPERTIES = "hasProperties";
+	public static final String PROPERTY_IS_REMOTE_BOOKMARK_FOLDER = "isRemoteBookmarkFolder";
+	public static final String PROPERTY_IS_DEFAULT_BOOKMARK_FOLDER = "isDefaultBookmarkFolder";
+	public static final String PROPERTY_IS_UNDER_REMOTE_BOOKMARK_FOLDER = "isUnderRemoteBookmarkFolder";
+	public static final String PROPERTY_CAN_BE_MODIFIED = "canBeModified";
 	private final BookmarkDatabase bookmarkDatabase;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 
@@ -30,19 +35,19 @@ public class BookmarksPropertyTester extends PropertyTester {
 			return false;
 		}
 		Bookmark bookmark = (Bookmark) receiver;
-		if ("canBeModified".equals(property)) {
+		if (PROPERTY_CAN_BE_MODIFIED.equals(property)) {
 			return canBeModified(bookmark);
 		}
-		if ("isUnderRemoteBookmarkFolder".equals(property)) {
+		if (PROPERTY_IS_UNDER_REMOTE_BOOKMARK_FOLDER.equals(property)) {
 			return isUnderRemoteBookmarkFolder(bookmark);
 		}
-		if ("isDefaultBookmarkFolder".equals(property)) {
+		if (PROPERTY_IS_DEFAULT_BOOKMARK_FOLDER.equals(property)) {
 			return isDefaultBookmarkFolder(bookmark);
 		}
-		if ("isRemoteBookmarkFolder".equals(property)) {
+		if (PROPERTY_IS_REMOTE_BOOKMARK_FOLDER.equals(property)) {
 			return isRemoteBookmarkFolder(bookmark);
 		}
-		if ("hasProperties".equals(property)) {
+		if (PROPERTY_HAS_PROPERTIES.equals(property)) {
 			return hasProperties(bookmark, args);
 		}
 		return false;
@@ -58,7 +63,7 @@ public class BookmarksPropertyTester extends PropertyTester {
 	}
 
 	private boolean isRemoteBookmarkFolder(Bookmark bookmark) {
-		return remoteBookmarksStoreManager.getRemoteBookmarkFolder(bookmark.getId()) != null;
+		return remoteBookmarksStoreManager.getRemoteBookmarkFolder(bookmark.getId()).isPresent();
 	}
 
 	private boolean isDefaultBookmarkFolder(Bookmark bookmark) {

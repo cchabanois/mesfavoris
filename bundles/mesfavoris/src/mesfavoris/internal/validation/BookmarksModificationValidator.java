@@ -82,7 +82,7 @@ public class BookmarksModificationValidator implements IBookmarksModificationVal
 	private boolean containsRemoteBookmarkFolder(BookmarksTree bookmarksTree, BookmarkId bookmarkId) {
 		BookmarksTreeIterable bookmarksTreeIterable = new BookmarksTreeIterable(
 				bookmarksTree, bookmarkId, Algorithm.PRE_ORDER,
-				bookmark -> remoteBookmarksStoreManager.getRemoteBookmarkFolder(bookmark.getId()) != null);
+				bookmark -> remoteBookmarksStoreManager.getRemoteBookmarkFolder(bookmark.getId()).isPresent());
 		return StreamSupport.stream(bookmarksTreeIterable.spliterator(), false).findFirst().isPresent();
 	}
 	
