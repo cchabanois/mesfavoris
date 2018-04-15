@@ -2,11 +2,13 @@ package mesfavoris.gdrive.handlers;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
@@ -57,26 +59,29 @@ public class ImportBookmarksFromGdriveHandler extends AbstractHandler {
 		if (dialog.open() == Dialog.CANCEL) {
 			return null;
 		}
-		File file = dialog.getFile();
+		List<File> files = dialog.getSelectedFiles();
 
 		IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
 		try {
 			progressService.busyCursorWhile(monitor -> {
+				SubMonitor subMonitor = SubMonitor.convert(monitor, "Importing bookmarks files", files.size());
 				ImportBookmarkFileOperation importBookmarkFileOperation = new ImportBookmarkFileOperation(drive,
 						bookmarkMappingsStore, bookmarksService,
 						Optional.of(gDriveConnectionManager.getApplicationFolderId()));
 				try {
-					importBookmarkFileOperation.importBookmarkFile(bookmarkFolder.getId(), file.getId(),
-							monitor);
+					for (File file : files) {
+						importBookmarkFileOperation.importBookmarkFile(bookmarkFolder.getId(), file.getId(),
+								subMonitor.newChild(1));
+					}
 				} catch (BookmarksException | IOException e) {
 					throw new InvocationTargetException(e);
 				}
 
 			});
 		} catch (InvocationTargetException e) {
-			StatusHelper.showError("Could not import bookmarks file", e.getCause(), false);
+			StatusHelper.showError("Could not import bookmarks files", e.getCause(), false);
 		} catch (InterruptedException e) {
-			throw new ExecutionException("Could not import bookmarks file : cancelled");
+			throw new ExecutionException("Could not import bookmarks files : cancelled");
 		}
 		return null;
 	}
