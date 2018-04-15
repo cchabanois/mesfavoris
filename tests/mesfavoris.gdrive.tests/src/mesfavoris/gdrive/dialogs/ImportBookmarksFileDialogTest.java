@@ -1,5 +1,6 @@
 package mesfavoris.gdrive.dialogs;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -7,7 +8,9 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Shell;
@@ -58,7 +61,12 @@ public class ImportBookmarksFileDialogTest extends AbstractDialogTest {
 		clickOkButton();
 
 		// Then
-		assertEquals(file.getId(), dialog.getFile().getId());
+		assertThat(getSelectedFileIds(dialog)).containsExactly(file.getId());
+	}
+
+	private List<String> getSelectedFileIds(ImportBookmarksFileDialog dialog) {
+		return dialog.getSelectedFiles().stream().map(selectedFile -> selectedFile.getId())
+				.collect(Collectors.toList());
 	}
 
 	@Test
@@ -78,7 +86,7 @@ public class ImportBookmarksFileDialogTest extends AbstractDialogTest {
 		clickOkButton();
 
 		// Then
-		assertEquals(file.getId(), dialog.getFile().getId());
+		assertThat(getSelectedFileIds(dialog)).containsExactly(file.getId());
 	}
 
 	private void addLink(String link) {

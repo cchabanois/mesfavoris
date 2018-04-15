@@ -2,6 +2,7 @@ package mesfavoris.gdrive.dialogs;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -39,7 +40,7 @@ public class ImportBookmarksFileDialog extends TitleAreaDialog {
 	private final Drive drive;
 	private final String applicationFolderId;
 	private final IBookmarkMappings bookmarkMappings;
-	private File file;
+	private List<File> selectedFiles = new ArrayList<>();
 	private IBookmarkFilesProvider bookmarkFilesProvider;
 
 	public ImportBookmarksFileDialog(Shell parentShell, Drive drive, String applicationFolderId,
@@ -92,8 +93,9 @@ public class ImportBookmarksFileDialog extends TitleAreaDialog {
 		fileTableViewer.setFiles(Lists.newArrayList());
 		fileTableViewer.addSelectionChangedListener(event -> {
 			IStructuredSelection selection = (IStructuredSelection) fileTableViewer.getSelection();
-			file = (File) selection.getFirstElement();
-			setPageComplete(file != null);
+			selectedFiles.clear();
+			selectedFiles.addAll(selection.toList());
+			setPageComplete(!selectedFiles.isEmpty());
 		});
 		fileTableViewer.setFilters(new ViewerFilter[] { new ViewerFilter() {
 
@@ -161,8 +163,8 @@ public class ImportBookmarksFileDialog extends TitleAreaDialog {
 		}
 	}
 
-	public File getFile() {
-		return file;
+	public List<File> getSelectedFiles() {
+		return selectedFiles;
 	}
 
 }
