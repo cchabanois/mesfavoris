@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import mesfavoris.internal.model.merge.BookmarksTreeIterator.Algorithm;
@@ -44,8 +45,8 @@ public class BookmarksTreeMerger {
 
 	private void handleBookmarksMovedToSameFolder(IBookmarksTreeModifier bookmarksTreeModifier) {
 		BookmarkId folderId = sourceTree.getRootFolder().getId();
-		BookmarksTreeIterable postOrderTargetBookmarksTreeIterable = new BookmarksTreeIterable(
-				bookmarksTreeModifier.getCurrentTree(), folderId, Algorithm.POST_ORDER,
+		Iterable<Bookmark> postOrderTargetBookmarksTreeIterable = Iterables.filter(new BookmarksTreeIterable(
+				bookmarksTreeModifier.getCurrentTree(), folderId, Algorithm.POST_ORDER),
 				b -> b instanceof BookmarkFolder);
 		for (Bookmark targetBookmark : postOrderTargetBookmarksTreeIterable) {
 			BookmarkFolder targetBookmarkFolder = (BookmarkFolder) targetBookmark;

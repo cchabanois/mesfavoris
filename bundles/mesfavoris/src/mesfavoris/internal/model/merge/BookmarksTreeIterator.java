@@ -6,7 +6,6 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkFolder;
@@ -16,7 +15,6 @@ import mesfavoris.model.BookmarksTree;
 public class BookmarksTreeIterator implements Iterator<Bookmark> {
 	private final BookmarksTree bookmarksTree;
 	private final Algorithm algorithm;
-	private final Predicate<Bookmark> filter;
 	private final Deque<BookmarkIterator> stack = new ArrayDeque<BookmarkIterator>();
 
 	public static enum Algorithm {
@@ -24,20 +22,14 @@ public class BookmarksTreeIterator implements Iterator<Bookmark> {
 	}
 
 	public BookmarksTreeIterator(BookmarksTree bookmarksTree, BookmarkId bookmarkId, Algorithm algorithm) {
-		this(bookmarksTree, bookmarkId, algorithm, x -> true);
-	}
-
-	public BookmarksTreeIterator(BookmarksTree bookmarksTree, BookmarkId bookmarkId, Algorithm algorithm,
-			Predicate<Bookmark> filter) {
 		this.bookmarksTree = bookmarksTree;
 		this.algorithm = algorithm;
-		this.filter = filter;
 		stack.push(new BookmarkIterator(bookmarksTree.getBookmark(bookmarkId), true));
 	}
 
 	@Override
 	public boolean hasNext() {
-		return getCurrentIterator().isPresent();
+		return getCurrentIterator().map(it->it.hasNext()).orElse(false);
 	}
 
 	private Optional<BookmarkIterator> getCurrentIterator() {
@@ -62,14 +54,14 @@ public class BookmarksTreeIterator implements Iterator<Bookmark> {
 			BookmarkIterator currentIterator  = getCurrentIterator().orElseThrow(()->new NoSuchElementException());			
 			bookmark = currentIterator.next();
 			if (bookmark instanceof BookmarkFolder && currentIterator.goInside) {
-				if (algorithm == Algorithm.PRE_ORDER && filter.test(bookmark)) {
+				if (algorithm == Algorithm.PRE_ORDER) {
 					nextBookmark = bookmark;
 				}
-				if (algorithm == Algorithm.POST_ORDER && filter.test(bookmark)) {
+				if (algorithm == Algorithm.POST_ORDER) {
 					stack.push(new BookmarkIterator(bookmark, false));
 				}
 				stack.push(new BookmarkIterator(bookmarksTree.getChildren(bookmark.getId()).iterator(), true));
-			} else if (filter.test(bookmark)) {
+			} else {
 				nextBookmark = bookmark;
 			}
 		}

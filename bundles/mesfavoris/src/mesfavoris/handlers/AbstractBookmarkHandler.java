@@ -93,8 +93,8 @@ public abstract class AbstractBookmarkHandler extends AbstractHandler{
 	
 	protected List<Bookmark> getBookmarksRecursively(BookmarksTree bookmarksTree, BookmarkId folderId, Predicate<Bookmark> filter) {
 		BookmarksTreeIterable bookmarksTreeIterable = new BookmarksTreeIterable(bookmarksTree, folderId,
-				Algorithm.PRE_ORDER, filter);
-		return StreamSupport.stream(bookmarksTreeIterable.spliterator(), false).collect(Collectors.toList());
+				Algorithm.PRE_ORDER);
+		return StreamSupport.stream(bookmarksTreeIterable.spliterator(), false).filter(filter).collect(Collectors.toList());
 	}
 	
 }
