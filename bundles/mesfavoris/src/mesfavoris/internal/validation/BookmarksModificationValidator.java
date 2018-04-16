@@ -28,20 +28,20 @@ public class BookmarksModificationValidator implements IBookmarksModificationVal
 	public BookmarksModificationValidator(RemoteBookmarksStoreManager remoteBookmarksStoreManager) {
 		this.remoteBookmarksStoreManager = remoteBookmarksStoreManager;
 	}
-	
+
 	@Override
 	public IStatus validateModification(BookmarksModification bookmarksModification) {
 		if (bookmarksModification instanceof BookmarkDeletedModification) {
-			return validate((BookmarkDeletedModification)bookmarksModification);
+			return validate((BookmarkDeletedModification) bookmarksModification);
 		}
 		if (bookmarksModification instanceof BookmarksAddedModification) {
-			return validate((BookmarksAddedModification)bookmarksModification);
+			return validate((BookmarksAddedModification) bookmarksModification);
 		}
 		if (bookmarksModification instanceof BookmarkPropertiesModification) {
-			return validate((BookmarkPropertiesModification)bookmarksModification);
+			return validate((BookmarkPropertiesModification) bookmarksModification);
 		}
 		if (bookmarksModification instanceof BookmarksMovedModification) {
-			return validate((BookmarksMovedModification)bookmarksModification);
+			return validate((BookmarksMovedModification) bookmarksModification);
 		}
 		return errorStatus("Unknown bookmarks modification");
 	}
@@ -80,12 +80,13 @@ public class BookmarksModificationValidator implements IBookmarksModificationVal
 	}
 
 	private boolean containsRemoteBookmarkFolder(BookmarksTree bookmarksTree, BookmarkId bookmarkId) {
-		BookmarksTreeIterable bookmarksTreeIterable = new BookmarksTreeIterable(
-				bookmarksTree, bookmarkId, Algorithm.PRE_ORDER,
-				bookmark -> remoteBookmarksStoreManager.getRemoteBookmarkFolder(bookmark.getId()).isPresent());
-		return StreamSupport.stream(bookmarksTreeIterable.spliterator(), false).findFirst().isPresent();
+		BookmarksTreeIterable bookmarksTreeIterable = new BookmarksTreeIterable(bookmarksTree, bookmarkId,
+				Algorithm.PRE_ORDER);
+		return StreamSupport.stream(bookmarksTreeIterable.spliterator(), false)
+				.filter(bookmark -> remoteBookmarksStoreManager.getRemoteBookmarkFolder(bookmark.getId()).isPresent())
+				.findFirst().isPresent();
 	}
-	
+
 	public IStatus validateModification(BookmarksTree bookmarksTree, BookmarkId bookmarkId) {
 		Bookmark bookmark = bookmarksTree.getBookmark(bookmarkId);
 		if (bookmark == null) {
