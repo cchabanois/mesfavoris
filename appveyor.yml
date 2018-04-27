@@ -1,0 +1,37 @@
+version: 2.0.0.{build}
+
+# Do not build on tags
+skip_tags: true
+
+# enviroment settings (user1 is test5, user2 is test6)
+environment:
+  matrix:
+    - JAVA_HOME: C:\Program Files\Java\jdk1.7.0
+    - USER1_GDRIVE_USERNAME:
+      secure: g0iUDPZGOX1umvn7njfRxJVXan+6Gm6+hyE/M81fuxE=
+    - USER1_GDRIVE_PASSWORD:
+      secure: RfYE03lVV4U4/WpqKQs8S4zh+XsUOcNXnvAc8tQdb0I=
+    - USER1_RECOVERY_EMAIL:
+      secure: eWJG2UCCcsPlrNvPQvgkJRK17PacXMDxEaXxjCEaY5I=
+    - USER1_GDRIVE_ACCESS_TOKEN:
+      secure: IuXGNVV143QlQ7HHUtmpeq02a8NAVvsZ3KyJh2enmKnWmZRZ4S4E75sj1C35QMx6AeH7rFg79juDsgenrg2Wxb/Pp/F3oGnGC9dGnwT3m6kHuY5v01jJPShA+h5aduDbr8/NU3QtfgQh4nj9zmXgbvBVLvm7cI8qpr2KfTh9XVN/BkdrUmKW8CVPw1VZXJeg
+    - USER1_GDRIVE_REFRESH_TOKEN:
+      secure: IyQ95pyTw4di6mLCAQzhhyeVA3MbPfbWRxUn95GDbS1MwbTIfFT6GmFTXHwgrW7Z
+    - USER2_GDRIVE_USERNAME:
+      secure: z9O5SNiWF9yyZ+Xqv2xxuZqNmH3wBNsap95XgyGswt8=
+    - USER2_GDRIVE_PASSWORD:
+      secure: mb2DuB4uTjRB998Lo7PLF65UoTa+cl4m9dz4AOsEubk=
+    - USER2_RECOVERY_EMAIL:
+      secure: eWJG2UCCcsPlrNvPQvgkJRK17PacXMDxEaXxjCEaY5I=
+    - USER2_GDRIVE_ACCESS_TOKEN:
+      secure: zUJI7MHHCiLhlyGX/nREGmkrVrDlm6bR788/H7WRqoX+ROI/EBQ9KDXqbGygvztLKF9+8c0XZ+uO0I4ckMllr0PQGpV9mZ0ddSAp+BrBFDavaxa1WXL3fruBvfnJl5jbKauqA6oWyY3kSQjNIonP6MpbSDtCJKLepZlMP+6sNkGZ1msidmXZNFrNysw0zMkE
+    - USER2_GDRIVE_REFRESH_TOKEN:
+      secure: H5xnYIo8NsSvRD+XU36KFpmAbuA/vGmFXSTwL1HBABUOHTdkBnFzBHSlmViIF0qK
+    
+# install required tools
+install:
+  - cmd: echo %JAVA_HOME%
+
+# build and install artifacts
+build_script:
+  - ./mvnw clean verify -P target-oxygen
