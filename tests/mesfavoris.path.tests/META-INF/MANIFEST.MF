@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests
 Bundle-SymbolicName: mesfavoris.path.tests
-Bundle-Version: 2.0.0.qualifier
-Fragment-Host: mesfavoris.path;bundle-version="2.0.0"
+Bundle-Version: 2.1.0.qualifier
+Fragment-Host: mesfavoris.path;bundle-version="2.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit;bundle-version="4.11.0",
  org.assertj.core;bundle-version="3.9.1",
- mesfavoris.tests.commons;bundle-version="2.0.0"
+ mesfavoris.tests.commons;bundle-version="2.1.0"
 Bundle-Vendor: Mes Favoris
 Bundle-ClassPath: lib/org.mockito.mockito-all_1.10.19.jar,
  .
