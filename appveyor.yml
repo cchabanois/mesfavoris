@@ -34,3 +34,6 @@ install:
 # build and install artifacts
 build_script:
   - ./mvnw clean verify -P target-oxygen
+  
+cache:
+  - C:\Users\appveyor\.m2\ -> pom.xml
