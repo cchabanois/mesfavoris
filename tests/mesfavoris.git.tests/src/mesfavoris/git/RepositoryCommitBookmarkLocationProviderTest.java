@@ -8,14 +8,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import mesfavoris.BookmarksException;
+import mesfavoris.git.rules.TemporaryDefaultRepositoryDirRule;
 import mesfavoris.model.Bookmark;
 
 public class RepositoryCommitBookmarkLocationProviderTest {
 	private static final String REPOSITORY_URL = "https://github.com/LorenzoBettini/junit-swtbot-example.git";
 	private static final String PROJECT_NAME = "mathutils.core";
+	
+	@Rule
+	public TemporaryDefaultRepositoryDirRule tempRepositoryDir = new TemporaryDefaultRepositoryDirRule();
+	
 	private RepositoryCommitBookmarkLocationProvider bookmarkLocationProvider;
 
 	@Before

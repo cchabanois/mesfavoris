@@ -49,16 +49,21 @@ public class GitTestHelper {
 		Repository[] repositories = repositoryCache.getAllRepositories();
 		for (Repository repository : repositories) {
 			if (getRemotesUrls(repository).contains(remoteUrl)) {
-				try {
-					FileUtils.delete(repository.getDirectory(),
-							FileUtils.RECURSIVE | FileUtils.RETRY | FileUtils.SKIP_MISSING);
-					FileUtils.delete(repository.getWorkTree(),
-							FileUtils.RECURSIVE | FileUtils.RETRY | FileUtils.SKIP_MISSING);
-				} catch (IOException e) {
-				}
+				tryDeleteRepository(repository);
 			}
 		}
 	}	
+	
+	public static void tryDeleteRepository(Repository repository) {
+		try {
+			repository.close();
+			FileUtils.delete(repository.getDirectory(),
+					FileUtils.RECURSIVE | FileUtils.RETRY | FileUtils.SKIP_MISSING);
+			FileUtils.delete(repository.getWorkTree(),
+					FileUtils.RECURSIVE | FileUtils.RETRY | FileUtils.SKIP_MISSING);
+		} catch (IOException e) {
+		}
+	}
 	
 	private static Set<String> getRemotesUrls(Repository repository) {
 		Set<String> remoteUrls = new HashSet<String>();
