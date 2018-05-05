@@ -50,7 +50,7 @@ public class ExternalFolderBookmarkPropertiesProviderTest {
 
 		// Then
 		assertThat(bookmarkProperties).containsEntry(PROPERTY_NAME, "folder1");
-		assertThat(bookmarkProperties).containsEntry(PROP_FOLDER_PATH, folder.getAbsolutePath());
+		assertThat(bookmarkProperties).containsEntry(PROP_FOLDER_PATH, path.toString());
 	}
 
 }
