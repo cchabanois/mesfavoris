@@ -1,5 +1,18 @@
 # Change Log
 
+## [release-2.0.0](https://github.com/cchabanois/mesfavoris/tree/release-2.0.0) (2018-04-16)
+[Full Changelog](https://github.com/cchabanois/mesfavoris/compare/release-1.9.0...release-2.0.0)
+
+**Implemented enhancements:**
+
+- Import several bookmark files from gdrive at once [\#80](https://github.com/cchabanois/mesfavoris/issues/80)
+
+**Closed issues:**
+
+- Bookmark detail parts not disposed when "Mes Favoris" view is closed [\#65](https://github.com/cchabanois/mesfavoris/issues/65)
+- When editing snippet content, also change the bookmark name [\#64](https://github.com/cchabanois/mesfavoris/issues/64)
+- NPE when deleting bookmark [\#62](https://github.com/cchabanois/mesfavoris/issues/62)
+
 ## [release-1.9.0](https://github.com/cchabanois/mesfavoris/tree/release-1.9.0) (2018-03-03)
 [Full Changelog](https://github.com/cchabanois/mesfavoris/compare/release-1.8.0...release-1.9.0)
 
