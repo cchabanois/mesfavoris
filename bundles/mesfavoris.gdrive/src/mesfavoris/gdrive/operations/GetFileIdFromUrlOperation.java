@@ -28,10 +28,15 @@ public class GetFileIdFromUrlOperation {
 			}
 			Pattern pattern = Pattern.compile("/d/(.{25,})/");
 			Matcher matcher = pattern.matcher(uri.getPath());
-			if (!matcher.find()) {
-				return Optional.empty();
+			if (matcher.find()) {
+				return Optional.of(matcher.group(1));
 			}
-			return Optional.of(matcher.group(1));
+			pattern = Pattern.compile("/folders/(.{25,})/?$");
+			matcher = pattern.matcher(uri.getPath());
+			if (matcher.find()) {
+				return Optional.of(matcher.group(1));
+			}
+			return Optional.empty();
 		} catch (URISyntaxException e) {
 			return Optional.empty();
 		}

@@ -25,6 +25,7 @@ public class GetFileIdFromUrlOperationTest {
 				.getFileId("https://drive.google.com/file/d/0B7a_ei8brT1TMy1CQ0o5NmZQNEE/view?usp=sharing").get());
 		assertEquals("0B7a_ei8brT1TMy1CQ0o5NmZQNEE",
 				operation.getFileId("https://drive.google.com/open?id=0B7a_ei8brT1TMy1CQ0o5NmZQNEE").get());
+		assertEquals("0B7a_ei8brT1TQTUyc1JKYW9nTHM", operation.getFileId("https://drive.google.com/drive/u/3/folders/0B7a_ei8brT1TQTUyc1JKYW9nTHM").get());
 	}
 
 }
