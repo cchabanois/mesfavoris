@@ -13,6 +13,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.egit.core.project.RepositoryMapping;
+import org.eclipse.egit.ui.internal.resources.ResourceStateFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.StoredConfig;
@@ -33,6 +34,10 @@ public class GitProjectPropertiesProvider extends AbstractBookmarkPropertiesProv
 		if (project == null) {
 			return;
 		}
+		if (!ResourceStateFactory.getInstance().get(resource).isTracked()) {
+			return;
+		}
+		
 		RepositoryMapping mapping = RepositoryMapping.getMapping((IResource) project);
 		if (mapping == null) {
 			return;
@@ -49,7 +54,7 @@ public class GitProjectPropertiesProvider extends AbstractBookmarkPropertiesProv
 		putIfAbsent(bookmarkProperties, PROP_PROJECT_PATH, projectPath);
 		putIfAbsent(bookmarkProperties, PROP_RESOURCE_PATH, resourcePath);
 	}
-
+	
 	private String getBranch(RepositoryMapping mapping) {
 		try {
 			return mapping.getRepository().getBranch();
