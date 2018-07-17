@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
@@ -35,7 +36,9 @@ import com.google.common.collect.ImmutableMap;
 import mesfavoris.BookmarksException;
 import mesfavoris.MesFavoris;
 import mesfavoris.commons.ui.wizards.datatransfer.BundleProjectImportOperation;
+import mesfavoris.internal.numberedbookmarks.BookmarkNumber;
 import mesfavoris.model.Bookmark;
+import mesfavoris.model.BookmarkFolder;
 import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 import mesfavoris.tests.commons.ui.BookmarksViewDriver;
@@ -114,6 +117,25 @@ public class BookmarksViewTest {
 	}
 
 	@Test
+	public void testGotoNumberedBookmarkFolderOnDoubleClick() throws Exception {
+		// Given
+		BookmarkFolder bookmarkFolder = new BookmarkFolder(new BookmarkId(), "bookmarkFolder");
+		addBookmark(getBookmarksRootFolderId(), bookmarkFolder);
+		MesFavoris.getBookmarksService().addNumberedBookmark(bookmarkFolder.getId(), BookmarkNumber.ONE);
+		SWTBotTreeItem numberedBookmarksTreeItem = bookmarksViewDriver.tree().getTreeItem("Numbered bookmarks");
+		SWTBotTreeItem bookmarkTreeItem = waitUntil("Cannot find numbered bookmark",
+				() -> numberedBookmarksTreeItem.expand().getNode("bookmarkFolder"));
+
+		// When
+		bookmarkTreeItem.doubleClick();
+
+		// Then
+		IWorkbenchPart workbenchPart = getActivePart();
+		waitUntil("BookmarkFolder should be selected",
+				() -> ((IStructuredSelection) getSelection(workbenchPart)).getFirstElement().equals(bookmarkFolder));
+	}
+
+	@Test
 	public void testBookmarkProblemAddedOnDoubleClick() throws Exception {
 		// Given
 		Bookmark bookmark = new Bookmark(new BookmarkId(), ImmutableMap.of(Bookmark.PROPERTY_NAME, "bookmark",
@@ -152,9 +174,8 @@ public class BookmarksViewTest {
 
 		// Then
 		waitUntil("There should be no bookmark problem", () -> bookmarksViewDriver.form().getMessage() == null);
-		assertEquals("for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements();)",
-				getBookmarksTree().getBookmark(bookmarkId)
-						.getPropertyValue(TextEditorBookmarkProperties.PROP_LINE_CONTENT));
+		assertEquals("for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements();)", getBookmarksTree()
+				.getBookmark(bookmarkId).getPropertyValue(TextEditorBookmarkProperties.PROP_LINE_CONTENT));
 	}
 
 	private static void importProjectFromTemplate(String projectName, String templateName)

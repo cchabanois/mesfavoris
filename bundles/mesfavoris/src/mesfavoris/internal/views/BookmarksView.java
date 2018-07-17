@@ -85,6 +85,7 @@ import mesfavoris.internal.problems.extension.BookmarkProblemDescriptors;
 import mesfavoris.internal.problems.ui.BookmarkProblemsTooltip;
 import mesfavoris.internal.recent.RecentBookmarksVirtualFolder;
 import mesfavoris.internal.views.details.BookmarkDetailsPart;
+import mesfavoris.internal.views.virtual.BookmarkLink;
 import mesfavoris.internal.visited.LatestVisitedBookmarksVirtualFolder;
 import mesfavoris.internal.visited.MostVisitedBookmarksVirtualFolder;
 import mesfavoris.model.Bookmark;
@@ -100,6 +101,7 @@ import mesfavoris.problems.IBookmarkProblemHandler;
 import mesfavoris.problems.IBookmarkProblems;
 import mesfavoris.remote.IRemoteBookmarksStore;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
+import mesfavoris.service.IBookmarksService;
 import mesfavoris.topics.BookmarksEvents;
 
 /**
@@ -115,6 +117,7 @@ public class BookmarksView extends ViewPart {
 	public static final String ID = "mesfavoris.views.BookmarksView";
 
 	private final BookmarkDatabase bookmarkDatabase;
+	private final IBookmarksService bookmarksService;
 	private final IEventBroker eventBroker;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IBookmarksDirtyStateTracker bookmarksDirtyStateTracker;
@@ -139,6 +142,7 @@ public class BookmarksView extends ViewPart {
 
 	public BookmarksView() {
 		this.bookmarkDatabase = BookmarksPlugin.getDefault().getBookmarkDatabase();
+		this.bookmarksService = BookmarksPlugin.getDefault().getBookmarksService();
 		this.eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
 		this.remoteBookmarksStoreManager = BookmarksPlugin.getDefault().getRemoteBookmarksStoreManager();
 		this.bookmarksDirtyStateTracker = BookmarksPlugin.getDefault().getBookmarksDirtyStateTracker();
@@ -184,10 +188,10 @@ public class BookmarksView extends ViewPart {
 		bookmarkDetailsPart.createControl(parent, formToolkit);
 		Listener listener = event -> {
 			switch (event.type) {
-			case SWT.Activate :
+			case SWT.Activate:
 				proxySelectionProvider.setCurrentSelectionProvider(bookmarkDetailsPart.getSelectionProvider());
 				break;
-			case SWT.Deactivate :
+			case SWT.Deactivate:
 				proxySelectionProvider.setCurrentSelectionProvider(bookmarksTreeViewer);
 				break;
 			}
@@ -310,18 +314,6 @@ public class BookmarksView extends ViewPart {
 				updateFormBookmarkProblems(bookmark);
 			}
 		});
-/*		bookmarksTreeViewer.getControl().addFocusListener(new FocusListener() {
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				proxySelectionProvider.setCurrentSelectionProvider(bookmarkDetailsPart.getSelectionProvider());
-			}
-
-			@Override
-			public void focusGained(FocusEvent e) {
-				proxySelectionProvider.setCurrentSelectionProvider(bookmarksTreeViewer);
-			}
-		}); */
 		hookDoubleClickAction();
 	}
 
@@ -427,7 +419,12 @@ public class BookmarksView extends ViewPart {
 			Object firstElement = ((IStructuredSelection) selection).getFirstElement();
 			Bookmark bookmark = Adapters.adapt(firstElement, Bookmark.class);
 			if (bookmark instanceof BookmarkFolder) {
-				bookmarksTreeViewer.setExpandedState(firstElement, !bookmarksTreeViewer.getExpandedState(firstElement));
+				if (firstElement instanceof BookmarkLink) {
+					bookmarksService.showInBookmarksView(getSite().getPage(), bookmark.getId(), true);
+				} else {
+					bookmarksTreeViewer.setExpandedState(firstElement,
+							!bookmarksTreeViewer.getExpandedState(firstElement));
+				}
 			} else {
 				// sometimes, selection and part in the command handler are not set to the
 				// boomarks view when we double-click on a bookmark
