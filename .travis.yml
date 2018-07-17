@@ -16,7 +16,7 @@ matrix:
     - language: java
       jdk: oraclejdk8
       env: 
-        - TARGET=neon
+        - TARGET=oxygen
         - DISPLAY=:99.0
         - USER1_GDRIVE_USERNAME=$USER1_GDRIVE_USERNAME
         - USER1_GDRIVE_PASSWORD=$USER1_GDRIVE_PASSWORD
@@ -34,13 +34,13 @@ matrix:
       before_script:
         - source ./travis/start-metacity.sh
       script:
-        - source ./travis/build-neon.sh
+        - source ./travis/build-oxygen.sh
       after_script:
         - source ./travis/stop-ngrok.sh
     - language: java
-      jdk: oraclejdk8
+      jdk: oraclejdk9
       env: 
-        - TARGET=oxygen
+        - TARGET=photon
         - DISPLAY=:99.0
         - USER1_GDRIVE_USERNAME=$USER3_GDRIVE_USERNAME
         - USER1_GDRIVE_PASSWORD=$USER3_GDRIVE_PASSWORD
@@ -56,7 +56,7 @@ matrix:
       before_script:
         - source ./travis/start-metacity.sh
       script:
-        - source ./travis/build-oxygen.sh
+        - source ./travis/build-photon.sh
     
 notifications:
   webhooks:

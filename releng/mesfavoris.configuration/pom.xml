@@ -25,21 +25,21 @@
 
 	<profiles>
 		<profile>
-			<id>target-neon</id>
+			<id>target-oxygen</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<target.artifactId>mesfavoris.neon.target</target.artifactId>
+				<target.artifactId>mesfavoris.oxygen.target</target.artifactId>
 			</properties>
 		</profile>
 		<profile>
-			<id>target-oxygen</id>
+			<id>target-photon</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<target.artifactId>mesfavoris.oxygen.target</target.artifactId>
+				<target.artifactId>mesfavoris.photon.target</target.artifactId>
 			</properties>
 		</profile>				
 	</profiles>

@@ -15,8 +15,8 @@
     </parent>
 
     <modules>
-        <module>mesfavoris.neon.target</module>
         <module>mesfavoris.oxygen.target</module>
+        <module>mesfavoris.photon.target</module>
         <module>mesfavoris.update-site</module>
         <module>mesfavoris.bintray</module>
     </modules>
