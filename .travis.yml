@@ -38,7 +38,7 @@ matrix:
       after_script:
         - source ./travis/stop-ngrok.sh
     - language: java
-      jdk: oraclejdk9
+      jdk: oraclejdk8
       env: 
         - TARGET=photon
         - DISPLAY=:99.0
