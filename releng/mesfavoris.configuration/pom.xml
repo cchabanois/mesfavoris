@@ -42,6 +42,15 @@
 				<target.artifactId>mesfavoris.photon.target</target.artifactId>
 			</properties>
 		</profile>				
+		<profile>
+			<id>target-2019-09</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<target.artifactId>mesfavoris.2019-09.target</target.artifactId>
+			</properties>
+		</profile>
 	</profiles>
 	<build>
 		<plugins>
