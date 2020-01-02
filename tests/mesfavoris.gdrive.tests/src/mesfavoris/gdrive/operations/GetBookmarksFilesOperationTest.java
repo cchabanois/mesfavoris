@@ -25,6 +25,17 @@ public class GetBookmarksFilesOperationTest {
 	public GDriveConnectionRule gdriveConnectionUser2 = new GDriveConnectionRule(GDriveTestUser.USER2, true);
 
 	@Test
+	public void testGetBookmarksFile() throws Exception {
+		// Given
+		File file = createBookmarksFile(gdriveConnectionUser1, "user1File.txt", "the contents");
+		GetBookmarkFilesOperation operation = new GetBookmarkFilesOperation(gdriveConnectionUser1.getDrive());
+
+		// Then
+		Waiter.waitUntil("Bookmark files does not contain shared file", () -> operation.getBookmarkFiles().stream()
+				.map(f -> f.getId()).collect(Collectors.toList()).contains(file.getId()), Duration.ofSeconds(20));
+	}
+	
+	@Test
 	public void testGetSharedBookmarkFile() throws Exception {
 		// Given
 		File file = createBookmarksFile(gdriveConnectionUser1, "user1File.txt", "the contents");

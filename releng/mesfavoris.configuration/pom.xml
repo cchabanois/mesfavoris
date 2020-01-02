@@ -9,8 +9,8 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<tycho-version>1.0.0</tycho-version>
-		<eclipse-repo.url>http://download.eclipse.org/releases/mars</eclipse-repo.url>
+		<tycho-version>1.5.0</tycho-version>
+		<eclipse-repo.url>http://download.eclipse.org/releases/2018-09/</eclipse-repo.url>
 		<swtbot-repo.url>http://download.eclipse.org/technology/swtbot/releases/2.4.0</swtbot-repo.url>
 		<perforce-repo.url>http://www.perforce.com/downloads/http/p4-eclipse/install/4.5</perforce-repo.url>
 	</properties>
@@ -42,6 +42,15 @@
 				<target.artifactId>mesfavoris.photon.target</target.artifactId>
 			</properties>
 		</profile>				
+		<profile>
+			<id>target-2019-09</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<target.artifactId>mesfavoris.2019-09.target</target.artifactId>
+			</properties>
+		</profile>
 	</profiles>
 	<build>
 		<plugins>

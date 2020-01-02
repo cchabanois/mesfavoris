@@ -86,6 +86,7 @@ public class GitProjectPropertiesProviderTest {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IFile file = root.getFile(new Path(path));
 		InputStream source = new ByteArrayInputStream(contents.getBytes("UTF-8"));
+		file.delete(true, null);
 		file.create(source, IResource.FORCE, null);
 		return file;
 	}
