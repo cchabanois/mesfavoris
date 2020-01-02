@@ -16,7 +16,7 @@ matrix:
     - language: java
       jdk: oraclejdk8
       env: 
-        - TARGET=oxygen
+        - TARGET=2019-09
         - DISPLAY=:99.0
         - USER1_GDRIVE_USERNAME=$USER1_GDRIVE_USERNAME
         - USER1_GDRIVE_PASSWORD=$USER1_GDRIVE_PASSWORD
@@ -34,29 +34,9 @@ matrix:
       before_script:
         - source ./travis/start-metacity.sh
       script:
-        - source ./travis/build-oxygen.sh
+        - source ./travis/build-2019-09.sh
       after_script:
         - source ./travis/stop-ngrok.sh
-    - language: java
-      jdk: oraclejdk8
-      env: 
-        - TARGET=photon
-        - DISPLAY=:99.0
-        - USER1_GDRIVE_USERNAME=$USER3_GDRIVE_USERNAME
-        - USER1_GDRIVE_PASSWORD=$USER3_GDRIVE_PASSWORD
-        - USER1_RECOVERY_EMAIL=$USER3_RECOVERY_EMAIL
-        - USER1_GDRIVE_ACCESS_TOKEN=$USER3_GDRIVE_ACCESS_TOKEN
-        - USER1_GDRIVE_REFRESH_TOKEN=$USER3_GDRIVE_REFRESH_TOKEN        
-        - USER2_GDRIVE_USERNAME=$USER4_GDRIVE_USERNAME
-        - USER2_GDRIVE_PASSWORD=$USER4_GDRIVE_PASSWORD
-        - USER2_RECOVERY_EMAIL=$USER4_RECOVERY_EMAIL    
-        - USER2_GDRIVE_ACCESS_TOKEN=$USER4_GDRIVE_ACCESS_TOKEN
-        - USER2_GDRIVE_REFRESH_TOKEN=$USER4_GDRIVE_REFRESH_TOKEN             
-      install: true
-      before_script:
-        - source ./travis/start-metacity.sh
-      script:
-        - source ./travis/build-photon.sh
     
 notifications:
   webhooks:
