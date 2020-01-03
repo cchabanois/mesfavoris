@@ -18,17 +18,19 @@
    </license>
 
    <requires>
-      <import plugin="mesfavoris"/>
-      <import plugin="org.eclipse.jdt.core" version="3.10.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.ui" version="3.10.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jface.text" version="3.9.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.runtime" version="3.10.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.9.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.9.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui" version="3.106.0" match="greaterOrEqual"/>
       <import plugin="mesfavoris.commons" version="2.1.0" match="greaterOrEqual"/>
       <import plugin="mesfavoris.texteditor" version="2.1.0" match="greaterOrEqual"/>
-      <import plugin="com.google.guava" version="18.0.0" match="greaterOrEqual"/>
+      <import plugin="mesfavoris" version="2.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core" version="3.12.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.ui" version="3.12.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface.text" version="3.11.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.12.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.11.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.10.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.108.0" match="greaterOrEqual"/>
+      <import plugin="com.google.guava" version="24.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.12.0" match="greaterOrEqual"/>
+      <import plugin="org.jsoup" version="1.11.2" match="greaterOrEqual"/>
    </requires>
 
    <plugin

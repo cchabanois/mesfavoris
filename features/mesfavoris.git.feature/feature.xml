@@ -19,14 +19,19 @@
 
    <requires>
       <import plugin="mesfavoris" version="2.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.9.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.runtime" version="3.10.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jgit" version="3.4.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jgit.archive" version="3.4.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.egit.core" version="3.4.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.team.core" version="3.7.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jface" version="3.10.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.core.resources" version="3.11.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.12.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jgit" version="4.4.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jgit.archive" version="4.4.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.egit.core" version="4.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.team.core" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface" version="3.12.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.12.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.egit.ui" version="4.4.0" match="greaterOrEqual"/>
+      <import plugin="com.google.guava" version="24.0.0" match="greaterOrEqual"/>
+      <import plugin="mesfavoris.commons" version="2.1.0" match="greaterOrEqual"/>
+      <import plugin="mesfavoris.path" version="2.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.egit.github.core" version="4.6.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
