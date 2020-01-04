@@ -15,8 +15,6 @@
     </parent>
 
     <modules>
-        <module>mesfavoris.oxygen.target</module>
-        <module>mesfavoris.photon.target</module>
         <module>mesfavoris.2019-09.target</module>
         <module>mesfavoris.update-site</module>
         <module>mesfavoris.bintray</module>
