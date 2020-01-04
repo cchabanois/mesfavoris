@@ -8,10 +8,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import javax.inject.Provider;
 
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.osgi.service.event.EventHandler;
@@ -34,7 +33,7 @@ public class BookmarkProblemsAutoUpdater {
 			(String) event.getProperty("name"));
 	private final BookmarkDatabase bookmarkDatabase;
 	private final BookmarkProblemsDatabase bookmarkProblemsDatabase;
-	private final Provider<Set<String>> pathPropertiesProvider;
+	private final Supplier<Set<String>> pathPropertiesProvider;
 	private final CheckBookmarkPropertiesOperation checkBookmarkPropertiesOperation;
 	private final IBookmarksListener bookmarksListener = modifications -> {
 		bookmarksAdded(modifications.stream().filter(modification -> modification instanceof BookmarksAddedModification)
@@ -45,7 +44,7 @@ public class BookmarkProblemsAutoUpdater {
 	};
 
 	public BookmarkProblemsAutoUpdater(IEventBroker eventBroker, BookmarkDatabase bookmarkDatabase,
-			BookmarkProblemsDatabase bookmarkProblemsDatabase, Provider<Set<String>> pathPropertiesProvider,
+			BookmarkProblemsDatabase bookmarkProblemsDatabase, Supplier<Set<String>> pathPropertiesProvider,
 			CheckBookmarkPropertiesOperation checkBookmarkPropertiesOperation) {
 		this.eventBroker = eventBroker;
 		this.bookmarkDatabase = bookmarkDatabase;

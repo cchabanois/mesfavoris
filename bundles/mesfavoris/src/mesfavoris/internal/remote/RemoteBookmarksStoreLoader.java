@@ -3,8 +3,7 @@ package mesfavoris.internal.remote;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Provider;
+import java.util.function.Supplier;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -18,7 +17,7 @@ import mesfavoris.internal.StatusHelper;
 import mesfavoris.remote.AbstractRemoteBookmarksStore;
 import mesfavoris.remote.IRemoteBookmarksStore;
 
-public class RemoteBookmarksStoreLoader implements Provider<List<IRemoteBookmarksStore>> {
+public class RemoteBookmarksStoreLoader implements Supplier<List<IRemoteBookmarksStore>> {
 	private static final String EXTENSION_POINT = "mesfavoris.remoteStorage";
 	private List<IRemoteBookmarksStore> remoteBookmarksStores = null;
 

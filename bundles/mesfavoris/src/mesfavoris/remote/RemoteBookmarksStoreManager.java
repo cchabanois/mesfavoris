@@ -3,8 +3,7 @@ package mesfavoris.remote;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
-import javax.inject.Provider;
+import java.util.function.Supplier;
 
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkFolder;
@@ -12,9 +11,9 @@ import mesfavoris.model.BookmarkId;
 import mesfavoris.model.BookmarksTree;
 
 public class RemoteBookmarksStoreManager {
-	private final Provider<List<IRemoteBookmarksStore>> remoteBookmarksStoreProvider;
+	private final Supplier<List<IRemoteBookmarksStore>> remoteBookmarksStoreProvider;
 
-	public RemoteBookmarksStoreManager(Provider<List<IRemoteBookmarksStore>> remoteBookmarksStoreProvider) {
+	public RemoteBookmarksStoreManager(Supplier<List<IRemoteBookmarksStore>> remoteBookmarksStoreProvider) {
 		this.remoteBookmarksStoreProvider = remoteBookmarksStoreProvider;
 	}
 
