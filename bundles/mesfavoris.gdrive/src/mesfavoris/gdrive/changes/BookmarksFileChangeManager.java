@@ -7,8 +7,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.inject.Provider;
+import java.util.function.Supplier;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
@@ -42,7 +41,7 @@ public class BookmarksFileChangeManager {
 	private final GDriveConnectionManager gdriveConnectionManager;
 	private final IConnectionListener connectionListener = new ConnectionListener();
 	private final BookmarksFileChangeJob job = new BookmarksFileChangeJob();
-	private final Provider<Duration> pollDelayProvider;
+	private final Supplier<Duration> pollDelayProvider;
 	private final IBookmarkMappings bookmarkMappings;
 	private final ListenerList<IBookmarksFileChangeListener> listenerList = new ListenerList<>();
 	private final AtomicBoolean closed = new AtomicBoolean(false);
@@ -53,7 +52,7 @@ public class BookmarksFileChangeManager {
 	}
 	
 	public BookmarksFileChangeManager(GDriveConnectionManager gdriveConnectionManager,
-			IBookmarkMappings bookmarkMappings, Provider<Duration> pollDelayProvider) {
+			IBookmarkMappings bookmarkMappings, Supplier<Duration> pollDelayProvider) {
 		this.gdriveConnectionManager = gdriveConnectionManager;
 		this.bookmarkMappings = bookmarkMappings;
 		this.pollDelayProvider = pollDelayProvider;

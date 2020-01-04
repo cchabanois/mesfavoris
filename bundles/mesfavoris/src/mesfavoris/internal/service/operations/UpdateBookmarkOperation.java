@@ -3,8 +3,7 @@ package mesfavoris.internal.service.operations;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import javax.inject.Provider;
+import java.util.function.Supplier;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
@@ -19,12 +18,12 @@ import mesfavoris.problems.IBookmarkProblems;
 public class UpdateBookmarkOperation {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
-	private final Provider<Set<String>> nonUpdatablePropertiesProvider;
+	private final Supplier<Set<String>> nonUpdatablePropertiesProvider;
 	private final IBookmarkProblems bookmarkProblems;
 
 	public UpdateBookmarkOperation(BookmarkDatabase bookmarkDatabase, IBookmarkProblems bookmarkProblems,
 			IBookmarkPropertiesProvider bookmarkPropertiesProvider,
-			Provider<Set<String>> nonUpdatablePropertiesProvider) {
+			Supplier<Set<String>> nonUpdatablePropertiesProvider) {
 		this.bookmarkDatabase = bookmarkDatabase;
 		this.bookmarkProblems = bookmarkProblems;
 		this.bookmarkPropertiesProvider = bookmarkPropertiesProvider;

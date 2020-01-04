@@ -1,13 +1,12 @@
 package mesfavoris.bookmarktype;
 
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import javax.inject.Provider;
 
 import mesfavoris.bookmarktype.BookmarkPropertyDescriptor.BookmarkPropertyType;
 
-public class PathPropertiesProvider implements Provider<Set<String>> {
+public class PathPropertiesProvider implements Supplier<Set<String>> {
 	private final IBookmarkPropertyDescriptors bookmarkPropertyDescriptors;
 
 	public PathPropertiesProvider(IBookmarkPropertyDescriptors bookmarkPropertyDescriptors) {

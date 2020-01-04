@@ -1,11 +1,10 @@
 package mesfavoris.bookmarktype;
 
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import javax.inject.Provider;
-
-public class NonUpdatablePropertiesProvider implements Provider<Set<String>> {
+public class NonUpdatablePropertiesProvider implements Supplier<Set<String>> {
 	private final IBookmarkPropertyDescriptors bookmarkPropertyDescriptors;
 
 	public NonUpdatablePropertiesProvider(IBookmarkPropertyDescriptors bookmarkPropertyDescriptors) {

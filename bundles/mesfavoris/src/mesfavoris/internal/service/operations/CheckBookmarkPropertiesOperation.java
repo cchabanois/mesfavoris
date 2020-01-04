@@ -1,13 +1,17 @@
 package mesfavoris.internal.service.operations;
 
+import static mesfavoris.problems.BookmarkProblem.TYPE_LOCAL_PATH_SHARED;
+import static mesfavoris.problems.BookmarkProblem.TYPE_PLACEHOLDER_UNDEFINED;
+import static mesfavoris.problems.BookmarkProblem.TYPE_PROPERTIES_MAY_UPDATE;
+import static mesfavoris.problems.BookmarkProblem.TYPE_PROPERTIES_NEED_UPDATE;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import javax.inject.Provider;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -19,9 +23,9 @@ import org.eclipse.ui.IWorkbenchPart;
 import mesfavoris.bookmarktype.BookmarkPropertyDescriptor;
 import mesfavoris.bookmarktype.IBookmarkPropertiesProvider;
 import mesfavoris.bookmarktype.IBookmarkPropertyDescriptors;
+import mesfavoris.bookmarktype.IBookmarkPropertyObsolescenceSeverityProvider.ObsolescenceSeverity;
 import mesfavoris.bookmarktype.NonUpdatablePropertiesProvider;
 import mesfavoris.bookmarktype.PathPropertiesProvider;
-import mesfavoris.bookmarktype.IBookmarkPropertyObsolescenceSeverityProvider.ObsolescenceSeverity;
 import mesfavoris.internal.Constants;
 import mesfavoris.internal.placeholders.PathPlaceholderGuesser;
 import mesfavoris.internal.placeholders.PathPlaceholderResolver;
@@ -33,14 +37,13 @@ import mesfavoris.placeholders.PathPlaceholder;
 import mesfavoris.problems.BookmarkProblem;
 import mesfavoris.problems.IBookmarkProblems;
 import mesfavoris.remote.RemoteBookmarksStoreManager;
-import static mesfavoris.problems.BookmarkProblem.*;
 
 public class CheckBookmarkPropertiesOperation {
 	private final BookmarkDatabase bookmarkDatabase;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
 	private final IBookmarkProblems bookmarkProblems;
-	private final Provider<Set<String>> nonUpdatablePropertiesProvider;
-	private final Provider<Set<String>> pathPropertiesProvider;
+	private final Supplier<Set<String>> nonUpdatablePropertiesProvider;
+	private final Supplier<Set<String>> pathPropertiesProvider;
 	private final IPathPlaceholderResolver pathPlaceholderResolver;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IBookmarkPropertyDescriptors bookmarkPropertyDescriptors;
