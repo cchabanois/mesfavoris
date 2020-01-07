@@ -1005,22 +1005,5 @@
             type="propertiesMayUpdate">
       </bookmarkProblem>
    </extension>
-   <extension point="org.eclipse.epp.logging.aeri.ide.servers">
-    <server id="org.example.aer.mesfavoris"
-        name="mesfavoris"
-        description="Help improve mesfavoris by sending error reports to us."
-        class="org.eclipse.epp.internal.logging.aeri.ide.server.mars.ServerConnection"
-        icon16="icons/bookmark-16.png"
-        icon32="mesfavoris-32x32.png">
-
-    <link rel="provider"
-      title="mesfavoris"
-      href="https://github.com/cchabanois/mesfavoris"/>
-
-        <link rel="discovery"
-              title="Discovery URL"
-              href="https://aer.ctrlflow.com/mesfavoris/community/discovery"/>
-    </server>
-</extension>
    
 </plugin>
