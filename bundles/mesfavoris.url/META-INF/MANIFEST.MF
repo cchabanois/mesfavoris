@@ -2,15 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Url
 Bundle-SymbolicName: mesfavoris.url;singleton:=true
-Bundle-Version: 2.1.0.qualifier
+Bundle-Version: 2.2.0.qualifier
 Bundle-Activator: mesfavoris.url.internal.Activator
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.12.0",
- mesfavoris;bundle-version="2.1.0",
+ mesfavoris;bundle-version="2.2.0",
  org.jsoup;bundle-version="1.11.2",
  org.eclipse.swt;bundle-version="3.105.0",
  org.eclipse.jface;bundle-version="3.12.0",
  org.eclipse.ui;bundle-version="3.108.0",
- mesfavoris.commons;bundle-version="2.1.0",
+ mesfavoris.commons;bundle-version="2.2.0",
  org.eclipse.mylyn.commons.ui;bundle-version="3.21.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
