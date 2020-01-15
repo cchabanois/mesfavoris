@@ -2,7 +2,7 @@
 <feature
       id="mesfavoris.java.feature"
       label="mesfavoris for Java"
-      version="2.1.0.qualifier"
+      version="2.2.0.qualifier"
       provider-name="Mes Favoris">
 
    <description>
@@ -18,9 +18,9 @@
    </license>
 
    <requires>
-      <import plugin="mesfavoris.commons" version="2.1.0" match="greaterOrEqual"/>
-      <import plugin="mesfavoris.texteditor" version="2.1.0" match="greaterOrEqual"/>
-      <import plugin="mesfavoris" version="2.1.0" match="greaterOrEqual"/>
+      <import plugin="mesfavoris.commons" version="2.2.0" match="greaterOrEqual"/>
+      <import plugin="mesfavoris.texteditor" version="2.2.0" match="greaterOrEqual"/>
+      <import plugin="mesfavoris" version="2.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.core" version="3.12.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.ui" version="3.12.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jface.text" version="3.11.0" match="greaterOrEqual"/>
