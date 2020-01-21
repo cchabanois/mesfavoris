@@ -1,5 +1,24 @@
 # Change Log
 
+## [release-2.1.0](https://github.com/cchabanois/mesfavoris/tree/release-2.1.0) (2020-01-07)
+[Full Changelog](https://github.com/cchabanois/mesfavoris/compare/release-2.0.0...release-2.1.0)
+
+**Implemented enhancements:**
+
+- Add support for bookmarks to gdrive folders [\#89](https://github.com/cchabanois/mesfavoris/issues/89)
+
+**Fixed bugs:**
+
+- Cannot open mesfavoris view : java.lang.ClassNotFoundException: javax.inject.Provider cannot be found [\#103](https://github.com/cchabanois/mesfavoris/issues/103)
+- Git properties should not be added if file is not tracked [\#93](https://github.com/cchabanois/mesfavoris/issues/93)
+- Double clicking on a numbered folder in "Numbered Bookmarks" virtual folder does nothing [\#91](https://github.com/cchabanois/mesfavoris/issues/91)
+
+**Closed issues:**
+
+- winhp [\#100](https://github.com/cchabanois/mesfavoris/issues/100)
+- Feature req: Please add keyboard shortcut for new folder [\#96](https://github.com/cchabanois/mesfavoris/issues/96)
+- Bookmark related lines of code or multiple lines of code [\#78](https://github.com/cchabanois/mesfavoris/issues/78)
+
 ## [release-2.0.0](https://github.com/cchabanois/mesfavoris/tree/release-2.0.0) (2018-04-16)
 [Full Changelog](https://github.com/cchabanois/mesfavoris/compare/release-1.9.0...release-2.0.0)
 
