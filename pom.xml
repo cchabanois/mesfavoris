@@ -17,4 +17,31 @@
 		<module>features</module>
 		<module>releng</module>
 	</modules>
+    <profiles>
+		<profile>
+		  <!-- Activate this profile to perform the release to GitHub Pages -->
+		  <id>release-composite</id>
+		  <build>
+		    <pluginManagement>
+		      <plugins>
+		        <plugin>
+		          <artifactId>maven-install-plugin</artifactId>
+		          <executions>
+		            <execution>
+		              <id>default-install</id>
+		              <phase>none</phase>
+		            </execution>
+		          </executions>
+		        </plugin>
+		        <plugin>
+		          <artifactId>maven-deploy-plugin</artifactId>
+		          <configuration>
+		            <skip>true</skip>
+		          </configuration>
+		        </plugin>
+		      </plugins>
+		    </pluginManagement>
+		  </build>
+		</profile>
+	</profiles>
 </project>
