@@ -28,6 +28,7 @@ matrix:
         - USER2_RECOVERY_EMAIL=$USER2_RECOVERY_EMAIL
         - USER2_GDRIVE_ACCESS_TOKEN=$USER2_GDRIVE_ACCESS_TOKEN
         - USER2_GDRIVE_REFRESH_TOKEN=$USER2_GDRIVE_REFRESH_TOKEN                
+        - GITHUB_PERSONAL_ACCESS_TOKEN=$GITHUB_PERSONAL_ACCESS_TOKEN
       before_install:
         - source ./travis/start-ngrok.sh
       install: true

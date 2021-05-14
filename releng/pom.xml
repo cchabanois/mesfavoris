@@ -17,7 +17,7 @@
     <modules>
         <module>mesfavoris.2019-09.target</module>
         <module>mesfavoris.update-site</module>
-        <module>mesfavoris.bintray</module>
+        <module>mesfavoris.github-pages</module>
     </modules>
 </project>
 
