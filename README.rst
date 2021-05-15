@@ -270,5 +270,5 @@ Google Drive is a trademark of Google Inc. Use of this trademark is subject to G
 .. |license| image:: https://img.shields.io/badge/license-Eclipse-blue.svg
     :target: https://github.com/cchabanois/mesfavoris/blob/master/LICENSE
 
-.. |version| image:: https://img.shields.io//eclipse-marketplace/v/mesfavoris
+.. |version| image:: https://img.shields.io/eclipse-marketplace/v/mesfavoris
     :target: https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=3176231
