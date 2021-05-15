@@ -49,11 +49,7 @@ Installation
    :alt: Drag to your running Eclipse workspace to install mesfavoris
 Drag this image to your running Eclipse workspace to install mesfavoris
 
-You can also add the release update site url to your eclipse installation : https://dl.bintray.com/cchabanois/mesfavoris/updates
-
-There is also a development update site that is updated for each successful build.
-
-The development update site url is : https://dl.bintray.com/cchabanois/mesfavoris-development/updates
+You can also add the release update site url to your eclipse installation : https://cchabanois.github.io/mesfavoris-updates/
 
 .. image:: /docs/install.png?raw=true
     :alt: Install Mesfavoris
@@ -274,5 +270,5 @@ Google Drive is a trademark of Google Inc. Use of this trademark is subject to G
 .. |license| image:: https://img.shields.io/badge/license-Eclipse-blue.svg
     :target: https://github.com/cchabanois/mesfavoris/blob/master/LICENSE
 
-.. |version| image:: https://img.shields.io/bintray/v/cchabanois/mesfavoris/releases.svg
+.. |version| image:: https://img.shields.io//eclipse-marketplace/v/mesfavoris
     :target: https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=3176231
