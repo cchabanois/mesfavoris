@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Commons
 Bundle-SymbolicName: mesfavoris.tests.commons
-Bundle-Version: 2.2.0.qualifier
+Bundle-Version: 2.3.0.qualifier
 Bundle-Activator: mesfavoris.tests.commons.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.junit;bundle-version="4.11.0",
- mesfavoris;bundle-version="2.2.0",
+ mesfavoris;bundle-version="2.3.0",
  com.google.guava;bundle-version="24.0.0",
  org.eclipse.swtbot.eclipse.core;bundle-version="2.3.0",
  org.eclipse.swtbot.eclipse.finder;bundle-version="2.3.0",
