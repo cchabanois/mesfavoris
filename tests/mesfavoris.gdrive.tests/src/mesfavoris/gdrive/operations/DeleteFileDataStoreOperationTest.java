@@ -71,8 +71,8 @@ public class DeleteFileDataStoreOperationTest {
 		// Given
 		assertThat(dataStoreExists());
 		gdriveConnectionRule.disconnect();
-		IAuthorizationListener authorizationListener = mock(IAuthorizationListener.class);
-		gdriveConnectionRule.setAuthorizationListener(authorizationListener);
+//		IAuthorizationListener authorizationListener = mock(IAuthorizationListener.class);
+//		gdriveConnectionRule.setAuthorizationListener(authorizationListener);
 		
 		// When
 		operation.deleteFileDataStore();

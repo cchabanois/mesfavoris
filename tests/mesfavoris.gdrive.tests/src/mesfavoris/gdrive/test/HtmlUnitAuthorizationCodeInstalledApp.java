@@ -27,6 +27,9 @@ import com.google.api.client.extensions.java6.auth.oauth2.VerificationCodeReceiv
 
 import mesfavoris.gdrive.connection.auth.IAuthorizationCodeInstalledAppProvider;
 
+/*
+ * This does not work anymore : see https://gist.github.com/ikegami-yukino/51b247080976cb41fe93
+ */
 public class HtmlUnitAuthorizationCodeInstalledApp extends AuthorizationCodeInstalledApp {
 	private static final int WAIT_DELAY_MS = 15000;
 	private final String userName;
