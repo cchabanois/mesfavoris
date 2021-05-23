@@ -17,20 +17,24 @@ import com.google.api.services.drive.Drive;
 
 import mesfavoris.gdrive.GDriveTestUser;
 import mesfavoris.gdrive.connection.GDriveConnectionManager;
+import mesfavoris.gdrive.connection.auth.AuthorizationCodeEclipseApp;
+import mesfavoris.gdrive.connection.auth.IAuthorizationCodeInstalledAppProvider;
 
 public class GDriveConnectionRule extends ExternalResource {
 
 	private GDriveConnectionManager gDriveConnectionManager;
 	private final TemporaryFolder temporaryFolder = new TemporaryFolder();
 	private final boolean connect;
-	private final HtmlUnitAuthorizationCodeInstalledApp.Provider authorizationCodeProvider;
+	private final IAuthorizationCodeInstalledAppProvider authorizationCodeProvider;
 	private final GDriveTestUser user;
 	
 	public GDriveConnectionRule(GDriveTestUser user, boolean connect) {
 		this.user = user;
 		this.connect = connect;
-		this.authorizationCodeProvider = new HtmlUnitAuthorizationCodeInstalledApp.Provider(user.getUserName(),
-				user.getPassword(), user.getRecoveryEmail());
+		// this does not work anymore. This means we cannot use username/password to get a new refresh token when it expires  
+//		this.authorizationCodeProvider = new HtmlUnitAuthorizationCodeInstalledApp.Provider(user.getUserName(),
+//				user.getPassword(), user.getRecoveryEmail());
+		this.authorizationCodeProvider = new AuthorizationCodeEclipseApp.Provider();
 	}
 
 	@Override
@@ -55,10 +59,6 @@ public class GDriveConnectionRule extends ExternalResource {
 		FileDataStoreFactory dataStoreFactory = new FileDataStoreFactory(dataStoreDir);
 		DataStore<StoredCredential> dataStore = dataStoreFactory.getDataStore(DEFAULT_DATA_STORE_ID);
 		dataStore.set("user", credential);		
-	}
-	
-	public void setAuthorizationListener(IAuthorizationListener authorizationListener) {
-		this.authorizationCodeProvider.setAuthorizationListener(authorizationListener);
 	}
 	
 	public String getApplicationFolderId() {
@@ -86,6 +86,10 @@ public class GDriveConnectionRule extends ExternalResource {
 		try {
 			if (gDriveConnectionManager == null) {
 				return;
+			}
+			if (user.getCredential().isPresent()) {
+				// needed if gDriveConnectionManager.deleteCredentials() has been called
+				addCredentialToDataStore(gDriveConnectionManager.getDataStoreDir(), user.getCredential().get());
 			}
 			connect();
 			deleteApplicationFolder();

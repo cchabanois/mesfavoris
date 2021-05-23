@@ -33,7 +33,7 @@ public class GDriveConnectionManagerTest {
 	private GDriveConnectionManager gDriveConnectionManager;
 	private IConnectionListener connectionListener = mock(IConnectionListener.class);
 	private GDriveTestUser user = GDriveTestUser.USER1;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		File dataStoreDir = temporaryFolder.newFolder();
@@ -41,10 +41,7 @@ public class GDriveConnectionManagerTest {
 			addCredentialToDataStore(dataStoreDir, user.getCredential().get());
 		}
 		String applicationFolderName = "gdriveConnectionManagerTest" + new Random().nextInt(1000);
-		gDriveConnectionManager = new GDriveConnectionManager(dataStoreDir,
-				new HtmlUnitAuthorizationCodeInstalledApp.Provider(user.getUserName(),
-						user.getPassword(), user.getRecoveryEmail()),
-				"mes favoris", applicationFolderName);
+		gDriveConnectionManager = new GDriveConnectionManager(dataStoreDir, "mes favoris", applicationFolderName);
 		gDriveConnectionManager.init();
 		gDriveConnectionManager.addConnectionListener(connectionListener);
 	}
@@ -52,9 +49,9 @@ public class GDriveConnectionManagerTest {
 	private void addCredentialToDataStore(File dataStoreDir, StoredCredential credential) throws IOException {
 		FileDataStoreFactory dataStoreFactory = new FileDataStoreFactory(dataStoreDir);
 		DataStore<StoredCredential> dataStore = dataStoreFactory.getDataStore(DEFAULT_DATA_STORE_ID);
-		dataStore.set("user", credential);		
-	}	
-	
+		dataStore.set("user", credential);
+	}
+
 	@After
 	public void tearDown() throws IOException {
 		deleteApplicationFolder();
