@@ -45,7 +45,7 @@ public class GitTestHelper {
 	}	
 	
 	public static void tryDeleteRepository(String remoteUrl) {
-		RepositoryCache repositoryCache = Activator.getDefault().getRepositoryCache();
+		RepositoryCache repositoryCache = RepositoryCache.INSTANCE;
 		Repository[] repositories = repositoryCache.getAllRepositories();
 		for (Repository repository : repositories) {
 			if (getRemotesUrls(repository).contains(remoteUrl)) {

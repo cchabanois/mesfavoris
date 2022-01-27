@@ -15,7 +15,7 @@
     </parent>
 
     <modules>
-        <module>mesfavoris.2019-09.target</module>
+        <module>mesfavoris.2021-12.target</module>
         <module>mesfavoris.update-site</module>
         <module>mesfavoris.github-pages</module>
     </modules>

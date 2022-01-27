@@ -3,6 +3,8 @@ package mesfavoris.git.rules;
 import static mesfavoris.git.GitTestHelper.tryDeleteRepository;
 import static org.eclipse.egit.core.GitCorePreferences.core_defaultRepositoryDir;
 
+import java.io.IOException;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -31,7 +33,7 @@ public class TemporaryDefaultRepositoryDirRule extends TemporaryFolder {
 	@Override
 	protected void before() throws Throwable {
 		super.before();
-		IEclipsePreferences p = DefaultScope.INSTANCE.getNode(Activator.getPluginId());
+		IEclipsePreferences p = DefaultScope.INSTANCE.getNode(Activator.PLUGIN_ID);
 		previousDefaultRepositoryDir = p.get(core_defaultRepositoryDir, null);
 		p.put(core_defaultRepositoryDir, getRoot().getAbsolutePath());
 
@@ -39,32 +41,36 @@ public class TemporaryDefaultRepositoryDirRule extends TemporaryFolder {
 
 	@Override
 	protected void after() {
-		IPath path = new Path(getRoot().getAbsolutePath());
-		tryDeleteProjectsUnder(path, false);
-		tryDeleteRepositoriesUnder(path);
-		
-		IEclipsePreferences p = DefaultScope.INSTANCE.getNode(Activator.getPluginId());
-		if (previousDefaultRepositoryDir != null) {
-			p.put(core_defaultRepositoryDir, previousDefaultRepositoryDir);
-		} else {
-			p.remove(core_defaultRepositoryDir);
+		try {
+			IPath path = new Path(getRoot().getCanonicalPath());
+			tryDeleteProjectsUnder(path, false);
+			tryDeleteRepositoriesUnder(path);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} finally {
+			IEclipsePreferences p = DefaultScope.INSTANCE.getNode(Activator.PLUGIN_ID);
+			if (previousDefaultRepositoryDir != null) {
+				p.put(core_defaultRepositoryDir, previousDefaultRepositoryDir);
+			} else {
+				p.remove(core_defaultRepositoryDir);
+			}
+			super.after();
 		}
-		super.after();
 	}
-	
+
 	private void tryDeleteRepositoriesUnder(IPath rootPath) {
-		RepositoryCache repositoryCache = Activator.getDefault().getRepositoryCache();
+		RepositoryCache repositoryCache = RepositoryCache.INSTANCE;
 		Repository[] repositories = repositoryCache.getAllRepositories();
 		for (Repository repository : repositories) {
 			if (!repository.isBare()) {
 				IPath repoPath = new Path(repository.getWorkTree().getAbsolutePath());
-				if (rootPath.isPrefixOf(repoPath)) {	
+				if (rootPath.isPrefixOf(repoPath)) {
 					tryDeleteRepository(repository);
 				}
 			}
 		}
 	}
-	
+
 	private void tryDeleteProjectsUnder(IPath rootPath, boolean deleteContent) {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject[] projects = workspace.getRoot().getProjects(IWorkspaceRoot.INCLUDE_HIDDEN);
@@ -74,11 +80,10 @@ public class TemporaryDefaultRepositoryDirRule extends TemporaryFolder {
 					project.delete(deleteContent, true, new NullProgressMonitor());
 				} catch (CoreException e) {
 
-				}				
+				}
 			}
 		}
-		
-		
+
 	}
-	
+
 }

@@ -20,7 +20,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.egit.ui.internal.resources.ResourceStateFactory;
+import org.eclipse.egit.core.info.GitItemState;
+import org.eclipse.egit.core.internal.info.GitItemStateFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.junit.Before;
@@ -46,7 +47,7 @@ public class GitProjectPropertiesProviderTest {
 		IResource resource = getResource("mathutils.core/build.properties");
 		ISelection selection = new StructuredSelection(resource);
 		Waiter.waitUntil("build.properties not tracked",
-				() -> ResourceStateFactory.getInstance().get(resource).isTracked());
+				() -> isTracked(resource));
 
 		// When
 		gitProjectPropertiesProvider.addBookmarkProperties(bookmarkProperties, null, selection,
@@ -65,7 +66,7 @@ public class GitProjectPropertiesProviderTest {
 		assertThat(file.exists());
 		ISelection selection = new StructuredSelection(file);
 		Waiter.waitUntil("build.properties not tracked",
-				() -> ResourceStateFactory.getInstance().get(getResource("mathutils.core/build.properties")).isTracked());
+				() -> isTracked(getResource("mathutils.core/build.properties")));
 
 		// When
 		gitProjectPropertiesProvider.addBookmarkProperties(bookmarkProperties, null, selection,
@@ -89,6 +90,12 @@ public class GitProjectPropertiesProviderTest {
 		file.delete(true, null);
 		file.create(source, IResource.FORCE, null);
 		return file;
+	}
+	
+	private boolean isTracked(IResource resource) {
+		GitItemState state = GitItemStateFactory.getInstance()
+				.get(resource.getLocation().toFile());
+		return state.isTracked();
 	}
 
 }
