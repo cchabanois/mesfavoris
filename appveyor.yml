@@ -33,7 +33,7 @@ install:
 
 # build and install artifacts
 build_script:
-  - ./mvnw clean verify -P target-2019-09
+  - ./mvnw clean verify -P target-2021-12
   
 cache:
   - C:\Users\appveyor\.m2\ -> pom.xml

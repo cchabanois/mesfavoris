@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.egit.core.Activator;
 import org.eclipse.egit.core.RepositoryCache;
 import org.eclipse.egit.ui.internal.commit.RepositoryCommit;
 import org.eclipse.jgit.lib.Config;
@@ -34,7 +33,7 @@ public class RepositoryCommitBookmarkLocationProvider implements IBookmarkLocati
 	private final RepositoryCache repositoryCache;
 
 	public RepositoryCommitBookmarkLocationProvider() {
-		this(Activator.getDefault().getRepositoryCache(), MesFavoris.getPathPlaceholderResolver());
+		this(RepositoryCache.INSTANCE, MesFavoris.getPathPlaceholderResolver());
 	}
 
 	public RepositoryCommitBookmarkLocationProvider(RepositoryCache repositoryCache,

@@ -25,12 +25,12 @@
 
 	<profiles>
 		<profile>
-			<id>target-2019-09</id>
+			<id>target-2021-12</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<target.artifactId>mesfavoris.2019-09.target</target.artifactId>
+				<target.artifactId>mesfavoris.2021-12.target</target.artifactId>
 			</properties>
 		</profile>
 	</profiles>

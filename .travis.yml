@@ -35,7 +35,7 @@ matrix:
       before_script:
         - source ./travis/start-metacity.sh
       script:
-        - source ./travis/build-2019-09.sh
+        - source ./travis/build-2021-12.sh
       after_script:
         - source ./travis/stop-ngrok.sh
     

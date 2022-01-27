@@ -82,7 +82,7 @@ public class CommitEditorBookmarkPropertiesProviderTest {
 	}
 
 	private RepositoryCommit getRepositoryCommit(IFile file, String commitId) {
-		RepositoryCache repositoryCache = Activator.getDefault().getRepositoryCache();
+		RepositoryCache repositoryCache = RepositoryCache.INSTANCE;
 		Repository repository = repositoryCache.getRepository(file);
 		RepositoryCommit repositoryCommit = GitTestHelper.getRepositoryCommit(repository, commitId);
 		return repositoryCommit;

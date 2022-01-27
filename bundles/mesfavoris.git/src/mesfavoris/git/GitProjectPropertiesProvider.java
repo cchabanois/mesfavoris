@@ -12,8 +12,9 @@ import java.util.Map;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.egit.core.info.GitItemState;
+import org.eclipse.egit.core.internal.info.GitItemStateFactory;
 import org.eclipse.egit.core.project.RepositoryMapping;
-import org.eclipse.egit.ui.internal.resources.ResourceStateFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.StoredConfig;
@@ -34,7 +35,8 @@ public class GitProjectPropertiesProvider extends AbstractBookmarkPropertiesProv
 		if (project == null) {
 			return;
 		}
-		if (!ResourceStateFactory.getInstance().get(resource).isTracked()) {
+		GitItemState state = GitItemStateFactory.getInstance().get(resource.getLocation().toFile());
+		if (!state.isTracked()) {
 			return;
 		}
 		
