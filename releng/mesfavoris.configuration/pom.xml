@@ -10,8 +10,8 @@
 
 	<properties>
 		<tycho-version>1.5.0</tycho-version>
-		<eclipse-repo.url>http://download.eclipse.org/releases/2018-09/</eclipse-repo.url>
-		<swtbot-repo.url>http://download.eclipse.org/technology/swtbot/releases/2.4.0</swtbot-repo.url>
+		<eclipse-repo.url>http://download.eclipse.org/releases/2021-12/</eclipse-repo.url>
+		<swtbot-repo.url>http://download.eclipse.org/technology/swtbot/releases/2.5.0</swtbot-repo.url>
 		<perforce-repo.url>http://www.perforce.com/downloads/http/p4-eclipse/install/4.5</perforce-repo.url>
 	</properties>
 
@@ -58,17 +58,7 @@
 						<environment>
 							<os>linux</os>
 							<ws>gtk</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
 							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86</arch>
 						</environment>
 						<environment>
 							<os>win32</os>
