@@ -28,3 +28,5 @@ jobs:
         restore-keys: ${{ runner.os }}-m2
     - name: Build with Maven
       run: xvfb-run -a ./mvnw clean verify -P target-2021-12 --fail-at-end
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
