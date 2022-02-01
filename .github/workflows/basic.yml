@@ -27,7 +27,15 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
     - name: Build with Maven
+      env:
+        USER1_GDRIVE_USERNAME: ${{ secrets.USER1_GDRIVE_USERNAME }}
+        USER1_GDRIVE_REFRESH_TOKEN: ${{ secrets.USER1_GDRIVE_REFRESH_TOKEN }}
+        USER2_GDRIVE_USERNAME: ${{ secrets.USER2_GDRIVE_USERNAME }}
+        USER2_GDRIVE_REFRESH_TOKEN: ${{ secrets.USER2_GDRIVE_REFRESH_TOKEN }}            
+        GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.GITHUB_PERSONAL_ACCESS_TOKEN }}
       run: xvfb-run -a ./mvnw clean verify -P target-2021-12 --fail-at-end
     - name: Setup tmate session
       if: failure()
       uses: mxschmitt/action-tmate@v3
+      with:
+        limit-access-to-actor: true
