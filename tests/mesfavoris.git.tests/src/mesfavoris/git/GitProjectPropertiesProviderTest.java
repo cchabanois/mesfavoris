@@ -46,8 +46,7 @@ public class GitProjectPropertiesProviderTest {
 		// Given
 		IResource resource = getResource("mathutils.core/build.properties");
 		ISelection selection = new StructuredSelection(resource);
-		Waiter.waitUntil("build.properties not tracked",
-				() -> isTracked(resource));
+		Waiter.waitUntil("build.properties not tracked", () -> isTracked(resource));
 
 		// When
 		gitProjectPropertiesProvider.addBookmarkProperties(bookmarkProperties, null, selection,
@@ -65,13 +64,13 @@ public class GitProjectPropertiesProviderTest {
 		IFile file = createFile("mathutils.core/newFile.txt", "the contents");
 		assertThat(file.exists());
 		ISelection selection = new StructuredSelection(file);
-		Waiter.waitUntil("build.properties not tracked",
-				() -> isTracked(getResource("mathutils.core/build.properties")));
+		Waiter.waitUntil("build.properties not tracked", () -> isTracked(getResource("mathutils.core/build.properties"))
+				&& !isTracked(getResource("mathutils.core/newFile.txt")));
 
 		// When
 		gitProjectPropertiesProvider.addBookmarkProperties(bookmarkProperties, null, selection,
 				new NullProgressMonitor());
-		
+
 		// Then
 		assertThat(bookmarkProperties).isEmpty();
 	}
@@ -91,10 +90,9 @@ public class GitProjectPropertiesProviderTest {
 		file.create(source, IResource.FORCE, null);
 		return file;
 	}
-	
+
 	private boolean isTracked(IResource resource) {
-		GitItemState state = GitItemStateFactory.getInstance()
-				.get(resource.getLocation().toFile());
+		GitItemState state = GitItemStateFactory.getInstance().get(resource.getLocation().toFile());
 		return state.isTracked();
 	}
 
