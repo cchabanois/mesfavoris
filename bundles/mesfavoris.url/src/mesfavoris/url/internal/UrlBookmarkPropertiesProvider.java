@@ -41,7 +41,7 @@ public class UrlBookmarkPropertiesProvider extends AbstractBookmarkPropertiesPro
 
 	private static final int TARGET_ICON_SIZE = 32;
 	private static final String PNG_FORMAT_NAME = "png";
-	private static final int MAX_BODY_SIZE = 32768;
+	private static final int MAX_BODY_SIZE = 65536;
 
 	public UrlBookmarkPropertiesProvider() {
 
