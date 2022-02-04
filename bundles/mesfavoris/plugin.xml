@@ -605,16 +605,14 @@
                variable="selection">
             <iterate
                   ifEmpty="false">
-                  <and>
-                     <instanceof
-                           value="mesfavoris.model.Bookmark">
-                     </instanceof>
-                     <not>
-                        <test
-                              property="mesfavoris.isRemoteBookmarkFolder">
-                        </test>
-                     </not>
-                  </and>
+                  <instanceof
+                        value="mesfavoris.model.Bookmark">
+                  </instanceof>
+                  <not>
+                     <test
+                           property="mesfavoris.isRemoteBookmarkFolder">
+                     </test>
+                  </not>
             </iterate>
          </with>
           </activeWhen>
@@ -622,9 +620,12 @@
             <with
                   variable="selection">
                <iterate>
-                  <test
-                        property="mesfavoris.canBeModified">
-                  </test>
+                   <instanceof
+                         value="mesfavoris.model.Bookmark">
+                   </instanceof>
+                   <test
+                         property="mesfavoris.canBeModified">
+                   </test>
                </iterate>
             </with>
          </enabledWhen>
@@ -677,6 +678,9 @@
             <with
                   variable="selection">
                <iterate>
+                  <instanceof
+                        value="mesfavoris.model.Bookmark">
+                  </instanceof>
                   <or>
                      <test
                            property="mesfavoris.canBeModified"
@@ -703,10 +707,13 @@
                            value="1">
                      </count>
                      <iterate>
-                        <test
-                              property="mesfavoris.canBeModified"
-                              value="true">
-                        </test>
+                         <instanceof
+                                 value="mesfavoris.model.Bookmark">
+                         </instanceof>
+	                     <test
+	                        property="mesfavoris.canBeModified"
+	                        value="true">
+	                      </test>
                      </iterate>
                   </and>
                   <count
@@ -728,13 +735,13 @@
                            value="1">
                      </count>
                      <iterate>
+                        <reference
+                              definitionId="mesfavoris.definitions.bookmarkFolder">
+                        </reference>
                         <test
                               property="mesfavoris.canBeModified"
                               value="true">
                         </test>
-                        <reference
-                              definitionId="mesfavoris.definitions.bookmarkFolder">
-                        </reference>
                      </iterate>
                   </and>
                   <count
@@ -752,6 +759,9 @@
                   variable="selection">
                <iterate
                      ifEmpty="false">
+                  <instanceof
+                        value="mesfavoris.model.Bookmark">
+                  </instanceof>
                   <test
                         property="mesfavoris.isRemoteBookmarkFolder">
                   </test>
@@ -763,6 +773,9 @@
                   variable="selection">
                <and>
                   <iterate>
+                     <instanceof
+                           value="mesfavoris.model.Bookmark">
+                     </instanceof>
                      <test
                            property="mesfavoris.isRemoteBookmarkFolder"
                            value="true">
