@@ -51,7 +51,7 @@ public class RemoveExtraWhitespacesSequenceFilter implements ICharSequenceFilter
 	}
 
 	private boolean isVerticalWhitespace(char c) {
-		return c == '\n';
+		return c == '\n' || c == '\r';
 	}
 
 	private int nextNonHorizontalWhitespaceChar(CharSequence charSequence, int index) {

@@ -36,5 +36,20 @@ public class RemoveExtraWhitespacesSequenceFilterTest {
 		// Then
 		assertEquals(expectedTarget, target.toString());
 	}
+
+	@Test
+	public void testFilterJavaMethodConvertToLF() throws Exception {
+		// Given
+		String source = CharStreams.toString(
+				new InputStreamReader(this.getClass().getResourceAsStream("methodCRLF.java.txt"), "UTF-8"));
+		String expectedTarget = CharStreams.toString(
+				new InputStreamReader(this.getClass().getResourceAsStream("method-filtered.java.txt"), "UTF-8"));
 		
+		// When
+		FilteredCharSequence target = new FilteredCharSequence(source, new RemoveExtraWhitespacesSequenceFilter());
+		
+		// Then
+		assertEquals(expectedTarget, target.toString());
+	}	
+	
 }
