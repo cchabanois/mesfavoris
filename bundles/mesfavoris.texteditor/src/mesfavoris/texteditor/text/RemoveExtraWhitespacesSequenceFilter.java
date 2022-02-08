@@ -47,11 +47,11 @@ public class RemoveExtraWhitespacesSequenceFilter implements ICharSequenceFilter
 	}
 	
 	private boolean isHorizontalWhitespace(char c) {
-		return c == ' ' || c == '\t' || c == '\r';
+		return c == ' ' || c == '\t';
 	}
 
 	private boolean isVerticalWhitespace(char c) {
-		return c == '\n';
+		return c == '\n' || c == '\r';
 	}
 
 	private int nextNonHorizontalWhitespaceChar(CharSequence charSequence, int index) {
