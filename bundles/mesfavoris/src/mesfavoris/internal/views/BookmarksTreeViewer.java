@@ -3,6 +3,10 @@ package mesfavoris.internal.views;
 import java.util.List;
 
 import org.eclipse.core.runtime.Adapters;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -35,16 +39,18 @@ import mesfavoris.topics.BookmarksEvents;
 import mesfavoris.ui.viewers.BookmarksLabelProvider;
 
 public class BookmarksTreeViewer extends TreeViewer {
+	private static final int REFRESH_DELAY = 500;
 	private final IEventBroker eventBroker;
 	private final BookmarkDatabase bookmarkDatabase;
 	private final RemoteBookmarksStoreManager remoteBookmarksStoreManager;
 	private final IBookmarkPropertiesProvider bookmarkPropertiesProvider;
-	private final IBookmarksListener bookmarksListener = (modifications) -> refreshInUIThread();
-	private final IBookmarksDirtyStateListener dirtyListener = (dirtyBookmarks) -> refreshInUIThread();
+	private final IBookmarksListener bookmarksListener = (modifications) -> scheduleRefresh();
+	private final IBookmarksDirtyStateListener dirtyListener = (dirtyBookmarks) -> scheduleRefresh();
 	private final EventHandler bookmarkStoresEventHandler = (event) -> refresh();
 	private final EventHandler bookmarkProblemsEventHandler = (event) -> refresh();
 	private final IBookmarksDirtyStateTracker bookmarksDirtyStateTracker;
-
+	private final Job refreshInUIThreadJob = new RefreshInUIThreadJob();
+	
 	public BookmarksTreeViewer(Composite parent, BookmarkDatabase bookmarkDatabase,
 			IBookmarksDirtyStateTracker bookmarksDirtyStateTracker,
 			RemoteBookmarksStoreManager remoteBookmarksStoreManager,
@@ -105,6 +111,10 @@ public class BookmarksTreeViewer extends TreeViewer {
 			}
 		});
 	}
+	
+	private void scheduleRefresh() {
+		refreshInUIThreadJob.schedule(REFRESH_DELAY);
+	}
 
 	public Bookmark getSelectedBookmark() {
 		IStructuredSelection selection = (IStructuredSelection) getSelection();
@@ -117,4 +127,22 @@ public class BookmarksTreeViewer extends TreeViewer {
 		return bookmarkDatabase;
 	}
 
+	/*
+	 * Job used to refresh the tree viewer. We don't want to refresh it on every key press when the user edit the comment
+	 */
+	private class RefreshInUIThreadJob extends Job {
+
+		public RefreshInUIThreadJob() {
+			super("Refresh Bookmarks tree");
+			setPriority(SHORT);
+		}
+
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
+			refreshInUIThread();
+			return Status.OK_STATUS;
+		}
+		
+	}
+	
 }
