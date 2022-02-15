@@ -134,12 +134,14 @@ public class BookmarksTreeViewer extends TreeViewer {
 
 		public RefreshInUIThreadJob() {
 			super("Refresh Bookmarks tree");
-			setPriority(SHORT);
+			setPriority(INTERACTIVE);
 		}
 
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
-			refreshInUIThread();
+			if (!getControl().isDisposed()) {
+				refreshInUIThread();
+			}
 			return Status.OK_STATUS;
 		}
 		
