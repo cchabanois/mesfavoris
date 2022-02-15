@@ -10,8 +10,11 @@ import static mesfavoris.tests.commons.bookmarks.MainBookmarkDatabaseHelper.getB
 import static mesfavoris.tests.commons.ui.SWTBotViewHelper.closeWelcomeView;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Duration;
+
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
+import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.junit.After;
@@ -31,10 +34,12 @@ public class NewBookmarkPositionProviderTest {
 	private SWTWorkbenchBot bot;
 	private BookmarksViewDriver bookmarksViewDriver;
 	private INewBookmarkPositionProvider newBookmarkPositionProvider;
-
+	private long previousTimeout;
+	
 	@Before
 	public void setUp() throws BookmarksException {
 		bot = new SWTWorkbenchBot();
+		setSWTBotTimeoutToAtLeast(Duration.ofSeconds(15));
 		closeWelcomeView();
 		bookmarksViewDriver = new BookmarksViewDriver(bot);
 		bookmarksViewDriver.showView();
@@ -43,9 +48,21 @@ public class NewBookmarkPositionProviderTest {
 
 	@After
 	public void tearDown() throws BookmarksException {
+		restoreSWTBotTimeout();
 		deleteAllBookmarksExceptDefaultBookmarkFolder();
 	}
 
+	private void setSWTBotTimeoutToAtLeast(Duration duration) {
+		previousTimeout = SWTBotPreferences.TIMEOUT;
+		if (previousTimeout < duration.toMillis()) {
+			SWTBotPreferences.TIMEOUT = duration.toMillis();
+		}
+	}
+	
+	private void restoreSWTBotTimeout() {
+		SWTBotPreferences.TIMEOUT = previousTimeout;
+	}
+	
 	@Test
 	public void testNewBookmarkPositionWhenNothingIsSelected() {
 		// Given

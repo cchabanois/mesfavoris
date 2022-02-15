@@ -7,7 +7,7 @@ import java.util.concurrent.TimeoutException;
 public class Waiter {
 
 	public static <R> R waitUntil(String failureMessage, ICondition<R> condition) throws TimeoutException {
-		return waitUntil(failureMessage, condition, Duration.ofSeconds(5), Duration.ofMillis(200));
+		return waitUntil(failureMessage, condition, Duration.ofSeconds(10), Duration.ofMillis(200));
 	}
 
 	public static <R> R waitUntil(String failureMessage, ICondition<R> condition, Duration timeout)
