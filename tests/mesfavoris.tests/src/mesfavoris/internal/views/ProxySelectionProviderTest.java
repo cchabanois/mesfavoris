@@ -36,7 +36,7 @@ public class ProxySelectionProviderTest {
 
 		// Then
 		ArgumentCaptor<SelectionChangedEvent> captor = ArgumentCaptor.forClass(SelectionChangedEvent.class);
-		verify(listener1).selectionChanged(captor.capture());
+		verify(listener1, times(2)).selectionChanged(captor.capture());
 		assertThat(captor.getValue().getSelection()).isEqualTo(new StructuredSelection("my selection"));
 		verify(listener2).selectionChanged(captor.capture());
 		assertThat(captor.getValue().getSelection()).isEqualTo(new StructuredSelection("my selection"));
