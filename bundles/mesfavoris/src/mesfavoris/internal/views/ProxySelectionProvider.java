@@ -4,35 +4,39 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 
 public class ProxySelectionProvider implements ISelectionProvider {
 	private ISelectionProvider currentSelectionProvider;
 	private final ListenerList<ISelectionChangedListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
+	private final ISelectionChangedListener proxySelectionChangedListener = event -> fireSelectionChanged();
 
+	
 	public void setCurrentSelectionProvider(ISelectionProvider selectionProvider) {
 		if (currentSelectionProvider == selectionProvider) {
 			return;
 		}
 		if (currentSelectionProvider != null) {
-			for (ISelectionChangedListener listener : listeners) {
-				currentSelectionProvider.removeSelectionChangedListener(listener);
-			}
+			currentSelectionProvider.removeSelectionChangedListener(proxySelectionChangedListener);
 		}
 		this.currentSelectionProvider = selectionProvider;
 		if (currentSelectionProvider != null) {
-			for (ISelectionChangedListener listener : listeners) {
-				currentSelectionProvider.addSelectionChangedListener(listener);
-			}
+			currentSelectionProvider.addSelectionChangedListener(proxySelectionChangedListener);
 		}
+		fireSelectionChanged();
 	}
 
+	private void fireSelectionChanged() {
+		SelectionChangedEvent event = new SelectionChangedEvent(this, getSelection());
+		for (ISelectionChangedListener listener : listeners) {
+			listener.selectionChanged(event);
+		}
+	}
+	
 	@Override
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		listeners.add(listener);
-		if (currentSelectionProvider != null) {
-			currentSelectionProvider.addSelectionChangedListener(listener);
-		}
 	}
 
 	@Override
@@ -40,15 +44,12 @@ public class ProxySelectionProvider implements ISelectionProvider {
 		if (currentSelectionProvider != null) {
 			return currentSelectionProvider.getSelection();
 		}
-		return new StructuredSelection();
+		return StructuredSelection.EMPTY;
 	}
 
 	@Override
 	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 		listeners.remove(listener);
-		if (currentSelectionProvider != null) {
-			currentSelectionProvider.removeSelectionChangedListener(listener);
-		}
 	}
 
 	@Override
