@@ -250,12 +250,9 @@ Logo is adapted from https://commons.wikimedia.org/wiki/File:Spin_(Bookmark)1.jp
 
 Google Drive is a trademark of Google Inc. Use of this trademark is subject to Google Permissions.
 
-.. |build| image:: https://travis-ci.org/cchabanois/mesfavoris.svg?branch=master
-    :target: https://travis-ci.org/cchabanois/mesfavoris
+.. |build| image:: https://github.com/github/docs/actions/workflows/build-linux.yml/badge.svg
+    :target: https://github.com/cchabanois/mesfavoris/actions/workflows/build-linux.yml
     :alt: Build status of the master branch
- 
-.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/cchabanois/mesfavoris?branch=master&svg=true
-    :target: https://ci.appveyor.com/project/cchabanois/mesfavoris
  
 .. |gitter| image:: https://badges.gitter.im/cchabanois/mesfavoris.svg
     :target: https://gitter.im/cchabanois/mesfavoris?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
