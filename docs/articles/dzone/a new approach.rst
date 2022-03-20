@@ -1,4 +1,6 @@
-*This article was posted on dzone in 2017 but removed in 2021 "Due to old content clean up"*
+*This article was posted on dzone the Oct. 13, 2017 but removed in 2021 "Due to old content clean up"*
+
+Web Archive capture : https://web.archive.org/web/20181213072956/https://dzone.com/articles/bookmark-your-code
 
 ########################################
 Bookmark Your Code: a New Approach
@@ -11,9 +13,13 @@ The Existing Solutions
 
 You can already add bookmarks in Eclipse; each bookmark can have a description and there is a corresponding marker added in the file. That way, you can navigate to resources that you use frequently.
 
-However, this support for bookmarks is quite minimal: no shorcuts by default, no folders to organize the bookmarks, no numbered bookmarks... Built-in eclipse bookmarks
+However, this support for bookmarks is quite minimal: no shorcuts by default, no folders to organize the bookmarks, no numbered bookmarks... 
 
-There are a few plugins in the marketplace trying to solve some of the shortcomings, like `quickbookmark <http://marian.schedenig.name/projects/quickbookmarks/>`_ quickbookmark.
+
+.. image:: bookmarks-eclipse-bookmarks.png
+    :alt: Built-in eclipse bookmarks
+
+There are a few plugins in the marketplace trying to solve some of the shortcomings, like `quickbookmark <http://marian.schedenig.name/projects/quickbookmarks/>`_.
 
 Support is better in Intellij IDEA where you have shortcuts and bookmarks with mnemonics but still no way to organize bookmarks in folders.
 
@@ -27,10 +33,10 @@ What Bookmarks Are For
 
 Bookmarks are used to speed up code navigation by jumping to code easily. But this encompasses several use cases:
 
-- Quickly jump to code you are working on. Generally, these bookmarks are short-lived and you will delete them quickly.
-- Track important places in the code. Depending on the code base, there can be many.
-- Understand a large code base. Generally, you use a debugger to debug your application step by step and add bookmarks where needed, and the order for these bookmarks is important.
-- Explain an existing codebase by sharing the important places with comments.
+- *Quickly jump to code* you are working on. Generally, these bookmarks are short-lived and you will delete them quickly.
+- *Track important places* in the code. Depending on the code base, there can be many.
+- *Understand a large code base*. Generally, you use a debugger to debug your application step by step and add bookmarks where needed, and the order for these bookmarks is important.
+- *Explain an existing codebase* by sharing the important places with comments.
 
 So what is missing in Eclipse and most other IDEs?
 
@@ -44,7 +50,9 @@ MesFavoris
 
 MesFavoris is an Eclipse plugin that was created to solve these shortcomings and test new ideas.
 
-MesFavoris screenshot
+
+.. image:: screenshot.png
+    :alt: MesFavoris screenshot
 
 -------------------------------------
 Bookmark What You Need as a Developer
@@ -62,7 +70,8 @@ Rich Bookmark
 
 Bookmark in MesFavoris is not just a file path, a lineNumber, and a comment:
 
-Bookmarks properties
+.. image:: bookmarks-properties.png
+    :alt: Bookmarks properties
 
 This means there are generally multiple ways to goto to the bookmarked element. MesFavoris will use the best one.
 
@@ -93,9 +102,11 @@ I think bookmarks are often personal. They reflect the way you are understanding
 Resist to Changes
 -----------------
 
-Code always changes. This means that bookmarks are generally only valid for a relatively short time and only on a given branch. MesFavoris bookmarks resist changing thanks to an approximate string matching algorithm.
+Code always changes. This means that bookmarks are generally only valid for a relatively short time and only on a given branch. MesFavoris bookmarks resist changing thanks to an **approximate string matching** algorithm.
+
 And you can update a bookmark if it becomes out of date:
-Image title 	Image title
+
+.. image:: bookmarkproblemsbar.png
 
 ------------------
 Numbered bookmarks
@@ -108,6 +119,6 @@ Additional resources
 ====================
 
 - MesFavoris project page
-- Using IntelliJ Bookmarks
+- Using `IntelliJ Bookmarks <https://dzone.com/articles/using-intellij-bookmarks>`_
 - Mes Favoris is covered by the Eclipse Public License 1.0
 
