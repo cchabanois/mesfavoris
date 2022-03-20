@@ -37,7 +37,7 @@ Presentation
     :alt: YouTube presentation
     :target: https://youtu.be/sbpUu-ABFKc
 
-See also `Bookmark Your Code: a New Approach <docs/articles/dzone/a new approach.rst>`_
+See also `Bookmark Your Code: a New Approach <docs/articles/dzone/a%20new%20approach.rst>`_
 
 
 ============
