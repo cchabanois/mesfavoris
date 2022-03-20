@@ -9,7 +9,7 @@ mesfavoris : a bookmarks eclipse plugin
     :alt: Logo
 Mesfavoris is an **eclipse plugin** that allows you to **bookmark** your files and share them with your team using GDrive.
 
-|build| |appveyor| |codecov| |gitter| |stars| |license| |version|
+|build| |codecov| |gitter| |stars| |license| |version|
 
 .. contents::
 
@@ -250,7 +250,7 @@ Logo is adapted from https://commons.wikimedia.org/wiki/File:Spin_(Bookmark)1.jp
 
 Google Drive is a trademark of Google Inc. Use of this trademark is subject to Google Permissions.
 
-.. |build| image:: https://github.com/github/docs/actions/workflows/build-linux.yml/badge.svg
+.. |build| image:: https://github.com/cchabanois/mesfavoris/actions/workflows/build-linux.yml/badge.svg
     :target: https://github.com/cchabanois/mesfavoris/actions/workflows/build-linux.yml
     :alt: Build status of the master branch
  
