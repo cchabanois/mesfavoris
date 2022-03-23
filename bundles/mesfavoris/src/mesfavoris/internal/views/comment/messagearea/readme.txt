@@ -1,0 +1,1 @@
+The files in this package have been copied from org.eclipse.egit.ui.internal.dialogs and slightly modified.
