@@ -49,8 +49,6 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.HyperlinkDetectorDescriptor;
-import org.eclipse.ui.texteditor.spelling.SpellingProblem;
-import org.eclipse.ui.texteditor.spelling.SpellingService;
 
 /**
  * A {@link ProjectionViewer} that automatically reacts to changes in the
@@ -210,11 +208,11 @@ public class HyperlinkSourceViewer extends ProjectionViewer {
 	 */
 	protected void handleEditorPreferencesChange(PropertyChangeEvent event) {
 		switch (event.getProperty()) {
-		case SpellingService.PREFERENCE_SPELLING_ENABLED:
-			boolean isEnabled = EditorsUI.getPreferenceStore()
-					.getBoolean(SpellingService.PREFERENCE_SPELLING_ENABLED);
-			updateSpellChecking(isEnabled);
-			break;
+//		case SpellingService.PREFERENCE_SPELLING_ENABLED:
+//			boolean isEnabled = EditorsUI.getPreferenceStore()
+//					.getBoolean(SpellingService.PREFERENCE_SPELLING_ENABLED);
+//			updateSpellChecking(isEnabled);
+//			break;
 		case AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND:
 		case AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND_SYSTEM_DEFAULT:
 		case AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND:
@@ -285,14 +283,14 @@ public class HyperlinkSourceViewer extends ProjectionViewer {
 		}
 	}
 
-	private void updateSpellChecking(boolean isEnabled) {
-		// See TextEditor.handlePreferenceStoreChanged.
-		this.unconfigure();
-		this.configure(configuration);
-		if (!isEnabled) {
-			SpellingProblem.removeAll(this, null);
-		}
-	}
+//	private void updateSpellChecking(boolean isEnabled) {
+//		// See TextEditor.handlePreferenceStoreChanged.
+//		this.unconfigure();
+//		this.configure(configuration);
+//		if (!isEnabled) {
+//			SpellingProblem.removeAll(this, null);
+//		}
+//	}
 
 	private void configurePreferenceKeys() {
 		preferenceKeysForEnablement = new HashSet<>();
