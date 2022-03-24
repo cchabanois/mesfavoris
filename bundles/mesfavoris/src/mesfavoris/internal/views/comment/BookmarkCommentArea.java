@@ -7,6 +7,7 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Composite;
 
 import mesfavoris.BookmarksException;
+import mesfavoris.internal.views.comment.messagearea.SpellcheckableMessageArea;
 import mesfavoris.model.Bookmark;
 import mesfavoris.model.BookmarkDatabase;
 
