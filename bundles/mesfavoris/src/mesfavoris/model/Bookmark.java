@@ -2,7 +2,8 @@ package mesfavoris.model;
 
 import java.util.Map;
 
-import org.javimmutable.collections.tree.JImmutableTreeMap;
+import org.javimmutable.collections.JImmutableMap;
+import org.javimmutable.collections.util.JImmutables;
 
 import com.google.common.base.Preconditions;
 
@@ -12,22 +13,22 @@ public class Bookmark {
 	public static final String PROPERTY_CREATED = "created";
 	
 	protected final BookmarkId id;	
-	protected final JImmutableTreeMap<String, String> properties;
+	protected final JImmutableMap<String, String> properties;
 	
 	public Bookmark(BookmarkId id) {
 		Preconditions.checkNotNull(id);
 		this.id = id;
-		this.properties = JImmutableTreeMap.<String, String>of();
+		this.properties = JImmutables.sortedMap();
 	}
 	
 	public Bookmark(BookmarkId id, Map<String, String> properties) {
 		Preconditions.checkNotNull(id);
 		Preconditions.checkNotNull(properties);
 		this.id = id;
-		this.properties = JImmutableTreeMap.<String, String>of(properties);
+		this.properties = JImmutables.sortedMap(properties);
 	}
 	
-	protected Bookmark(BookmarkId id, JImmutableTreeMap<String,String> properties) { 
+	protected Bookmark(BookmarkId id, JImmutableMap<String,String> properties) { 
 		this.id = id;
 		this.properties = properties;
 	}

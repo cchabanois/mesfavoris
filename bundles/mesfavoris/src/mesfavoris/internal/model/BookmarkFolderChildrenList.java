@@ -2,7 +2,7 @@ package mesfavoris.internal.model;
 
 import java.util.List;
 
-import org.javimmutable.collections.JImmutableRandomAccessList;
+import org.javimmutable.collections.JImmutableList;
 import org.javimmutable.collections.util.JImmutables;
 
 import mesfavoris.model.BookmarkId;
@@ -14,18 +14,18 @@ import mesfavoris.model.BookmarkId;
  *
  */
 public class BookmarkFolderChildrenList {
-	private final JImmutableRandomAccessList<BookmarkId> children;
+	private final JImmutableList<BookmarkId> children;
 
 	public BookmarkFolderChildrenList(List<BookmarkId> children) {
-		this.children = JImmutables.ralist(children);
+		this.children = JImmutables.list(children);
 	}
 
-	private BookmarkFolderChildrenList(JImmutableRandomAccessList<BookmarkId> children) {
+	private BookmarkFolderChildrenList(JImmutableList<BookmarkId> children) {
 		this.children = children;
 	}
 
 	private BookmarkFolderChildrenList createBookmarkFolderChildrenList(
-			JImmutableRandomAccessList<BookmarkId> children) {
+			JImmutableList<BookmarkId> children) {
 		if (children == this.children) {
 			return this;
 		} else {
@@ -42,7 +42,7 @@ public class BookmarkFolderChildrenList {
 	}
 
 	public BookmarkFolderChildrenList add(List<BookmarkId> bookmarksToAdd) {
-		JImmutableRandomAccessList<BookmarkId> newChildren = children;
+		JImmutableList<BookmarkId> newChildren = children;
 		for (BookmarkId bookmark : bookmarksToAdd) {
 			newChildren = newChildren.insert(bookmark);
 		}
@@ -50,7 +50,7 @@ public class BookmarkFolderChildrenList {
 	}
 
 	public BookmarkFolderChildrenList addBefore(List<BookmarkId> bookmarksToAdd, BookmarkId existingBookmark) {
-		JImmutableRandomAccessList<BookmarkId> newChildren = children;
+		JImmutableList<BookmarkId> newChildren = children;
 		int index = newChildren.getList().indexOf(existingBookmark);
 		if (index == -1) {
 			index = newChildren.size();
@@ -63,7 +63,7 @@ public class BookmarkFolderChildrenList {
 	}
 
 	public BookmarkFolderChildrenList addAfter(List<BookmarkId> bookmarksToAdd, BookmarkId existingBookmark) {
-		JImmutableRandomAccessList<BookmarkId> newChildren = children;
+		JImmutableList<BookmarkId> newChildren = children;
 		int index = newChildren.getList().indexOf(existingBookmark);
 		if (index == -1) {
 			index = 0;
@@ -78,7 +78,7 @@ public class BookmarkFolderChildrenList {
 	}
 
 	public BookmarkFolderChildrenList remove(List<BookmarkId> bookmarksToRemove) {
-		JImmutableRandomAccessList<BookmarkId> newChildren = children;
+		JImmutableList<BookmarkId> newChildren = children;
 		for (BookmarkId bookmark : bookmarksToRemove) {
 			int index = newChildren.getList().indexOf(bookmark);
 			if (index != -1) {

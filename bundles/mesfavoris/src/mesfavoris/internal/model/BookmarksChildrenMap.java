@@ -44,7 +44,7 @@ public class BookmarksChildrenMap {
 
 	public BookmarksChildrenMap add(BookmarksChildrenMap bookmarks) {
 		JImmutableMap<BookmarkId, BookmarkFolderChildrenList> newIdToChildren = idToChildren;
-		for (JImmutableMap.Entry<BookmarkId, BookmarkFolderChildrenList> entry : bookmarks.idToChildren.cursor()) {
+		for (JImmutableMap.Entry<BookmarkId, BookmarkFolderChildrenList> entry : bookmarks.idToChildren) {
 			newIdToChildren = newIdToChildren.assign(entry.getKey(), entry.getValue());
 		}
 		return createBookmarksChildrenMap(newIdToChildren);
