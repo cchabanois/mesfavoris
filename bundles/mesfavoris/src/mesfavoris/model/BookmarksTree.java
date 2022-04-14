@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.javimmutable.collections.tree.JImmutableTreeMap;
+import org.javimmutable.collections.JImmutableMap;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -63,7 +63,7 @@ public class BookmarksTree implements Iterable<Bookmark> {
 		if (bookmark == null) {
 			throw new IllegalArgumentException("No bookmark with id " + bookmarkId);
 		}
-		JImmutableTreeMap<String, String> newProperties;
+		JImmutableMap<String, String> newProperties;
 		if (propertyValue == null) {
 			newProperties = bookmark.properties.delete(propertyName);
 		} else {

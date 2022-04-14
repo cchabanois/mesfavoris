@@ -115,7 +115,7 @@ public class BookmarkProblems implements Iterable<BookmarkProblem> {
 		private Iterator<BookmarkProblem> currentIterator;
 
 		private BookmarkProblemIterator() {
-			setIterator = map.valuesCursor().iterator();
+			setIterator = map.values().iterator();
 		}
 
 		@Override

@@ -2,7 +2,7 @@ package mesfavoris.model;
 
 import java.util.Map;
 
-import org.javimmutable.collections.tree.JImmutableTreeMap;
+import org.javimmutable.collections.JImmutableMap;
 
 import com.google.common.collect.Maps;
 
@@ -22,7 +22,7 @@ public class BookmarkFolder extends Bookmark {
 		super(id, properties);
 	}
 
-	BookmarkFolder(BookmarkId id, JImmutableTreeMap<String,String> properties) { 
+	BookmarkFolder(BookmarkId id, JImmutableMap<String,String> properties) { 
 		super(id, properties);
 	}	
 	

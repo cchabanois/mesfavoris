@@ -29,7 +29,7 @@ public class BookmarksMap implements Iterable<Bookmark> {
 
 	@Override
 	public Iterator<Bookmark> iterator() {
-		return idToBookmark.valuesCursor().iterator();
+		return idToBookmark.values().iterator();
 
 	}
 
