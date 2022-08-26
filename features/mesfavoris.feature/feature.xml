@@ -2,7 +2,7 @@
 <feature
       id="mesfavoris.feature"
       label="mesfavoris"
-      version="2.4.0.qualifier"
+      version="2.5.0.qualifier"
       provider-name="Mes Favoris"
       plugin="mesfavoris">
 
@@ -36,13 +36,13 @@
       <import plugin="com.google.guava" version="24.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.e4.core.services" version="2.0.100" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi.services" version="3.5.100" match="greaterOrEqual"/>
-      <import plugin="mesfavoris.commons" version="2.4.0" match="greaterOrEqual"/>
-      <import plugin="mesfavoris" version="2.4.0" match="greaterOrEqual"/>
+      <import plugin="mesfavoris.commons" version="2.5.0" match="greaterOrEqual"/>
+      <import plugin="mesfavoris" version="2.5.0" match="greaterOrEqual"/>
       <import plugin="org.jsoup" version="1.11.2" match="greaterOrEqual"/>
-      <import plugin="mesfavoris.url" version="2.4.0" match="greaterOrEqual"/>
+      <import plugin="mesfavoris.url" version="2.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.10.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.filebuffers" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="mesfavoris.path" version="2.4.0" match="greaterOrEqual"/>
+      <import plugin="mesfavoris.path" version="2.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.swt" version="3.105.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.navigator.resources" version="3.5.100" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.navigator" version="3.6.100" match="greaterOrEqual"/>
