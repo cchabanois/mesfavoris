@@ -12,8 +12,7 @@ Require-Bundle: org.junit;bundle-version="4.11.0",
  mesfavoris.tests.commons;bundle-version="2.4.0",
  org.assertj.core;bundle-version="3.9.1",
  org.eclipse.m2e.editor;bundle-version="1.6.2",
- mesfavoris.gdrive;bundle-version="2.4.0",
- org.apache.log4j;bundle-version="1.2.15"
+ mesfavoris.gdrive;bundle-version="2.4.0"
 Bundle-Vendor: Mes Favoris
 Bundle-ClassPath: lib/org.mockito.mockito-all_1.10.19.jar,
  .

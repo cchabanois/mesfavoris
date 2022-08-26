@@ -3,21 +3,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>mesfavoris</groupId>
-    <artifactId>mesfavoris.releng</artifactId>
-    <version>2.4.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-
     <parent>
         <groupId>mesfavoris</groupId>
-        <artifactId>mesfavoris.root</artifactId>
+        <artifactId>mesfavoris.releng</artifactId>
         <version>2.4.0-SNAPSHOT</version>
     </parent>
+    <groupId>mesfavoris</groupId>
+    <artifactId>mesfavoris.2022-06.target</artifactId>
+    <version>2.4.0-SNAPSHOT</version>
+    <packaging>eclipse-target-definition</packaging>
 
-    <modules>
-        <module>mesfavoris.2022-06.target</module>
-        <module>mesfavoris.update-site</module>
-        <module>mesfavoris.github-pages</module>
-    </modules>
 </project>
 
