@@ -30,7 +30,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<target.artifactId>mesfavoris.2021-12.target</target.artifactId>
+				<target.artifactId>mesfavoris.2022-06.target</target.artifactId>
 			</properties>
 		</profile>
 	</profiles>

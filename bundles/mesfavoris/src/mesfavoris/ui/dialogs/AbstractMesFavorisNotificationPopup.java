@@ -1,6 +1,6 @@
 package mesfavoris.ui.dialogs;
 
-import org.eclipse.mylyn.commons.ui.dialogs.AbstractNotificationPopup;
+import org.eclipse.jface.notifications.AbstractNotificationPopup;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
