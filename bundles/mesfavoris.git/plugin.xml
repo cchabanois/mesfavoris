@@ -34,10 +34,6 @@
                class="mesfavoris.git.GotoRepositoryCommitBookmark"
                priority="10">
          </gotoBookmark>
-         <propertiesProvider
-               class="mesfavoris.git.github.GithubUrlBookmarkPropertiesProvider"
-               priority="10">
-         </propertiesProvider>
          <properties>
             <property
                   description="name of the git branch"
